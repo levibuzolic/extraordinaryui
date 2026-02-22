@@ -35,9 +35,16 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert component_page =~ "Slots (Generated from `slot` definitions)"
     assert component_page =~ "https://ui.shadcn.com/docs/components/button"
     assert component_page =~ "<code>variant</code>"
+    assert component_page =~ "docs-markdown"
+    assert component_page =~ "<h2>Attributes</h2>"
+    assert component_page =~ "<ul>"
+    refute component_page =~ "## Attributes"
 
     site_js = File.read!(Path.join(@output, "assets/site.js"))
     assert site_js =~ "themedTokenKeys"
     assert site_js =~ "removeProperty"
+
+    site_css = File.read!(Path.join(@output, "assets/site.css"))
+    assert site_css =~ ".docs-markdown"
   end
 end

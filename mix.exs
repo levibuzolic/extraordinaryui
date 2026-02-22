@@ -53,6 +53,7 @@ defmodule ExtraordinaryUI.MixProject do
     [
       {:phoenix, "~> 1.7 or ~> 1.8"},
       {:phoenix_live_view, "~> 1.0"},
+      {:earmark, "~> 1.4", runtime: false},
       {:phoenix_storybook, "~> 0.9.3", optional: true},
       {:jason, "~> 1.4", optional: true},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},

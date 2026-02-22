@@ -330,13 +330,23 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   end
 
   defp docs_full_html(doc) do
-    doc
-    |> String.split("\n\n")
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(&(&1 == ""))
-    |> Enum.map_join("\n", fn paragraph ->
-      "<p class=\"text-muted-foreground leading-6\">#{escape(paragraph)}</p>"
-    end)
+    case Earmark.as_html(doc, compact_output: true) do
+      {:ok, html, _messages} ->
+        "<article class=\"docs-markdown\">#{sanitize_docs_html(html)}</article>"
+
+      {:error, html, _messages} ->
+        "<article class=\"docs-markdown\">#{sanitize_docs_html(html)}</article>"
+    end
+  rescue
+    _ ->
+      escaped_doc = escape(doc)
+      "<article class=\"docs-markdown\"><p>#{escaped_doc}</p></article>"
+  end
+
+  defp sanitize_docs_html(html) do
+    html
+    |> String.replace(~r/<script\b[^>]*>.*?<\/script>/is, "")
+    |> String.replace(~r/<style\b[^>]*>.*?<\/style>/is, "")
   end
 
   defp attributes_table_html([]) do
@@ -936,6 +946,85 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
     details[open] summary::after {
       content: "▴";
+    }
+
+    .docs-markdown {
+      color: var(--muted-foreground);
+      line-height: 1.7;
+    }
+
+    .docs-markdown > * + * {
+      margin-top: 0.9rem;
+    }
+
+    .docs-markdown h1,
+    .docs-markdown h2,
+    .docs-markdown h3,
+    .docs-markdown h4 {
+      color: var(--foreground);
+      font-weight: 600;
+      line-height: 1.3;
+      margin-top: 1.4rem;
+    }
+
+    .docs-markdown h1 {
+      font-size: 1.35rem;
+    }
+
+    .docs-markdown h2 {
+      font-size: 1.2rem;
+    }
+
+    .docs-markdown h3 {
+      font-size: 1.05rem;
+    }
+
+    .docs-markdown ul,
+    .docs-markdown ol {
+      margin-left: 1.25rem;
+    }
+
+    .docs-markdown ul {
+      list-style: disc;
+    }
+
+    .docs-markdown ol {
+      list-style: decimal;
+    }
+
+    .docs-markdown li + li {
+      margin-top: 0.3rem;
+    }
+
+    .docs-markdown a {
+      color: var(--foreground);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .docs-markdown pre {
+      overflow: auto;
+      border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+      border-radius: 0.5rem;
+      background: color-mix(in oklab, var(--muted) 40%, transparent);
+      padding: 0.75rem;
+      line-height: 1.45;
+    }
+
+    .docs-markdown code {
+      border: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+      border-radius: 0.35rem;
+      background: color-mix(in oklab, var(--muted) 30%, transparent);
+      color: var(--foreground);
+      padding: 0.1rem 0.3rem;
+      font-size: 0.9em;
+    }
+
+    .docs-markdown pre code {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      font-size: 0.95em;
     }
     """
   end

@@ -130,6 +130,8 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added explicit current-status and release-checklist guidance, including manual Hex publish status.
 - Added remaining-work tracking so incomplete items are clearly visible.
 - Upgraded README component-coverage matrix to use emoji status markers and split compatibility into coverage/interactivity/limitations columns.
+- Fixed static component-page function docs rendering to parse markdown (headings/lists/code) instead of escaped plaintext blocks.
+- Added markdown presentation styles for docs content and tests asserting markdown-rendered output.
 
 ## Commit Log
 
@@ -147,3 +149,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `e9e84bc` - add static developer site build task, tests, CI checks, and GitHub Pages release deployment workflow.
 - `e6f9866` - run documentation reality pass, add remaining-work tracker, and add root AGENTS guide for future development.
 - `bfeb4d4` - refine README shadcn coverage matrix with emoji status + compatibility breakdown columns.
+- `pending` - render function docs markdown in static docs and style markdown output blocks.
