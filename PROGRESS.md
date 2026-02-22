@@ -174,6 +174,7 @@ All validation checks currently pass (last run: February 22, 2026).
 
 - Rebuilt the static marketing landing page to render using Cinder UI component functions instead of custom ad-hoc HTML controls.
 - Set marketing site baseline to the neutral token palette with `style-nova` radius profile and Tailwind v4 browser styling.
+- Added a persistent dark/light mode toggle to the static marketing site (`localStorage` + `.dark` root class) with active-state UI controls in the header.
 - Added a homepage examples section with live previews/snippets for:
   - `Actions.button_group/1`
   - `Forms.field/1`

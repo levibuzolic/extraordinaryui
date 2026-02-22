@@ -126,6 +126,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           name="description"
           content="Phoenix + LiveView component library with upstream-compatible patterns, static docs, and installer tooling."
         />
+        #{theme_bootstrap_script()}
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <style type="text/tailwindcss">
     #{theme_css}
@@ -143,7 +144,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           <header class="mb-8 rounded-xl border bg-card p-4 shadow-sm">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <a href="./index.html" class="text-lg font-semibold tracking-tight">Cinder UI</a>
-              #{header_nav_html()}
+              #{header_controls_html()}
             </div>
             <p class="mt-3 text-sm text-muted-foreground">
               Built for Phoenix teams who want
@@ -168,8 +169,18 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
             </p>
           </footer>
         </div>
+        #{theme_toggle_script()}
       </body>
     </html>
+    """
+  end
+
+  defp header_controls_html do
+    """
+    <div class=\"flex flex-wrap items-center gap-2\">
+      #{header_nav_html()}
+      #{theme_toggle_html()}
+    </div>
     """
   end
 
@@ -181,6 +192,39 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         nav_item("Install", "#install", false),
         nav_item("Links", "#links", false)
       ]
+    })
+  end
+
+  defp theme_toggle_html do
+    light_button =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        class: "theme-toggle-btn",
+        rest: %{
+          "data-site-theme" => "light",
+          "aria-label" => "Switch to light mode",
+          "type" => "button"
+        },
+        inner_block: slot("Light")
+      })
+
+    dark_button =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        class: "theme-toggle-btn",
+        rest: %{
+          "data-site-theme" => "dark",
+          "aria-label" => "Switch to dark mode",
+          "type" => "button"
+        },
+        inner_block: slot("Dark")
+      })
+
+    render_component(Actions, :button_group, %{
+      class: "site-theme-toggle",
+      inner_block: slot(light_button <> dark_button)
     })
   end
 
@@ -582,6 +626,10 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       color-scheme: light;
     }
 
+    html.dark {
+      color-scheme: dark;
+    }
+
     .site-shell {
       background-image:
         radial-gradient(circle at 100% -10%, color-mix(in oklab, var(--muted) 25%, transparent) 0, transparent 46%),
@@ -593,6 +641,63 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       white-space: pre-wrap;
       word-break: break-word;
     }
+
+    .site-theme-toggle [data-site-theme][data-active="true"] {
+      background: var(--accent);
+      color: var(--accent-foreground);
+      border-color: var(--border);
+    }
+    """
+  end
+
+  defp theme_bootstrap_script do
+    """
+    <script>
+      (() => {
+        try {
+          const mode = localStorage.getItem("cinder_ui:site:theme") === "dark" ? "dark" : "light";
+          const root = document.documentElement;
+          root.classList.toggle("dark", mode === "dark");
+          root.dataset.themeMode = mode;
+        } catch (_error) {}
+      })();
+    </script>
+    """
+  end
+
+  defp theme_toggle_script do
+    """
+    <script>
+      (() => {
+        const storageKey = "cinder_ui:site:theme";
+        const root = document.documentElement;
+        const buttons = Array.from(document.querySelectorAll("[data-site-theme]"));
+
+        const apply = (mode) => {
+          const normalized = mode === "dark" ? "dark" : "light";
+          root.classList.toggle("dark", normalized === "dark");
+          root.dataset.themeMode = normalized;
+
+          buttons.forEach((button) => {
+            const active = button.dataset.siteTheme === normalized;
+            button.dataset.active = active ? "true" : "false";
+            button.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+        };
+
+        apply(root.dataset.themeMode === "dark" ? "dark" : "light");
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const mode = button.dataset.siteTheme === "dark" ? "dark" : "light";
+            try {
+              localStorage.setItem(storageKey, mode);
+            } catch (_error) {}
+            apply(mode);
+          });
+        });
+      })();
+    </script>
     """
   end
 

@@ -32,6 +32,10 @@ defmodule CinderUI.Site.BuildTaskTest do
     assert index =~ "https://ui.shadcn.com/docs"
     assert index =~ "style-nova"
     assert index =~ "shadcn/ui reference"
+    assert index =~ "data-site-theme"
+    assert index =~ "cinder_ui:site:theme"
+    assert index =~ "Switch to dark mode"
+    assert index =~ "Switch to light mode"
 
     docs_index = File.read!(Path.join(@output, "docs/index.html"))
     assert docs_index =~ "Component Library"
