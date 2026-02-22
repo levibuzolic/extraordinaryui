@@ -514,7 +514,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     %{id: "docs-popover", trigger: slot("Popover"), content: slot("Popover content")}
   end
 
-  defp sample_assigns(Overlay, :sheet), do: sample_assigns(Overlay, :drawer)
+  defp sample_assigns(Overlay, :sheet) do
+    sample_assigns(Overlay, :drawer)
+    |> Map.put(:id, "docs-sheet")
+  end
 
   defp sample_assigns(Overlay, :tooltip),
     do: %{

@@ -1,0 +1,215 @@
+<div class="mx-auto min-h-screen max-w-[1800px] px-4 py-6 md:px-6">
+  <header class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight">Extraordinary UI Sandbox</h1>
+      <p class="text-muted-foreground mt-2 text-sm">
+        Live Phoenix host app with all exported component previews.
+      </p>
+    </div>
+
+    <div class="text-right text-sm">
+      <p>
+        <span class="text-muted-foreground">Components:</span>
+        <span data-testid="component-count" class="font-semibold">{@component_count}</span>
+      </p>
+      <.link navigate={~p"/"} class="text-primary hover:underline">Home</.link>
+    </div>
+  </header>
+
+  <div class="mb-6">
+    <input
+      id="component-search"
+      type="search"
+      placeholder="Search components..."
+      class="border-input bg-background h-10 w-full rounded-md border px-3 text-sm"
+    />
+  </div>
+
+  <%= for section <- @sections do %>
+    <section id={section.id} data-testid={"section-#{section.id}"} class="mb-10">
+      <h2 class="mb-4 text-xl font-semibold">{section.title}</h2>
+
+      <div class="grid gap-5 xl:grid-cols-2">
+        <%= for entry <- section.entries do %>
+          <article
+            id={entry.id}
+            data-component-card
+            data-component-name={entry.title}
+            class="rounded-xl border bg-card text-card-foreground shadow-sm"
+          >
+            <header class="border-border/70 border-b px-4 py-3">
+              <h3 class="font-medium">
+                <code>{entry.module_name}.{entry.title}/1</code>
+              </h3>
+              <p class="text-muted-foreground mt-2 text-sm">{entry.docs}</p>
+            </header>
+
+            <div class="p-4">
+              <div
+                class="style-nova rounded-lg border bg-background p-4"
+                data-testid={"preview-#{entry.id}"}
+              >
+                {raw(entry.preview_html)}
+              </div>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>
+
+<script>
+  (() => {
+    const qs = (root, selector) => Array.from(root.querySelectorAll(selector))
+    const toggleVisibility = (el, visible) => {
+      if (!el) return
+      el.classList.toggle("hidden", !visible)
+      el.dataset.state = visible ? "open" : "closed"
+    }
+
+    const searchInput = document.getElementById("component-search")
+    const cards = Array.from(document.querySelectorAll("[data-component-card]"))
+
+    const runSearch = () => {
+      const query = (searchInput?.value || "").trim().toLowerCase()
+
+      cards.forEach((card) => {
+        const name = (card.getAttribute("data-component-name") || "").toLowerCase()
+        const visible = !query || name.includes(query)
+        card.style.display = visible ? "block" : "none"
+      })
+    }
+
+    searchInput?.addEventListener("input", runSearch)
+
+    qs(document, "[data-slot='dialog']").forEach((root) => {
+      const overlay = root.querySelector("[data-dialog-overlay]")
+      const content = root.querySelector("[data-dialog-content]")
+
+      const sync = (open) => {
+        root.dataset.state = open ? "open" : "closed"
+        toggleVisibility(overlay, open)
+        toggleVisibility(content, open)
+      }
+
+      root.addEventListener("click", (event) => {
+        if (event.target.closest("[data-dialog-trigger]")) sync(true)
+        if (event.target.closest("[data-dialog-close]") || event.target.closest("[data-dialog-overlay]")) sync(false)
+      })
+
+      sync(root.dataset.state === "open")
+    })
+
+    qs(document, "[data-slot='drawer']").forEach((root) => {
+      const overlay = root.querySelector("[data-drawer-overlay]")
+      const content = root.querySelector("[data-drawer-content]")
+
+      const sync = (open) => {
+        root.dataset.state = open ? "open" : "closed"
+        toggleVisibility(overlay, open)
+        toggleVisibility(content, open)
+      }
+
+      root.addEventListener("click", (event) => {
+        if (event.target.closest("[data-drawer-trigger]")) sync(true)
+        if (event.target.closest("[data-drawer-overlay]")) sync(false)
+      })
+
+      sync(root.dataset.state === "open")
+    })
+
+    qs(document, "[data-slot='popover']").forEach((root) => {
+      const trigger = root.querySelector("[data-popover-trigger]")
+      const content = root.querySelector("[data-popover-content]")
+      let open = false
+
+      trigger?.addEventListener("click", (event) => {
+        event.preventDefault()
+        open = !open
+        toggleVisibility(content, open)
+      })
+
+      document.addEventListener("click", (event) => {
+        if (!root.contains(event.target)) {
+          open = false
+          toggleVisibility(content, false)
+        }
+      })
+    })
+
+    qs(document, "[data-slot='dropdown-menu']").forEach((root) => {
+      const trigger = root.querySelector("[data-dropdown-trigger]")
+      const content = root.querySelector("[data-dropdown-content]")
+      let open = false
+
+      trigger?.addEventListener("click", (event) => {
+        event.preventDefault()
+        open = !open
+        toggleVisibility(content, open)
+      })
+
+      document.addEventListener("click", (event) => {
+        if (!root.contains(event.target)) {
+          open = false
+          toggleVisibility(content, false)
+        }
+      })
+    })
+
+    qs(document, "[data-slot='combobox']").forEach((root) => {
+      const input = root.querySelector("[data-combobox-input]")
+      const content = root.querySelector("[data-combobox-content]")
+      const items = qs(root, "[data-slot='combobox-item']")
+
+      input?.addEventListener("focus", () => toggleVisibility(content, true))
+      input?.addEventListener("input", () => {
+        const value = (input.value || "").toLowerCase()
+        items.forEach((item) => {
+          const text = (item.textContent || "").toLowerCase()
+          item.classList.toggle("hidden", !text.includes(value))
+        })
+        toggleVisibility(content, true)
+      })
+
+      items.forEach((item) => {
+        item.addEventListener("click", () => {
+          input.value = item.getAttribute("data-value") || (item.textContent || "").trim()
+          toggleVisibility(content, false)
+        })
+      })
+
+      document.addEventListener("click", (event) => {
+        if (!root.contains(event.target)) {
+          toggleVisibility(content, false)
+        }
+      })
+    })
+
+    qs(document, "[data-slot='carousel']").forEach((root) => {
+      const track = root.querySelector("[data-carousel-track]")
+      const items = qs(root, "[data-slot='carousel-item']")
+      const prev = root.querySelector("[data-carousel-prev]")
+      const next = root.querySelector("[data-carousel-next]")
+      let index = 0
+
+      const sync = () => {
+        if (!track || items.length === 0) return
+        track.style.transform = `translateX(-${index * 100}%)`
+        track.style.transition = "transform 240ms ease"
+      }
+
+      prev?.addEventListener("click", () => {
+        index = index === 0 ? items.length - 1 : index - 1
+        sync()
+      })
+
+      next?.addEventListener("click", () => {
+        index = index === items.length - 1 ? 0 : index + 1
+        sync()
+      })
+
+      sync()
+    })
+  })()
+</script>

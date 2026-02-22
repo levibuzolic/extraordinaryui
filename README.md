@@ -236,6 +236,48 @@ The output can be hosted on any static platform (GitHub Pages, Netlify, S3, Clou
 
 The generated site includes client-side interactivity for preview behaviors (dialogs, drawers, popovers, dropdowns, comboboxes, and carousel controls) without Phoenix running.
 
+## Local Sandbox App
+
+This repo includes a local Phoenix host app for integration testing:
+
+- `/Users/levi/src/xmo/extraordinaryui/sandbox/demo_app`
+
+The sandbox renders the full component catalog at:
+
+- `http://localhost:4000/components`
+
+Run it:
+
+```bash
+cd sandbox/demo_app
+mix deps.get
+mix extraordinary_ui.install --skip-existing
+mix phx.server
+```
+
+## Browser Tests (Playwright)
+
+Playwright tests run against the sandbox app and cover:
+
+- full catalog rendering (every component card)
+- catalog search behavior
+- interactive previews (dialog, drawer, popover, dropdown, combobox, carousel)
+
+Setup and run:
+
+```bash
+cd sandbox/demo_app
+npm install
+npx playwright install chromium
+npx playwright test
+```
+
+Optional:
+
+```bash
+npx playwright test --headed
+```
+
 ## JS Hooks
 
 Hook implementations live in `assets/js/extraordinary_ui.js`:

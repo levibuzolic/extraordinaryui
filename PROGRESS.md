@@ -16,6 +16,8 @@
 - [x] Component modules complete.
 - [x] Storybook previews complete.
 - [x] Static docs exporter complete.
+- [x] Local Phoenix sandbox app complete.
+- [x] Browser automation tests complete.
 - [x] Installer task complete.
 - [x] Tests complete.
 - [x] README and release docs complete.
@@ -66,6 +68,13 @@ All validation checks currently pass.
 - Added `mix extraordinary_ui.docs.build` to generate deployable `dist/docs` output.
 - Added tests for catalog coverage and static build artifacts.
 
+### Milestone 6: Sandbox host app and Playwright coverage
+
+- Added a local Phoenix app at `sandbox/demo_app` embedding `extraordinary_ui` via local path dependency.
+- Added `/components` catalog page in the sandbox host app for real browser validation.
+- Added Playwright browser tests covering full component catalog rendering, search filtering, and key interactions.
+- Documented run/test/export workflows in root and sandbox READMEs.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -73,3 +82,7 @@ All validation checks currently pass.
 - `6a0d321` - add installer task, theme assets, JS hooks, and templates.
 - `78dad14` - add Storybook indexes and category stories.
 - `14ef672` - add component tests and extensive README/PROGRESS documentation.
+- `5cd17a6` - document milestone commit log in progress tracker.
+- `af013ff` - add `--skip-existing` installer option for generated files.
+- `38675cb` - add static docs exporter for full component catalog.
+- `c0a5e7d` - close overlay previews by default and add static docs interactions.
