@@ -61,4 +61,8 @@ All validation checks currently pass.
 
 ## Commit Log
 
-- Pending: commits will be appended after each staged milestone commit.
+- `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
+- `b7c67ff` - implement shadcn-inspired component modules across major categories.
+- `6a0d321` - add installer task, theme assets, JS hooks, and templates.
+- `78dad14` - add Storybook indexes and category stories.
+- `14ef672` - add component tests and extensive README/PROGRESS documentation.
