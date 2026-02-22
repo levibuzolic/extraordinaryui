@@ -18,6 +18,7 @@
 - [x] Installer task complete.
 - [x] Tests complete.
 - [x] README and release docs complete.
+- [x] Rich multi-example docs pass complete.
 
 ## Validation
 
@@ -144,6 +145,20 @@ All validation checks currently pass (last run: February 22, 2026).
 - Upgraded `Layout.card/1` examples to richer shadcn-style compositions (header/content/footer/actions), including multiple complete variants.
 - Expanded `DataDisplay.table/1` and `Navigation.pagination/1` samples to more complete, shadcn-style compositions (caption/footer and prev/next/ellipsis flows).
 
+### Milestone 13: Rich example parity and inline-doc labeling
+
+- Expanded richer multi-example coverage beyond `card` to additional core families:
+  - `Actions.button/1`
+  - `Forms.field/1`
+  - `Feedback.alert/1`
+  - `DataDisplay.accordion/1`
+  - `Navigation.tabs/1`
+  - `Overlay.dialog/1`
+  - `Advanced.command/1`
+- Upgraded nested sample previews to use Extraordinary UI components where feasible (`button_group`, `toggle_group`, `field`, `input_group`, `empty_state`, overlay footers, tooltip trigger, command items, menubar content).
+- Added inline-doc fenced example metadata parsing (`title="..."` and `title='...'`) so detailed docs pages can render multiple named examples from `@doc` content.
+- Added docs and tests validating titled inline examples and multi-example coverage expectations.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -170,3 +185,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `13bfd58` - fix switch preview rendering so native checkbox glyph is not visible.
 - `1335d6d` - add multi-example detailed docs rendering and richer card-aligned sample implementations.
 - `a73a333` - expand table/pagination sample compositions for closer shadcn-style completeness.
+- `d003fdc` - expand rich multi-family component samples and add named inline-doc example extraction.
