@@ -4,26 +4,6 @@ Shadcn-inspired UI components for Phoenix + LiveView.
 
 Extraordinary UI is a Hex-oriented component library that ports shadcn/ui design patterns, classes, tokens, and compositional structure into Elixir function components.
 
-The project is intentionally aligned with:
-
-- [shadcn/ui docs](https://ui.shadcn.com/docs)
-- [shadcn/ui repository](https://github.com/shadcn-ui/ui)
-- [daisy_ui_components structure and installer workflow](https://github.com/phcurado/daisy_ui_components)
-
-## Goals
-
-- Provide shadcn-style components with Phoenix-native ergonomics.
-- Use Tailwind CSS tokens and class patterns compatible with modern shadcn conventions.
-- Offer self-install tooling for host Phoenix projects.
-- Support style/theme overrides with the same CSS-variable model used by shadcn.
-- Ship Storybook stories for broad component preview coverage.
-
-## Current Status (February 22, 2026)
-
-- Core library, installer, static docs export, demo sandbox, CI quality gates, and Playwright visual regression are implemented and passing.
-- GitHub Pages deployment for the static developer site is wired to GitHub Releases (`release.published`).
-- Hex package and HexDocs publication are not automated yet (Hex links are pre-wired, pending first publish).
-
 ## Installation
 
 ### 1) Add dependency
@@ -42,7 +22,7 @@ end
 mix deps.get
 ```
 
-### 3) Install assets and JS hooks
+### 3) Install assets and hooks
 
 ```bash
 mix extraordinary_ui.install
@@ -68,7 +48,7 @@ Supported package managers: `npm`, `pnpm`, `yarn`, `bun`.
 
 Supported style presets: `nova`, `maia`, `lyra`, `mira`, `vega`.
 
-If you want to avoid overwriting generated Extraordinary UI files when re-running the installer:
+If you want to avoid overwriting generated files when re-running the installer:
 
 ```bash
 mix extraordinary_ui.install --skip-existing
@@ -98,7 +78,7 @@ import ExtraordinaryUI.Components.Actions
 import ExtraordinaryUI.Components.Forms
 ```
 
-## Theme and Style Overrides (shadcn model)
+## Theming and Style Overrides
 
 Extraordinary UI uses shadcn-style CSS variables (`--background`, `--foreground`, `--primary`, etc.) and dark mode with `.dark`.
 
@@ -208,26 +188,15 @@ defmodule MyAppWeb.Storybook do
 end
 ```
 
-Bundled stories cover:
-
-- Actions
-- Forms
-- Layout
-- Feedback
-- Data Display
-- Navigation
-- Overlay
-- Advanced
-
 ## Static Docs Export
 
-You can generate a fully static docs site (HTML/CSS/JS) without running Phoenix in production:
+Generate a fully static docs site (HTML/CSS/JS) without Phoenix running in production:
 
 ```bash
 mix extraordinary_ui.docs.build
 ```
 
-This writes a deployable site to:
+Output:
 
 - `dist/docs/index.html`
 - `dist/docs/components/*.html`
@@ -240,243 +209,46 @@ Optional flags:
 mix extraordinary_ui.docs.build --output public/docs --clean
 ```
 
-The output can be hosted on any static platform (GitHub Pages, Netlify, S3, Cloudflare Pages, etc).
-
 The generated site includes:
 
-- an overview page plus one page per component (`dist/docs/components/...`)
-- client-side interactivity for preview behaviors (dialogs, drawers, popovers, dropdowns, comboboxes, and carousel controls) without Phoenix running
-- links to the corresponding shadcn/ui reference docs for each component
-- generated attributes and slots docs derived from component `attr/slot` definitions (`__components__/0`)
-- copyable HEEx usage snippets generated from sample assigns
-- multiple generated examples per component in detailed docs pages
-- inline docs examples extracted from fenced code blocks in function `@doc` text
+- overview page plus one page per component
+- interactive static previews for supported components
+- links to the corresponding shadcn/ui docs
+- generated attributes and slots docs from `attr/slot` definitions
+- copyable HEEx usage snippets
+- light/dark/auto + color + radius theme controls
 
-It also includes shadcn-style theme controls:
+## API Docs
 
-- mode: `light` / `dark` / `auto`
-- color palettes: `zinc`, `slate`, `stone`, `gray`, `neutral`
-- radius profiles: `maia`, `mira`, `nova`, `lyra`, `vega`
-
-## Developer/Marketing Static Site
-
-Build a top-level static site that includes the docs export under `/docs`:
-
-```bash
-mix extraordinary_ui.site.build --clean
-```
-
-Output:
-
-- `dist/site/index.html` (developer/marketing landing page)
-- `dist/site/docs/**` (full static component library export)
-- `dist/site/assets/site.css`
-
-Optional flags:
-
-```bash
-mix extraordinary_ui.site.build \
-  --output public \
-  --clean \
-  --github-url https://github.com/levi/extraordinaryui \
-  --hexdocs-url https://hexdocs.pm/extraordinary_ui
-```
-
-This is fully static HTML/CSS/JS and can be deployed to GitHub Pages, Cloudflare Pages, Vercel, Netlify, S3, or any static host.
-
-## Local Sandbox App
-
-This repo includes a local Phoenix host app for integration testing:
-
-- `sandbox/demo_app`
-
-The sandbox renders the full component catalog at:
-
-- `http://localhost:4000/`
-
-Alias route:
-
-- `http://localhost:4000/components`
-
-The sandbox catalog includes the same theme controls and copyable HEEx snippets as the static docs exporter.
-
-Run it:
-
-```bash
-cd sandbox/demo_app
-mix deps.get
-mix extraordinary_ui.install --skip-existing
-mix phx.server
-```
-
-## Browser Tests (Playwright)
-
-Playwright tests run against the sandbox app and cover:
-
-- full catalog rendering (every component card)
-- sidebar navigation rendering
-- Phoenix snippet panel availability
-- interactive previews (dialog, drawer, popover, dropdown, combobox, carousel)
-- theme controls (mode, color, radius)
-- visual regression snapshots for every component card
-
-Setup and run:
-
-```bash
-cd sandbox/demo_app
-npm ci
-npx playwright install --with-deps chromium
-npx playwright test
-```
-
-CI-parity run (build assets first):
-
-```bash
-cd sandbox/demo_app
-mix deps.get
-mix assets.build
-npx playwright test
-```
-
-Optional:
-
-```bash
-npx playwright test --headed
-```
-
-Visual snapshots:
-
-```bash
-cd sandbox/demo_app
-npx playwright test tests/browser/visual.spec.ts
-npx playwright test tests/browser/visual.spec.ts --update-snapshots
-```
-
-Snapshot baselines are stored at:
-
-- `sandbox/demo_app/tests/browser/visual.spec.ts-snapshots`
-
-## JS Hooks
-
-Hook implementations live in `assets/js/extraordinary_ui.js`:
-
-- `EuiDialog`
-- `EuiDrawer`
-- `EuiPopover`
-- `EuiDropdownMenu`
-- `EuiCombobox`
-- `EuiCarousel`
-
-The installer automatically wires these into `assets/js/app.js`.
-
-## API and Module Docs
-
-Every component module includes in-source docs and usage examples:
-
-- `ExtraordinaryUI.Components.Actions`
-- `ExtraordinaryUI.Components.Forms`
-- `ExtraordinaryUI.Components.Layout`
-- `ExtraordinaryUI.Components.Feedback`
-- `ExtraordinaryUI.Components.DataDisplay`
-- `ExtraordinaryUI.Components.Navigation`
-- `ExtraordinaryUI.Components.Overlay`
-- `ExtraordinaryUI.Components.Advanced`
-
-Generate docs:
+Every component module includes in-source docs and usage examples. Generate docs with:
 
 ```bash
 mix docs
 ```
 
-Detailed static docs pages can render multiple inline documentation examples. To provide them in a component function doc, add multiple fenced HEEx code blocks (optionally with `title="..."` metadata for clean labels in the docs UI):
+## Feasibility Notes
 
-~~~elixir
-@doc """
-```heex title="Primary action"
-<.button>Save</.button>
-```
+A subset of shadcn components rely on browser-first stacks (Radix primitives, complex keyboard navigation, chart engines, or heavy client state). For these, Extraordinary UI provides either progressive LiveView hook behavior or a scaffold component with stable API + styling.
 
-```heex title="Secondary action"
-<.button variant={:outline}>Cancel</.button>
-```
-"""
-~~~
+## Attribution and Third-Party Notices
 
-## Quality Gates
+Extraordinary UI is deeply inspired by and interoperates with the work from these projects:
 
-Implemented and verified with:
+- [shadcn/ui](https://ui.shadcn.com/docs) ([GitHub](https://github.com/shadcn-ui/ui))
+- [Tailwind CSS](https://tailwindcss.com/) ([GitHub](https://github.com/tailwindlabs/tailwindcss))
+- [tailwindcss-animate](https://github.com/jamiebuilds/tailwindcss-animate)
 
-```bash
-mix quality
-MIX_ENV=test mix coveralls.cobertura --raise
-mix extraordinary_ui.docs.build --output tmp/ci-docs --clean
-mix extraordinary_ui.site.build --output tmp/ci-site --clean
-cd sandbox/demo_app && mix format --check-formatted && mix test
-cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test
-```
+Thank you to the maintainers and contributors of these excellent projects.
 
-## GitHub Actions
+For third-party license details and links to upstream license texts, see:
 
-Continuous integration is configured in:
+- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)
 
-- `.github/workflows/ci.yml`
-- `.github/workflows/publish-site.yml`
+## Contributing
 
-Jobs included:
+Contributor setup, quality gates, testing, release workflow, and docs maintenance live in:
 
-- Root quality checks (`mix format --check-formatted`, `mix compile --warnings-as-errors`, `mix credo --strict`, static docs build)
-- Root unit tests with coverage gate and Cobertura export (`MIX_ENV=test mix coveralls.cobertura --raise`)
-- Sandbox Phoenix unit tests
-- Sandbox Playwright browser tests (with Chromium install and failure artifact upload)
-- Static developer site release deployment to GitHub Pages on `release.published`
-
-Coverage is summarized directly in the GitHub Actions job summary and stored as an artifact (`root-coverage`).
-
-### GitHub Pages Release Deployment
-
-GitHub Pages hosting is feasible and already wired for this repo. The publish workflow:
-
-- runs on GitHub release publish (`release.published`)
-- builds `dist/site` using `mix extraordinary_ui.site.build --output dist/site --clean`
-- deploys that artifact to GitHub Pages
-
-One-time repo setup:
-
-1. In GitHub repo settings, open **Pages**.
-2. Set **Source** to **GitHub Actions**.
-3. Publish a release to trigger deployment.
-
-If you prefer Cloudflare Pages or Vercel, point their build output to `dist/site` and run `mix extraordinary_ui.site.build --output dist/site --clean` in their build command.
-
-### Release Checklist
-
-1. Update version and changelog (`mix.exs`, `CHANGELOG.md`).
-2. Run full quality gates:
-
-```bash
-mix quality
-MIX_ENV=test mix coveralls.cobertura --raise
-cd sandbox/demo_app && mix format --check-formatted && mix test
-cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test
-```
-
-3. Publish package (manual today):
-
-```bash
-mix hex.publish
-mix hex.publish docs
-```
-
-4. Publish a GitHub release to trigger static site deployment to GitHub Pages.
-
-## Notes on Feasibility
-
-A small set of shadcn components rely on browser-first interaction stacks (Radix primitives, complex keyboard navigation, chart engines, or heavy client state). For those, Extraordinary UI provides either:
-
-- progressive LiveView hook behavior, or
-- a scaffold component with stable API + styling that can be integrated with your preferred JS library.
-
-This keeps the Elixir API coherent while avoiding brittle pseudo-ports of highly interactive React internals.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
 ## License
 

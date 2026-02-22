@@ -90,6 +90,8 @@ defmodule ExtraordinaryUI.MixProject do
         "assets",
         "mix.exs",
         "README.md",
+        "CONTRIBUTING.md",
+        "THIRD_PARTY_NOTICES.md",
         "CHANGELOG.md",
         "LICENSE",
         "PROGRESS.md"
@@ -100,7 +102,13 @@ defmodule ExtraordinaryUI.MixProject do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md", "PROGRESS.md", "CHANGELOG.md"],
+      extras: [
+        "README.md",
+        "CONTRIBUTING.md",
+        "THIRD_PARTY_NOTICES.md",
+        "PROGRESS.md",
+        "CHANGELOG.md"
+      ],
       groups_for_modules: [
         Core: [ExtraordinaryUI, ExtraordinaryUI.Classes, ExtraordinaryUI.Hooks],
         "Static Docs": [ExtraordinaryUI.Docs.Catalog, Mix.Tasks.ExtraordinaryUi.Docs.Build],
