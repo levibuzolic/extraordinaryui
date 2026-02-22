@@ -249,6 +249,32 @@ It also includes shadcn-style theme controls:
 - color palettes: `zinc`, `slate`, `stone`, `gray`, `neutral`
 - radius profiles: `maia`, `mira`, `nova`, `lyra`, `vega`
 
+## Developer/Marketing Static Site
+
+Build a top-level static site that includes the docs export under `/docs`:
+
+```bash
+mix extraordinary_ui.site.build --clean
+```
+
+Output:
+
+- `dist/site/index.html` (developer/marketing landing page)
+- `dist/site/docs/**` (full static component library export)
+- `dist/site/assets/site.css`
+
+Optional flags:
+
+```bash
+mix extraordinary_ui.site.build \
+  --output public \
+  --clean \
+  --github-url https://github.com/levi/extraordinaryui \
+  --hexdocs-url https://hexdocs.pm/extraordinary_ui
+```
+
+This is fully static HTML/CSS/JS and can be deployed to GitHub Pages, Cloudflare Pages, Vercel, Netlify, S3, or any static host.
+
 ## Local Sandbox App
 
 This repo includes a local Phoenix host app for integration testing:
@@ -361,6 +387,7 @@ Implemented and verified with:
 mix quality
 MIX_ENV=test mix coveralls.cobertura --raise
 mix extraordinary_ui.docs.build --output tmp/ci-docs --clean
+mix extraordinary_ui.site.build --output tmp/ci-site --clean
 cd sandbox/demo_app && mix format --check-formatted && mix test
 cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test
 ```
@@ -370,6 +397,7 @@ cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test
 Continuous integration is configured in:
 
 - `.github/workflows/ci.yml`
+- `.github/workflows/publish-site.yml`
 
 Jobs included:
 
@@ -377,8 +405,25 @@ Jobs included:
 - Root unit tests with coverage gate and Cobertura export (`MIX_ENV=test mix coveralls.cobertura --raise`)
 - Sandbox Phoenix unit tests
 - Sandbox Playwright browser tests (with Chromium install and failure artifact upload)
+- Static developer site release deployment to GitHub Pages on `release.published`
 
 Coverage is summarized directly in the GitHub Actions job summary and stored as an artifact (`root-coverage`).
+
+### GitHub Pages Release Deployment
+
+GitHub Pages hosting is feasible and already wired for this repo. The publish workflow:
+
+- runs on GitHub release publish (`release.published`)
+- builds `dist/site` using `mix extraordinary_ui.site.build --output dist/site --clean`
+- deploys that artifact to GitHub Pages
+
+One-time repo setup:
+
+1. In GitHub repo settings, open **Pages**.
+2. Set **Source** to **GitHub Actions**.
+3. Publish a release to trigger deployment.
+
+If you prefer Cloudflare Pages or Vercel, point their build output to `dist/site` and run `mix extraordinary_ui.site.build --output dist/site --clean` in their build command.
 
 ## Notes on Feasibility
 

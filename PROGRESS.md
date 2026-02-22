@@ -109,6 +109,14 @@ All validation checks currently pass.
   - `npm run test:browser:visual`
   - `npm run test:browser:visual:update`
 
+### Milestone 11: Static developer site + release publishing
+
+- Added `mix extraordinary_ui.site.build` to generate a static developer/marketing landing page and bundle static component docs under `dist/site/docs`.
+- Added test coverage for site build output and links in `test/extraordinary_ui/site/build_task_test.exs`.
+- Added CI validation step that builds the static developer site artifact during root quality checks.
+- Added GitHub Pages publish workflow (`.github/workflows/publish-site.yml`) triggered on `release.published` and manual dispatch.
+- Updated README with commands and one-time GitHub Pages setup steps, plus Cloudflare/Vercel fallback deployment guidance.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -122,3 +130,4 @@ All validation checks currently pass.
 - `c0a5e7d` - close overlay previews by default and add static docs interactions.
 - `6a9181a` - expand installer/docs test coverage and wire ExCoveralls coverage tooling.
 - `3ac6fa6` - add GitHub Actions CI for quality, coverage reporting, sandbox unit tests, and Playwright browser tests.
+- `e9e84bc` - add static developer site build task, tests, CI checks, and GitHub Pages release deployment workflow.
