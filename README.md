@@ -250,6 +250,8 @@ Contributor setup, quality gates, testing, release workflow, and docs maintenanc
 
 - [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
+Release publishing is automated via GitHub Actions for maintainers; see `CONTRIBUTING.md` for the one-time `HEX_API_KEY` secret setup.
+
 ## License
 
 MIT

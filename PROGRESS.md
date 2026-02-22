@@ -34,7 +34,6 @@ All validation checks currently pass (last run: February 22, 2026).
 ## Remaining Work
 
 - [ ] Publish Hex package and HexDocs for `extraordinary_ui`.
-- [ ] Add release automation for Hex publish (requires repository secrets and release gating decisions).
 - [ ] Implement `Context Menu` or formally document it as out-of-scope.
 - [ ] Deepen scaffold/progressive parity for `Calendar`, `Chart`, `Resizable`, `Sidebar`, and `Sonner`.
 - [ ] Expand browser tests for keyboard/focus accessibility behavior in progressive overlay/menu components.
@@ -129,7 +128,7 @@ All validation checks currently pass (last run: February 22, 2026).
 
 - Audited root and sandbox documentation against actual routes, workflows, and commands.
 - Replaced machine-specific absolute paths with repository-relative paths in docs.
-- Added explicit current-status and release-checklist guidance, including manual Hex publish status.
+- Added explicit current-status and release-checklist guidance, including Hex publish status and next steps.
 - Added remaining-work tracking so incomplete items are clearly visible.
 - Upgraded README component-coverage matrix to use emoji status markers and split compatibility into coverage/interactivity/limitations columns.
 - Fixed static component-page function docs rendering to parse markdown (headings/lists/code) instead of escaped plaintext blocks.
@@ -183,6 +182,13 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added per-example links back to the corresponding shadcn/ui docs and ensured shadcn mentions in marketing copy link to upstream docs.
 - Expanded site build test assertions to cover component examples, neutral style marker, and shadcn reference links.
 
+### Milestone 16: Automated Hex release publishing
+
+- Added GitHub Actions Hex publish workflow (`.github/workflows/publish-hex.yml`) triggered on `release.published` and manual dispatch.
+- Wired package and docs publication to `HEX_API_KEY` secret and added explicit failure messaging when the secret is missing.
+- Added `hex-publish` environment targeting in the workflow to support release gating via GitHub environment protection.
+- Updated maintainer release instructions in `CONTRIBUTING.md` with one-time secret setup and automated release flow.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -215,3 +221,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `e9634c4` - split user-facing README from contributor docs and add third-party notices.
 - `93b6ad4` - log documentation audience split and licensing notices.
 - `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
+- `(working tree)` - add automated Hex publish workflow, release secret setup docs, and progress tracking updates.

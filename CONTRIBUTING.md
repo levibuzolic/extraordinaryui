@@ -130,14 +130,28 @@ Use concise, scoped commit messages. Existing style examples:
 
 1. Update version and changelog (`mix.exs`, `CHANGELOG.md`).
 2. Run all quality gates above.
-3. Publish to Hex (currently manual):
+3. Confirm release secrets/environments are configured (one-time setup below).
+4. Publish GitHub release (triggers both `.github/workflows/publish-hex.yml` and `.github/workflows/publish-site.yml`).
+5. If needed, run `.github/workflows/publish-hex.yml` manually with `workflow_dispatch`.
+
+### One-Time Hex Publish Automation Setup
+
+1. Generate a Hex API key scoped for publishing:
+
+```bash
+mix hex.user key generate --key-name github-actions-publish --permission api:write
+```
+
+2. In GitHub repository settings, create secret `HEX_API_KEY`.
+3. (Recommended) Create environment `hex-publish` and attach `HEX_API_KEY` there.
+4. (Recommended) Add required reviewers to `hex-publish` environment for release gating.
+
+Manual fallback commands (if automation is unavailable):
 
 ```bash
 mix hex.publish
 mix hex.publish docs
 ```
-
-4. Publish GitHub release (triggers Pages deploy via `.github/workflows/publish-site.yml`).
 
 ## Need Help?
 
