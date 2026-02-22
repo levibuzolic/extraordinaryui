@@ -20,6 +20,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   use Mix.Task
 
   alias ExtraordinaryUI.Docs.Catalog
+  alias Phoenix.HTML
 
   @impl true
   def run(argv) do
@@ -45,8 +46,16 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
       theme_css = theme_css()
       sections = Catalog.sections()
+      entries = Enum.flat_map(sections, & &1.entries)
 
-      File.write!(Path.join(output_dir, "index.html"), page_html(sections, theme_css))
+      File.write!(Path.join(output_dir, "index.html"), overview_page_html(sections, theme_css))
+
+      Enum.each(entries, fn entry ->
+        output_path = Path.join(output_dir, entry.docs_path)
+        File.mkdir_p!(Path.dirname(output_path))
+        File.write!(output_path, component_page_html(entry, sections, theme_css))
+      end)
+
       File.write!(Path.join(assets_dir, "site.js"), site_js())
       File.write!(Path.join(assets_dir, "site.css"), site_css())
 
@@ -63,15 +72,114 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
     |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
   end
 
-  defp page_html(sections, theme_css) do
+  defp overview_page_html(sections, theme_css) do
+    content = """
+    <section class=\"mb-8\">
+      <h2 class=\"text-2xl font-semibold tracking-tight\">Component Library</h2>
+      <p class=\"text-muted-foreground mt-2 max-w-3xl text-sm\">
+        Static docs for Extraordinary UI components. Open any component for preview, HEEx usage,
+        generated attributes/slots docs, and a link to the original shadcn/ui reference.
+      </p>
+    </section>
+
+    #{overview_sections_html(sections)}
+    """
+
+    page_shell(
+      title: "Extraordinary UI Docs",
+      description: "Static component docs for Extraordinary UI",
+      body_content: content,
+      theme_css: theme_css,
+      asset_prefix: ".",
+      sidebar: sidebar_links(sections, ".", nil)
+    )
+  end
+
+  defp component_page_html(entry, sections, theme_css) do
+    escaped_template = escape(entry.template_heex)
+
+    content = """
+    <div class=\"mb-6 flex flex-wrap items-center justify-between gap-3\">
+      <a href=\"../index.html##{section_id_for_entry(sections, entry.id)}\" class=\"inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent\">← Back to index</a>
+      <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent\">Original shadcn/ui docs ↗</a>
+    </div>
+
+    <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
+      <header class=\"border-border/70 border-b px-5 py-4\">
+        <p class=\"text-muted-foreground text-xs\">#{entry.module_name}</p>
+        <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}/1</code></h2>
+        <p class=\"text-muted-foreground mt-3 text-sm\">#{escape(entry.docs)}</p>
+      </header>
+      <div class=\"space-y-4 p-5\">
+        <div>
+          <h3 class=\"text-sm font-semibold\">Preview</h3>
+          <div class=\"mt-2 rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
+        </div>
+
+        <div>
+          <div class=\"flex items-center justify-between gap-2\">
+            <h3 class=\"text-sm font-semibold\">Usage (HEEx)</h3>
+            <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
+          </div>
+          <pre class=\"mt-2 max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
+      <header class=\"border-border/70 border-b px-5 py-3\">
+        <h3 class=\"text-sm font-semibold\">Attributes (Generated from `attr` definitions)</h3>
+      </header>
+      <div class=\"p-5\">
+        #{attributes_table_html(entry.attributes)}
+      </div>
+    </section>
+
+    <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
+      <header class=\"border-border/70 border-b px-5 py-3\">
+        <h3 class=\"text-sm font-semibold\">Slots (Generated from `slot` definitions)</h3>
+      </header>
+      <div class=\"p-5\">
+        #{slots_table_html(entry.slots)}
+      </div>
+    </section>
+
+    <section class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
+      <header class=\"border-border/70 border-b px-5 py-3\">
+        <h3 class=\"text-sm font-semibold\">Function Docs</h3>
+      </header>
+      <div class=\"space-y-3 p-5 text-sm\">
+        #{docs_full_html(entry.docs_full)}
+      </div>
+    </section>
+    """
+
+    page_shell(
+      title: "#{entry.module_name}.#{entry.title}/1 · Extraordinary UI",
+      description: entry.docs,
+      body_content: content,
+      theme_css: theme_css,
+      asset_prefix: "..",
+      sidebar: sidebar_links(sections, "..", entry.id)
+    )
+  end
+
+  defp page_shell(opts) do
+    title = opts[:title]
+    description = opts[:description]
+    body_content = opts[:body_content]
+    theme_css = opts[:theme_css]
+    asset_prefix = opts[:asset_prefix]
+    sidebar = opts[:sidebar]
+
     """
     <!doctype html>
     <html lang=\"en\">
       <head>
         <meta charset=\"utf-8\" />
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-        <title>Extraordinary UI Docs</title>
-        <meta name=\"description\" content=\"Static component docs for Extraordinary UI\" />
+        <title>#{escape(title)}</title>
+        <meta name=\"description\" content=\"#{escape(description)}\" />
         <script src=\"https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4\"></script>
         <style type=\"text/tailwindcss\">
     #{theme_css}
@@ -82,10 +190,10 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       }
     }
         </style>
-        <link rel=\"stylesheet\" href=\"./assets/site.css\" />
+        <link rel=\"stylesheet\" href=\"#{asset_prefix}/assets/site.css\" />
       </head>
       <body class=\"bg-background text-foreground\">
-        <div class=\"mx-auto grid min-h-screen max-w-[1800px] grid-cols-1 lg:grid-cols-[290px_1fr]\">
+        <div class=\"mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_1fr]\">
           <aside class=\"border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6\">
             <div class=\"mb-6\">
               <h1 class=\"text-xl font-semibold\">Extraordinary UI</h1>
@@ -95,7 +203,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
             #{theme_controls_html()}
 
             <nav class=\"space-y-4\" aria-label=\"Component sections\">
-              #{sidebar_links(sections)}
+              #{sidebar}
             </nav>
 
             <div class=\"mt-6 text-xs text-muted-foreground\">
@@ -104,38 +212,46 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
           </aside>
 
           <main class=\"px-5 py-6 lg:px-8\">
-            <section class=\"mb-8\">
-              <h2 class=\"text-2xl font-semibold tracking-tight\">Component Library</h2>
-              <p class=\"text-muted-foreground mt-2 max-w-3xl text-sm\">
-                This page is a static export of all public component functions in Extraordinary UI.
-                It can be hosted on any static platform without a Phoenix server.
-              </p>
-            </section>
-
-            #{sections_html(sections)}
+            #{body_content}
           </main>
         </div>
 
-        <script src=\"./assets/site.js\"></script>
+        <script src=\"#{asset_prefix}/assets/site.js\"></script>
       </body>
     </html>
     """
   end
 
-  defp sidebar_links(sections) do
-    Enum.map_join(sections, "\n", fn section ->
-      entries =
-        Enum.map_join(section.entries, "\n", fn entry ->
-          "<li><a class=\"text-muted-foreground hover:text-foreground text-sm\" href=\"##{entry.id}\">#{entry.title}</a></li>"
-        end)
+  defp sidebar_links(sections, root_prefix, active_entry_id) do
+    index_href = "#{root_prefix}/index.html"
 
-      """
-      <div>
-        <a href=\"##{section.id}\" class=\"text-sm font-semibold\">#{section.title}</a>
-        <ul class=\"mt-2 space-y-1\">#{entries}</ul>
-      </div>
-      """
-    end)
+    section_blocks =
+      Enum.map_join(sections, "\n", fn section ->
+        entries =
+          Enum.map_join(section.entries, "\n", fn entry ->
+            active = active_entry_class(entry.id, active_entry_id)
+
+            """
+            <li>
+              <a class=\"#{active} text-sm\" href=\"#{root_prefix}/#{entry.docs_path}\">#{entry.title}</a>
+            </li>
+            """
+          end)
+
+        """
+        <div>
+          <a href=\"#{index_href}##{section.id}\" class=\"text-sm font-semibold\">#{section.title}</a>
+          <ul class=\"mt-2 space-y-1\">#{entries}</ul>
+        </div>
+        """
+      end)
+
+    """
+    <div>
+      <a href=\"#{index_href}\" class=\"text-sm font-semibold\">Overview</a>
+    </div>
+    #{section_blocks}
+    """
   end
 
   defp theme_controls_html do
@@ -176,46 +292,169 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
     end)
   end
 
-  defp sections_html(sections) do
+  defp overview_sections_html(sections) do
     Enum.map_join(sections, "\n", fn section ->
-      entries = Enum.map_join(section.entries, "\n", &entry_html/1)
+      entries = Enum.map_join(section.entries, "\n", &overview_entry_html/1)
 
       """
       <section id=\"#{section.id}\" class=\"mb-12\">
         <h3 class=\"mb-4 text-xl font-semibold\">#{section.title}</h3>
-        <div class=\"grid gap-5 xl:grid-cols-2\">#{entries}</div>
+        <div class=\"grid gap-4 xl:grid-cols-2 2xl:grid-cols-3\">#{entries}</div>
       </section>
       """
     end)
   end
 
-  defp entry_html(entry) do
-    escaped_docs = entry.docs |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
-
-    escaped_template =
-      entry.template_heex |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
+  defp overview_entry_html(entry) do
+    escaped_docs = escape(entry.docs)
 
     """
     <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-4 py-3\">
-        <div class=\"flex flex-wrap items-center justify-between gap-2\">
+        <div class=\"flex flex-wrap items-start justify-between gap-2\">
           <h4 class=\"font-medium\"><code>#{entry.module_name}.#{entry.title}/1</code></h4>
-          <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
+          <a href=\"./#{entry.docs_path}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Open docs</a>
         </div>
         <p class=\"text-muted-foreground mt-2 text-sm\">#{escaped_docs}</p>
       </header>
 
       <div class=\"p-4\">
         <div class=\"rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
+        <div class=\"mt-3 flex flex-wrap items-center justify-between gap-2 text-xs\">
+          <span class=\"text-muted-foreground\">attrs: <span class=\"font-medium text-foreground\">#{length(entry.attributes)}</span> · slots: <span class=\"font-medium text-foreground\">#{length(entry.slots)}</span></span>
+          <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-muted-foreground hover:text-foreground underline underline-offset-4\">shadcn reference ↗</a>
+        </div>
       </div>
-
-      <details class=\"border-border/70 border-t\">
-        <summary class=\"cursor-pointer list-none px-4 py-3 text-sm font-medium\">Phoenix template (HEEx)</summary>
-        <pre class=\"max-h-72 overflow-auto border-t bg-muted/30 p-4 text-xs\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
-      </details>
     </article>
     """
   end
+
+  defp docs_full_html(doc) do
+    doc
+    |> String.split("\n\n")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
+    |> Enum.map_join("\n", fn paragraph ->
+      "<p class=\"text-muted-foreground leading-6\">#{escape(paragraph)}</p>"
+    end)
+  end
+
+  defp attributes_table_html([]) do
+    "<p class=\"text-sm text-muted-foreground\">No attributes declared.</p>"
+  end
+
+  defp attributes_table_html(attrs) do
+    rows =
+      Enum.map_join(attrs, "\n", fn attr ->
+        values =
+          if attr.values == [] do
+            "—"
+          else
+            Enum.map_join(attr.values, ", ", &"<code>#{escape(inspect(&1))}</code>")
+          end
+
+        includes =
+          if attr.includes == [] do
+            "—"
+          else
+            Enum.map_join(attr.includes, ", ", &"<code>#{escape(&1)}</code>")
+          end
+
+        default =
+          if is_nil(attr.default) do
+            "—"
+          else
+            "<code>#{escape(inspect(attr.default))}</code>"
+          end
+
+        """
+        <tr class=\"border-border/60 border-t align-top\">
+          <td class=\"px-3 py-2\"><code>#{attr.name}</code></td>
+          <td class=\"px-3 py-2\"><code>#{escape(attr.type)}</code></td>
+          <td class=\"px-3 py-2\">#{if(attr.required, do: "yes", else: "no")}</td>
+          <td class=\"px-3 py-2\">#{default}</td>
+          <td class=\"px-3 py-2\">#{values}</td>
+          <td class=\"px-3 py-2\">#{includes}</td>
+        </tr>
+        """
+      end)
+
+    """
+    <div class=\"overflow-auto rounded-md border\">
+      <table class=\"w-full min-w-[680px] text-left text-xs\">
+        <thead class=\"bg-muted/40\">
+          <tr>
+            <th class=\"px-3 py-2 font-medium\">Name</th>
+            <th class=\"px-3 py-2 font-medium\">Type</th>
+            <th class=\"px-3 py-2 font-medium\">Required</th>
+            <th class=\"px-3 py-2 font-medium\">Default</th>
+            <th class=\"px-3 py-2 font-medium\">Values</th>
+            <th class=\"px-3 py-2 font-medium\">Global Includes</th>
+          </tr>
+        </thead>
+        <tbody>#{rows}</tbody>
+      </table>
+    </div>
+    """
+  end
+
+  defp slots_table_html([]) do
+    "<p class=\"text-sm text-muted-foreground\">No slots declared.</p>"
+  end
+
+  defp slots_table_html(slots) do
+    rows =
+      Enum.map_join(slots, "\n", fn slot ->
+        slot_attrs = slot_attrs_summary(slot.attrs)
+
+        """
+        <tr class=\"border-border/60 border-t align-top\">
+          <td class=\"px-3 py-2\"><code>#{slot.name}</code></td>
+          <td class=\"px-3 py-2\">#{if(slot.required, do: "yes", else: "no")}</td>
+          <td class=\"px-3 py-2\">#{slot_attrs}</td>
+        </tr>
+        """
+      end)
+
+    """
+    <div class=\"overflow-auto rounded-md border\">
+      <table class=\"w-full min-w-[560px] text-left text-xs\">
+        <thead class=\"bg-muted/40\">
+          <tr>
+            <th class=\"px-3 py-2 font-medium\">Slot</th>
+            <th class=\"px-3 py-2 font-medium\">Required</th>
+            <th class=\"px-3 py-2 font-medium\">Slot Attributes</th>
+          </tr>
+        </thead>
+        <tbody>#{rows}</tbody>
+      </table>
+    </div>
+    """
+  end
+
+  defp section_id_for_entry(sections, entry_id) do
+    Enum.find_value(sections, "actions", fn section ->
+      if Enum.any?(section.entries, &(&1.id == entry_id)), do: section.id
+    end)
+  end
+
+  defp active_entry_class(entry_id, active_entry_id) do
+    if entry_id == active_entry_id do
+      "text-foreground font-medium"
+    else
+      "text-muted-foreground hover:text-foreground"
+    end
+  end
+
+  defp slot_attrs_summary([]), do: "—"
+
+  defp slot_attrs_summary(attrs) do
+    Enum.map_join(attrs, "<br/>", fn attr ->
+      "<code>#{attr.name}</code> <span class=\"text-muted-foreground\">(#{escape(attr.type)})</span>"
+    end)
+  end
+
+  defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 
   defp site_js do
     """

@@ -18,6 +18,29 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
+  @shadcn_base "https://ui.shadcn.com/docs/components"
+  @grouped_shadcn_slugs %{
+    "alert" => "alert",
+    "avatar" => "avatar",
+    "breadcrumb" => "breadcrumb",
+    "button" => "button",
+    "card" => "card",
+    "input" => "input",
+    "kbd" => "kbd",
+    "pagination" => "pagination",
+    "table" => "table",
+    "toggle" => "toggle"
+  }
+  @shadcn_slug_overrides %{
+    code_block: nil,
+    empty_state: "empty",
+    field: "form",
+    input_otp: "input-otp",
+    item: "command",
+    native_select: "select",
+    sonner_toaster: "sonner"
+  }
+
   @sections [
     %{id: "actions", title: "Actions", module: Actions},
     %{id: "forms", title: "Forms", module: Forms},
@@ -77,16 +100,26 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
   defp entry(module, function) do
     assigns = sample_assigns(module, function)
+    doc = function_doc(module, function)
+    id = "#{module_slug(module)}-#{function}"
+    slug = shadcn_slug(function)
 
     %{
-      id: "#{module_slug(module)}-#{function}",
+      id: id,
       title: Atom.to_string(function),
       function: function,
       module: module,
       module_name: module |> Module.split() |> List.last(),
-      docs: first_paragraph(module, function),
+      docs: first_paragraph(doc),
+      docs_full: doc,
       preview_html: render_component(module, function, assigns),
-      template_heex: render_template(function, assigns)
+      template_heex: render_template(function, assigns),
+      attributes: component_attributes(module, function),
+      slots: component_slots(module, function),
+      source_line: component_line(module, function),
+      shadcn_slug: slug,
+      shadcn_url: shadcn_url(slug),
+      docs_path: "components/#{id}.html"
     }
   end
 
@@ -98,21 +131,96 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     |> String.replace("_", "-")
   end
 
-  defp first_paragraph(module, function) do
+  defp function_doc(module, function) do
     with {:docs_v1, _, _, _, _, _, docs} <- Code.fetch_docs(module),
-         {{:function, ^function, 1}, _, _, %{"en" => doc}, _} <-
-           Enum.find(docs, fn
-             {{:function, name, 1}, _, _, %{"en" => _}, _} -> name == function
-             _ -> false
-           end) do
-      doc
-      |> String.split("\n\n")
-      |> List.first()
-      |> String.trim()
+         {{:function, ^function, 1}, _, _, %{"en" => doc}, _}
+         when is_binary(doc) <- Enum.find(docs, &doc_entry?(&1, function)) do
+      String.trim(doc)
     else
       _ -> "No documentation available."
     end
   end
+
+  defp first_paragraph(doc) when is_binary(doc) do
+    case doc |> String.split("\n\n") |> List.first() |> String.trim() do
+      "" -> "No documentation available."
+      paragraph -> paragraph
+    end
+  end
+
+  defp doc_entry?({{:function, name, 1}, _, _, %{"en" => _}, _}, function), do: name == function
+  defp doc_entry?(_, _function), do: false
+
+  defp component_spec(module, function) do
+    module
+    |> Kernel.apply(:__components__, [])
+    |> Map.get(function, %{attrs: [], slots: [], line: nil})
+  end
+
+  defp component_line(module, function), do: component_spec(module, function).line
+
+  defp component_attributes(module, function) do
+    module
+    |> component_spec(function)
+    |> Map.get(:attrs, [])
+    |> Enum.map(&normalize_attribute/1)
+    |> Enum.sort_by(& &1.name)
+  end
+
+  defp component_slots(module, function) do
+    module
+    |> component_spec(function)
+    |> Map.get(:slots, [])
+    |> Enum.map(&normalize_slot/1)
+    |> Enum.sort_by(& &1.name)
+  end
+
+  defp normalize_slot(slot) do
+    %{
+      name: Atom.to_string(slot.name),
+      required: slot.required,
+      attrs: slot.attrs |> Enum.map(&normalize_attribute/1) |> Enum.sort_by(& &1.name)
+    }
+  end
+
+  defp normalize_attribute(attr) do
+    opts = Map.new(attr.opts)
+    values = opts |> Map.get(:values, []) |> List.wrap()
+
+    %{
+      name: Atom.to_string(attr.name),
+      type: inspect(attr.type),
+      required: attr.required,
+      default: Map.get(opts, :default),
+      values: values,
+      includes: opts |> Map.get(:include, []) |> List.wrap()
+    }
+  end
+
+  defp shadcn_slug(function) do
+    case Map.fetch(@shadcn_slug_overrides, function) do
+      {:ok, slug} ->
+        slug
+
+      :error ->
+        function
+        |> Atom.to_string()
+        |> slug_from_name()
+    end
+  end
+
+  defp slug_from_name(name) do
+    case String.split(name, "_", parts: 2) do
+      [prefix, _rest] ->
+        Map.get(@grouped_shadcn_slugs, prefix, String.replace(name, "_", "-"))
+
+      _ ->
+        String.replace(name, "_", "-")
+    end
+  end
+
+  defp shadcn_url(nil), do: @shadcn_base
+  defp shadcn_url(slug), do: "#{@shadcn_base}/#{slug}"
 
   defp render_component(module, function, assigns) do
     assigns = Map.put_new(assigns, :__changed__, %{})

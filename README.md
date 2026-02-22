@@ -223,6 +223,7 @@ mix extraordinary_ui.docs.build
 This writes a deployable site to:
 
 - `dist/docs/index.html`
+- `dist/docs/components/*.html`
 - `dist/docs/assets/site.css`
 - `dist/docs/assets/site.js`
 
@@ -234,14 +235,19 @@ mix extraordinary_ui.docs.build --output public/docs --clean
 
 The output can be hosted on any static platform (GitHub Pages, Netlify, S3, Cloudflare Pages, etc).
 
-The generated site includes client-side interactivity for preview behaviors (dialogs, drawers, popovers, dropdowns, comboboxes, and carousel controls) without Phoenix running.
+The generated site includes:
+
+- an overview page plus one page per component (`dist/docs/components/...`)
+- client-side interactivity for preview behaviors (dialogs, drawers, popovers, dropdowns, comboboxes, and carousel controls) without Phoenix running
+- links to the corresponding shadcn/ui reference docs for each component
+- generated attributes and slots docs derived from component `attr/slot` definitions (`__components__/0`)
+- copyable HEEx usage snippets generated from sample assigns
+
 It also includes shadcn-style theme controls:
 
 - mode: `light` / `dark` / `auto`
 - color palettes: `zinc`, `slate`, `stone`, `gray`, `neutral`
 - radius profiles: `maia`, `mira`, `nova`, `lyra`, `vega`
-
-Each component card now exposes a copyable Phoenix snippet (`Copy HEEx`) generated from sample assigns, so docs can be pasted directly into `.heex` templates.
 
 ## Local Sandbox App
 

@@ -78,5 +78,6 @@ mix extraordinary_ui.docs.build --output dist/docs --clean
 Output:
 
 - `dist/docs/index.html`
+- `dist/docs/components/*.html`
 - `dist/docs/assets/site.css`
 - `dist/docs/assets/site.js`

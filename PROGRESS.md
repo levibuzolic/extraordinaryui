@@ -93,6 +93,13 @@ All validation checks currently pass.
 - Rewrote nested examples to prefer Extraordinary UI components (`.button`, `.input`, `.table_*`, `.breadcrumb_*`, `.pagination_*`, etc.) over raw HTML where equivalent components exist.
 - Kept plain HTML only where no suitable component abstraction exists.
 
+### Milestone 9: Component-detail docs pages
+
+- Upgraded static docs export to generate one page per component under `dist/docs/components/*.html`.
+- Added shadcn/ui reference links per component entry with derived URL mapping and safe fallbacks.
+- Added generated attributes and slots docs sourced from Phoenix component metadata (`__components__/0`) so docs stay aligned with `attr`/`slot` definitions.
+- Kept the index page as an overview with links into each detailed component page.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.

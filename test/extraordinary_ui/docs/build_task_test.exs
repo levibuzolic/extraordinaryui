@@ -13,18 +13,28 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     Mix.Task.run("extraordinary_ui.docs.build", ["--output", @output, "--clean"])
 
     assert File.exists?(Path.join(@output, "index.html"))
+    assert File.exists?(Path.join(@output, "components/actions-button.html"))
     assert File.exists?(Path.join(@output, "assets/site.css"))
     assert File.exists?(Path.join(@output, "assets/site.js"))
 
     index = File.read!(Path.join(@output, "index.html"))
+    component_page = File.read!(Path.join(@output, "components/actions-button.html"))
 
     assert index =~ "Extraordinary UI"
     assert index =~ "Component Library"
     assert index =~ "Actions.button/1"
-    assert index =~ "Phoenix template (HEEx)"
+    assert index =~ "Open docs"
+    assert index =~ "./components/actions-button.html"
     assert index =~ "data-theme-mode"
     assert index =~ "theme-color"
     assert index =~ "theme-radius"
+
+    assert component_page =~ "Original shadcn/ui docs"
+    assert component_page =~ "Usage (HEEx)"
+    assert component_page =~ "Attributes (Generated from `attr` definitions)"
+    assert component_page =~ "Slots (Generated from `slot` definitions)"
+    assert component_page =~ "https://ui.shadcn.com/docs/components/button"
+    assert component_page =~ "<code>variant</code>"
 
     site_js = File.read!(Path.join(@output, "assets/site.js"))
     assert site_js =~ "themedTokenKeys"

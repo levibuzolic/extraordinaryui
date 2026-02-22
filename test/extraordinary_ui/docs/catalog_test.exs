@@ -41,7 +41,29 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
       Enum.each(section.entries, fn entry ->
         refute entry.preview_html =~ "Render error"
         assert entry.template_heex =~ "<."
+        assert is_list(entry.attributes)
+        assert is_list(entry.slots)
+        assert entry.docs_path =~ "components/"
+        assert entry.shadcn_url =~ "https://ui.shadcn.com/docs/components"
       end)
     end)
+  end
+
+  test "component metadata and shadcn reference are generated from definitions" do
+    button_entry =
+      Catalog.sections()
+      |> Enum.flat_map(& &1.entries)
+      |> Enum.find(fn entry ->
+        entry.module == ExtraordinaryUI.Components.Actions and entry.function == :button
+      end)
+
+    assert button_entry
+    assert button_entry.shadcn_slug == "button"
+    assert button_entry.shadcn_url == "https://ui.shadcn.com/docs/components/button"
+
+    attribute_names = Enum.map(button_entry.attributes, & &1.name)
+    assert "variant" in attribute_names
+    assert "size" in attribute_names
+    assert "inner_block" in Enum.map(button_entry.slots, & &1.name)
   end
 end
