@@ -27,6 +27,8 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert index =~ "Open docs"
     assert index =~ "./components/actions-button.html"
     assert index =~ "data-copy-template="
+    assert index =~ "Phoenix template (HEEx)"
+    assert index =~ ~s(id="code-actions-button")
     assert index =~ "data-theme-mode"
     assert index =~ "theme-color"
     assert index =~ "theme-radius"

@@ -335,7 +335,10 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
       <div class=\"p-4\">
         <div class=\"rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
-        <code id=\"code-#{entry.id}\" hidden>#{escaped_template}</code>
+        <div class=\"mt-3\">
+          <h5 class=\"text-xs font-semibold\">Phoenix template (HEEx)</h5>
+          <pre class=\"mt-2 max-h-56 overflow-auto rounded-md border bg-muted/30 p-3 text-xs\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
+        </div>
         <div class=\"mt-3 flex flex-wrap items-center justify-between gap-2 text-xs\">
           <span class=\"text-muted-foreground\">attrs: <span class=\"font-medium text-foreground\">#{length(entry.attributes)}</span> · slots: <span class=\"font-medium text-foreground\">#{length(entry.slots)}</span></span>
           <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-muted-foreground hover:text-foreground underline underline-offset-4\">shadcn reference ↗</a>

@@ -135,6 +135,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added inline-backtick rendering for non-markdown docs text (e.g., summaries/headings) using styled `<code>` spans across static docs pages.
 - Added consistent sidebar active-state treatment in static docs (`Overview` on index, current component on detail pages) with `aria-current="page"` and clear active styling.
 - Added `Copy HEEx` actions to overview cards on the root static docs page so snippets can be copied without opening per-component pages.
+- Added always-visible HEEx snippet code boxes to overview cards (no expand/collapse toggle required) while retaining quick copy actions.
 
 ## Commit Log
 
@@ -156,3 +157,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `7313113` - render inline backtick segments as styled code spans throughout static docs shell text.
 - `eaf9eca` - add consistent active indicator for sidebar Overview and current component links in static docs.
 - `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
+- `pending` - make overview-card HEEx snippets always expanded in root static docs.
