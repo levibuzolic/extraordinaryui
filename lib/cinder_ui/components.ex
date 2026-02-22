@@ -13,6 +13,7 @@ defmodule CinderUI.Components do
       import CinderUI.Components.Layout
       import CinderUI.Components.Navigation
       import CinderUI.Components.Overlay
+      import CinderUI.Icons
     end
   end
 end

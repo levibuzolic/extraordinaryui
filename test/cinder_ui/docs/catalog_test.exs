@@ -7,6 +7,7 @@ defmodule CinderUI.Docs.CatalogTest do
     CinderUI.Components.Actions,
     CinderUI.Components.Forms,
     CinderUI.Components.Layout,
+    CinderUI.Icons,
     CinderUI.Components.Feedback,
     CinderUI.Components.DataDisplay,
     CinderUI.Components.Navigation,
@@ -130,6 +131,19 @@ defmodule CinderUI.Docs.CatalogTest do
     assert avatar_entry.preview_html =~ "data:image/svg+xml;base64,"
     assert avatar_group_entry.preview_html =~ "data:image/svg+xml;base64,"
     assert avatar_group_entry.template_heex =~ "<.avatar_group_count>"
+  end
+
+  test "icons section includes lucide wrapper entry" do
+    icon_entry =
+      Catalog.sections()
+      |> Enum.flat_map(& &1.entries)
+      |> Enum.find(fn entry ->
+        entry.module == CinderUI.Icons and entry.function == :icon
+      end)
+
+    assert icon_entry
+    assert icon_entry.template_heex =~ "<.icon"
+    assert icon_entry.preview_html =~ "<svg"
   end
 
   defp find_entry(entries, module, function) do

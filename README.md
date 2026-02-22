@@ -11,7 +11,8 @@ Cinder UI is a Hex-oriented component library that ports shadcn/ui design patter
 ```elixir
 def deps do
   [
-    {:cinder_ui, "~> 0.1.0"}
+    {:cinder_ui, "~> 0.1.0"},
+    {:lucide_icons, "~> 2.0"} # optional but recommended for <.icon /> and icon-based primitives
   ]
 end
 ```
@@ -77,6 +78,23 @@ You can also selectively import modules:
 import CinderUI.Components.Actions
 import CinderUI.Components.Forms
 ```
+
+## Icons (Optional, Recommended)
+
+`CinderUI.Icons.icon/1` dispatches to [`lucide_icons`](https://hex.pm/packages/lucide_icons).
+
+- No sync task is needed.
+- Cinder UI reads `lucide_icons.icon_names/0` and caches names automatically.
+- Both kebab-case and snake_case icon names are supported.
+
+Example:
+
+```heex
+<.icon name="chevron-down" class="size-4" />
+<.icon name="loader_circle" class="size-4 animate-spin" />
+```
+
+If `lucide_icons` is missing and `<.icon />` is used, Cinder UI raises a descriptive error with install instructions.
 
 ## Theming and Style Overrides
 
@@ -147,6 +165,7 @@ Legend:
 | Input Group | ✅ Full | Server-rendered | - |
 | Input OTP | ✅ Full | Server-rendered | - |
 | Input | ✅ Full | Server-rendered | - |
+| Icons (`CinderUI.Icons.icon/1`) | ✅ Full | Server-rendered | Requires optional `lucide_icons` dependency |
 | Item | ✅ Full | Server-rendered | - |
 | Kbd | ✅ Full | Server-rendered | - |
 | Label | ✅ Full | Server-rendered | - |
@@ -237,6 +256,8 @@ Cinder UI is deeply inspired by and interoperates with the work from these proje
 - [shadcn/ui](https://ui.shadcn.com/docs) ([GitHub](https://github.com/shadcn-ui/ui))
 - [Tailwind CSS](https://tailwindcss.com/) ([GitHub](https://github.com/tailwindlabs/tailwindcss))
 - [tailwindcss-animate](https://github.com/jamiebuilds/tailwindcss-animate)
+- [lucide_icons](https://hex.pm/packages/lucide_icons) ([GitHub](https://github.com/zoedsoupe/lucide_icons))
+- [Lucide Icons](https://lucide.dev/icons/)
 
 Thank you to the maintainers and contributors of these excellent projects.
 

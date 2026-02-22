@@ -95,21 +95,12 @@ defmodule CinderUI.Components.Actions do
       class={classes(@classes)}
       {@rest}
     >
-      <svg
+      <CinderUI.Icons.icon
         :if={@loading}
+        name="loader-circle"
         class="size-4 animate-spin"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
         aria-hidden="true"
-      >
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v4l3-3-3-3v4a10 10 0 00-10 10h2z"
-        />
-      </svg>
+      />
       {render_slot(@inner_block)}
     </.dynamic_tag>
     """

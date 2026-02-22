@@ -25,11 +25,12 @@
 - `mix format`
 - `mix quality`
 - `MIX_ENV=test mix coveralls.cobertura --raise`
-- `mix cinder_ui.site.build --output tmp/verify-site --clean`
+- `mix cinder_ui.docs.build --output tmp/ci-docs --clean`
+- `mix cinder_ui.site.build --output tmp/ci-site --clean`
 - `cd sandbox/demo_app && mix format --check-formatted && mix test`
 - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
-All validation checks currently pass (last run: February 22, 2026).
+All validation checks currently pass (last run: February 22, 2026, including Lucide icon integration and updated visual baselines).
 
 ## Remaining Work
 
@@ -208,6 +209,20 @@ All validation checks currently pass (last run: February 22, 2026).
 - Made static docs overview card titles link directly to each component detail docs page.
 - Kept component example icon markup aligned with the existing SVG-based approach in docs/site previews.
 
+### Milestone 19: Optional Lucide icon integration
+
+- Added `CinderUI.Icons.icon/1` as an optional `lucide_icons` adapter with:
+  - descriptive missing-dependency errors
+  - unknown-icon suggestions
+  - kebab-case and snake_case name support
+  - cached icon-name lookup sourced from `lucide_icons.icon_names/0` (no sync task needed)
+- Added optional root dependency metadata for `lucide_icons` and included `CinderUI.Icons` in generated docs module grouping.
+- Migrated internal icon usage from inline SVG/Heroicons patterns to `CinderUI.Icons.icon/1` where appropriate (`Actions`, `Forms`, `Feedback`, docs/site samples, sandbox components).
+- Added an `Icons` section in static docs catalog and corresponding catalog/unit tests.
+- Added sandbox `lucide_icons` dependency and removed stale Heroicons dependency + vendor script.
+- Updated README/CONTRIBUTING/third-party notices for the optional icon backend and licensing attribution.
+- Updated Playwright visual baselines to include the new `Icons.icon` component card.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -242,3 +257,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `93b6ad4` - log documentation audience split and licensing notices.
 - `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
 - `(working tree)` - add automated Hex publish workflow, release secret setup docs, and progress tracking updates.
+- `(working tree)` - add optional `lucide_icons` integration via `CinderUI.Icons`, migrate examples/sandbox icons, and update docs/tests/licenses.

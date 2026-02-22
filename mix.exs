@@ -54,6 +54,7 @@ defmodule CinderUI.MixProject do
       {:phoenix, "~> 1.7 or ~> 1.8"},
       {:phoenix_live_view, "~> 1.0"},
       {:earmark, "~> 1.4", runtime: false},
+      {:lucide_icons, "~> 2.0", optional: true},
       {:phoenix_storybook, "~> 0.9.3", optional: true},
       {:jason, "~> 1.4", optional: true},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
@@ -110,7 +111,7 @@ defmodule CinderUI.MixProject do
         "CHANGELOG.md"
       ],
       groups_for_modules: [
-        Core: [CinderUI, CinderUI.Classes, CinderUI.Hooks],
+        Core: [CinderUI, CinderUI.Classes, CinderUI.Hooks, CinderUI.Icons],
         "Static Docs": [CinderUI.Docs.Catalog, Mix.Tasks.CinderUi.Docs.Build],
         Components: [
           CinderUI.Components,

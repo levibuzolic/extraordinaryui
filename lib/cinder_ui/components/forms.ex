@@ -326,9 +326,7 @@ defmodule CinderUI.Components.Forms do
         aria-hidden="true"
         class="text-muted-foreground pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 opacity-50 select-none"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+        <CinderUI.Icons.icon name="chevron-down" class="size-4" aria-hidden="true" />
       </span>
     </div>
     """

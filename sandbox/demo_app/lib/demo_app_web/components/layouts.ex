@@ -97,7 +97,7 @@ defmodule DemoAppWeb.Layouts do
         hidden
       >
         {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 size-3 motion-safe:animate-spin" />
+        <.icon name="loader-circle" class="ml-1 size-3 motion-safe:animate-spin" />
       </.flash>
 
       <.flash
@@ -109,7 +109,7 @@ defmodule DemoAppWeb.Layouts do
         hidden
       >
         {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 size-3 motion-safe:animate-spin" />
+        <.icon name="loader-circle" class="ml-1 size-3 motion-safe:animate-spin" />
       </.flash>
     </div>
     """
@@ -130,7 +130,7 @@ defmodule DemoAppWeb.Layouts do
         phx-click={JS.dispatch("phx:set-theme")}
         data-phx-theme="system"
       >
-        <.icon name="hero-computer-desktop-micro" class="size-4 opacity-75 hover:opacity-100" />
+        <.icon name="monitor" class="size-4 opacity-75 hover:opacity-100" />
       </button>
 
       <button
@@ -138,7 +138,7 @@ defmodule DemoAppWeb.Layouts do
         phx-click={JS.dispatch("phx:set-theme")}
         data-phx-theme="light"
       >
-        <.icon name="hero-sun-micro" class="size-4 opacity-75 hover:opacity-100" />
+        <.icon name="sun" class="size-4 opacity-75 hover:opacity-100" />
       </button>
 
       <button
@@ -146,7 +146,7 @@ defmodule DemoAppWeb.Layouts do
         phx-click={JS.dispatch("phx:set-theme")}
         data-phx-theme="dark"
       >
-        <.icon name="hero-moon-micro" class="size-4 opacity-75 hover:opacity-100" />
+        <.icon name="moon" class="size-4 opacity-75 hover:opacity-100" />
       </button>
     </div>
     """

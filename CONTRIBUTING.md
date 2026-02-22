@@ -23,6 +23,11 @@ mix deps.get
 cd sandbox/demo_app && mix deps.get && npm ci
 ```
 
+Notes:
+
+- Root package includes `lucide_icons` as an optional dependency for `CinderUI.Icons.icon/1` and icon-backed component primitives.
+- Sandbox includes `lucide_icons` directly so browser/docs examples always render icon previews.
+
 ## Development Workspaces
 
 - Library: `lib/cinder_ui/**`

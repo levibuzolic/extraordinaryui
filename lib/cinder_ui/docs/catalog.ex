@@ -15,6 +15,7 @@ defmodule CinderUI.Docs.Catalog do
   alias CinderUI.Components.Layout
   alias CinderUI.Components.Navigation
   alias CinderUI.Components.Overlay
+  alias CinderUI.Icons
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
@@ -35,6 +36,7 @@ defmodule CinderUI.Docs.Catalog do
     code_block: nil,
     empty_state: "empty",
     field: "form",
+    icon: nil,
     input_otp: "input-otp",
     item: "command",
     native_select: "select",
@@ -48,6 +50,7 @@ defmodule CinderUI.Docs.Catalog do
     %{id: "actions", title: "Actions", module: Actions},
     %{id: "forms", title: "Forms", module: Forms},
     %{id: "layout", title: "Layout", module: Layout},
+    %{id: "icons", title: "Icons", module: Icons},
     %{id: "feedback", title: "Feedback", module: Feedback},
     %{id: "data-display", title: "Data Display", module: DataDisplay},
     %{id: "navigation", title: "Navigation", module: Navigation},
@@ -239,8 +242,7 @@ defmodule CinderUI.Docs.Catalog do
   rescue
     exception ->
       escaped =
-        exception
-        |> Exception.format(:error)
+        Exception.format(:error, exception, __STACKTRACE__)
         |> HTML.html_escape()
         |> HTML.safe_to_string()
 
@@ -837,6 +839,8 @@ defmodule CinderUI.Docs.Catalog do
   end
 
   defp destructive_alert_assigns do
+    icon_html = render_component(Icons, :icon, %{name: "triangle-alert", class: "size-4"})
+
     title_html = render_component(Feedback, :alert_title, %{inner_block: slot("Deploy blocked")})
 
     description_html =
@@ -849,14 +853,12 @@ defmodule CinderUI.Docs.Catalog do
       inner_block:
         slot(
           """
-          <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\"><path d=\"M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v5a1 1 0 11-2 0V8a1 1 0 011-1zm0 10a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z\" /></svg>
+          #{icon_html}
           #{title_html}
           #{description_html}
           """,
           """
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v5a1 1 0 11-2 0V8a1 1 0 011-1zm0 10a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" />
-          </svg>
+          <.icon name="triangle-alert" class="size-4" />
           <.alert_title>Deploy blocked</.alert_title>
           <.alert_description>
             Production checks failed. Resolve blockers before redeploying.
@@ -1213,20 +1215,21 @@ defmodule CinderUI.Docs.Catalog do
 
   defp sample_assigns(Layout, :separator), do: %{orientation: :horizontal}
   defp sample_assigns(Layout, :skeleton), do: %{class: "h-4 w-40"}
+  defp sample_assigns(Icons, :icon), do: %{name: "circle-alert", class: "size-4"}
 
   defp sample_assigns(Feedback, :alert) do
+    icon_html = render_component(Icons, :icon, %{name: "circle-alert", class: "size-4"})
+
     %{
       inner_block:
         slot(
           """
-          <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\"><path d=\"M12 2a10 10 0 100 20 10 10 0 000-20z\" /></svg>
+          #{icon_html}
           <div data-slot=\"alert-title\" class=\"font-medium\">Notice</div>
           <div data-slot=\"alert-description\" class=\"text-sm\">Build completed.</div>
           """,
           """
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
-          </svg>
+          <.icon name="circle-alert" class="size-4" />
           <.alert_title>Notice</.alert_title>
           <.alert_description>Build completed.</.alert_description>
           """

@@ -31,6 +31,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   alias CinderUI.Components.Forms
   alias CinderUI.Components.Layout
   alias CinderUI.Components.Navigation
+  alias CinderUI.Icons
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
@@ -410,9 +411,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       render_component(Feedback, :alert, %{
         inner_block:
           slot("""
-          <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\">
-            <path d=\"M12 2a10 10 0 100 20 10 10 0 000-20z\" />
-          </svg>
+          #{render_component(Icons, :icon, %{name: "circle-alert", class: "size-4"})}
           #{alert_title}
           #{alert_description}
           """)
@@ -420,6 +419,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
 
     snippet = """
     <.alert>
+      <.icon name="circle-alert" class="size-4" />
       <.alert_title>Release ready</.alert_title>
       <.alert_description>All quality checks passed.</.alert_description>
     </.alert>
