@@ -273,7 +273,7 @@ mix phx.server
 Playwright tests run against the sandbox app and cover:
 
 - full catalog rendering (every component card)
-- catalog search behavior
+- sidebar navigation rendering
 - Phoenix snippet panel availability
 - interactive previews (dialog, drawer, popover, dropdown, combobox, carousel)
 - theme controls (mode, color, radius)

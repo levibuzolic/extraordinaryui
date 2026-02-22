@@ -21,19 +21,12 @@ test.describe("component catalog", () => {
     await expect(page.locator("text=Render error")).toHaveCount(0)
   })
 
-  test("search filters component cards", async ({ page }) => {
-    const cards = page.locator("[data-component-card]")
-    const initialCount = await cards.count()
-
-    await page.locator("#component-search").fill("dialog")
-
-    const visibleCards = page.locator("[data-component-card]:visible")
-    await expect(visibleCards).toHaveCount(2)
-    await expect(visibleCards.first()).toContainText("alert_dialog")
-    await expect(visibleCards.nth(1)).toContainText("dialog")
-
-    await page.locator("#component-search").fill("")
-    await expect(cards).toHaveCount(initialCount)
+  test("sidebar navigation renders section and component links", async ({ page }) => {
+    const sidebar = page.locator("nav[aria-label='Component sections']")
+    await expect(sidebar).toBeVisible()
+    await expect(sidebar.getByRole("link", { name: "Actions" })).toBeVisible()
+    await expect(sidebar.getByRole("link", { name: "button", exact: true })).toBeVisible()
+    await expect(page.locator("#component-search")).toHaveCount(0)
   })
 
   test("cards expose HEEx snippets", async ({ page }) => {

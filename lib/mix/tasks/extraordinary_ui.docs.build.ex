@@ -92,10 +92,6 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
               <p class=\"text-muted-foreground mt-1 text-sm\">Static component docs</p>
             </div>
 
-            <div class=\"mb-4\">
-              <input id=\"component-search\" type=\"search\" placeholder=\"Search components...\" class=\"border-input bg-background h-9 w-full rounded-md border px-3 text-sm\" />
-            </div>
-
             #{theme_controls_html()}
 
             <nav class=\"space-y-4\" aria-label=\"Component sections\">
@@ -502,20 +498,6 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
         })
       }
 
-      const searchInput = document.getElementById("component-search")
-      const cards = Array.from(document.querySelectorAll("[data-component-card]"))
-
-      const runSearch = () => {
-        const query = (searchInput?.value || "").trim().toLowerCase()
-
-        cards.forEach((card) => {
-          const name = (card.getAttribute("data-component-name") || "").toLowerCase()
-          const visible = !query || name.includes(query)
-          card.style.display = visible ? "block" : "none"
-        })
-      }
-
-      searchInput?.addEventListener("input", runSearch)
       applyTheme()
 
       const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))

@@ -1,35 +1,14 @@
-<div class="mx-auto min-h-screen max-w-[1800px] px-4 py-6 md:px-6">
-  <header class="mb-6 flex flex-wrap items-end justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-semibold tracking-tight">Extraordinary UI Sandbox</h1>
-      <p class="text-muted-foreground mt-2 text-sm">
+<div class="mx-auto grid min-h-screen max-w-[1800px] grid-cols-1 lg:grid-cols-[290px_1fr]">
+  <aside class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6">
+    <div class="mb-6">
+      <h1 class="text-xl font-semibold">Extraordinary UI Sandbox</h1>
+      <p class="text-muted-foreground mt-1 text-sm">
         Live Phoenix host app with all exported component previews.
       </p>
     </div>
 
-    <div class="text-right text-sm">
-      <p>
-        <span class="text-muted-foreground">Components:</span>
-        <span data-testid="component-count" class="font-semibold">{@component_count}</span>
-      </p>
-    </div>
-  </header>
-
-  <div class="mb-6 grid gap-4 lg:grid-cols-[1fr_360px]">
-    <div>
-      <label for="component-search" class="mb-2 block text-xs font-medium text-muted-foreground">
-        Search
-      </label>
-      <input
-        id="component-search"
-        type="search"
-        placeholder="Search components..."
-        class="border-input bg-background h-10 w-full rounded-md border px-3 text-sm"
-      />
-    </div>
-
-    <aside class="rounded-xl border bg-card p-4">
-      <h2 class="text-sm font-semibold">Theme controls</h2>
+    <section class="mb-6 rounded-lg border p-3">
+      <h2 class="text-sm font-semibold">Theme</h2>
 
       <div class="mt-3">
         <p class="mb-2 text-xs font-medium text-muted-foreground">Mode</p>
@@ -91,54 +70,92 @@
           <option value="vega">Vega</option>
         </select>
       </div>
-    </aside>
-  </div>
-
-  <%= for section <- @sections do %>
-    <section id={section.id} data-testid={"section-#{section.id}"} class="mb-10">
-      <h2 class="mb-4 text-xl font-semibold">{section.title}</h2>
-
-      <div class="grid gap-5 xl:grid-cols-2">
-        <%= for entry <- section.entries do %>
-          <article
-            id={entry.id}
-            data-component-card
-            data-component-name={entry.title}
-            class="rounded-xl border bg-card text-card-foreground shadow-sm"
-          >
-            <header class="border-border/70 border-b px-4 py-3">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <h3 class="font-medium">
-                  <code>{entry.module_name}.{entry.title}/1</code>
-                </h3>
-                <button
-                  type="button"
-                  data-copy-template={entry.id}
-                  class="inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent"
-                >
-                  Copy HEEx
-                </button>
-              </div>
-              <p class="text-muted-foreground mt-2 text-sm">{entry.docs}</p>
-            </header>
-
-            <div class="p-4">
-              <div class="rounded-lg border bg-background p-4" data-testid={"preview-#{entry.id}"}>
-                {raw(entry.preview_html)}
-              </div>
-            </div>
-
-            <details class="border-border/70 border-t">
-              <summary class="cursor-pointer list-none px-4 py-3 text-sm font-medium">
-                Phoenix template (HEEx)
-              </summary>
-              <pre class="max-h-72 overflow-auto border-t bg-muted/30 p-4 text-xs"><code id={"code-#{entry.id}"}>{entry.template_heex}</code></pre>
-            </details>
-          </article>
-        <% end %>
-      </div>
     </section>
-  <% end %>
+
+    <nav class="space-y-4" aria-label="Component sections">
+      <%= for section <- @sections do %>
+        <div>
+          <a href={"##{section.id}"} class="text-sm font-semibold">{section.title}</a>
+          <ul class="mt-2 space-y-1">
+            <%= for entry <- section.entries do %>
+              <li>
+                <a
+                  class="text-muted-foreground hover:text-foreground text-sm"
+                  href={"##{entry.id}"}
+                >
+                  {entry.title}
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </nav>
+  </aside>
+
+  <main class="px-5 py-6 lg:px-8">
+    <header class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-semibold tracking-tight">Component Library</h2>
+        <p class="text-muted-foreground mt-2 max-w-3xl text-sm">
+          Catalog preview of all exported Extraordinary UI components.
+        </p>
+      </div>
+      <p class="text-sm">
+        <span class="text-muted-foreground">Components:</span>
+        <span data-testid="component-count" class="font-semibold">{@component_count}</span>
+      </p>
+    </header>
+
+    <%= for section <- @sections do %>
+      <section id={section.id} data-testid={"section-#{section.id}"} class="mb-10">
+        <h2 class="mb-4 text-xl font-semibold">{section.title}</h2>
+
+        <div class="grid gap-5 xl:grid-cols-2">
+          <%= for entry <- section.entries do %>
+            <article
+              id={entry.id}
+              data-component-card
+              data-component-name={entry.title}
+              class="rounded-xl border bg-card text-card-foreground shadow-sm"
+            >
+              <header class="border-border/70 border-b px-4 py-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <h3 class="font-medium">
+                    <code>{entry.module_name}.{entry.title}/1</code>
+                  </h3>
+                  <button
+                    type="button"
+                    data-copy-template={entry.id}
+                    class="inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent"
+                  >
+                    Copy HEEx
+                  </button>
+                </div>
+                <p class="text-muted-foreground mt-2 text-sm">{entry.docs}</p>
+              </header>
+
+              <div class="p-4">
+                <div
+                  class="rounded-lg border bg-background p-4"
+                  data-testid={"preview-#{entry.id}"}
+                >
+                  {raw(entry.preview_html)}
+                </div>
+              </div>
+
+              <details class="border-border/70 border-t">
+                <summary class="cursor-pointer list-none px-4 py-3 text-sm font-medium">
+                  Phoenix template (HEEx)
+                </summary>
+                <pre class="max-h-72 overflow-auto border-t bg-muted/30 p-4 text-xs"><code id={"code-#{entry.id}"}>{entry.template_heex}</code></pre>
+              </details>
+            </article>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  </main>
 </div>
 
 <style>
@@ -433,20 +450,6 @@
       })
     }
 
-    const searchInput = document.getElementById("component-search")
-    const cards = Array.from(document.querySelectorAll("[data-component-card]"))
-
-    const runSearch = () => {
-      const query = (searchInput?.value || "").trim().toLowerCase()
-
-      cards.forEach((card) => {
-        const name = (card.getAttribute("data-component-name") || "").toLowerCase()
-        const visible = !query || name.includes(query)
-        card.style.display = visible ? "block" : "none"
-      })
-    }
-
-    searchInput?.addEventListener("input", runSearch)
     applyTheme()
 
     const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))
