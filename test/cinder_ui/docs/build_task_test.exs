@@ -24,10 +24,14 @@ defmodule CinderUI.Docs.BuildTaskTest do
 
     assert index =~ "Cinder UI"
     assert index =~ "Component Library"
-    assert index =~ "Actions.button/1"
+    assert index =~ "Actions.button"
     assert index =~ "Copy HEEx"
     assert index =~ "Open docs"
     assert index =~ "./components/actions-button.html"
+
+    assert index =~
+             "<a href=\"./components/actions-button.html\" class=\"hover:underline underline-offset-4\">"
+
     assert index =~ "data-copy-template="
     assert index =~ "Phoenix template (HEEx)"
     assert index =~ ~s(id="code-actions-button")

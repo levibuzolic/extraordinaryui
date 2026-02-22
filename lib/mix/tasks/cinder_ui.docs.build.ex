@@ -108,7 +108,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-5 py-4\">
         <p class=\"text-muted-foreground text-xs\">#{entry.module_name}</p>
-        <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}/1</code></h2>
+        <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}</code></h2>
         <p class=\"text-muted-foreground mt-3 text-sm\">#{inline_code_html(entry.docs)}</p>
       </header>
       <div class=\"space-y-4 p-5\">#{examples_html}</div>
@@ -145,7 +145,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     """
 
     page_shell(
-      title: "#{entry.module_name}.#{entry.title}/1 · Cinder UI",
+      title: "#{entry.module_name}.#{entry.title} · Cinder UI",
       description: entry.docs,
       body_content: content,
       theme_css: theme_css,
@@ -314,7 +314,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-4 py-3\">
         <div class=\"flex flex-wrap items-start justify-between gap-2\">
-          <h4 class=\"font-medium\"><code>#{entry.module_name}.#{entry.title}/1</code></h4>
+          <h4 class=\"font-medium\">
+            <a href=\"./#{entry.docs_path}\" class=\"hover:underline underline-offset-4\">
+              <code>#{entry.module_name}.#{entry.title}</code>
+            </a>
+          </h4>
           <div class=\"flex items-center gap-1\">
             <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
             <a href=\"./#{entry.docs_path}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Open docs</a>

@@ -176,10 +176,10 @@ All validation checks currently pass (last run: February 22, 2026).
 - Set marketing site baseline to the neutral token palette with `style-nova` radius profile and Tailwind v4 browser styling.
 - Added a persistent dark/light mode toggle to the static marketing site (`localStorage` + `.dark` root class) with active-state UI controls in the header.
 - Added a homepage examples section with live previews/snippets for:
-  - `Actions.button_group/1`
-  - `Forms.field/1`
-  - `Feedback.alert/1`
-  - `Navigation.tabs/1`
+  - `Actions.button_group`
+  - `Forms.field`
+  - `Feedback.alert`
+  - `Navigation.tabs`
 - Added per-example links back to the corresponding shadcn/ui docs and ensured shadcn mentions in marketing copy link to upstream docs.
 - Expanded site build test assertions to cover component examples, neutral style marker, and shadcn reference links.
 
@@ -201,6 +201,12 @@ All validation checks currently pass (last run: February 22, 2026).
 - Updated GitHub Actions workflows and contributor commands to use renamed Mix tasks.
 - Refreshed browser visual baselines impacted by text and branding changes.
 - Verified root quality, coverage gate, sandbox unit tests, and sandbox browser tests after rename.
+
+### Milestone 18: Static docs naming and navigation polish
+
+- Updated static docs component card titles to omit Elixir arity suffixes (for example `Forms.field` instead of `Forms.field/1`).
+- Made static docs overview card titles link directly to each component detail docs page.
+- Kept component example icon markup aligned with the existing SVG-based approach in docs/site previews.
 
 ## Commit Log
 

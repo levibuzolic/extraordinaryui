@@ -352,7 +352,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
 
     example_card(
-      "Actions.button_group/1",
+      "Actions.button_group",
       "Grouped primary + secondary actions.",
       preview,
       snippet,
@@ -390,7 +390,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
 
     example_card(
-      "Forms.field/1",
+      "Forms.field",
       "Label + input + helper text using the shared token model.",
       preview,
       snippet,
@@ -426,7 +426,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
 
     example_card(
-      "Feedback.alert/1",
+      "Feedback.alert",
       "Status messaging aligned with upstream alert patterns.",
       preview,
       snippet,
@@ -464,7 +464,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
 
     example_card(
-      "Navigation.tabs/1",
+      "Navigation.tabs",
       "Tab primitives with server-driven active state.",
       preview,
       snippet,
