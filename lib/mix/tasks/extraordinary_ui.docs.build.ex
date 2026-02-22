@@ -318,19 +318,24 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
   defp overview_entry_html(entry) do
     escaped_docs = inline_code_html(entry.docs)
+    escaped_template = escape(entry.template_heex)
 
     """
     <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-4 py-3\">
         <div class=\"flex flex-wrap items-start justify-between gap-2\">
           <h4 class=\"font-medium\"><code>#{entry.module_name}.#{entry.title}/1</code></h4>
-          <a href=\"./#{entry.docs_path}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Open docs</a>
+          <div class=\"flex items-center gap-1\">
+            <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
+            <a href=\"./#{entry.docs_path}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Open docs</a>
+          </div>
         </div>
         <p class=\"text-muted-foreground mt-2 text-sm\">#{escaped_docs}</p>
       </header>
 
       <div class=\"p-4\">
         <div class=\"rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
+        <code id=\"code-#{entry.id}\" hidden>#{escaped_template}</code>
         <div class=\"mt-3 flex flex-wrap items-center justify-between gap-2 text-xs\">
           <span class=\"text-muted-foreground\">attrs: <span class=\"font-medium text-foreground\">#{length(entry.attributes)}</span> · slots: <span class=\"font-medium text-foreground\">#{length(entry.slots)}</span></span>
           <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-muted-foreground hover:text-foreground underline underline-offset-4\">shadcn reference ↗</a>
