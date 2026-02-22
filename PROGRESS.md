@@ -1,4 +1,4 @@
-# Extraordinary UI Progress
+# Cinder UI Progress
 
 ## Current Plan (February 22, 2026)
 
@@ -25,7 +25,7 @@
 - `mix format`
 - `mix quality`
 - `MIX_ENV=test mix coveralls.cobertura --raise`
-- `mix extraordinary_ui.site.build --output tmp/verify-site --clean`
+- `mix cinder_ui.site.build --output tmp/verify-site --clean`
 - `cd sandbox/demo_app && mix format --check-formatted && mix test`
 - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
@@ -33,7 +33,7 @@ All validation checks currently pass (last run: February 22, 2026).
 
 ## Remaining Work
 
-- [ ] Publish Hex package and HexDocs for `extraordinary_ui`.
+- [ ] Publish Hex package and HexDocs for `cinder_ui`.
 - [ ] Implement `Context Menu` or formally document it as out-of-scope.
 - [ ] Deepen scaffold/progressive parity for `Calendar`, `Chart`, `Resizable`, `Sidebar`, and `Sonner`.
 - [ ] Expand browser tests for keyboard/focus accessibility behavior in progressive overlay/menu components.
@@ -60,7 +60,7 @@ All validation checks currently pass (last run: February 22, 2026).
 
 ### Milestone 3: Installer and assets
 
-- Added `mix extraordinary_ui.install`.
+- Added `mix cinder_ui.install`.
 - Added Tailwind token stylesheet template and JS hooks template.
 - Added hook module docs and generated install markers.
 
@@ -73,12 +73,12 @@ All validation checks currently pass (last run: February 22, 2026).
 ### Milestone 5: Static docs export
 
 - Added static docs catalog that renders all public component functions.
-- Added `mix extraordinary_ui.docs.build` to generate deployable `dist/docs` output.
+- Added `mix cinder_ui.docs.build` to generate deployable `dist/docs` output.
 - Added tests for catalog coverage and static build artifacts.
 
 ### Milestone 6: Sandbox host app and Playwright coverage
 
-- Added a local Phoenix app at `sandbox/demo_app` embedding `extraordinary_ui` via local path dependency.
+- Added a local Phoenix app at `sandbox/demo_app` embedding `cinder_ui` via local path dependency.
 - Added `/components` catalog page in the sandbox host app for real browser validation.
 - Added Playwright browser tests covering full component catalog rendering, sidebar navigation, and key interactions.
 - Documented run/test/export workflows in root and sandbox READMEs.
@@ -96,7 +96,7 @@ All validation checks currently pass (last run: February 22, 2026).
 ### Milestone 8: HEEx snippet composition quality
 
 - Updated static docs snippet generation to support separate rendered-preview vs template-HEEx slot content.
-- Rewrote nested examples to prefer Extraordinary UI components (`.button`, `.input`, `.table_*`, `.breadcrumb_*`, `.pagination_*`, etc.) over raw HTML where equivalent components exist.
+- Rewrote nested examples to prefer Cinder UI components (`.button`, `.input`, `.table_*`, `.breadcrumb_*`, `.pagination_*`, etc.) over raw HTML where equivalent components exist.
 - Kept plain HTML only where no suitable component abstraction exists.
 
 ### Milestone 9: Component-detail docs pages
@@ -118,8 +118,8 @@ All validation checks currently pass (last run: February 22, 2026).
 
 ### Milestone 11: Static developer site + release publishing
 
-- Added `mix extraordinary_ui.site.build` to generate a static developer/marketing landing page and bundle static component docs under `dist/site/docs`.
-- Added test coverage for site build output and links in `test/extraordinary_ui/site/build_task_test.exs`.
+- Added `mix cinder_ui.site.build` to generate a static developer/marketing landing page and bundle static component docs under `dist/site/docs`.
+- Added test coverage for site build output and links in `test/cinder_ui/site/build_task_test.exs`.
 - Added CI validation step that builds the static developer site artifact during root quality checks.
 - Added GitHub Pages publish workflow (`.github/workflows/publish-site.yml`) triggered on `release.published` and manual dispatch.
 - Updated README with commands and one-time GitHub Pages setup steps, plus Cloudflare/Vercel fallback deployment guidance.
@@ -155,7 +155,7 @@ All validation checks currently pass (last run: February 22, 2026).
   - `Navigation.tabs/1`
   - `Overlay.dialog/1`
   - `Advanced.command/1`
-- Upgraded nested sample previews to use Extraordinary UI components where feasible (`button_group`, `toggle_group`, `field`, `input_group`, `empty_state`, overlay footers, tooltip trigger, command items, menubar content).
+- Upgraded nested sample previews to use Cinder UI components where feasible (`button_group`, `toggle_group`, `field`, `input_group`, `empty_state`, overlay footers, tooltip trigger, command items, menubar content).
 - Added inline-doc fenced example metadata parsing (`title="..."` and `title='...'`) so detailed docs pages can render multiple named examples from `@doc` content.
 - Added docs and tests validating titled inline examples and multi-example coverage expectations.
 
@@ -172,7 +172,7 @@ All validation checks currently pass (last run: February 22, 2026).
 
 ### Milestone 15: Marketing site component-native refresh
 
-- Rebuilt the static marketing landing page to render using Extraordinary UI component functions instead of custom ad-hoc HTML controls.
+- Rebuilt the static marketing landing page to render using Cinder UI component functions instead of custom ad-hoc HTML controls.
 - Set marketing site baseline to the neutral token palette with `style-nova` radius profile and Tailwind v4 browser styling.
 - Added a homepage examples section with live previews/snippets for:
   - `Actions.button_group/1`
@@ -188,6 +188,18 @@ All validation checks currently pass (last run: February 22, 2026).
 - Wired package and docs publication to `HEX_API_KEY` secret and added explicit failure messaging when the secret is missing.
 - Added `hex-publish` environment targeting in the workflow to support release gating via GitHub environment protection.
 - Updated maintainer release instructions in `CONTRIBUTING.md` with one-time secret setup and automated release flow.
+
+### Milestone 17: Project rename to Cinder UI
+
+- Renamed project identity from Extraordinary UI to Cinder UI across:
+  - app/package identifiers (`:cinder_ui`, `CinderUI`)
+  - file paths and module namespaces (`lib/cinder_ui/**`, `test/cinder_ui/**`)
+  - Mix task names (`mix cinder_ui.install`, `mix cinder_ui.docs.build`, `mix cinder_ui.site.build`)
+  - installer asset/template filenames (`cinder_ui.css`, `cinder_ui.js`, `.cinder_ui_style`)
+  - sandbox dependency integration and docs references.
+- Updated GitHub Actions workflows and contributor commands to use renamed Mix tasks.
+- Refreshed browser visual baselines impacted by text and branding changes.
+- Verified root quality, coverage gate, sandbox unit tests, and sandbox browser tests after rename.
 
 ## Commit Log
 
@@ -218,6 +230,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - `d003fdc` - expand rich multi-family component samples and add named inline-doc example extraction.
 - `7dda7aa` - stabilize Playwright visual snapshots by capturing normalized preview containers to avoid 1px cross-env card drift failures.
 - `22e2293` - log visual snapshot stability hardening in the progress tracker.
+- `c487941` - rename package/modules/tasks/assets/docs from Extraordinary UI to Cinder UI (`cinder_ui`/`CinderUI`) across the repository.
 - `e9634c4` - split user-facing README from contributor docs and add third-party notices.
 - `93b6ad4` - log documentation audience split and licensing notices.
 - `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
