@@ -153,4 +153,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `bfeb4d4` - refine README shadcn coverage matrix with emoji status + compatibility breakdown columns.
 - `87a9ab1` - render function docs markdown in static docs and style markdown output blocks.
 - `7313113` - render inline backtick segments as styled code spans throughout static docs shell text.
-- `pending` - add consistent active indicator for sidebar Overview and current component links in static docs.
+- `eaf9eca` - add consistent active indicator for sidebar Overview and current component links in static docs.
