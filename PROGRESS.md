@@ -151,4 +151,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `e6f9866` - run documentation reality pass, add remaining-work tracker, and add root AGENTS guide for future development.
 - `bfeb4d4` - refine README shadcn coverage matrix with emoji status + compatibility breakdown columns.
 - `87a9ab1` - render function docs markdown in static docs and style markdown output blocks.
-- `pending` - render inline backtick segments as styled code spans throughout static docs shell text.
+- `7313113` - render inline backtick segments as styled code spans throughout static docs shell text.
