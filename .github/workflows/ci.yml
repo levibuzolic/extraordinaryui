@@ -1,0 +1,211 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ELIXIR_VERSION: "1.19.5"
+  OTP_VERSION: "28.0"
+  NODE_VERSION: "22"
+
+jobs:
+  root_quality:
+    name: Root Quality (format/lint/docs)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup BEAM
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Cache Mix dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-root-quality-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-root-quality-
+            ${{ runner.os }}-mix-root-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Compile with warnings as errors
+        run: mix compile --warnings-as-errors
+
+      - name: Run Credo (strict)
+        run: mix credo --strict
+
+      - name: Build static docs export
+        run: mix extraordinary_ui.docs.build --output tmp/ci-docs --clean
+
+  root_tests:
+    name: Root Tests + Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup BEAM
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Cache Mix dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-root-test-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-root-test-
+            ${{ runner.os }}-mix-root-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Run unit tests with coverage gate + Cobertura export
+        run: MIX_ENV=test mix coveralls.cobertura --raise
+
+      - name: Coverage summary
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: cover/cobertura.xml
+          badge: true
+          format: markdown
+          indicators: true
+          output: both
+          fail_below_min: true
+          thresholds: "90 95"
+
+      - name: Publish coverage in job summary
+        run: cat code-coverage-results.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: root-coverage
+          path: |
+            cover/cobertura.xml
+            cover/excoveralls.json
+            cover/
+
+  sandbox_unit:
+    name: Sandbox Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sandbox/demo_app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup BEAM
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Cache Mix dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            sandbox/demo_app/deps
+            sandbox/demo_app/_build
+          key: ${{ runner.os }}-mix-sandbox-unit-${{ hashFiles('sandbox/demo_app/mix.lock', 'mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-sandbox-unit-
+            ${{ runner.os }}-mix-sandbox-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Run sandbox unit tests
+        run: mix test
+
+  sandbox_browser:
+    name: Sandbox Browser Tests (Playwright)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sandbox/demo_app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup BEAM
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: sandbox/demo_app/package-lock.json
+
+      - name: Cache Mix dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            sandbox/demo_app/deps
+            sandbox/demo_app/_build
+          key: ${{ runner.os }}-mix-sandbox-browser-${{ hashFiles('sandbox/demo_app/mix.lock', 'mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-sandbox-browser-
+            ${{ runner.os }}-mix-sandbox-
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('sandbox/demo_app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Elixir dependencies
+        run: mix deps.get
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: mix assets.build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            sandbox/demo_app/test-results
+            sandbox/demo_app/playwright-report

@@ -25,8 +25,10 @@
 ## Validation
 
 - `mix format`
-- `mix compile`
-- `mix test`
+- `mix quality`
+- `MIX_ENV=test mix coveralls.cobertura --raise`
+- `cd sandbox/demo_app && mix format --check-formatted && mix test`
+- `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
 All validation checks currently pass.
 
@@ -76,6 +78,14 @@ All validation checks currently pass.
 - Documented run/test/export workflows in root and sandbox READMEs.
 - Added theme switchers (light/dark/auto + color palette + radius profile) to static docs and sandbox catalog.
 - Replaced rendered-HTML copy snippets with generated Phoenix HEEx component snippets in docs cards.
+
+### Milestone 7: CI and coverage automation
+
+- Added GitHub Actions pipeline at `.github/workflows/ci.yml`.
+- Added root quality gate job for formatting, strict credo, compile warnings-as-errors, and static docs export build.
+- Added root unit test + coverage job with Cobertura report generation and coverage summary output.
+- Added sandbox unit test job and sandbox browser test job with Playwright + Chromium.
+- Added local commands in README docs to mirror CI exactly.
 
 ## Commit Log
 

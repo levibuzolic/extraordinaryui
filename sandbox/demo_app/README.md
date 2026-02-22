@@ -30,6 +30,7 @@ Then open:
 
 ```bash
 cd sandbox/demo_app
+mix format --check-formatted
 mix test
 ```
 
@@ -37,8 +38,10 @@ mix test
 
 ```bash
 cd sandbox/demo_app
-npm install
-npx playwright install chromium
+mix deps.get
+mix assets.build
+npm ci
+npx playwright install --with-deps chromium
 npx playwright test
 ```
 
@@ -53,6 +56,17 @@ Playwright config:
 - `sandbox/demo_app/playwright.config.ts`
 - `sandbox/demo_app/tests/browser/components.spec.ts`
 - `sandbox/demo_app/tests/browser/interactions.spec.ts`
+
+## CI
+
+GitHub Actions run this sandbox in two jobs:
+
+- `Sandbox Unit Tests`: formatting + `mix test`
+- `Sandbox Browser Tests (Playwright)`: asset build + Chromium install + `npx playwright test`
+
+Workflow file:
+
+- `/Users/levi/src/xmo/extraordinaryui/.github/workflows/ci.yml`
 
 ## Export static docs site (from repo root)
 

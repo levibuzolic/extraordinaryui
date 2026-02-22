@@ -282,8 +282,17 @@ Setup and run:
 
 ```bash
 cd sandbox/demo_app
-npm install
-npx playwright install chromium
+npm ci
+npx playwright install --with-deps chromium
+npx playwright test
+```
+
+CI-parity run (build assets first):
+
+```bash
+cd sandbox/demo_app
+mix deps.get
+mix assets.build
 npx playwright test
 ```
 
@@ -330,10 +339,27 @@ mix docs
 Implemented and verified with:
 
 ```bash
-mix format
-mix compile
-mix test
+mix quality
+MIX_ENV=test mix coveralls.cobertura --raise
+mix extraordinary_ui.docs.build --output tmp/ci-docs --clean
+cd sandbox/demo_app && mix format --check-formatted && mix test
+cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test
 ```
+
+## GitHub Actions
+
+Continuous integration is configured in:
+
+- `.github/workflows/ci.yml`
+
+Jobs included:
+
+- Root quality checks (`mix format --check-formatted`, `mix compile --warnings-as-errors`, `mix credo --strict`, static docs build)
+- Root unit tests with coverage gate and Cobertura export (`MIX_ENV=test mix coveralls.cobertura --raise`)
+- Sandbox Phoenix unit tests
+- Sandbox Playwright browser tests (with Chromium install and failure artifact upload)
+
+Coverage is summarized directly in the GitHub Actions job summary and stored as an artifact (`root-coverage`).
 
 ## Notes on Feasibility
 
