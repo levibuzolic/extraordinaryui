@@ -61,5 +61,7 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
 
     site_css = File.read!(Path.join(@output, "assets/site.css"))
     assert site_css =~ ".docs-markdown"
+    assert site_css =~ "summary:not([data-slot])::after"
+    assert site_css =~ "summary::marker"
   end
 end

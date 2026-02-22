@@ -995,13 +995,17 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       display: none;
     }
 
-    summary::after {
+    summary::marker {
+      content: "";
+    }
+
+    summary:not([data-slot])::after {
       content: "▾";
       float: right;
       color: var(--muted-foreground);
     }
 
-    details[open] summary::after {
+    details[open] > summary:not([data-slot])::after {
       content: "▴";
     }
 

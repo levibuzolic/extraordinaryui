@@ -136,6 +136,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added consistent sidebar active-state treatment in static docs (`Overview` on index, current component on detail pages) with `aria-current="page"` and clear active styling.
 - Added `Copy HEEx` actions to overview cards on the root static docs page so snippets can be copied without opening per-component pages.
 - Added always-visible HEEx snippet code boxes to overview cards (no expand/collapse toggle required) while retaining quick copy actions.
+- Fixed duplicate disclosure arrows in previewed collapsible/accordion components by scoping docs-shell summary pseudo-arrows away from component `summary[data-slot]` elements.
 
 ## Commit Log
 
@@ -158,3 +159,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `eaf9eca` - add consistent active indicator for sidebar Overview and current component links in static docs.
 - `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
 - `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
+- `pending` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
