@@ -135,63 +135,64 @@ Apply one at app root:
 
 Legend:
 
-- `Full`: production-ready server-rendered implementation
-- `Progressive`: base implementation with optional LiveView hook enhancement
-- `Scaffold`: layout + API contract for integration with external libs
+- `✅ Full`: production-ready server-rendered implementation
+- `⚡ Progressive`: server-rendered base with optional LiveView hook enhancement
+- `🧱 Scaffold`: layout + API contract ready; full behavior needs host-side JS integration
+- `🚧 Not Yet`: intentionally not implemented yet
 
-| shadcn component family | Status |
-| --- | --- |
-| Accordion | Full |
-| Alert | Full |
-| Alert Dialog | Full |
-| Aspect Ratio | Full |
-| Avatar | Full |
-| Badge | Full |
-| Breadcrumb | Full |
-| Button / Button Group | Full |
-| Calendar | Scaffold |
-| Carousel | Progressive |
-| Chart | Scaffold |
-| Checkbox | Full |
-| Collapsible | Full |
-| Combobox | Progressive |
-| Command | Full |
-| Context Menu | Not yet (JS-heavy menu semantics) |
-| Dialog | Progressive |
-| Drawer | Progressive |
-| Dropdown Menu | Progressive |
-| Empty | Full |
-| Field / Form primitives | Full |
-| Hover Card | Full |
-| Input Group | Full |
-| Input OTP | Full |
-| Input | Full |
-| Item | Full |
-| Kbd | Full |
-| Label | Full |
-| Menubar | Progressive |
-| Native Select | Full |
-| Navigation Menu | Full |
-| Pagination | Full |
-| Popover | Progressive |
-| Progress | Full |
-| Radio Group | Full |
-| Resizable | Scaffold |
-| Scroll Area | Full |
-| Select | Full (native select style) |
-| Separator | Full |
-| Sheet | Full (drawer alias) |
-| Sidebar | Scaffold |
-| Skeleton | Full |
-| Slider | Full (native range) |
-| Sonner | Scaffold (mount point) |
-| Spinner | Full |
-| Switch | Full |
-| Table | Full |
-| Tabs | Full |
-| Textarea | Full |
-| Toggle / Toggle Group | Full |
-| Tooltip | Full |
+| shadcn component family | Coverage | Interactivity model | Compatibility / limitations |
+| --- | --- | --- | --- |
+| Accordion | ✅ Full | Server-rendered | Matches core usage patterns |
+| Alert | ✅ Full | Server-rendered | - |
+| Alert Dialog | ✅ Full | Server-rendered | - |
+| Aspect Ratio | ✅ Full | Server-rendered | - |
+| Avatar | ✅ Full | Server-rendered | - |
+| Badge | ✅ Full | Server-rendered | - |
+| Breadcrumb | ✅ Full | Server-rendered | - |
+| Button / Button Group | ✅ Full | Server-rendered | - |
+| Calendar | 🧱 Scaffold | Static shell | Full date-picker behavior requires additional JS |
+| Carousel | ⚡ Progressive | Server + hooks | Hook layer drives controls/slide state |
+| Chart | 🧱 Scaffold | Static shell | Requires external chart engine integration |
+| Checkbox | ✅ Full | Server-rendered | - |
+| Collapsible | ✅ Full | Server-rendered | - |
+| Combobox | ⚡ Progressive | Server + hooks | Hook layer handles filtering/select behavior |
+| Command | ✅ Full | Server-rendered | - |
+| Context Menu | 🚧 Not Yet | N/A | JS-heavy semantics still pending |
+| Dialog | ⚡ Progressive | Server + hooks | Hook layer handles open/close behavior |
+| Drawer | ⚡ Progressive | Server + hooks | Hook layer handles panel/overlay behavior |
+| Dropdown Menu | ⚡ Progressive | Server + hooks | Hook layer handles menu toggling |
+| Empty | ✅ Full | Server-rendered | - |
+| Field / Form primitives | ✅ Full | Server-rendered | - |
+| Hover Card | ✅ Full | Server-rendered | - |
+| Input Group | ✅ Full | Server-rendered | - |
+| Input OTP | ✅ Full | Server-rendered | - |
+| Input | ✅ Full | Server-rendered | - |
+| Item | ✅ Full | Server-rendered | - |
+| Kbd | ✅ Full | Server-rendered | - |
+| Label | ✅ Full | Server-rendered | - |
+| Menubar | ⚡ Progressive | Server + hooks | Hook layer handles interactive menu behavior |
+| Native Select | ✅ Full | Server-rendered | Native HTML select with shadcn-style classes |
+| Navigation Menu | ✅ Full | Server-rendered | - |
+| Pagination | ✅ Full | Server-rendered | - |
+| Popover | ⚡ Progressive | Server + hooks | Hook layer handles open/close behavior |
+| Progress | ✅ Full | Server-rendered | - |
+| Radio Group | ✅ Full | Server-rendered | - |
+| Resizable | 🧱 Scaffold | Static shell | Drag/resize behavior needs additional JS |
+| Scroll Area | ✅ Full | Server-rendered | - |
+| Select | ✅ Full | Server-rendered | Implemented as native select style variant |
+| Separator | ✅ Full | Server-rendered | - |
+| Sheet | ✅ Full | Server-rendered | Drawer alias semantics |
+| Sidebar | 🧱 Scaffold | Static shell | Complex interactions require host-side logic |
+| Skeleton | ✅ Full | Server-rendered | - |
+| Slider | ✅ Full | Server-rendered | Native range input style |
+| Sonner | 🧱 Scaffold | Static shell | Mount point API; toast engine not bundled |
+| Spinner | ✅ Full | Server-rendered | - |
+| Switch | ✅ Full | Server-rendered | - |
+| Table | ✅ Full | Server-rendered | - |
+| Tabs | ✅ Full | Server-rendered | - |
+| Textarea | ✅ Full | Server-rendered | - |
+| Toggle / Toggle Group | ✅ Full | Server-rendered | - |
+| Tooltip | ✅ Full | Server-rendered | - |
 
 ## Storybook Preview
 

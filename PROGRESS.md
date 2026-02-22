@@ -129,6 +129,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Replaced machine-specific absolute paths with repository-relative paths in docs.
 - Added explicit current-status and release-checklist guidance, including manual Hex publish status.
 - Added remaining-work tracking so incomplete items are clearly visible.
+- Upgraded README component-coverage matrix to use emoji status markers and split compatibility into coverage/interactivity/limitations columns.
 
 ## Commit Log
 
@@ -145,3 +146,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `3ac6fa6` - add GitHub Actions CI for quality, coverage reporting, sandbox unit tests, and Playwright browser tests.
 - `e9e84bc` - add static developer site build task, tests, CI checks, and GitHub Pages release deployment workflow.
 - `e6f9866` - run documentation reality pass, add remaining-work tracker, and add root AGENTS guide for future development.
+- `pending` - refine README shadcn coverage matrix with emoji status + compatibility breakdown columns.
