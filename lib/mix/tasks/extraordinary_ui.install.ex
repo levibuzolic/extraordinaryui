@@ -11,6 +11,8 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
      - `@import "./extraordinary_ui.css";`
   3. Updates `assets/js/app.js` to merge Extraordinary UI LiveView hooks.
   4. Installs `tailwindcss-animate` using your detected or selected package manager.
+     When no `package.json` exists in `assets/`, the installer will use the
+     project root `package.json` if present, or create a minimal one in `assets/`.
 
   ## Options
 
@@ -48,7 +50,8 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
     else
       assets_path = Path.expand(opts[:assets_path] || "assets", File.cwd!())
       style = normalize_style(opts[:style])
-      package_manager = normalize_package_manager(opts[:package_manager], assets_path)
+      package_install_path = resolve_package_install_path!(assets_path)
+      package_manager = normalize_package_manager(opts[:package_manager], package_install_path)
       skip_existing = opts[:skip_existing] || false
 
       ensure_assets_dir!(assets_path)
@@ -57,7 +60,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
       install_js!(assets_path, skip_existing)
       patch_app_css!(assets_path)
       patch_app_js!(assets_path)
-      maybe_install_package!(assets_path, package_manager, "tailwindcss-animate")
+      maybe_install_package!(package_install_path, package_manager, "tailwindcss-animate")
       write_install_marker!(assets_path, style, skip_existing)
 
       Mix.shell().info("Extraordinary UI install complete (style: #{style}).")
@@ -153,22 +156,35 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
       else: String.trim_trailing(content) <> "\n" <> line <> "\n"
   end
 
-  defp maybe_install_package!(assets_path, package_manager, package) do
-    package_json = Path.join(assets_path, "package.json")
+  defp maybe_install_package!(install_path, package_manager, package) do
+    {cmd, args} = package_command(package_manager, package)
+    Mix.shell().info("running #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})")
+    {output, status} = System.cmd(cmd, args, cd: install_path, stderr_to_stdout: true)
 
-    if File.exists?(package_json) do
-      {cmd, args} = package_command(package_manager, package)
-      Mix.shell().info("running #{cmd} #{Enum.join(args, " ")}")
-      {output, status} = System.cmd(cmd, args, cd: assets_path, stderr_to_stdout: true)
-
-      if status == 0 do
-        Mix.shell().info(String.trim(output))
-      else
-        Mix.shell().error(String.trim(output))
-        Mix.raise("failed to install #{package} using #{package_manager}")
-      end
+    if status == 0 do
+      Mix.shell().info(String.trim(output))
     else
-      Mix.shell().info("skipping npm install (no package.json found in #{relative(assets_path)})")
+      Mix.shell().error(String.trim(output))
+      Mix.raise("failed to install #{package} using #{package_manager}")
+    end
+  end
+
+  defp resolve_package_install_path!(assets_path) do
+    assets_package_json = Path.join(assets_path, "package.json")
+    project_path = Path.dirname(assets_path)
+    project_package_json = Path.join(project_path, "package.json")
+
+    cond do
+      File.exists?(assets_package_json) ->
+        assets_path
+
+      File.exists?(project_package_json) ->
+        project_path
+
+      true ->
+        File.write!(assets_package_json, "{\n  \"private\": true\n}\n")
+        Mix.shell().info("created #{relative(assets_package_json)}")
+        assets_path
     end
   end
 
