@@ -187,3 +187,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `1335d6d` - add multi-example detailed docs rendering and richer card-aligned sample implementations.
 - `a73a333` - expand table/pagination sample compositions for closer shadcn-style completeness.
 - `d003fdc` - expand rich multi-family component samples and add named inline-doc example extraction.
+- `7dda7aa` - stabilize Playwright visual snapshots by capturing normalized preview containers to avoid 1px cross-env card drift failures.
