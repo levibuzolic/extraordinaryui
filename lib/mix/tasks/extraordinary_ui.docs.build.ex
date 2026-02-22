@@ -108,7 +108,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       <header class=\"border-border/70 border-b px-5 py-4\">
         <p class=\"text-muted-foreground text-xs\">#{entry.module_name}</p>
         <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}/1</code></h2>
-        <p class=\"text-muted-foreground mt-3 text-sm\">#{escape(entry.docs)}</p>
+        <p class=\"text-muted-foreground mt-3 text-sm\">#{inline_code_html(entry.docs)}</p>
       </header>
       <div class=\"space-y-4 p-5\">
         <div>
@@ -128,7 +128,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
     <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Attributes (Generated from `attr` definitions)</h3>
+        <h3 class=\"text-sm font-semibold\">Attributes (Generated from <code class=\"inline-code\">attr</code> definitions)</h3>
       </header>
       <div class=\"p-5\">
         #{attributes_table_html(entry.attributes)}
@@ -137,7 +137,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
     <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Slots (Generated from `slot` definitions)</h3>
+        <h3 class=\"text-sm font-semibold\">Slots (Generated from <code class=\"inline-code\">slot</code> definitions)</h3>
       </header>
       <div class=\"p-5\">
         #{slots_table_html(entry.slots)}
@@ -306,7 +306,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   end
 
   defp overview_entry_html(entry) do
-    escaped_docs = escape(entry.docs)
+    escaped_docs = inline_code_html(entry.docs)
 
     """
     <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
@@ -347,6 +347,28 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
     html
     |> String.replace(~r/<script\b[^>]*>.*?<\/script>/is, "")
     |> String.replace(~r/<style\b[^>]*>.*?<\/style>/is, "")
+  end
+
+  defp inline_code_html(text) do
+    text
+    |> String.split(~r/(`[^`\n]+`)/, include_captures: true, trim: false)
+    |> Enum.map_join(&inline_code_segment_html/1)
+  end
+
+  defp inline_code_segment_html(""), do: ""
+
+  defp inline_code_segment_html(segment) do
+    if String.starts_with?(segment, "`") and String.ends_with?(segment, "`") and
+         String.length(segment) > 1 do
+      code =
+        segment
+        |> String.trim_leading("`")
+        |> String.trim_trailing("`")
+
+      ~s(<code class="inline-code">#{escape(code)}</code>)
+    else
+      escape(segment)
+    end
   end
 
   defp attributes_table_html([]) do
@@ -946,6 +968,16 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
     details[open] summary::after {
       content: "▴";
+    }
+
+    .inline-code {
+      border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+      border-radius: 0.35rem;
+      background: color-mix(in oklab, var(--muted) 30%, transparent);
+      color: var(--foreground);
+      padding: 0.1rem 0.3rem;
+      font-size: 0.9em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
 
     .docs-markdown {

@@ -31,10 +31,16 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
 
     assert component_page =~ "Original shadcn/ui docs"
     assert component_page =~ "Usage (HEEx)"
-    assert component_page =~ "Attributes (Generated from `attr` definitions)"
-    assert component_page =~ "Slots (Generated from `slot` definitions)"
+
+    assert component_page =~
+             "Attributes (Generated from <code class=\"inline-code\">attr</code> definitions)"
+
+    assert component_page =~
+             "Slots (Generated from <code class=\"inline-code\">slot</code> definitions)"
+
     assert component_page =~ "https://ui.shadcn.com/docs/components/button"
     assert component_page =~ "<code>variant</code>"
+    assert component_page =~ "class=\"inline-code\">attr</code>"
     assert component_page =~ "docs-markdown"
     assert component_page =~ "<h2>Attributes</h2>"
     assert component_page =~ "<ul>"
