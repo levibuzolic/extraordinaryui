@@ -101,4 +101,17 @@ test.describe("interactive previews", () => {
     const afterPrev = await track.evaluate((el) => getComputedStyle(el).transform)
     expect(afterPrev).not.toBe(afterNext)
   })
+
+  test("theme controls apply mode, color, and radius", async ({ page }) => {
+    await page.getByRole("button", { name: "Dark" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+
+    await page.getByTestId("theme-color").selectOption("slate")
+    const primary = await page.locator("html").evaluate((el) => getComputedStyle(el).getPropertyValue("--primary").trim())
+    expect(primary).toBe("oklch(0.929 0.013 255.508)")
+
+    await page.getByTestId("theme-radius").selectOption("vega")
+    const radius = await page.locator("html").evaluate((el) => getComputedStyle(el).getPropertyValue("--radius").trim())
+    expect(radius).toBe("1rem")
+  })
 })

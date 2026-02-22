@@ -235,6 +235,13 @@ mix extraordinary_ui.docs.build --output public/docs --clean
 The output can be hosted on any static platform (GitHub Pages, Netlify, S3, Cloudflare Pages, etc).
 
 The generated site includes client-side interactivity for preview behaviors (dialogs, drawers, popovers, dropdowns, comboboxes, and carousel controls) without Phoenix running.
+It also includes shadcn-style theme controls:
+
+- mode: `light` / `dark` / `auto`
+- color palettes: `zinc`, `slate`, `stone`, `gray`, `neutral`
+- radius profiles: `maia`, `mira`, `nova`, `lyra`, `vega`
+
+Each component card now exposes a copyable Phoenix snippet (`Copy HEEx`) generated from sample assigns, so docs can be pasted directly into `.heex` templates.
 
 ## Local Sandbox App
 
@@ -245,6 +252,8 @@ This repo includes a local Phoenix host app for integration testing:
 The sandbox renders the full component catalog at:
 
 - `http://localhost:4000/components`
+
+The sandbox catalog includes the same theme controls and copyable HEEx snippets as the static docs exporter.
 
 Run it:
 
@@ -261,7 +270,9 @@ Playwright tests run against the sandbox app and cover:
 
 - full catalog rendering (every component card)
 - catalog search behavior
+- Phoenix snippet panel availability
 - interactive previews (dialog, drawer, popover, dropdown, combobox, carousel)
+- theme controls (mode, color, radius)
 
 Setup and run:
 

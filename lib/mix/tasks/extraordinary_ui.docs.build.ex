@@ -66,7 +66,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   defp page_html(sections, theme_css) do
     """
     <!doctype html>
-    <html lang=\"en\" class=\"style-nova\">
+    <html lang=\"en\">
       <head>
         <meta charset=\"utf-8\" />
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
@@ -95,6 +95,8 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
             <div class=\"mb-4\">
               <input id=\"component-search\" type=\"search\" placeholder=\"Search components...\" class=\"border-input bg-background h-9 w-full rounded-md border px-3 text-sm\" />
             </div>
+
+            #{theme_controls_html()}
 
             <nav class=\"space-y-4\" aria-label=\"Component sections\">
               #{sidebar_links(sections)}
@@ -140,6 +142,44 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
     end)
   end
 
+  defp theme_controls_html do
+    """
+    <section class=\"mb-6 rounded-lg border p-3\">
+      <h2 class=\"text-sm font-semibold\">Theme</h2>
+
+      <div class=\"mt-3\">
+        <p class=\"mb-2 text-xs font-medium text-muted-foreground\">Mode</p>
+        <div class=\"grid grid-cols-3 gap-1\">
+          <button type=\"button\" data-theme-mode=\"light\" class=\"theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs\">Light</button>
+          <button type=\"button\" data-theme-mode=\"dark\" class=\"theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs\">Dark</button>
+          <button type=\"button\" data-theme-mode=\"auto\" class=\"theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs\">Auto</button>
+        </div>
+      </div>
+
+      <div class=\"mt-3\">
+        <label for=\"theme-color\" class=\"mb-2 block text-xs font-medium text-muted-foreground\">Color</label>
+        <select id=\"theme-color\" class=\"border-input bg-background h-8 w-full rounded-md border px-2 text-xs\">
+          #{option_tags(["zinc", "slate", "stone", "gray", "neutral"])}
+        </select>
+      </div>
+
+      <div class=\"mt-3\">
+        <label for=\"theme-radius\" class=\"mb-2 block text-xs font-medium text-muted-foreground\">Radius</label>
+        <select id=\"theme-radius\" class=\"border-input bg-background h-8 w-full rounded-md border px-2 text-xs\">
+          #{option_tags(["maia", "mira", "nova", "lyra", "vega"])}
+        </select>
+      </div>
+    </section>
+    """
+  end
+
+  defp option_tags(options) do
+    Enum.map_join(options, "\n", fn option ->
+      label = option |> String.replace("_", " ") |> String.capitalize()
+      ~s(<option value="#{option}">#{label}</option>)
+    end)
+  end
+
   defp sections_html(sections) do
     Enum.map_join(sections, "\n", fn section ->
       entries = Enum.map_join(section.entries, "\n", &entry_html/1)
@@ -154,28 +194,28 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   end
 
   defp entry_html(entry) do
-    escaped_preview =
-      entry.preview_html |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
-
     escaped_docs = entry.docs |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
+
+    escaped_template =
+      entry.template_heex |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
 
     """
     <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-4 py-3\">
         <div class=\"flex flex-wrap items-center justify-between gap-2\">
           <h4 class=\"font-medium\"><code>#{entry.module_name}.#{entry.title}/1</code></h4>
-          <button type=\"button\" data-copy-preview=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HTML</button>
+          <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
         </div>
         <p class=\"text-muted-foreground mt-2 text-sm\">#{escaped_docs}</p>
       </header>
 
       <div class=\"p-4\">
-        <div class=\"style-nova rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
+        <div class=\"rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
       </div>
 
       <details class=\"border-border/70 border-t\">
-        <summary class=\"cursor-pointer list-none px-4 py-3 text-sm font-medium\">Rendered HTML</summary>
-        <pre class=\"max-h-72 overflow-auto border-t bg-muted/30 p-4 text-xs\"><code id=\"code-#{entry.id}\">#{escaped_preview}</code></pre>
+        <summary class=\"cursor-pointer list-none px-4 py-3 text-sm font-medium\">Phoenix template (HEEx)</summary>
+        <pre class=\"max-h-72 overflow-auto border-t bg-muted/30 p-4 text-xs\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
       </details>
     </article>
     """
@@ -189,6 +229,277 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
         if (!el) return
         el.classList.toggle("hidden", !visible)
         el.dataset.state = visible ? "open" : "closed"
+      }
+      const themeStorage = {
+        mode: "eui:theme:mode",
+        color: "eui:theme:color",
+        radius: "eui:theme:radius",
+      }
+      const themePresets = {
+        zinc: {
+          light: {
+            foreground: "oklch(0.141 0.005 285.823)",
+            card: "oklch(1 0 0)",
+            "card-foreground": "oklch(0.141 0.005 285.823)",
+            popover: "oklch(1 0 0)",
+            "popover-foreground": "oklch(0.141 0.005 285.823)",
+            primary: "oklch(0.21 0.006 285.885)",
+            "primary-foreground": "oklch(0.985 0 0)",
+            secondary: "oklch(0.967 0.001 286.375)",
+            "secondary-foreground": "oklch(0.21 0.006 285.885)",
+            muted: "oklch(0.967 0.001 286.375)",
+            "muted-foreground": "oklch(0.552 0.016 285.938)",
+            accent: "oklch(0.967 0.001 286.375)",
+            "accent-foreground": "oklch(0.21 0.006 285.885)",
+            border: "oklch(0.92 0.004 286.32)",
+            input: "oklch(0.92 0.004 286.32)",
+            ring: "oklch(0.705 0.015 286.067)",
+          },
+          dark: {
+            background: "oklch(0.141 0.005 285.823)",
+            foreground: "oklch(0.985 0 0)",
+            card: "oklch(0.21 0.006 285.885)",
+            "card-foreground": "oklch(0.985 0 0)",
+            popover: "oklch(0.21 0.006 285.885)",
+            "popover-foreground": "oklch(0.985 0 0)",
+            primary: "oklch(0.92 0.004 286.32)",
+            "primary-foreground": "oklch(0.21 0.006 285.885)",
+            secondary: "oklch(0.274 0.006 286.033)",
+            "secondary-foreground": "oklch(0.985 0 0)",
+            muted: "oklch(0.274 0.006 286.033)",
+            "muted-foreground": "oklch(0.705 0.015 286.067)",
+            accent: "oklch(0.274 0.006 286.033)",
+            "accent-foreground": "oklch(0.985 0 0)",
+            border: "oklch(1 0 0 / 10%)",
+            input: "oklch(1 0 0 / 15%)",
+            ring: "oklch(0.552 0.016 285.938)",
+          },
+        },
+        slate: {
+          light: {
+            foreground: "oklch(0.129 0.042 264.695)",
+            card: "oklch(1 0 0)",
+            "card-foreground": "oklch(0.129 0.042 264.695)",
+            popover: "oklch(1 0 0)",
+            "popover-foreground": "oklch(0.129 0.042 264.695)",
+            primary: "oklch(0.208 0.042 265.755)",
+            "primary-foreground": "oklch(0.984 0.003 247.858)",
+            secondary: "oklch(0.968 0.007 247.896)",
+            "secondary-foreground": "oklch(0.208 0.042 265.755)",
+            muted: "oklch(0.968 0.007 247.896)",
+            "muted-foreground": "oklch(0.554 0.046 257.417)",
+            accent: "oklch(0.968 0.007 247.896)",
+            "accent-foreground": "oklch(0.208 0.042 265.755)",
+            border: "oklch(0.929 0.013 255.508)",
+            input: "oklch(0.929 0.013 255.508)",
+            ring: "oklch(0.704 0.04 256.788)",
+          },
+          dark: {
+            background: "oklch(0.129 0.042 264.695)",
+            foreground: "oklch(0.984 0.003 247.858)",
+            card: "oklch(0.208 0.042 265.755)",
+            "card-foreground": "oklch(0.984 0.003 247.858)",
+            popover: "oklch(0.208 0.042 265.755)",
+            "popover-foreground": "oklch(0.984 0.003 247.858)",
+            primary: "oklch(0.929 0.013 255.508)",
+            "primary-foreground": "oklch(0.208 0.042 265.755)",
+            secondary: "oklch(0.279 0.041 260.031)",
+            "secondary-foreground": "oklch(0.984 0.003 247.858)",
+            muted: "oklch(0.279 0.041 260.031)",
+            "muted-foreground": "oklch(0.704 0.04 256.788)",
+            accent: "oklch(0.279 0.041 260.031)",
+            "accent-foreground": "oklch(0.984 0.003 247.858)",
+            border: "oklch(1 0 0 / 10%)",
+            input: "oklch(1 0 0 / 15%)",
+            ring: "oklch(0.551 0.027 264.364)",
+          },
+        },
+        stone: {
+          light: {
+            foreground: "oklch(0.147 0.004 49.25)",
+            card: "oklch(1 0 0)",
+            "card-foreground": "oklch(0.147 0.004 49.25)",
+            popover: "oklch(1 0 0)",
+            "popover-foreground": "oklch(0.147 0.004 49.25)",
+            primary: "oklch(0.216 0.006 56.043)",
+            "primary-foreground": "oklch(0.985 0.001 106.423)",
+            secondary: "oklch(0.97 0.001 106.424)",
+            "secondary-foreground": "oklch(0.216 0.006 56.043)",
+            muted: "oklch(0.97 0.001 106.424)",
+            "muted-foreground": "oklch(0.553 0.013 58.071)",
+            accent: "oklch(0.97 0.001 106.424)",
+            "accent-foreground": "oklch(0.216 0.006 56.043)",
+            border: "oklch(0.923 0.003 48.717)",
+            input: "oklch(0.923 0.003 48.717)",
+            ring: "oklch(0.709 0.01 56.259)",
+          },
+          dark: {
+            background: "oklch(0.147 0.004 49.25)",
+            foreground: "oklch(0.985 0.001 106.423)",
+            card: "oklch(0.216 0.006 56.043)",
+            "card-foreground": "oklch(0.985 0.001 106.423)",
+            popover: "oklch(0.216 0.006 56.043)",
+            "popover-foreground": "oklch(0.985 0.001 106.423)",
+            primary: "oklch(0.923 0.003 48.717)",
+            "primary-foreground": "oklch(0.216 0.006 56.043)",
+            secondary: "oklch(0.268 0.007 34.298)",
+            "secondary-foreground": "oklch(0.985 0.001 106.423)",
+            muted: "oklch(0.268 0.007 34.298)",
+            "muted-foreground": "oklch(0.709 0.01 56.259)",
+            accent: "oklch(0.268 0.007 34.298)",
+            "accent-foreground": "oklch(0.985 0.001 106.423)",
+            border: "oklch(1 0 0 / 10%)",
+            input: "oklch(1 0 0 / 15%)",
+            ring: "oklch(0.553 0.013 58.071)",
+          },
+        },
+        gray: {
+          light: {
+            foreground: "oklch(0.13 0.028 261.692)",
+            card: "oklch(1 0 0)",
+            "card-foreground": "oklch(0.13 0.028 261.692)",
+            popover: "oklch(1 0 0)",
+            "popover-foreground": "oklch(0.13 0.028 261.692)",
+            primary: "oklch(0.21 0.034 264.665)",
+            "primary-foreground": "oklch(0.985 0.002 247.839)",
+            secondary: "oklch(0.967 0.003 264.542)",
+            "secondary-foreground": "oklch(0.21 0.034 264.665)",
+            muted: "oklch(0.967 0.003 264.542)",
+            "muted-foreground": "oklch(0.551 0.027 264.364)",
+            accent: "oklch(0.967 0.003 264.542)",
+            "accent-foreground": "oklch(0.21 0.034 264.665)",
+            border: "oklch(0.928 0.006 264.531)",
+            input: "oklch(0.928 0.006 264.531)",
+            ring: "oklch(0.707 0.022 261.325)",
+          },
+          dark: {
+            background: "oklch(0.13 0.028 261.692)",
+            foreground: "oklch(0.985 0.002 247.839)",
+            card: "oklch(0.21 0.034 264.665)",
+            "card-foreground": "oklch(0.985 0.002 247.839)",
+            popover: "oklch(0.21 0.034 264.665)",
+            "popover-foreground": "oklch(0.985 0.002 247.839)",
+            primary: "oklch(0.928 0.006 264.531)",
+            "primary-foreground": "oklch(0.21 0.034 264.665)",
+            secondary: "oklch(0.278 0.033 256.848)",
+            "secondary-foreground": "oklch(0.985 0.002 247.839)",
+            muted: "oklch(0.278 0.033 256.848)",
+            "muted-foreground": "oklch(0.707 0.022 261.325)",
+            accent: "oklch(0.278 0.033 256.848)",
+            "accent-foreground": "oklch(0.985 0.002 247.839)",
+            border: "oklch(1 0 0 / 10%)",
+            input: "oklch(1 0 0 / 15%)",
+            ring: "oklch(0.551 0.027 264.364)",
+          },
+        },
+        neutral: {
+          light: {
+            foreground: "oklch(0.145 0 0)",
+            card: "oklch(1 0 0)",
+            "card-foreground": "oklch(0.145 0 0)",
+            popover: "oklch(1 0 0)",
+            "popover-foreground": "oklch(0.145 0 0)",
+            primary: "oklch(0.205 0 0)",
+            "primary-foreground": "oklch(0.985 0 0)",
+            secondary: "oklch(0.97 0 0)",
+            "secondary-foreground": "oklch(0.205 0 0)",
+            muted: "oklch(0.97 0 0)",
+            "muted-foreground": "oklch(0.556 0 0)",
+            accent: "oklch(0.97 0 0)",
+            "accent-foreground": "oklch(0.205 0 0)",
+            border: "oklch(0.922 0 0)",
+            input: "oklch(0.922 0 0)",
+            ring: "oklch(0.708 0 0)",
+          },
+          dark: {
+            background: "oklch(0.145 0 0)",
+            foreground: "oklch(0.985 0 0)",
+            card: "oklch(0.205 0 0)",
+            "card-foreground": "oklch(0.985 0 0)",
+            popover: "oklch(0.205 0 0)",
+            "popover-foreground": "oklch(0.985 0 0)",
+            primary: "oklch(0.922 0 0)",
+            "primary-foreground": "oklch(0.205 0 0)",
+            secondary: "oklch(0.269 0 0)",
+            "secondary-foreground": "oklch(0.985 0 0)",
+            muted: "oklch(0.269 0 0)",
+            "muted-foreground": "oklch(0.708 0 0)",
+            accent: "oklch(0.269 0 0)",
+            "accent-foreground": "oklch(0.985 0 0)",
+            border: "oklch(1 0 0 / 10%)",
+            input: "oklch(1 0 0 / 15%)",
+            ring: "oklch(0.556 0 0)",
+          },
+        },
+      }
+      const radiusPresets = {
+        maia: "0.375rem",
+        mira: "0.5rem",
+        nova: "0.75rem",
+        lyra: "0.875rem",
+        vega: "1rem",
+      }
+      const media = window.matchMedia("(prefers-color-scheme: dark)")
+      const root = document.documentElement
+      const modeButtons = qs(document, "[data-theme-mode]")
+      const colorSelect = document.getElementById("theme-color")
+      const radiusSelect = document.getElementById("theme-radius")
+
+      const readSetting = (key, fallback) => localStorage.getItem(key) || fallback
+      const writeSetting = (key, value) => localStorage.setItem(key, value)
+      const resolveMode = (mode) => (mode === "auto" ? (media.matches ? "dark" : "light") : mode)
+
+      const applyPalette = (color, resolvedMode) => {
+        const palette = themePresets[color] || themePresets.neutral
+        const tokens = palette[resolvedMode]
+        Object.entries(tokens).forEach(([token, value]) => {
+          root.style.setProperty(`--${token}`, value)
+        })
+      }
+
+      const syncThemeControls = (mode, color, radius) => {
+        modeButtons.forEach((button) => {
+          const active = button.dataset.themeMode === mode
+          button.dataset.active = active ? "true" : "false"
+          button.setAttribute("aria-pressed", active ? "true" : "false")
+        })
+
+        if (colorSelect) colorSelect.value = color
+        if (radiusSelect) radiusSelect.value = radius
+      }
+
+      const applyTheme = () => {
+        const mode = readSetting(themeStorage.mode, "auto")
+        const color = readSetting(themeStorage.color, "neutral")
+        const radius = readSetting(themeStorage.radius, "nova")
+        const resolvedMode = resolveMode(mode)
+        root.classList.toggle("dark", resolvedMode === "dark")
+        applyPalette(color, resolvedMode)
+        root.style.setProperty("--radius", radiusPresets[radius] || radiusPresets.nova)
+        syncThemeControls(mode, color, radius)
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          writeSetting(themeStorage.mode, button.dataset.themeMode || "auto")
+          applyTheme()
+        })
+      })
+
+      colorSelect?.addEventListener("change", () => {
+        writeSetting(themeStorage.color, colorSelect.value)
+        applyTheme()
+      })
+
+      radiusSelect?.addEventListener("change", () => {
+        writeSetting(themeStorage.radius, radiusSelect.value)
+        applyTheme()
+      })
+
+      if (typeof media.addEventListener === "function") {
+        media.addEventListener("change", () => {
+          if (readSetting(themeStorage.mode, "auto") === "auto") applyTheme()
+        })
       }
 
       const searchInput = document.getElementById("component-search")
@@ -205,11 +516,12 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       }
 
       searchInput?.addEventListener("input", runSearch)
+      applyTheme()
 
-      const copyButtons = Array.from(document.querySelectorAll("[data-copy-preview]"))
+      const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))
       copyButtons.forEach((button) => {
         button.addEventListener("click", async () => {
-          const id = button.getAttribute("data-copy-preview")
+          const id = button.getAttribute("data-copy-template")
           const code = document.getElementById(`code-${id}`)
           if (!code) return
 
@@ -367,12 +679,18 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
   defp site_css do
     """
-    :root {
-      color-scheme: light;
-    }
-
     html {
       scroll-behavior: smooth;
+    }
+
+    html.dark {
+      color-scheme: dark;
+    }
+
+    .theme-mode-btn[data-active="true"] {
+      background: var(--accent);
+      color: var(--accent-foreground);
+      border-color: var(--border);
     }
 
     summary::-webkit-details-marker {

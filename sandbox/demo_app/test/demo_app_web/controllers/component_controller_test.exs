@@ -9,5 +9,9 @@ defmodule DemoAppWeb.ComponentControllerTest do
     assert response =~ "Components:"
     assert response =~ "Actions.button/1"
     assert response =~ "data-component-card"
+    assert response =~ "Phoenix template (HEEx)"
+    assert response =~ "data-theme-mode"
+    assert response =~ "theme-color"
+    assert response =~ "theme-radius"
   end
 end

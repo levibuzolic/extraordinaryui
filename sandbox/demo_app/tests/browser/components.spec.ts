@@ -35,4 +35,13 @@ test.describe("component catalog", () => {
     await page.locator("#component-search").fill("")
     await expect(cards).toHaveCount(initialCount)
   })
+
+  test("cards expose HEEx snippets", async ({ page }) => {
+    const firstCard = page.locator("[data-component-card]").first()
+    await expect(firstCard.getByRole("button", { name: "Copy HEEx" })).toBeVisible()
+    await firstCard.locator("summary", { hasText: "Phoenix template (HEEx)" }).click()
+
+    const code = firstCard.locator("code[id^='code-']").first()
+    await expect(code).toContainText("<.")
+  })
 })

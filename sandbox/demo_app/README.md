@@ -6,6 +6,11 @@ This Phoenix app embeds `extraordinary_ui` as a local path dependency to provide
 
 - `GET /` - small landing page
 - `GET /components` - full Extraordinary UI component catalog preview (all exported component entries)
+- shadcn-style theme controls on `/components`:
+  - mode (`light`/`dark`/`auto`)
+  - palette (`zinc`/`slate`/`stone`/`gray`/`neutral`)
+  - radius (`maia`/`mira`/`nova`/`lyra`/`vega`)
+- copyable component snippets as Phoenix template tags (`Copy HEEx`)
 - client-side interactions for overlay/component demos (dialog, drawer, popover, dropdown, combobox, carousel)
 
 ## Run the server

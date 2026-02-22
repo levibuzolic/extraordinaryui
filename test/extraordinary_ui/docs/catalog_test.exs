@@ -40,6 +40,7 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
 
       Enum.each(section.entries, fn entry ->
         refute entry.preview_html =~ "Render error"
+        assert entry.template_heex =~ "<."
       end)
     end)
   end

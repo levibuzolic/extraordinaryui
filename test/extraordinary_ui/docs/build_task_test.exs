@@ -21,5 +21,9 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert index =~ "Extraordinary UI"
     assert index =~ "Component Library"
     assert index =~ "Actions.button/1"
+    assert index =~ "Phoenix template (HEEx)"
+    assert index =~ "data-theme-mode"
+    assert index =~ "theme-color"
+    assert index =~ "theme-radius"
   end
 end

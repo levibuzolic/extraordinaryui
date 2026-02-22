@@ -74,6 +74,8 @@ All validation checks currently pass.
 - Added `/components` catalog page in the sandbox host app for real browser validation.
 - Added Playwright browser tests covering full component catalog rendering, search filtering, and key interactions.
 - Documented run/test/export workflows in root and sandbox READMEs.
+- Added theme switchers (light/dark/auto + color palette + radius profile) to static docs and sandbox catalog.
+- Replaced rendered-HTML copy snippets with generated Phoenix HEEx component snippets in docs cards.
 
 ## Commit Log
 

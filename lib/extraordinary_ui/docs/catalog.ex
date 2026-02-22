@@ -83,7 +83,8 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       module: module,
       module_name: module |> Module.split() |> List.last(),
       docs: first_paragraph(module, function),
-      preview_html: render_component(module, function, assigns)
+      preview_html: render_component(module, function, assigns),
+      template_heex: render_template(function, assigns)
     }
   end
 
@@ -127,6 +128,127 @@ defmodule ExtraordinaryUI.Docs.Catalog do
         |> Phoenix.HTML.safe_to_string()
 
       "<pre class=\"text-destructive text-xs\">#{escaped}</pre>"
+  end
+
+  defp render_template(function, assigns) do
+    assigns =
+      assigns
+      |> Enum.reject(fn {_key, value} -> is_nil(value) end)
+
+    {slot_entries, attr_entries} =
+      Enum.split_with(assigns, fn {_key, value} -> slot_assign?(value) end)
+
+    inner_slot =
+      Enum.find_value(slot_entries, fn {key, value} -> if key == :inner_block, do: value end)
+
+    named_slots =
+      slot_entries
+      |> Enum.reject(fn {key, _value} -> key == :inner_block end)
+      |> Enum.sort_by(fn {key, _value} -> Atom.to_string(key) end)
+      |> Enum.flat_map(fn {name, slot_values} ->
+        Enum.map(slot_values, fn slot_value -> render_named_slot(name, slot_value) end)
+      end)
+
+    inner_block =
+      inner_slot
+      |> List.wrap()
+      |> Enum.map(&slot_body/1)
+      |> Enum.reject(&(&1 == ""))
+
+    body = Enum.join(named_slots ++ inner_block, "\n\n")
+
+    attrs =
+      attr_entries
+      |> Enum.sort_by(fn {key, _value} -> Atom.to_string(key) end)
+      |> Enum.map(&render_attr/1)
+
+    open_tag =
+      case attrs do
+        [] ->
+          "<.#{function}"
+
+        _ ->
+          "<.#{function}\n" <> Enum.map_join(attrs, "\n", &"  #{&1}")
+      end
+
+    if body == "" do
+      open_tag <> " />"
+    else
+      open_tag <> ">\n" <> indent_block(body, 2) <> "\n</.#{function}>"
+    end
+  end
+
+  defp render_named_slot(name, slot_value) do
+    attrs =
+      slot_value
+      |> Map.delete(:inner_block)
+      |> Enum.reject(fn {_key, value} -> is_nil(value) end)
+      |> Enum.sort_by(fn {key, _value} -> Atom.to_string(key) end)
+      |> Enum.map(&render_attr/1)
+
+    open_tag =
+      case attrs do
+        [] -> "<:#{name}>"
+        _ -> "<:#{name} " <> Enum.join(attrs, " ") <> ">"
+      end
+
+    content = slot_body(slot_value)
+
+    if content == "" do
+      open_tag <> "</:#{name}>"
+    else
+      open_tag <> "\n" <> indent_block(content, 2) <> "\n</:#{name}>"
+    end
+  end
+
+  defp render_attr({key, value}) do
+    key = Atom.to_string(key)
+
+    case value do
+      value when is_binary(value) ->
+        ~s(#{key}=#{inspect(value)})
+
+      value when is_boolean(value) ->
+        ~s(#{key}={#{value}})
+
+      value when is_integer(value) or is_float(value) ->
+        ~s(#{key}={#{value}})
+
+      value when is_atom(value) ->
+        ~s(#{key}={#{inspect(value)}})
+
+      value when is_list(value) or is_map(value) ->
+        ~s(#{key}={#{inspect(value, pretty: true, limit: :infinity)}})
+
+      value ->
+        ~s(#{key}={#{inspect(value)}})
+    end
+  end
+
+  defp slot_assign?(value) do
+    is_list(value) and value != [] and
+      Enum.all?(value, fn
+        %{inner_block: inner_block} when is_function(inner_block, 2) -> true
+        _ -> false
+      end)
+  end
+
+  defp slot_body(%{inner_block: inner_block}) do
+    inner_block
+    |> Kernel.apply([%{}, nil])
+    |> Phoenix.HTML.Safe.to_iodata()
+    |> IO.iodata_to_binary()
+    |> String.trim()
+  rescue
+    _ -> ""
+  end
+
+  defp indent_block(content, spaces) do
+    indentation = String.duplicate(" ", spaces)
+
+    content
+    |> String.split("\n")
+    |> Enum.map_join("\n", &(indentation <> &1))
   end
 
   defp sample_assigns(Actions, :button) do
