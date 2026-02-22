@@ -171,6 +171,18 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added package/docs metadata entries so `CONTRIBUTING.md` and `THIRD_PARTY_NOTICES.md` ship with Hex package docs context.
 - Updated `AGENTS.md` documentation requirements to preserve the README vs CONTRIBUTING audience split.
 
+### Milestone 15: Marketing site component-native refresh
+
+- Rebuilt the static marketing landing page to render using Extraordinary UI component functions instead of custom ad-hoc HTML controls.
+- Set marketing site baseline to the neutral token palette with `style-nova` radius profile and Tailwind v4 browser styling.
+- Added a homepage examples section with live previews/snippets for:
+  - `Actions.button_group/1`
+  - `Forms.field/1`
+  - `Feedback.alert/1`
+  - `Navigation.tabs/1`
+- Added per-example links back to the corresponding shadcn/ui docs and ensured shadcn mentions in marketing copy link to upstream docs.
+- Expanded site build test assertions to cover component examples, neutral style marker, and shadcn reference links.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -199,3 +211,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - `a73a333` - expand table/pagination sample compositions for closer shadcn-style completeness.
 - `d003fdc` - expand rich multi-family component samples and add named inline-doc example extraction.
 - `7dda7aa` - stabilize Playwright visual snapshots by capturing normalized preview containers to avoid 1px cross-env card drift failures.
+- `22e2293` - log visual snapshot stability hardening in the progress tracker.
+- `e9634c4` - split user-facing README from contributor docs and add third-party notices.
+- `93b6ad4` - log documentation audience split and licensing notices.
+- `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
