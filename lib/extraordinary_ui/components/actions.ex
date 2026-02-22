@@ -52,9 +52,15 @@ defmodule ExtraordinaryUI.Components.Actions do
   - `as`: html tag (`"button"` by default, often `"a"`)
   - `loading`: toggles an inline spinner
 
-  ## Example
+  ## Examples
 
-      <.button variant={:outline} size={:sm}>Edit</.button>
+  ```heex title="Outline small action"
+  <.button variant={:outline} size={:sm}>Edit</.button>
+  ```
+
+  ```heex title="Loading destructive action"
+  <.button variant={:destructive} loading={true}>Deleting...</.button>
+  ```
   """
   attr :as, :string, default: "button"
 

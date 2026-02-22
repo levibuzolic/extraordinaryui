@@ -63,11 +63,35 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
     assert button_entry.shadcn_slug == "button"
     assert button_entry.shadcn_url == "https://ui.shadcn.com/docs/components/button"
     assert button_entry.inline_doc_examples != []
+    assert Enum.any?(button_entry.inline_doc_examples, &(&1.title == "Outline small action"))
+
+    assert Enum.any?(
+             button_entry.inline_doc_examples,
+             &(&1.title == "Loading destructive action")
+           )
 
     attribute_names = Enum.map(button_entry.attributes, & &1.name)
     assert "variant" in attribute_names
     assert "size" in attribute_names
     assert "inner_block" in Enum.map(button_entry.slots, & &1.name)
+  end
+
+  test "core families expose multiple complete generated examples" do
+    entries = Catalog.sections() |> Enum.flat_map(& &1.entries)
+
+    assert length(find_entry(entries, ExtraordinaryUI.Components.Actions, :button).examples) == 2
+    assert length(find_entry(entries, ExtraordinaryUI.Components.Forms, :field).examples) == 2
+    assert length(find_entry(entries, ExtraordinaryUI.Components.Feedback, :alert).examples) == 2
+
+    assert length(
+             find_entry(entries, ExtraordinaryUI.Components.DataDisplay, :accordion).examples
+           ) == 2
+
+    assert length(find_entry(entries, ExtraordinaryUI.Components.Navigation, :tabs).examples) == 2
+    assert length(find_entry(entries, ExtraordinaryUI.Components.Overlay, :dialog).examples) == 2
+
+    assert length(find_entry(entries, ExtraordinaryUI.Components.Advanced, :command).examples) ==
+             2
   end
 
   test "composite components can expose multiple generated examples" do
@@ -108,5 +132,9 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
     assert avatar_entry.preview_html =~ "data:image/svg+xml;base64,"
     assert avatar_group_entry.preview_html =~ "data:image/svg+xml;base64,"
     assert avatar_group_entry.template_heex =~ "<.avatar_group_count>"
+  end
+
+  defp find_entry(entries, module, function) do
+    Enum.find(entries, fn entry -> entry.module == module and entry.function == function end)
   end
 end

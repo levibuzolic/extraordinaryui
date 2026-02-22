@@ -412,9 +412,12 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     fenced_examples =
       doc
       |> String.trim()
-      |> then(&Regex.scan(~r/```([a-zA-Z0-9_-]*)\n(.*?)```/s, &1, capture: :all_but_first))
-      |> Enum.map(fn [lang, code] -> {String.downcase(lang), String.trim(code)} end)
-      |> Enum.filter(fn {lang, code} ->
+      |> then(&Regex.scan(~r/```([^\n]*)\n(.*?)```/s, &1, capture: :all_but_first))
+      |> Enum.map(fn [info, code] ->
+        {lang, title} = parse_fence_info(info)
+        {lang, title, String.trim(code)}
+      end)
+      |> Enum.filter(fn {lang, _title, code} ->
         code != "" and (lang in ["", "heex", "html", "elixir"] and String.contains?(code, "<."))
       end)
 
@@ -432,22 +435,174 @@ defmodule ExtraordinaryUI.Docs.Catalog do
         |> String.trim()
       end)
       |> Enum.filter(&String.contains?(&1, "<."))
-      |> Enum.map(&{"", &1})
+      |> Enum.map(&{"", nil, &1})
 
     (fenced_examples ++ indented_examples)
     |> Enum.uniq()
     |> Enum.with_index(1)
-    |> Enum.map(fn {{lang, code}, index} ->
+    |> Enum.map(fn {{lang, title, code}, index} ->
       %{
         id: "inline-#{index}",
-        title: inline_doc_example_title(lang, index),
+        title: inline_doc_example_title(title, lang, index),
         template_heex: code
       }
     end)
   end
 
-  defp inline_doc_example_title("", index), do: "Inline docs example #{index}"
-  defp inline_doc_example_title(lang, index), do: "Inline docs example #{index} (#{lang})"
+  defp parse_fence_info(info) do
+    trimmed = String.trim(info)
+    title = fence_title(trimmed)
+
+    case String.split(trimmed, ~r/\s+/, trim: true) do
+      [] ->
+        {"", title}
+
+      [lang | rest] ->
+        fallback_title =
+          case Enum.reject(rest, &String.contains?(&1, "=")) do
+            [] -> nil
+            tokens -> Enum.join(tokens, " ")
+          end
+
+        {String.downcase(lang), title || fallback_title}
+    end
+  end
+
+  defp fence_title(info) do
+    case Regex.run(~r/title\s*=\s*"([^"]+)"/, info, capture: :all_but_first) do
+      [title] ->
+        title
+
+      _ ->
+        case Regex.run(~r/title\s*=\s*'([^']+)'/, info, capture: :all_but_first) do
+          [title] -> title
+          _ -> nil
+        end
+    end
+  end
+
+  defp inline_doc_example_title(nil, "", index), do: "Inline docs example #{index}"
+  defp inline_doc_example_title(nil, lang, index), do: "Inline docs example #{index} (#{lang})"
+  defp inline_doc_example_title(title, _lang, _index), do: title
+
+  defp sample_examples(Actions, :button) do
+    [
+      %{
+        id: "primary",
+        title: "Primary CTA",
+        description: "Default shadcn call-to-action button",
+        assigns: %{inner_block: slot("Create project")}
+      },
+      %{
+        id: "destructive-loading",
+        title: "Destructive Loading",
+        description: "Destructive action with loading spinner",
+        assigns: %{variant: :destructive, loading: true, inner_block: slot("Deleting...")}
+      }
+    ]
+  end
+
+  defp sample_examples(Forms, :field) do
+    [
+      %{
+        id: "profile",
+        title: "Profile Field",
+        description: "Label, helper text, and input control",
+        assigns: sample_assigns(Forms, :field)
+      },
+      %{
+        id: "validation",
+        title: "Validation State",
+        description: "Field with inline validation error",
+        assigns: field_validation_assigns()
+      }
+    ]
+  end
+
+  defp sample_examples(Feedback, :alert) do
+    [
+      %{
+        id: "notice",
+        title: "Notice Alert",
+        description: "Default informational alert",
+        assigns: sample_assigns(Feedback, :alert)
+      },
+      %{
+        id: "destructive",
+        title: "Destructive Alert",
+        description: "Irreversible action warning style",
+        assigns: destructive_alert_assigns()
+      }
+    ]
+  end
+
+  defp sample_examples(DataDisplay, :accordion) do
+    [
+      %{
+        id: "faq",
+        title: "FAQ Accordion",
+        description: "Common questions with expanded first section",
+        assigns: sample_assigns(DataDisplay, :accordion)
+      },
+      %{
+        id: "release-notes",
+        title: "Release Notes",
+        description: "Changelog-focused accordion structure",
+        assigns: release_notes_accordion_assigns()
+      }
+    ]
+  end
+
+  defp sample_examples(Navigation, :tabs) do
+    [
+      %{
+        id: "default",
+        title: "Default Tabs",
+        description: "Segmented tab controls with content panels",
+        assigns: sample_assigns(Navigation, :tabs)
+      },
+      %{
+        id: "line",
+        title: "Line Variant",
+        description: "Line-style tabs for settings surfaces",
+        assigns: line_tabs_assigns()
+      }
+    ]
+  end
+
+  defp sample_examples(Overlay, :dialog) do
+    [
+      %{
+        id: "settings",
+        title: "Settings Dialog",
+        description: "Standard dialog with trigger, copy, and footer actions",
+        assigns: sample_assigns(Overlay, :dialog)
+      },
+      %{
+        id: "confirmation",
+        title: "Confirmation Dialog",
+        description: "Confirmation flow with cancel and destructive actions",
+        assigns: destructive_dialog_assigns()
+      }
+    ]
+  end
+
+  defp sample_examples(Advanced, :command) do
+    [
+      %{
+        id: "palette",
+        title: "Command Palette",
+        description: "Grouped quick actions and navigation items",
+        assigns: command_palette_assigns()
+      },
+      %{
+        id: "project-switcher",
+        title: "Project Switcher",
+        description: "Cross-project jump menu with grouped items",
+        assigns: project_switcher_command_assigns()
+      }
+    ]
+  end
 
   defp sample_examples(Layout, :card) do
     [
@@ -647,18 +802,243 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     }
   end
 
+  defp field_validation_assigns do
+    label_html =
+      render_component(Forms, :label, %{
+        for: "docs-password",
+        inner_block: slot("Password")
+      })
+
+    input_html =
+      render_component(Forms, :input, %{
+        id: "docs-password",
+        type: "password",
+        value: "short"
+      })
+
+    %{
+      label:
+        slot(
+          label_html,
+          """
+          <.label for="docs-password">Password</.label>
+          """
+        ),
+      description: slot("Use at least 12 characters."),
+      error: slot("Password must include at least one symbol."),
+      inner_block:
+        slot(
+          input_html,
+          """
+          <.input id="docs-password" type="password" value="short" />
+          """
+        )
+    }
+  end
+
+  defp destructive_alert_assigns do
+    title_html = render_component(Feedback, :alert_title, %{inner_block: slot("Deploy blocked")})
+
+    description_html =
+      render_component(Feedback, :alert_description, %{
+        inner_block: slot("Production checks failed. Resolve blockers before redeploying.")
+      })
+
+    %{
+      variant: :destructive,
+      inner_block:
+        slot(
+          """
+          <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\"><path d=\"M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v5a1 1 0 11-2 0V8a1 1 0 011-1zm0 10a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z\" /></svg>
+          #{title_html}
+          #{description_html}
+          """,
+          """
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v5a1 1 0 11-2 0V8a1 1 0 011-1zm0 10a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" />
+          </svg>
+          <.alert_title>Deploy blocked</.alert_title>
+          <.alert_description>
+            Production checks failed. Resolve blockers before redeploying.
+          </.alert_description>
+          """
+        )
+    }
+  end
+
+  defp release_notes_accordion_assigns do
+    %{
+      item: [
+        %{
+          title: "v0.4.0 · New components",
+          open: true,
+          inner_block: fn _, _ -> "Added pagination, tabs, and command palette docs pages." end
+        },
+        %{
+          title: "v0.3.2 · Docs quality",
+          inner_block: fn _, _ -> "Added generated attr/slot tables and HEEx copy snippets." end
+        },
+        %{
+          title: "v0.3.0 · Static site",
+          inner_block: fn _, _ -> "Introduced static docs export and theme controls." end
+        }
+      ]
+    }
+  end
+
+  defp line_tabs_assigns do
+    %{
+      value: "profile",
+      variant: :line,
+      trigger: [
+        %{value: "profile", inner_block: fn _, _ -> "Profile" end},
+        %{value: "security", inner_block: fn _, _ -> "Security" end},
+        %{value: "billing", inner_block: fn _, _ -> "Billing" end}
+      ],
+      content: [
+        %{value: "profile", inner_block: fn _, _ -> "Update your profile preferences." end},
+        %{value: "security", inner_block: fn _, _ -> "Manage MFA, passkeys, and sessions." end},
+        %{value: "billing", inner_block: fn _, _ -> "Control plan and payment settings." end}
+      ]
+    }
+  end
+
+  defp destructive_dialog_assigns do
+    trigger_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        inner_block: slot("Delete project")
+      })
+
+    cancel_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Cancel")
+      })
+
+    delete_html =
+      render_component(Actions, :button, %{
+        variant: :destructive,
+        size: :sm,
+        inner_block: slot("Delete")
+      })
+
+    %{
+      id: "docs-dialog-destructive",
+      open: false,
+      trigger:
+        slot(
+          trigger_html,
+          """
+          <.button variant={:outline}>Delete project</.button>
+          """
+        ),
+      title: slot("Delete project?"),
+      description: slot("This action permanently removes deployments and analytics."),
+      inner_block:
+        slot(
+          "<p class=\"text-sm text-muted-foreground\">Type the project name to confirm deletion.</p>",
+          "<p class=\"text-sm text-muted-foreground\">Type the project name to confirm deletion.</p>"
+        ),
+      footer:
+        slot(
+          cancel_html <> "\n" <> delete_html,
+          """
+          <.button variant={:outline} size={:sm}>Cancel</.button>
+          <.button variant={:destructive} size={:sm}>Delete</.button>
+          """
+        )
+    }
+  end
+
+  defp project_switcher_command_assigns do
+    docs_item_html =
+      render_component(Advanced, :item, %{value: "docs", inner_block: slot("Docs site")})
+
+    demo_item_html =
+      render_component(Advanced, :item, %{value: "demo", inner_block: slot("Demo app")})
+
+    platform_item_html =
+      render_component(Advanced, :item, %{value: "platform", inner_block: slot("Platform team")})
+
+    %{
+      placeholder: "Jump to project...",
+      group: [
+        %{
+          heading: "Projects",
+          inner_block: fn _, _ -> HTML.raw(docs_item_html <> "\n" <> demo_item_html) end,
+          template: """
+          <.item value="docs">Docs site</.item>
+          <.item value="demo">Demo app</.item>
+          """
+        },
+        %{
+          heading: "Teams",
+          inner_block: fn _, _ -> HTML.raw(platform_item_html) end,
+          template: """
+          <.item value="platform">Platform team</.item>
+          """
+        }
+      ]
+    }
+  end
+
+  defp command_palette_assigns do
+    profile_item_html =
+      render_component(Advanced, :item, %{value: "profile", inner_block: slot("Profile")})
+
+    billing_item_html =
+      render_component(Advanced, :item, %{value: "billing", inner_block: slot("Billing")})
+
+    settings_item_html =
+      render_component(Advanced, :item, %{value: "settings", inner_block: slot("Settings")})
+
+    %{
+      placeholder: "Search commands...",
+      group: [
+        %{
+          heading: "General",
+          inner_block: fn _, _ -> HTML.raw(profile_item_html <> "\n" <> billing_item_html) end,
+          template: """
+          <.item value="profile">Profile</.item>
+          <.item value="billing">Billing</.item>
+          """
+        },
+        %{
+          heading: "Workspace",
+          inner_block: fn _, _ -> HTML.raw(settings_item_html) end,
+          template: """
+          <.item value="settings">Settings</.item>
+          """
+        }
+      ]
+    }
+  end
+
   defp sample_assigns(Actions, :button) do
     %{inner_block: slot("Button")}
   end
 
   defp sample_assigns(Actions, :button_group) do
+    left_button_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Left")
+      })
+
+    right_button_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Right")
+      })
+
     %{
       inner_block:
         slot(
-          """
-          <button class=\"inline-flex h-8 items-center rounded-md border px-3 text-xs\">Left</button>
-          <button class=\"inline-flex h-8 items-center rounded-md border px-3 text-xs\">Right</button>
-          """,
+          left_button_html <> "\n" <> right_button_html,
           """
           <.button variant={:outline} size={:sm}>Left</.button>
           <.button variant={:outline} size={:sm}>Right</.button>
@@ -672,13 +1052,24 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   end
 
   defp sample_assigns(Actions, :toggle_group) do
+    toggle_a_html =
+      render_component(Actions, :toggle, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("A")
+      })
+
+    toggle_b_html =
+      render_component(Actions, :toggle, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("B")
+      })
+
     %{
       inner_block:
         slot(
-          """
-          <button class=\"inline-flex h-8 items-center rounded-md border px-2 text-xs\">A</button>
-          <button class=\"inline-flex h-8 items-center rounded-md border px-2 text-xs\">B</button>
-          """,
+          toggle_a_html <> "\n" <> toggle_b_html,
           """
           <.toggle variant={:outline} size={:sm}>A</.toggle>
           <.toggle variant={:outline} size={:sm}>B</.toggle>
@@ -691,13 +1082,24 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     do: %{id: "docs-checkbox", checked: true, inner_block: slot("Accept terms")}
 
   defp sample_assigns(Forms, :field) do
+    label_html =
+      render_component(Forms, :label, %{for: "docs-field-input", inner_block: slot("Username")})
+
+    input_html = render_component(Forms, :input, %{id: "docs-field-input", value: "levi"})
+
     %{
-      label: slot("Username"),
+      label:
+        slot(
+          label_html,
+          """
+          <.label for="docs-field-input">Username</.label>
+          """
+        ),
       description: slot("This is your public identifier."),
       error: slot(""),
       inner_block:
         slot(
-          ~S(<input class="h-9 w-full rounded-md border px-3" value="levi" />),
+          input_html,
           ~S(<.input id="docs-field-input" value="levi" />)
         )
     }
@@ -707,13 +1109,13 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     do: %{id: "docs-input", placeholder: "name@example.com", type: "email"}
 
   defp sample_assigns(Forms, :input_group) do
+    search_input_html = render_component(Forms, :input, %{value: "search"})
+    go_button_html = render_component(Actions, :button, %{size: :sm, inner_block: slot("Go")})
+
     %{
       inner_block:
         slot(
-          """
-          <input class=\"h-9 flex-1 px-3\" value=\"search\" />
-          <button class=\"h-9 px-3 text-xs\">Go</button>
-          """,
+          search_input_html <> "\n" <> go_button_html,
           """
           <.input value="search" />
           <.button size={:sm}>Go</.button>
@@ -837,12 +1239,19 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Feedback, :badge), do: %{variant: :secondary, inner_block: slot("Beta")}
 
   defp sample_assigns(Feedback, :empty_state) do
+    reset_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Reset")
+      })
+
     %{
       title: slot("No results"),
       description: slot("Try a different filter."),
       action:
         slot(
-          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Reset</button>",
+          reset_html,
           "<.button variant={:outline} size={:sm}>Reset</.button>"
         ),
       icon: slot("<span class=\"text-xl\">◌</span>")
@@ -1145,6 +1554,13 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   end
 
   defp sample_assigns(Overlay, :alert_dialog) do
+    cancel_button_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Cancel")
+      })
+
     %{
       id: "docs-alert-dialog",
       open: false,
@@ -1154,13 +1570,20 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       inner_block: slot("Dialog body"),
       footer:
         slot(
-          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Cancel</button>",
+          cancel_button_html,
           "<.button variant={:outline} size={:sm}>Cancel</.button>"
         )
     }
   end
 
   defp sample_assigns(Overlay, :dialog) do
+    done_button_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Done")
+      })
+
     %{
       id: "docs-dialog",
       open: false,
@@ -1170,13 +1593,20 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       inner_block: slot("Dialog body"),
       footer:
         slot(
-          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Done</button>",
+          done_button_html,
           "<.button variant={:outline} size={:sm}>Done</.button>"
         )
     }
   end
 
   defp sample_assigns(Overlay, :drawer) do
+    save_button_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Save")
+      })
+
     %{
       id: "docs-drawer",
       open: false,
@@ -1187,7 +1617,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       inner_block: slot("Drawer body"),
       footer:
         slot(
-          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Save</button>",
+          save_button_html,
           "<.button variant={:outline} size={:sm}>Save</.button>"
         )
     }
@@ -1209,16 +1639,21 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   end
 
   defp sample_assigns(Overlay, :menubar) do
+    new_button_html =
+      render_component(Actions, :button, %{
+        variant: :ghost,
+        size: :sm,
+        class: "w-full justify-start",
+        inner_block: slot("New")
+      })
+
     %{
       menu: [
         %{
           label: "File",
-          inner_block: fn _, _ ->
-            HTML.raw(
-              "<button class=\"block w-full rounded-sm px-2 py-1 text-left text-sm\">New</button>"
-            )
-          end,
-          template: "<.button variant={:ghost} size={:sm}>New</.button>"
+          inner_block: fn _, _ -> HTML.raw(new_button_html) end,
+          template:
+            "<.button variant={:ghost} size={:sm} class=\"w-full justify-start\">New</.button>"
         }
       ]
     }
@@ -1236,10 +1671,17 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Overlay, :tooltip),
     do: %{
       text: "Tooltip text",
+      # The trigger can be any interactive component.
       inner_block:
         slot(
-          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Hover me</button>",
-          "<.button variant={:outline} size={:sm}>Hover me</.button>"
+          render_component(Actions, :button, %{
+            variant: :outline,
+            size: :sm,
+            inner_block: slot("Hover me")
+          }),
+          """
+          <.button variant={:outline} size={:sm}>Hover me</.button>
+          """
         )
     }
 
@@ -1275,19 +1717,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   end
 
   defp sample_assigns(Advanced, :command) do
-    %{
-      group: [
-        %{
-          heading: "General",
-          inner_block: fn _, _ ->
-            HTML.raw(
-              ~s(<div data-slot="item" class="rounded-sm px-2 py-1.5 text-sm">Profile</div>)
-            )
-          end,
-          template: ~s(<.item value="profile">Profile</.item>)
-        }
-      ]
-    }
+    command_palette_assigns()
   end
 
   defp sample_assigns(Advanced, :item), do: %{value: "profile", inner_block: slot("Profile")}

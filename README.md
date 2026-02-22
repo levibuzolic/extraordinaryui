@@ -388,19 +388,15 @@ Generate docs:
 mix docs
 ```
 
-Detailed static docs pages can render multiple inline documentation examples. To provide them in a component function doc, add multiple fenced HEEx code blocks:
+Detailed static docs pages can render multiple inline documentation examples. To provide them in a component function doc, add multiple fenced HEEx code blocks (optionally with `title="..."` metadata for clean labels in the docs UI):
 
 ~~~elixir
 @doc """
-Primary example:
-
-```heex
+```heex title="Primary action"
 <.button>Save</.button>
 ```
 
-Secondary example:
-
-```heex
+```heex title="Secondary action"
 <.button variant={:outline}>Cancel</.button>
 ```
 """

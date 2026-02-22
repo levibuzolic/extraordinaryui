@@ -55,7 +55,11 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert component_page =~ "<ul>"
     assert component_page =~ ~s(href="../components/actions-button.html")
     assert component_page =~ ~s(aria-current="page")
+    assert component_page =~ "Primary CTA"
+    assert component_page =~ "Destructive Loading"
     assert component_page =~ "Inline Docs Examples"
+    assert component_page =~ "Outline small action"
+    assert component_page =~ "Loading destructive action"
     refute component_page =~ "## Attributes"
 
     assert card_page =~ "Profile Card"
