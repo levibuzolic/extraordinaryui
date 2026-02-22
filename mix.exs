@@ -76,6 +76,7 @@ defmodule ExtraordinaryUI.MixProject do
       extras: ["README.md", "PROGRESS.md", "CHANGELOG.md"],
       groups_for_modules: [
         Core: [ExtraordinaryUI, ExtraordinaryUI.Classes, ExtraordinaryUI.Hooks],
+        "Static Docs": [ExtraordinaryUI.Docs.Catalog, Mix.Tasks.ExtraordinaryUi.Docs.Build],
         Components: [
           ExtraordinaryUI.Components,
           ExtraordinaryUI.Components.Advanced,
@@ -88,7 +89,7 @@ defmodule ExtraordinaryUI.MixProject do
           ExtraordinaryUI.Components.Overlay
         ],
         Storybook: [ExtraordinaryUI.Storybook],
-        "Mix Tasks": [Mix.Tasks.ExtraordinaryUi.Install]
+        "Mix Tasks": [Mix.Tasks.ExtraordinaryUi.Install, Mix.Tasks.ExtraordinaryUi.Docs.Build]
       ]
     ]
   end

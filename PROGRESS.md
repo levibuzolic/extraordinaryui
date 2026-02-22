@@ -15,6 +15,7 @@
 - [x] Core utility layer complete.
 - [x] Component modules complete.
 - [x] Storybook previews complete.
+- [x] Static docs exporter complete.
 - [x] Installer task complete.
 - [x] Tests complete.
 - [x] README and release docs complete.
@@ -58,6 +59,12 @@ All validation checks currently pass.
 - Added Storybook root index and grouped component stories.
 - Added component test suite (18 tests).
 - Confirmed compile/test pipeline passes.
+
+### Milestone 5: Static docs export
+
+- Added static docs catalog that renders all public component functions.
+- Added `mix extraordinary_ui.docs.build` to generate deployable `dist/docs` output.
+- Added tests for catalog coverage and static build artifacts.
 
 ## Commit Log
 

@@ -212,6 +212,28 @@ Bundled stories cover:
 - Overlay
 - Advanced
 
+## Static Docs Export
+
+You can generate a fully static docs site (HTML/CSS/JS) without running Phoenix in production:
+
+```bash
+mix extraordinary_ui.docs.build
+```
+
+This writes a deployable site to:
+
+- `dist/docs/index.html`
+- `dist/docs/assets/site.css`
+- `dist/docs/assets/site.js`
+
+Optional flags:
+
+```bash
+mix extraordinary_ui.docs.build --output public/docs --clean
+```
+
+The output can be hosted on any static platform (GitHub Pages, Netlify, S3, Cloudflare Pages, etc).
+
 ## JS Hooks
 
 Hook implementations live in `assets/js/extraordinary_ui.js`:
