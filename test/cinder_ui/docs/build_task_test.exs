@@ -45,11 +45,8 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert component_page =~ "Original shadcn/ui docs"
     assert component_page =~ "Usage (HEEx)"
 
-    assert component_page =~
-             "Attributes (Generated from <code class=\"inline-code\">attr</code> definitions)"
-
-    assert component_page =~
-             "Slots (Generated from <code class=\"inline-code\">slot</code> definitions)"
+    assert component_page =~ "Attributes"
+    assert component_page =~ "Slots"
 
     assert component_page =~ "https://ui.shadcn.com/docs/components/button"
     assert component_page =~ "<code>variant</code>"

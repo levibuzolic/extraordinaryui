@@ -116,7 +116,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Attributes (Generated from <code class=\"inline-code\">attr</code> definitions)</h3>
+        <h3 class=\"text-sm font-semibold\">Attributes</h3>
       </header>
       <div class=\"p-5\">
         #{attributes_table_html(entry.attributes)}
@@ -125,7 +125,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Slots (Generated from <code class=\"inline-code\">slot</code> definitions)</h3>
+        <h3 class=\"text-sm font-semibold\">Slots</h3>
       </header>
       <div class=\"p-5\">
         #{slots_table_html(entry.slots)}
