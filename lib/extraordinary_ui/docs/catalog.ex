@@ -102,8 +102,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   end
 
   defp entry(module, function) do
-    assigns = sample_assigns(module, function)
     doc = function_doc(module, function)
+    generated_examples = generated_examples(module, function)
+    primary_example = List.first(generated_examples)
+    inline_doc_examples = inline_doc_examples(doc)
     id = "#{module_slug(module)}-#{function}"
     slug = shadcn_slug(function)
 
@@ -115,8 +117,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       module_name: module |> Module.split() |> List.last(),
       docs: first_paragraph(doc),
       docs_full: doc,
-      preview_html: render_component(module, function, assigns),
-      template_heex: render_template(function, assigns),
+      preview_html: primary_example.preview_html,
+      template_heex: primary_example.template_heex,
+      examples: generated_examples,
+      inline_doc_examples: inline_doc_examples,
       attributes: component_attributes(module, function),
       slots: component_slots(module, function),
       source_line: component_line(module, function),
@@ -370,6 +374,279 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     |> Enum.map_join("\n", &(indentation <> &1))
   end
 
+  defp generated_examples(module, function) do
+    module
+    |> sample_examples(function)
+    |> Enum.with_index(1)
+    |> Enum.map(fn {example, index} ->
+      assigns = example.assigns
+
+      %{
+        id: normalize_example_id(example[:id], index),
+        title: example[:title] || default_example_title(index),
+        description: example[:description],
+        preview_html: render_component(module, function, assigns),
+        template_heex: render_template(function, assigns)
+      }
+    end)
+  end
+
+  defp default_example_title(1), do: "Default"
+  defp default_example_title(index), do: "Example #{index}"
+
+  defp normalize_example_id(nil, index), do: "example-#{index}"
+
+  defp normalize_example_id(id, index) do
+    id
+    |> to_string()
+    |> String.downcase()
+    |> String.replace(~r/[^a-z0-9]+/u, "-")
+    |> String.trim("-")
+    |> case do
+      "" -> "example-#{index}"
+      value -> value
+    end
+  end
+
+  defp inline_doc_examples(doc) do
+    fenced_examples =
+      doc
+      |> String.trim()
+      |> then(&Regex.scan(~r/```([a-zA-Z0-9_-]*)\n(.*?)```/s, &1, capture: :all_but_first))
+      |> Enum.map(fn [lang, code] -> {String.downcase(lang), String.trim(code)} end)
+      |> Enum.filter(fn {lang, code} ->
+        code != "" and (lang in ["", "heex", "html", "elixir"] and String.contains?(code, "<."))
+      end)
+
+    indented_examples =
+      doc
+      |> String.split("\n")
+      |> Enum.chunk_by(&String.starts_with?(&1, "    "))
+      |> Enum.filter(fn
+        [line | _] -> String.starts_with?(line, "    ")
+        _ -> false
+      end)
+      |> Enum.map(fn chunk ->
+        chunk
+        |> Enum.map_join("\n", &String.trim_leading(&1, "    "))
+        |> String.trim()
+      end)
+      |> Enum.filter(&String.contains?(&1, "<."))
+      |> Enum.map(&{"", &1})
+
+    (fenced_examples ++ indented_examples)
+    |> Enum.uniq()
+    |> Enum.with_index(1)
+    |> Enum.map(fn {{lang, code}, index} ->
+      %{
+        id: "inline-#{index}",
+        title: inline_doc_example_title(lang, index),
+        template_heex: code
+      }
+    end)
+  end
+
+  defp inline_doc_example_title("", index), do: "Inline docs example #{index}"
+  defp inline_doc_example_title(lang, index), do: "Inline docs example #{index} (#{lang})"
+
+  defp sample_examples(Layout, :card) do
+    [
+      %{
+        id: "profile",
+        title: "Profile Card",
+        description: "Header, metadata, and footer actions",
+        assigns: card_profile_assigns()
+      },
+      %{
+        id: "pricing",
+        title: "Pricing Card",
+        description: "Pricing details with primary CTA",
+        assigns: card_pricing_assigns()
+      }
+    ]
+  end
+
+  defp sample_examples(module, function) do
+    [%{id: "default", title: "Default", assigns: sample_assigns(module, function)}]
+  end
+
+  defp card_profile_assigns do
+    badge_html =
+      render_component(Feedback, :badge, %{variant: :secondary, inner_block: slot("Active")})
+
+    title_html = render_component(Layout, :card_title, %{inner_block: slot("Levi Noah")})
+
+    description_html =
+      render_component(Layout, :card_description, %{inner_block: slot("Senior Engineer · Sydney")})
+
+    action_html =
+      render_component(Layout, :card_action, %{
+        inner_block:
+          slot(
+            badge_html,
+            """
+            <.badge variant={:secondary}>Active</.badge>
+            """
+          )
+      })
+
+    header_html =
+      render_component(Layout, :card_header, %{
+        inner_block:
+          slot(
+            title_html <> "\n" <> description_html <> "\n" <> action_html,
+            """
+            <.card_title>Levi Noah</.card_title>
+            <.card_description>Senior Engineer · Sydney</.card_description>
+            <.card_action>
+              <.badge variant={:secondary}>Active</.badge>
+            </.card_action>
+            """
+          )
+      })
+
+    content_html =
+      render_component(Layout, :card_content, %{
+        inner_block:
+          slot(
+            "<p class=\"text-sm text-muted-foreground\">Maintains docs tooling, component APIs, and release workflows.</p>",
+            "<p class=\"text-sm text-muted-foreground\">Maintains docs tooling, component APIs, and release workflows.</p>"
+          )
+      })
+
+    primary_action_html =
+      render_component(Actions, :button, %{size: :sm, inner_block: slot("Message")})
+
+    secondary_action_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("View Profile")
+      })
+
+    footer_html =
+      render_component(Layout, :card_footer, %{
+        inner_block:
+          slot(
+            primary_action_html <> "\n" <> secondary_action_html,
+            """
+            <.button size={:sm}>Message</.button>
+            <.button variant={:outline} size={:sm}>View Profile</.button>
+            """
+          )
+      })
+
+    %{
+      inner_block:
+        slot(
+          header_html <> "\n" <> content_html <> "\n" <> footer_html,
+          """
+          <.card_header>
+            <.card_title>Levi Noah</.card_title>
+            <.card_description>Senior Engineer · Sydney</.card_description>
+            <.card_action>
+              <.badge variant={:secondary}>Active</.badge>
+            </.card_action>
+          </.card_header>
+          <.card_content>
+            <p class="text-sm text-muted-foreground">
+              Maintains docs tooling, component APIs, and release workflows.
+            </p>
+          </.card_content>
+          <.card_footer>
+            <.button size={:sm}>Message</.button>
+            <.button variant={:outline} size={:sm}>View Profile</.button>
+          </.card_footer>
+          """
+        )
+    }
+  end
+
+  defp card_pricing_assigns do
+    title_html = render_component(Layout, :card_title, %{inner_block: slot("Pro Plan")})
+
+    description_html =
+      render_component(Layout, :card_description, %{
+        inner_block: slot("Best for production teams shipping weekly.")
+      })
+
+    header_html =
+      render_component(Layout, :card_header, %{
+        inner_block:
+          slot(
+            title_html <> "\n" <> description_html,
+            """
+            <.card_title>Pro Plan</.card_title>
+            <.card_description>Best for production teams shipping weekly.</.card_description>
+            """
+          )
+      })
+
+    content_html =
+      render_component(Layout, :card_content, %{
+        inner_block:
+          slot(
+            """
+            <p class=\"text-2xl font-semibold\">$49<span class=\"text-sm font-normal text-muted-foreground\">/month</span></p>
+            <ul class=\"mt-2 list-disc space-y-1 pl-4 text-sm text-muted-foreground\">
+              <li>Unlimited projects</li>
+              <li>Priority support</li>
+              <li>Team analytics</li>
+            </ul>
+            """,
+            """
+            <p class="text-2xl font-semibold">$49<span class="text-sm font-normal text-muted-foreground">/month</span></p>
+            <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-muted-foreground">
+              <li>Unlimited projects</li>
+              <li>Priority support</li>
+              <li>Team analytics</li>
+            </ul>
+            """
+          )
+      })
+
+    cta_html =
+      render_component(Actions, :button, %{
+        class: "w-full",
+        inner_block: slot("Start 14-day trial")
+      })
+
+    footer_html =
+      render_component(Layout, :card_footer, %{
+        inner_block:
+          slot(
+            cta_html,
+            """
+            <.button class="w-full">Start 14-day trial</.button>
+            """
+          )
+      })
+
+    %{
+      inner_block:
+        slot(
+          header_html <> "\n" <> content_html <> "\n" <> footer_html,
+          """
+          <.card_header>
+            <.card_title>Pro Plan</.card_title>
+            <.card_description>Best for production teams shipping weekly.</.card_description>
+          </.card_header>
+          <.card_content>
+            <p class="text-2xl font-semibold">$49<span class="text-sm font-normal text-muted-foreground">/month</span></p>
+            <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-muted-foreground">
+              <li>Unlimited projects</li>
+              <li>Priority support</li>
+              <li>Team analytics</li>
+            </ul>
+          </.card_content>
+          <.card_footer>
+            <.button class="w-full">Start 14-day trial</.button>
+          </.card_footer>
+          """
+        )
+    }
+  end
+
   defp sample_assigns(Actions, :button) do
     %{inner_block: slot("Button")}
   end
@@ -492,19 +769,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   end
 
   defp sample_assigns(Layout, :card) do
-    %{
-      inner_block:
-        slot(
-          """
-          <div class=\"px-6 text-sm\">Card body</div>
-          """,
-          """
-          <.card_content>
-            Card body
-          </.card_content>
-          """
-        )
-    }
+    card_profile_assigns()
   end
 
   defp sample_assigns(Layout, :card_action), do: %{inner_block: slot("Action")}

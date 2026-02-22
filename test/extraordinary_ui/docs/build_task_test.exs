@@ -14,11 +14,13 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
 
     assert File.exists?(Path.join(@output, "index.html"))
     assert File.exists?(Path.join(@output, "components/actions-button.html"))
+    assert File.exists?(Path.join(@output, "components/layout-card.html"))
     assert File.exists?(Path.join(@output, "assets/site.css"))
     assert File.exists?(Path.join(@output, "assets/site.js"))
 
     index = File.read!(Path.join(@output, "index.html"))
     component_page = File.read!(Path.join(@output, "components/actions-button.html"))
+    card_page = File.read!(Path.join(@output, "components/layout-card.html"))
 
     assert index =~ "Extraordinary UI"
     assert index =~ "Component Library"
@@ -53,7 +55,13 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert component_page =~ "<ul>"
     assert component_page =~ ~s(href="../components/actions-button.html")
     assert component_page =~ ~s(aria-current="page")
+    assert component_page =~ "Inline Docs Examples"
     refute component_page =~ "## Attributes"
+
+    assert card_page =~ "Profile Card"
+    assert card_page =~ "Pricing Card"
+    assert card_page =~ "&lt;.card_header&gt;"
+    assert card_page =~ "Usage (HEEx)"
 
     site_js = File.read!(Path.join(@output, "assets/site.js"))
     assert site_js =~ "themedTokenKeys"

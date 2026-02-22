@@ -41,6 +41,8 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
       Enum.each(section.entries, fn entry ->
         refute entry.preview_html =~ "Render error"
         assert entry.template_heex =~ "<."
+        assert is_list(entry.examples)
+        assert entry.examples != []
         assert is_list(entry.attributes)
         assert is_list(entry.slots)
         assert entry.docs_path =~ "components/"
@@ -60,11 +62,32 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
     assert button_entry
     assert button_entry.shadcn_slug == "button"
     assert button_entry.shadcn_url == "https://ui.shadcn.com/docs/components/button"
+    assert button_entry.inline_doc_examples != []
 
     attribute_names = Enum.map(button_entry.attributes, & &1.name)
     assert "variant" in attribute_names
     assert "size" in attribute_names
     assert "inner_block" in Enum.map(button_entry.slots, & &1.name)
+  end
+
+  test "composite components can expose multiple generated examples" do
+    card_entry =
+      Catalog.sections()
+      |> Enum.flat_map(& &1.entries)
+      |> Enum.find(fn entry ->
+        entry.module == ExtraordinaryUI.Components.Layout and entry.function == :card
+      end)
+
+    assert card_entry
+    assert length(card_entry.examples) == 2
+
+    profile_example = Enum.find(card_entry.examples, &(&1.id == "profile"))
+    pricing_example = Enum.find(card_entry.examples, &(&1.id == "pricing"))
+
+    assert profile_example
+    assert pricing_example
+    assert profile_example.template_heex =~ "<.card_header>"
+    assert pricing_example.template_heex =~ "<.card_footer>"
   end
 
   test "avatar docs samples use base64 image data for realistic previews" do

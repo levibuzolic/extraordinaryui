@@ -249,6 +249,8 @@ The generated site includes:
 - links to the corresponding shadcn/ui reference docs for each component
 - generated attributes and slots docs derived from component `attr/slot` definitions (`__components__/0`)
 - copyable HEEx usage snippets generated from sample assigns
+- multiple generated examples per component in detailed docs pages
+- inline docs examples extracted from fenced code blocks in function `@doc` text
 
 It also includes shadcn-style theme controls:
 
@@ -385,6 +387,24 @@ Generate docs:
 ```bash
 mix docs
 ```
+
+Detailed static docs pages can render multiple inline documentation examples. To provide them in a component function doc, add multiple fenced HEEx code blocks:
+
+~~~elixir
+@doc """
+Primary example:
+
+```heex
+<.button>Save</.button>
+```
+
+Secondary example:
+
+```heex
+<.button variant={:outline}>Cancel</.button>
+```
+"""
+~~~
 
 ## Quality Gates
 

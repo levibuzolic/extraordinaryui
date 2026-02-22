@@ -96,7 +96,8 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   end
 
   defp component_page_html(entry, sections, theme_css) do
-    escaped_template = escape(entry.template_heex)
+    examples_html = component_examples_html(entry)
+    inline_doc_examples_html = inline_doc_examples_html(entry)
 
     content = """
     <div class=\"mb-6 flex flex-wrap items-center justify-between gap-3\">
@@ -110,20 +111,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
         <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}/1</code></h2>
         <p class=\"text-muted-foreground mt-3 text-sm\">#{inline_code_html(entry.docs)}</p>
       </header>
-      <div class=\"space-y-4 p-5\">
-        <div>
-          <h3 class=\"text-sm font-semibold\">Preview</h3>
-          <div class=\"mt-2 rounded-lg border bg-background p-4\">#{entry.preview_html}</div>
-        </div>
-
-        <div>
-          <div class=\"flex items-center justify-between gap-2\">
-            <h3 class=\"text-sm font-semibold\">Usage (HEEx)</h3>
-            <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
-          </div>
-          <pre class=\"mt-2 max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
-        </div>
-      </div>
+      <div class=\"space-y-4 p-5\">#{examples_html}</div>
     </section>
 
     <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
@@ -152,6 +140,8 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
         #{docs_full_html(entry.docs_full)}
       </div>
     </section>
+
+    #{inline_doc_examples_html}
     """
 
     page_shell(
@@ -345,6 +335,85 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
         </div>
       </div>
     </article>
+    """
+  end
+
+  defp component_examples_html(entry) do
+    total = length(entry.examples)
+
+    entry.examples
+    |> Enum.with_index(1)
+    |> Enum.map_join("\n", fn {example, index} ->
+      copy_id = "#{entry.id}-#{example.id}"
+      escaped_template = escape(example.template_heex)
+      heading = example_heading(example.title, index, total)
+
+      description =
+        case example.description do
+          value when is_binary(value) and value != "" ->
+            ~s(<p class="text-muted-foreground mt-1 text-xs">#{escape(value)}</p>)
+
+          _ ->
+            ""
+        end
+
+      """
+      <article class=\"rounded-lg border bg-muted/20 p-4\">
+        <header class=\"mb-3\">
+          <h3 class=\"text-sm font-semibold\">#{escape(heading)}</h3>
+          #{description}
+        </header>
+
+        <div>
+          <h4 class=\"text-sm font-semibold\">Preview</h4>
+          <div class=\"mt-2 rounded-lg border bg-background p-4\">#{example.preview_html}</div>
+        </div>
+
+        <div class=\"mt-4\">
+          <div class=\"flex items-center justify-between gap-2\">
+            <h4 class=\"text-sm font-semibold\">Usage (HEEx)</h4>
+            <button type=\"button\" data-copy-template=\"#{copy_id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
+          </div>
+          <pre class=\"mt-2 max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
+        </div>
+      </article>
+      """
+    end)
+  end
+
+  defp example_heading("Default", 1, 1), do: "Example"
+  defp example_heading(title, _index, _total), do: title
+
+  defp inline_doc_examples_html(%{inline_doc_examples: []}), do: ""
+
+  defp inline_doc_examples_html(entry) do
+    blocks =
+      entry.inline_doc_examples
+      |> Enum.map_join("\n", fn example ->
+        copy_id = "#{entry.id}-#{example.id}"
+        escaped_template = escape(example.template_heex)
+
+        """
+        <article class=\"rounded-lg border bg-muted/20 p-4\">
+          <div class=\"flex items-center justify-between gap-2\">
+            <h4 class=\"text-sm font-semibold\">#{escape(example.title)}</h4>
+            <button type=\"button\" data-copy-template=\"#{copy_id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
+          </div>
+          <pre class=\"mt-2 max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
+        </article>
+        """
+      end)
+
+    """
+    <section class=\"mt-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
+      <header class=\"border-border/70 border-b px-5 py-3\">
+        <h3 class=\"text-sm font-semibold\">Inline Docs Examples</h3>
+      </header>
+      <div class=\"space-y-3 p-5\">
+        <p class=\"text-muted-foreground text-sm\">Rendered from fenced code blocks in the component's inline <code class="inline-code">@doc</code>.</p>
+        #{blocks}
+      </div>
+    </section>
     """
   end
 
