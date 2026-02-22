@@ -29,4 +29,14 @@ defmodule ExtraordinaryUI.Components.FormsTest do
     assert html =~ "pr-9"
     assert html =~ "right-3.5"
   end
+
+  test "switch hides native checkbox glyph and renders thumb" do
+    html = render_component(&Forms.switch/1, %{id: "marketing", checked: true})
+
+    assert html =~ "data-slot=\"switch\""
+    assert html =~ "data-slot=\"switch-thumb\""
+    assert html =~ "appearance-none"
+    assert html =~ "checked:bg-primary"
+    assert html =~ "peer-checked:translate-x-[calc(100%-2px)]"
+  end
 end

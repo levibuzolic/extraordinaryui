@@ -138,6 +138,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added always-visible HEEx snippet code boxes to overview cards (no expand/collapse toggle required) while retaining quick copy actions.
 - Fixed duplicate disclosure arrows in previewed collapsible/accordion components by scoping docs-shell summary pseudo-arrows away from component `summary[data-slot]` elements.
 - Aligned `Forms.select/1` + `native_select/1` markup/classes with current shadcn v4 native-select pattern (`appearance-none`, `pr-9`, wrapper, and right-aligned chevron icon spacing).
+- Fixed `Forms.switch/1` to fully suppress native checkbox glyph rendering (`appearance-none`) and use dynamic `checked`/`peer-checked` state classes for track/thumb behavior.
 
 ## Commit Log
 
@@ -162,3 +163,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
 - `733e521` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
 - `98cc56e` - align native select arrow spacing with upstream shadcn v4 implementation.
+- `pending` - fix switch preview rendering so native checkbox glyph is not visible.

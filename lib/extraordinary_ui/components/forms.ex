@@ -243,7 +243,7 @@ defmodule ExtraordinaryUI.Components.Forms do
       |> assign(:thumb_size, thumb_size)
       |> assign(:thumb_position, thumb_position)
       |> assign(:track_classes, [
-        "peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+        "peer appearance-none bg-input checked:bg-primary focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/80 dark:checked:bg-primary inline-flex shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
         root_size,
         assigns.class
       ])
@@ -269,7 +269,7 @@ defmodule ExtraordinaryUI.Components.Forms do
           data-slot="switch-thumb"
           class={
             classes([
-              "pointer-events-none absolute left-[1px] block rounded-full bg-background dark:peer-data-[state=unchecked]:bg-foreground dark:peer-data-[state=checked]:bg-primary-foreground ring-0 transition-transform peer-not-checked:translate-x-0",
+              "pointer-events-none absolute left-[1px] block rounded-full bg-background dark:peer-not-checked:bg-foreground dark:peer-checked:bg-primary-foreground ring-0 transition-transform peer-not-checked:translate-x-0",
               @thumb_size,
               @thumb_position
             ])
