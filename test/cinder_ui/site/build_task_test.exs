@@ -29,6 +29,12 @@ defmodule CinderUI.Site.BuildTaskTest do
     assert index =~ "Actions.button_group"
     assert index =~ "Forms.field"
     assert index =~ "Navigation.tabs"
+    assert index =~ "Add dependencies to <code>mix.exs</code>"
+    assert index =~ "Run in terminal"
+
+    assert index =~ "{:lucide_icons, \"~> 2.0\"} # optional, recommended for <.icon />"
+
+    assert index =~ "mix cinder_ui.install --skip-existing"
     assert index =~ "Drop-in for existing Phoenix + LiveView projects."
     assert index =~ "Phoenix-native API"
     assert index =~ "Fast app integration"

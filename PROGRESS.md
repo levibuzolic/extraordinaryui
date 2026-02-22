@@ -228,6 +228,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Updated `.github/workflows/publish-site.yml` to deploy GitHub Pages on every push to `main` (in addition to release/manual triggers).
 - Updated contributor release/deploy documentation to reflect continuous site deployment behavior.
 - Refined marketing-site copy to focus on end-user Phoenix/LiveView adoption benefits (Phoenix-native API, fast integration, shadcn-aligned styles) and removed static-docs-export framing from feature messaging.
+- Clarified marketing install section by splitting `mix.exs` dependency edits from terminal commands (`mix deps.get` + installer), including explicit optional `lucide_icons` guidance.
 
 ## Commit Log
 
@@ -266,3 +267,4 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `cc6c4f1` - add optional `lucide_icons` integration via `CinderUI.Icons`, migrate examples/sandbox icons, and update docs/tests/licenses.
 - `(working tree)` - enable automatic GitHub Pages site publish on every `main` push and document workflow behavior.
 - `(working tree)` - retarget marketing-site messaging to existing Phoenix/LiveView app benefits and update site assertions.
+- `(working tree)` - clarify homepage install docs with separate `mix.exs` and terminal command blocks.

@@ -504,26 +504,39 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp install_html(version) do
-    install_code = """
+    deps_code = """
     def deps do
       [
-        {:cinder_ui, "~> #{version}"}
+        {:cinder_ui, "~> #{version}"},
+        {:lucide_icons, "~> 2.0"} # optional, recommended for <.icon />
       ]
     end
+    """
 
+    terminal_code = """
     mix deps.get
     mix cinder_ui.install --skip-existing
     """
 
-    code_block = render_component(DataDisplay, :code_block, %{inner_block: slot(install_code)})
+    deps_block = render_component(DataDisplay, :code_block, %{inner_block: slot(deps_code)})
+
+    terminal_block =
+      render_component(DataDisplay, :code_block, %{inner_block: slot(terminal_code)})
 
     """
     <section id="install" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
       <p class="text-sm text-muted-foreground">
-        Add the dependency, run the installer, and start using HEEx components immediately.
+        Step 1: update <code>mix.exs</code>. Step 2: run setup commands in your terminal.
       </p>
-      #{code_block}
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
+        #{deps_block}
+      </div>
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-foreground">2) Run in terminal</p>
+        #{terminal_block}
+      </div>
     </section>
     """
   end
