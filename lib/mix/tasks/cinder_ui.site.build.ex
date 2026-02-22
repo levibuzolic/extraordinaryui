@@ -125,7 +125,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         <title>Cinder UI</title>
         <meta
           name="description"
-          content="Phoenix + LiveView component library with upstream-compatible patterns, static docs, and installer tooling."
+          content="Phoenix + LiveView component library with shadcn-inspired patterns, typed HEEx APIs, and installer tooling for existing apps."
         />
         #{theme_bootstrap_script()}
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -150,7 +150,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
             <p class="mt-3 text-sm text-muted-foreground">
               Built for Phoenix teams who want
               <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-              patterns with Elixir-native components and static docs.
+              patterns with Elixir-native components in existing Phoenix apps.
             </p>
           </header>
 
@@ -256,7 +256,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
 
     summary_description =
       render_component(Layout, :card_description, %{
-        inner_block: slot("Versioned, static-exportable, and ready for Phoenix apps.")
+        inner_block: slot("Drop-in for existing Phoenix + LiveView projects.")
       })
 
     summary_header =
@@ -271,7 +271,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           <ul class=\"space-y-1 text-sm text-muted-foreground\">
             <li><strong class=\"text-foreground\">Current version:</strong> v#{version}</li>
             <li><strong class=\"text-foreground\">Theme baseline:</strong> neutral tokens + <code>style-nova</code></li>
-            <li><strong class=\"text-foreground\">Static docs:</strong> bundled at <code>/docs</code></li>
+            <li><strong class=\"text-foreground\">Integration:</strong> <code>mix cinder_ui.install</code> for existing Phoenix assets</li>
           </ul>
           """)
       })
@@ -292,10 +292,10 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
             component patterns, packaged for Phoenix + LiveView.
           </h1>
           <p class="max-w-2xl text-base text-muted-foreground">
-            Cinder UI provides server-rendered components, installer automation,
-            and static docs that keep parity with
+            Cinder UI provides server-rendered components, typed attrs/slots,
+            and installer automation that keep parity with
             <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-            conventions.
+            conventions while fitting Phoenix conventions.
           </p>
           <div class="flex flex-wrap gap-2">
             #{primary_cta}
@@ -449,7 +449,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           },
           %{
             value: "api",
-            inner_block: fn _, _ -> "Typed attrs/slots and generated docs metadata." end
+            inner_block: fn _, _ -> "Typed attrs/slots with compile-time checks." end
           }
         ]
       })
@@ -459,7 +459,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       <:trigger value="overview">Overview</:trigger>
       <:trigger value="api">API</:trigger>
       <:content value="overview">Use components in HEEx.</:content>
-      <:content value="api">Typed attrs and slots.</:content>
+      <:content value="api">Typed attrs/slots with compile-time checks.</:content>
     </.tabs>
     """
 
@@ -533,10 +533,10 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     <section class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
       <div class="grid gap-4 md:grid-cols-2">
-        #{feature_card("Component coverage", "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions.")}
-        #{feature_card("Static docs export", "Deployable HTML/CSS/JS docs with generated attrs/slots and HEEx snippets.")}
-        #{feature_card("Installer and hooks", "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks.")}
-        #{feature_card("Tested quality", "Unit coverage plus browser + visual regression suites in CI.")}
+        #{feature_card("Phoenix-native API", "Typed HEEx function components with predictable attrs/slots and composable primitives.")}
+        #{feature_card("Fast app integration", "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects.")}
+        #{feature_card("shadcn-aligned styles", "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics.")}
+        #{feature_card("Production confidence", "Unit, browser, and visual regression coverage keeps components stable as your app evolves.")}
       </div>
     </section>
     """
@@ -575,7 +575,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       render_component(Actions, :button, %{
         as: "a",
         rest: %{href: "./docs/index.html"},
-        inner_block: slot("Static component docs")
+        inner_block: slot("Component reference")
       })
 
     shadcn_button =
