@@ -137,6 +137,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added `Copy HEEx` actions to overview cards on the root static docs page so snippets can be copied without opening per-component pages.
 - Added always-visible HEEx snippet code boxes to overview cards (no expand/collapse toggle required) while retaining quick copy actions.
 - Fixed duplicate disclosure arrows in previewed collapsible/accordion components by scoping docs-shell summary pseudo-arrows away from component `summary[data-slot]` elements.
+- Aligned `Forms.select/1` + `native_select/1` markup/classes with current shadcn v4 native-select pattern (`appearance-none`, `pr-9`, wrapper, and right-aligned chevron icon spacing).
 
 ## Commit Log
 
@@ -160,3 +161,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
 - `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
 - `733e521` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
+- `pending` - align native select arrow spacing with upstream shadcn v4 implementation.

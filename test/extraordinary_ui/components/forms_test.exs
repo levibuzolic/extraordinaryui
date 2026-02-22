@@ -23,6 +23,10 @@ defmodule ExtraordinaryUI.Components.FormsTest do
       })
 
     assert html =~ "Admin"
+    assert html =~ "data-slot=\"native-select-wrapper\""
     assert html =~ "data-slot=\"native-select\""
+    assert html =~ "data-slot=\"native-select-icon\""
+    assert html =~ "pr-9"
+    assert html =~ "right-3.5"
   end
 end

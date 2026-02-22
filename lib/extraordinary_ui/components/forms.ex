@@ -306,17 +306,31 @@ defmodule ExtraordinaryUI.Components.Forms do
   def select(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "border-input data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 h-9 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+        "border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 h-9 w-full min-w-0 appearance-none rounded-md border bg-transparent px-3 py-2 pr-9 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:cursor-not-allowed",
         assigns.class
       ])
 
     ~H"""
-    <select data-slot="native-select" name={@name} class={classes(@classes)} {@rest}>
-      <option :if={is_nil(@value)} value="" disabled selected>{@placeholder}</option>
-      <option :for={option <- @option} value={option.value} selected={@value == option.value}>
-        {option.label}
-      </option>
-    </select>
+    <div
+      data-slot="native-select-wrapper"
+      class="group/native-select relative w-full has-[select:disabled]:opacity-50"
+    >
+      <select data-slot="native-select" name={@name} class={classes(@classes)} {@rest}>
+        <option :if={is_nil(@value)} value="" disabled selected>{@placeholder}</option>
+        <option :for={option <- @option} value={option.value} selected={@value == option.value}>
+          {option.label}
+        </option>
+      </select>
+      <span
+        data-slot="native-select-icon"
+        aria-hidden="true"
+        class="text-muted-foreground pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 opacity-50 select-none"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+    </div>
     """
   end
 
