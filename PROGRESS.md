@@ -257,4 +257,4 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `93b6ad4` - log documentation audience split and licensing notices.
 - `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
 - `(working tree)` - add automated Hex publish workflow, release secret setup docs, and progress tracking updates.
-- `(working tree)` - add optional `lucide_icons` integration via `CinderUI.Icons`, migrate examples/sandbox icons, and update docs/tests/licenses.
+- `cc6c4f1` - add optional `lucide_icons` integration via `CinderUI.Icons`, migrate examples/sandbox icons, and update docs/tests/licenses.
