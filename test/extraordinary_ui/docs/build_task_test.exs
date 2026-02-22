@@ -25,5 +25,9 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert index =~ "data-theme-mode"
     assert index =~ "theme-color"
     assert index =~ "theme-radius"
+
+    site_js = File.read!(Path.join(@output, "assets/site.js"))
+    assert site_js =~ "themedTokenKeys"
+    assert site_js =~ "removeProperty"
   end
 end

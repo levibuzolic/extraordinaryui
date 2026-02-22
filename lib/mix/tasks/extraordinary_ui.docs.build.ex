@@ -435,6 +435,13 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
         lyra: "0.875rem",
         vega: "1rem",
       }
+      const themedTokenKeys = Array.from(
+        new Set(
+          Object.values(themePresets).flatMap((palette) =>
+            Object.values(palette).flatMap((modeTokens) => Object.keys(modeTokens))
+          )
+        )
+      )
       const media = window.matchMedia("(prefers-color-scheme: dark)")
       const root = document.documentElement
       const modeButtons = qs(document, "[data-theme-mode]")
@@ -448,6 +455,9 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       const applyPalette = (color, resolvedMode) => {
         const palette = themePresets[color] || themePresets.neutral
         const tokens = palette[resolvedMode]
+        themedTokenKeys.forEach((token) => {
+          root.style.removeProperty(`--${token}`)
+        })
         Object.entries(tokens).forEach(([token, value]) => {
           root.style.setProperty(`--${token}`, value)
         })
