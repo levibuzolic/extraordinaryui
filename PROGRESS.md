@@ -161,4 +161,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
 - `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
 - `733e521` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
-- `pending` - align native select arrow spacing with upstream shadcn v4 implementation.
+- `98cc56e` - align native select arrow spacing with upstream shadcn v4 implementation.
