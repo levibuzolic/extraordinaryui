@@ -87,6 +87,12 @@ All validation checks currently pass.
 - Added sandbox unit test job and sandbox browser test job with Playwright + Chromium.
 - Added local commands in README docs to mirror CI exactly.
 
+### Milestone 8: HEEx snippet composition quality
+
+- Updated static docs snippet generation to support separate rendered-preview vs template-HEEx slot content.
+- Rewrote nested examples to prefer Extraordinary UI components (`.button`, `.input`, `.table_*`, `.breadcrumb_*`, `.pagination_*`, etc.) over raw HTML where equivalent components exist.
+- Kept plain HTML only where no suitable component abstraction exists.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.

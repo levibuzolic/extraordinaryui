@@ -154,7 +154,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     inner_block =
       inner_slot
       |> List.wrap()
-      |> Enum.map(&slot_body/1)
+      |> Enum.map(&slot_template_body/1)
       |> Enum.reject(&(&1 == ""))
 
     body = Enum.join(named_slots ++ inner_block, "\n\n")
@@ -184,6 +184,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     attrs =
       slot_value
       |> Map.delete(:inner_block)
+      |> Map.delete(:template)
       |> Enum.reject(fn {_key, value} -> is_nil(value) end)
       |> Enum.sort_by(fn {key, _value} -> Atom.to_string(key) end)
       |> Enum.map(&render_attr/1)
@@ -194,7 +195,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
         _ -> "<:#{name} " <> Enum.join(attrs, " ") <> ">"
       end
 
-    content = slot_body(slot_value)
+    content = slot_template_body(slot_value)
 
     if content == "" do
       open_tag <> "</:#{name}>"
@@ -245,6 +246,11 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     _ -> ""
   end
 
+  defp slot_template_body(%{template: template}) when is_binary(template),
+    do: String.trim(template)
+
+  defp slot_template_body(slot_value), do: slot_body(slot_value)
+
   defp indent_block(content, spaces) do
     indentation = String.duplicate(" ", spaces)
 
@@ -260,10 +266,16 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Actions, :button_group) do
     %{
       inner_block:
-        slot("""
-        <button class=\"inline-flex h-8 items-center rounded-md border px-3 text-xs\">Left</button>
-        <button class=\"inline-flex h-8 items-center rounded-md border px-3 text-xs\">Right</button>
-        """)
+        slot(
+          """
+          <button class=\"inline-flex h-8 items-center rounded-md border px-3 text-xs\">Left</button>
+          <button class=\"inline-flex h-8 items-center rounded-md border px-3 text-xs\">Right</button>
+          """,
+          """
+          <.button variant={:outline} size={:sm}>Left</.button>
+          <.button variant={:outline} size={:sm}>Right</.button>
+          """
+        )
     }
   end
 
@@ -274,10 +286,16 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Actions, :toggle_group) do
     %{
       inner_block:
-        slot("""
-        <button class=\"inline-flex h-8 items-center rounded-md border px-2 text-xs\">A</button>
-        <button class=\"inline-flex h-8 items-center rounded-md border px-2 text-xs\">B</button>
-        """)
+        slot(
+          """
+          <button class=\"inline-flex h-8 items-center rounded-md border px-2 text-xs\">A</button>
+          <button class=\"inline-flex h-8 items-center rounded-md border px-2 text-xs\">B</button>
+          """,
+          """
+          <.toggle variant={:outline} size={:sm}>A</.toggle>
+          <.toggle variant={:outline} size={:sm}>B</.toggle>
+          """
+        )
     }
   end
 
@@ -289,7 +307,11 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       label: slot("Username"),
       description: slot("This is your public identifier."),
       error: slot(""),
-      inner_block: slot(~S(<input class="h-9 w-full rounded-md border px-3" value="levi" />))
+      inner_block:
+        slot(
+          ~S(<input class="h-9 w-full rounded-md border px-3" value="levi" />),
+          ~S(<.input id="docs-field-input" value="levi" />)
+        )
     }
   end
 
@@ -299,10 +321,16 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Forms, :input_group) do
     %{
       inner_block:
-        slot("""
-        <input class=\"h-9 flex-1 px-3\" value=\"search\" />
-        <button class=\"h-9 px-3 text-xs\">Go</button>
-        """)
+        slot(
+          """
+          <input class=\"h-9 flex-1 px-3\" value=\"search\" />
+          <button class=\"h-9 px-3 text-xs\">Go</button>
+          """,
+          """
+          <.input value="search" />
+          <.button size={:sm}>Go</.button>
+          """
+        )
     }
   end
 
@@ -355,9 +383,16 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Layout, :card) do
     %{
       inner_block:
-        slot("""
-        <div class=\"px-6 text-sm\">Card body</div>
-        """)
+        slot(
+          """
+          <div class=\"px-6 text-sm\">Card body</div>
+          """,
+          """
+          <.card_content>
+            Card body
+          </.card_content>
+          """
+        )
     }
   end
 
@@ -404,11 +439,20 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Feedback, :alert) do
     %{
       inner_block:
-        slot("""
-        <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\"><path d=\"M12 2a10 10 0 100 20 10 10 0 000-20z\" /></svg>
-        <div data-slot=\"alert-title\" class=\"font-medium\">Notice</div>
-        <div data-slot=\"alert-description\" class=\"text-sm\">Build completed.</div>
-        """)
+        slot(
+          """
+          <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\"><path d=\"M12 2a10 10 0 100 20 10 10 0 000-20z\" /></svg>
+          <div data-slot=\"alert-title\" class=\"font-medium\">Notice</div>
+          <div data-slot=\"alert-description\" class=\"text-sm\">Build completed.</div>
+          """,
+          """
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+            <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+          </svg>
+          <.alert_title>Notice</.alert_title>
+          <.alert_description>Build completed.</.alert_description>
+          """
+        )
     }
   end
 
@@ -421,7 +465,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       title: slot("No results"),
       description: slot("Try a different filter."),
       action:
-        slot("<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Reset</button>"),
+        slot(
+          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Reset</button>",
+          "<.button variant={:outline} size={:sm}>Reset</.button>"
+        ),
       icon: slot("<span class=\"text-xl\">◌</span>")
     }
   end
@@ -446,10 +493,16 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(DataDisplay, :avatar_group) do
     %{
       inner_block:
-        slot("""
-        <div data-slot=\"avatar\" class=\"size-8 rounded-full bg-muted\"></div>
-        <div data-slot=\"avatar\" class=\"size-8 rounded-full bg-muted/60\"></div>
-        """)
+        slot(
+          """
+          <div data-slot=\"avatar\" class=\"size-8 rounded-full bg-muted\"></div>
+          <div data-slot=\"avatar\" class=\"size-8 rounded-full bg-muted/60\"></div>
+          """,
+          """
+          <.avatar alt="Levi Noah" />
+          <.avatar alt="Ari Miles" />
+          """
+        )
     }
   end
 
@@ -465,16 +518,40 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(DataDisplay, :table) do
     %{
       inner_block:
-        slot("""
-        <thead data-slot=\"table-header\"><tr data-slot=\"table-row\"><th data-slot=\"table-head\">Name</th><th data-slot=\"table-head\">Status</th></tr></thead>
-        <tbody data-slot=\"table-body\"><tr data-slot=\"table-row\"><td data-slot=\"table-cell\">Web</td><td data-slot=\"table-cell\">Healthy</td></tr></tbody>
-        """)
+        slot(
+          """
+          <thead data-slot=\"table-header\"><tr data-slot=\"table-row\"><th data-slot=\"table-head\">Name</th><th data-slot=\"table-head\">Status</th></tr></thead>
+          <tbody data-slot=\"table-body\"><tr data-slot=\"table-row\"><td data-slot=\"table-cell\">Web</td><td data-slot=\"table-cell\">Healthy</td></tr></tbody>
+          """,
+          """
+          <.table_header>
+            <.table_row>
+              <.table_head>Name</.table_head>
+              <.table_head>Status</.table_head>
+            </.table_row>
+          </.table_header>
+          <.table_body>
+            <.table_row>
+              <.table_cell>Web</.table_cell>
+              <.table_cell>Healthy</.table_cell>
+            </.table_row>
+          </.table_body>
+          """
+        )
     }
   end
 
   defp sample_assigns(DataDisplay, :table_body),
     do: %{
-      inner_block: slot(~S(<tr data-slot="table-row"><td data-slot="table-cell">Cell</td></tr>))
+      inner_block:
+        slot(
+          ~S(<tr data-slot="table-row"><td data-slot="table-cell">Cell</td></tr>),
+          """
+          <.table_row>
+            <.table_cell>Cell</.table_cell>
+          </.table_row>
+          """
+        )
     }
 
   defp sample_assigns(DataDisplay, :table_caption), do: %{inner_block: slot("Table caption")}
@@ -482,29 +559,60 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
   defp sample_assigns(DataDisplay, :table_footer),
     do: %{
-      inner_block: slot(~S(<tr data-slot="table-row"><td data-slot="table-cell">Footer</td></tr>))
+      inner_block:
+        slot(
+          ~S(<tr data-slot="table-row"><td data-slot="table-cell">Footer</td></tr>),
+          """
+          <.table_row>
+            <.table_cell>Footer</.table_cell>
+          </.table_row>
+          """
+        )
     }
 
   defp sample_assigns(DataDisplay, :table_head), do: %{inner_block: slot("Head")}
 
   defp sample_assigns(DataDisplay, :table_header),
     do: %{
-      inner_block: slot(~S(<tr data-slot="table-row"><th data-slot="table-head">Head</th></tr>))
+      inner_block:
+        slot(
+          ~S(<tr data-slot="table-row"><th data-slot="table-head">Head</th></tr>),
+          """
+          <.table_row>
+            <.table_head>Head</.table_head>
+          </.table_row>
+          """
+        )
     }
 
   defp sample_assigns(DataDisplay, :table_row),
-    do: %{inner_block: slot("<td data-slot=\"table-cell\">Row</td>")}
+    do: %{
+      inner_block: slot("<td data-slot=\"table-cell\">Row</td>", "<.table_cell>Row</.table_cell>")
+    }
 
   defp sample_assigns(Navigation, :breadcrumb) do
     %{
       inner_block:
-        slot("""
-        <ol data-slot=\"breadcrumb-list\" class=\"flex items-center gap-2\">
-          <li data-slot=\"breadcrumb-item\"><a data-slot=\"breadcrumb-link\" href=\"#\">Home</a></li>
-          <li data-slot=\"breadcrumb-separator\">/</li>
-          <li data-slot=\"breadcrumb-item\"><span data-slot=\"breadcrumb-page\">Docs</span></li>
-        </ol>
-        """)
+        slot(
+          """
+          <ol data-slot=\"breadcrumb-list\" class=\"flex items-center gap-2\">
+            <li data-slot=\"breadcrumb-item\"><a data-slot=\"breadcrumb-link\" href=\"#\">Home</a></li>
+            <li data-slot=\"breadcrumb-separator\">/</li>
+            <li data-slot=\"breadcrumb-item\"><span data-slot=\"breadcrumb-page\">Docs</span></li>
+          </ol>
+          """,
+          """
+          <.breadcrumb_list>
+            <.breadcrumb_item>
+              <.breadcrumb_link href="#">Home</.breadcrumb_link>
+            </.breadcrumb_item>
+            <.breadcrumb_separator>/</.breadcrumb_separator>
+            <.breadcrumb_item>
+              <.breadcrumb_page>Docs</.breadcrumb_page>
+            </.breadcrumb_item>
+          </.breadcrumb_list>
+          """
+        )
     }
   end
 
@@ -513,7 +621,13 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Navigation, :breadcrumb_link), do: %{href: "#", inner_block: slot("Home")}
 
   defp sample_assigns(Navigation, :breadcrumb_list),
-    do: %{inner_block: slot("<li data-slot=\"breadcrumb-item\">Item</li>")}
+    do: %{
+      inner_block:
+        slot(
+          "<li data-slot=\"breadcrumb-item\">Item</li>",
+          "<.breadcrumb_item>Item</.breadcrumb_item>"
+        )
+    }
 
   defp sample_assigns(Navigation, :breadcrumb_page), do: %{inner_block: slot("Current")}
   defp sample_assigns(Navigation, :breadcrumb_separator), do: %{}
@@ -530,17 +644,35 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Navigation, :pagination) do
     %{
       inner_block:
-        slot("""
-        <ul data-slot=\"pagination-content\" class=\"flex items-center gap-1\">
-          <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">1</a></li>
-          <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">2</a></li>
-        </ul>
-        """)
+        slot(
+          """
+          <ul data-slot=\"pagination-content\" class=\"flex items-center gap-1\">
+            <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">1</a></li>
+            <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">2</a></li>
+          </ul>
+          """,
+          """
+          <.pagination_content>
+            <.pagination_item>
+              <.pagination_link href="#" size={:sm}>1</.pagination_link>
+            </.pagination_item>
+            <.pagination_item>
+              <.pagination_link href="#" size={:sm}>2</.pagination_link>
+            </.pagination_item>
+          </.pagination_content>
+          """
+        )
     }
   end
 
   defp sample_assigns(Navigation, :pagination_content),
-    do: %{inner_block: slot("<li data-slot=\"pagination-item\">Page</li>")}
+    do: %{
+      inner_block:
+        slot(
+          "<li data-slot=\"pagination-item\">Page</li>",
+          "<.pagination_item>Page</.pagination_item>"
+        )
+    }
 
   defp sample_assigns(Navigation, :pagination_ellipsis), do: %{}
   defp sample_assigns(Navigation, :pagination_item), do: %{inner_block: slot("Item")}
@@ -574,7 +706,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       description: slot("This action is irreversible."),
       inner_block: slot("Dialog body"),
       footer:
-        slot("<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Cancel</button>")
+        slot(
+          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Cancel</button>",
+          "<.button variant={:outline} size={:sm}>Cancel</.button>"
+        )
     }
   end
 
@@ -587,7 +722,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       description: slot("Dialog description"),
       inner_block: slot("Dialog body"),
       footer:
-        slot("<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Done</button>")
+        slot(
+          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Done</button>",
+          "<.button variant={:outline} size={:sm}>Done</.button>"
+        )
     }
   end
 
@@ -601,7 +739,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       description: slot("Drawer description"),
       inner_block: slot("Drawer body"),
       footer:
-        slot("<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Save</button>")
+        slot(
+          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Save</button>",
+          "<.button variant={:outline} size={:sm}>Save</.button>"
+        )
     }
   end
 
@@ -626,8 +767,11 @@ defmodule ExtraordinaryUI.Docs.Catalog do
         %{
           label: "File",
           inner_block: fn _, _ ->
-            "<button class=\"block w-full rounded-sm px-2 py-1 text-left text-sm\">New</button>"
-          end
+            HTML.raw(
+              "<button class=\"block w-full rounded-sm px-2 py-1 text-left text-sm\">New</button>"
+            )
+          end,
+          template: "<.button variant={:ghost} size={:sm}>New</.button>"
         }
       ]
     }
@@ -646,7 +790,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     do: %{
       text: "Tooltip text",
       inner_block:
-        slot("<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Hover me</button>")
+        slot(
+          "<button class=\"inline-flex h-8 rounded-md border px-3 text-xs\">Hover me</button>",
+          "<.button variant={:outline} size={:sm}>Hover me</.button>"
+        )
     }
 
   defp sample_assigns(Advanced, :calendar),
@@ -686,8 +833,11 @@ defmodule ExtraordinaryUI.Docs.Catalog do
         %{
           heading: "General",
           inner_block: fn _, _ ->
-            "<div data-slot=\"item\" class=\"rounded-sm px-2 py-1.5 text-sm\">Profile</div>"
-          end
+            HTML.raw(
+              ~s(<div data-slot="item" class="rounded-sm px-2 py-1.5 text-sm">Profile</div>)
+            )
+          end,
+          template: ~s(<.item value="profile">Profile</.item>)
         }
       ]
     }
@@ -706,5 +856,12 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
   defp sample_assigns(Components, _function), do: %{}
 
-  defp slot(content), do: [%{inner_block: fn _, _ -> Phoenix.HTML.raw(content) end}]
+  defp slot(content, template_content \\ nil) do
+    [
+      %{
+        inner_block: fn _, _ -> HTML.raw(content) end,
+        template: template_content
+      }
+    ]
+  end
 end
