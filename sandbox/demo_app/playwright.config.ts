@@ -2,9 +2,16 @@ import { defineConfig } from "@playwright/test"
 
 export default defineConfig({
   testDir: "./tests/browser",
+  snapshotPathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}{ext}",
   timeout: 60_000,
   expect: {
     timeout: 10_000,
+    toHaveScreenshot: {
+      animations: "disabled",
+      caret: "hide",
+      maxDiffPixelRatio: 0.015,
+      scale: "css",
+    },
   },
   fullyParallel: false,
   retries: process.env.CI ? 2 : 0,

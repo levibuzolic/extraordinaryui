@@ -101,6 +101,14 @@ All validation checks currently pass.
 - Kept the index page as an overview with links into each detailed component page.
 - Added embedded base64 sample avatars in avatar and avatar-group docs previews (and snippets) for production-like visual fidelity.
 
+### Milestone 10: Browser visual regression suite
+
+- Added Playwright visual regression test `sandbox/demo_app/tests/browser/visual.spec.ts` capturing screenshots for every component card.
+- Added committed snapshot baselines in `sandbox/demo_app/tests/browser/visual.spec.ts-snapshots`.
+- Added npm scripts to run/update visual baselines:
+  - `npm run test:browser:visual`
+  - `npm run test:browser:visual:update`
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.

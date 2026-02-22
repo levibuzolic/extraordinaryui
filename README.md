@@ -283,6 +283,7 @@ Playwright tests run against the sandbox app and cover:
 - Phoenix snippet panel availability
 - interactive previews (dialog, drawer, popover, dropdown, combobox, carousel)
 - theme controls (mode, color, radius)
+- visual regression snapshots for every component card
 
 Setup and run:
 
@@ -307,6 +308,18 @@ Optional:
 ```bash
 npx playwright test --headed
 ```
+
+Visual snapshots:
+
+```bash
+cd sandbox/demo_app
+npx playwright test tests/browser/visual.spec.ts
+npx playwright test tests/browser/visual.spec.ts --update-snapshots
+```
+
+Snapshot baselines are stored at:
+
+- `/Users/levi/src/xmo/extraordinaryui/sandbox/demo_app/tests/browser/visual.spec.ts-snapshots`
 
 ## JS Hooks
 

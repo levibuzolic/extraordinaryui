@@ -56,6 +56,25 @@ Playwright config:
 - `sandbox/demo_app/playwright.config.ts`
 - `sandbox/demo_app/tests/browser/components.spec.ts`
 - `sandbox/demo_app/tests/browser/interactions.spec.ts`
+- `sandbox/demo_app/tests/browser/visual.spec.ts`
+
+Visual regression snapshots:
+
+```bash
+cd sandbox/demo_app
+npx playwright test tests/browser/visual.spec.ts
+```
+
+Update visual baselines after intentional UI changes:
+
+```bash
+cd sandbox/demo_app
+npx playwright test tests/browser/visual.spec.ts --update-snapshots
+```
+
+Snapshot baseline folder:
+
+- `sandbox/demo_app/tests/browser/visual.spec.ts-snapshots`
 
 ## CI
 
