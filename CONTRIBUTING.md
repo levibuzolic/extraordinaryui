@@ -136,7 +136,8 @@ Use concise, scoped commit messages. Existing style examples:
 1. Update version and changelog (`mix.exs`, `CHANGELOG.md`).
 2. Run all quality gates above.
 3. Confirm release secrets/environments are configured (one-time setup below).
-4. Publish GitHub release (triggers both `.github/workflows/publish-hex.yml` and `.github/workflows/publish-site.yml`).
+4. Site deploys automatically on every `main` push via `.github/workflows/publish-site.yml`.
+5. Publish GitHub release (triggers `.github/workflows/publish-hex.yml` and also runs `.github/workflows/publish-site.yml`).
 5. If needed, run `.github/workflows/publish-hex.yml` manually with `workflow_dispatch`.
 
 ### One-Time Hex Publish Automation Setup

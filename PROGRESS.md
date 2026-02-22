@@ -223,6 +223,11 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Updated README/CONTRIBUTING/third-party notices for the optional icon backend and licensing attribution.
 - Updated Playwright visual baselines to include the new `Icons.icon` component card.
 
+### Milestone 20: Continuous marketing-site deployment
+
+- Updated `.github/workflows/publish-site.yml` to deploy GitHub Pages on every push to `main` (in addition to release/manual triggers).
+- Updated contributor release/deploy documentation to reflect continuous site deployment behavior.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -258,3 +263,4 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
 - `(working tree)` - add automated Hex publish workflow, release secret setup docs, and progress tracking updates.
 - `cc6c4f1` - add optional `lucide_icons` integration via `CinderUI.Icons`, migrate examples/sandbox icons, and update docs/tests/licenses.
+- `(working tree)` - enable automatic GitHub Pages site publish on every `main` push and document workflow behavior.
