@@ -251,6 +251,10 @@ This repo includes a local Phoenix host app for integration testing:
 
 The sandbox renders the full component catalog at:
 
+- `http://localhost:4000/`
+
+Alias route:
+
 - `http://localhost:4000/components`
 
 The sandbox catalog includes the same theme controls and copyable HEEx snippets as the static docs exporter.

@@ -4,9 +4,9 @@ This Phoenix app embeds `extraordinary_ui` as a local path dependency to provide
 
 ## What it provides
 
-- `GET /` - small landing page
-- `GET /components` - full Extraordinary UI component catalog preview (all exported component entries)
-- shadcn-style theme controls on `/components`:
+- `GET /` - full Extraordinary UI component catalog preview (default entry)
+- `GET /components` - alias route for the same catalog view
+- shadcn-style theme controls on the catalog page:
   - mode (`light`/`dark`/`auto`)
   - palette (`zinc`/`slate`/`stone`/`gray`/`neutral`)
   - radius (`maia`/`mira`/`nova`/`lyra`/`vega`)
@@ -24,7 +24,7 @@ mix phx.server
 
 Then open:
 
-- [http://localhost:4000/components](http://localhost:4000/components)
+- [http://localhost:4000/](http://localhost:4000/)
 
 ## Run Elixir tests
 

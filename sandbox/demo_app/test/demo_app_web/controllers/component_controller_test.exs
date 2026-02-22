@@ -1,8 +1,8 @@
 defmodule DemoAppWeb.ComponentControllerTest do
   use DemoAppWeb.ConnCase
 
-  test "GET /components renders component catalog", %{conn: conn} do
-    conn = get(conn, ~p"/components")
+  test "GET / renders component catalog", %{conn: conn} do
+    conn = get(conn, ~p"/")
     response = html_response(conn, 200)
 
     assert response =~ "Extraordinary UI Sandbox"
@@ -13,5 +13,13 @@ defmodule DemoAppWeb.ComponentControllerTest do
     assert response =~ "data-theme-mode"
     assert response =~ "theme-color"
     assert response =~ "theme-radius"
+  end
+
+  test "GET /components also renders component catalog", %{conn: conn} do
+    conn = get(conn, ~p"/components")
+    response = html_response(conn, 200)
+
+    assert response =~ "Extraordinary UI Sandbox"
+    assert response =~ "Actions.button/1"
   end
 end

@@ -17,7 +17,7 @@ defmodule DemoAppWeb.Router do
   scope "/", DemoAppWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/", ComponentController, :index
     get "/components", ComponentController, :index
   end
 
