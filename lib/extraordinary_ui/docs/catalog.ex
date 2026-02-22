@@ -915,22 +915,58 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       inner_block:
         slot(
           """
-          <thead data-slot=\"table-header\"><tr data-slot=\"table-row\"><th data-slot=\"table-head\">Name</th><th data-slot=\"table-head\">Status</th></tr></thead>
-          <tbody data-slot=\"table-body\"><tr data-slot=\"table-row\"><td data-slot=\"table-cell\">Web</td><td data-slot=\"table-cell\">Healthy</td></tr></tbody>
+          <caption data-slot=\"table-caption\">Deployment status</caption>
+          <thead data-slot=\"table-header\">
+            <tr data-slot=\"table-row\">
+              <th data-slot=\"table-head\">Service</th>
+              <th data-slot=\"table-head\">Owner</th>
+              <th data-slot=\"table-head\">Status</th>
+            </tr>
+          </thead>
+          <tbody data-slot=\"table-body\">
+            <tr data-slot=\"table-row\">
+              <td data-slot=\"table-cell\">API</td>
+              <td data-slot=\"table-cell\">Platform</td>
+              <td data-slot=\"table-cell\">Healthy</td>
+            </tr>
+            <tr data-slot=\"table-row\">
+              <td data-slot=\"table-cell\">Worker</td>
+              <td data-slot=\"table-cell\">Backend</td>
+              <td data-slot=\"table-cell\">Degraded</td>
+            </tr>
+          </tbody>
+          <tfoot data-slot=\"table-footer\">
+            <tr data-slot=\"table-row\">
+              <td data-slot=\"table-cell\" colspan=\"3\">Last updated 2 minutes ago</td>
+            </tr>
+          </tfoot>
           """,
           """
+          <.table_caption>Deployment status</.table_caption>
           <.table_header>
             <.table_row>
-              <.table_head>Name</.table_head>
+              <.table_head>Service</.table_head>
+              <.table_head>Owner</.table_head>
               <.table_head>Status</.table_head>
             </.table_row>
           </.table_header>
           <.table_body>
             <.table_row>
-              <.table_cell>Web</.table_cell>
+              <.table_cell>API</.table_cell>
+              <.table_cell>Platform</.table_cell>
               <.table_cell>Healthy</.table_cell>
             </.table_row>
+            <.table_row>
+              <.table_cell>Worker</.table_cell>
+              <.table_cell>Backend</.table_cell>
+              <.table_cell>Degraded</.table_cell>
+            </.table_row>
           </.table_body>
+          <.table_footer>
+            <.table_row>
+              <.table_cell>Last updated 2 minutes ago</.table_cell>
+            </.table_row>
+          </.table_footer>
           """
         )
     }
@@ -1042,17 +1078,33 @@ defmodule ExtraordinaryUI.Docs.Catalog do
         slot(
           """
           <ul data-slot=\"pagination-content\" class=\"flex items-center gap-1\">
+            <li data-slot=\"pagination-item\"><a data-slot=\"pagination-previous\" href=\"#\">Previous</a></li>
             <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">1</a></li>
             <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">2</a></li>
+            <li data-slot=\"pagination-item\"><span data-slot=\"pagination-ellipsis\">…</span></li>
+            <li data-slot=\"pagination-item\"><a data-slot=\"pagination-link\" href=\"#\">8</a></li>
+            <li data-slot=\"pagination-item\"><a data-slot=\"pagination-next\" href=\"#\">Next</a></li>
           </ul>
           """,
           """
           <.pagination_content>
             <.pagination_item>
+              <.pagination_previous href="#" />
+            </.pagination_item>
+            <.pagination_item>
               <.pagination_link href="#" size={:sm}>1</.pagination_link>
             </.pagination_item>
             <.pagination_item>
-              <.pagination_link href="#" size={:sm}>2</.pagination_link>
+              <.pagination_link href="#" size={:sm} active={true}>2</.pagination_link>
+            </.pagination_item>
+            <.pagination_item>
+              <.pagination_ellipsis />
+            </.pagination_item>
+            <.pagination_item>
+              <.pagination_link href="#" size={:sm}>8</.pagination_link>
+            </.pagination_item>
+            <.pagination_item>
+              <.pagination_next href="#" />
             </.pagination_item>
           </.pagination_content>
           """

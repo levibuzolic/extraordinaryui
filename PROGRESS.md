@@ -142,6 +142,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added support for multiple generated examples per component in detailed docs pages.
 - Added support for multiple inline-doc examples by extracting fenced and indented HEEx snippets from function `@doc` text.
 - Upgraded `Layout.card/1` examples to richer shadcn-style compositions (header/content/footer/actions), including multiple complete variants.
+- Expanded `DataDisplay.table/1` and `Navigation.pagination/1` samples to more complete, shadcn-style compositions (caption/footer and prev/next/ellipsis flows).
 
 ## Commit Log
 
@@ -168,3 +169,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `98cc56e` - align native select arrow spacing with upstream shadcn v4 implementation.
 - `13bfd58` - fix switch preview rendering so native checkbox glyph is not visible.
 - `1335d6d` - add multi-example detailed docs rendering and richer card-aligned sample implementations.
+- `pending` - expand table/pagination sample compositions for closer shadcn-style completeness.
