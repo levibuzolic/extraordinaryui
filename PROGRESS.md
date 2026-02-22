@@ -163,4 +163,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
 - `733e521` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
 - `98cc56e` - align native select arrow spacing with upstream shadcn v4 implementation.
-- `pending` - fix switch preview rendering so native checkbox glyph is not visible.
+- `13bfd58` - fix switch preview rendering so native checkbox glyph is not visible.
