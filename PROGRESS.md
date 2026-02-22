@@ -155,4 +155,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `87a9ab1` - render function docs markdown in static docs and style markdown output blocks.
 - `7313113` - render inline backtick segments as styled code spans throughout static docs shell text.
 - `eaf9eca` - add consistent active indicator for sidebar Overview and current component links in static docs.
-- `pending` - add overview-card `Copy HEEx` actions on root static docs page.
+- `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
