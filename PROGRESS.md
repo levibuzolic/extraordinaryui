@@ -98,3 +98,5 @@ All validation checks currently pass.
 - `af013ff` - add `--skip-existing` installer option for generated files.
 - `38675cb` - add static docs exporter for full component catalog.
 - `c0a5e7d` - close overlay previews by default and add static docs interactions.
+- `6a9181a` - expand installer/docs test coverage and wire ExCoveralls coverage tooling.
+- `3ac6fa6` - add GitHub Actions CI for quality, coverage reporting, sandbox unit tests, and Playwright browser tests.
