@@ -17,6 +17,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
     * `--assets-path` - path to the assets directory (default: `assets`)
     * `--package-manager` - `npm`, `pnpm`, `yarn`, or `bun`
     * `--style` - one of `nova`, `maia`, `lyra`, `mira`, `vega` (metadata only)
+    * `--skip-existing` - do not overwrite Extraordinary UI generated files if they already exist
 
   ## Example
 
@@ -37,6 +38,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
           assets_path: :string,
           package_manager: :string,
           style: :string,
+          skip_existing: :boolean,
           help: :boolean
         ]
       )
@@ -47,15 +49,16 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
       assets_path = Path.expand(opts[:assets_path] || "assets", File.cwd!())
       style = normalize_style(opts[:style])
       package_manager = normalize_package_manager(opts[:package_manager], assets_path)
+      skip_existing = opts[:skip_existing] || false
 
       ensure_assets_dir!(assets_path)
 
-      install_css!(assets_path)
-      install_js!(assets_path)
+      install_css!(assets_path, skip_existing)
+      install_js!(assets_path, skip_existing)
       patch_app_css!(assets_path)
       patch_app_js!(assets_path)
       maybe_install_package!(assets_path, package_manager, "tailwindcss-animate")
-      write_install_marker!(assets_path, style)
+      write_install_marker!(assets_path, style, skip_existing)
 
       Mix.shell().info("Extraordinary UI install complete (style: #{style}).")
     end
@@ -67,22 +70,20 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
     end
   end
 
-  defp install_css!(assets_path) do
+  defp install_css!(assets_path, skip_existing) do
     src = Path.join(@template_dir, "extraordinary_ui.css")
     target = Path.join([assets_path, "css", "extraordinary_ui.css"])
 
     File.mkdir_p!(Path.dirname(target))
-    File.write!(target, File.read!(src))
-    Mix.shell().info("created #{relative(target)}")
+    write_generated_file!(target, File.read!(src), skip_existing, "created")
   end
 
-  defp install_js!(assets_path) do
+  defp install_js!(assets_path, skip_existing) do
     src = Path.join(@template_dir, "extraordinary_ui.js")
     target = Path.join([assets_path, "js", "extraordinary_ui.js"])
 
     File.mkdir_p!(Path.dirname(target))
-    File.write!(target, File.read!(src))
-    Mix.shell().info("created #{relative(target)}")
+    write_generated_file!(target, File.read!(src), skip_existing, "created")
   end
 
   defp patch_app_css!(assets_path) do
@@ -176,10 +177,23 @@ defmodule Mix.Tasks.ExtraordinaryUi.Install do
   defp package_command("yarn", package), do: {"yarn", ["add", "-D", package]}
   defp package_command("bun", package), do: {"bun", ["add", "-d", package]}
 
-  defp write_install_marker!(assets_path, style) do
+  defp write_install_marker!(assets_path, style, skip_existing) do
     marker_path = Path.join([assets_path, "css", ".extraordinary_ui_style"])
-    File.write!(marker_path, style <> "\n")
-    Mix.shell().info("wrote #{relative(marker_path)}")
+    write_generated_file!(marker_path, style <> "\n", skip_existing, "wrote")
+  end
+
+  defp write_generated_file!(path, content, true, verb) do
+    if File.exists?(path) do
+      Mix.shell().info("skipped existing #{relative(path)}")
+    else
+      File.write!(path, content)
+      Mix.shell().info("#{verb} #{relative(path)}")
+    end
+  end
+
+  defp write_generated_file!(path, content, false, verb) do
+    File.write!(path, content)
+    Mix.shell().info("#{verb} #{relative(path)}")
   end
 
   defp normalize_package_manager(nil, assets_path) do

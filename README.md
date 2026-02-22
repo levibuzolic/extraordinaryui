@@ -62,6 +62,18 @@ Supported package managers: `npm`, `pnpm`, `yarn`, `bun`.
 
 Supported style presets: `nova`, `maia`, `lyra`, `mira`, `vega`.
 
+If you want to avoid overwriting generated Extraordinary UI files when re-running the installer:
+
+```bash
+mix extraordinary_ui.install --skip-existing
+```
+
+`--skip-existing` skips overwriting:
+
+- `assets/css/extraordinary_ui.css`
+- `assets/js/extraordinary_ui.js`
+- `assets/css/.extraordinary_ui_style`
+
 ## Usage in `MyAppWeb`
 
 ```elixir
