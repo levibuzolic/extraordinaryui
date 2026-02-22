@@ -234,6 +234,8 @@ mix extraordinary_ui.docs.build --output public/docs --clean
 
 The output can be hosted on any static platform (GitHub Pages, Netlify, S3, Cloudflare Pages, etc).
 
+The generated site includes client-side interactivity for preview behaviors (dialogs, drawers, popovers, dropdowns, comboboxes, and carousel controls) without Phoenix running.
+
 ## JS Hooks
 
 Hook implementations live in `assets/js/extraordinary_ui.js`:

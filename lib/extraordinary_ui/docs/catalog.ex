@@ -445,7 +445,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Overlay, :alert_dialog) do
     %{
       id: "docs-alert-dialog",
-      open: true,
+      open: false,
       trigger: slot("Open"),
       title: slot("Delete project?"),
       description: slot("This action is irreversible."),
@@ -458,7 +458,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Overlay, :dialog) do
     %{
       id: "docs-dialog",
-      open: true,
+      open: false,
       trigger: slot("Open"),
       title: slot("Dialog title"),
       description: slot("Dialog description"),
@@ -471,7 +471,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Overlay, :drawer) do
     %{
       id: "docs-drawer",
-      open: true,
+      open: false,
       side: :right,
       trigger: slot("Open"),
       title: slot("Drawer"),
@@ -580,5 +580,5 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
   defp sample_assigns(Components, _function), do: %{}
 
-  defp slot(content), do: [%{inner_block: fn _, _ -> content end}]
+  defp slot(content), do: [%{inner_block: fn _, _ -> Phoenix.HTML.raw(content) end}]
 end

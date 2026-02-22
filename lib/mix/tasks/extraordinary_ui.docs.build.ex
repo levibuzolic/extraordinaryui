@@ -50,21 +50,9 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       File.write!(Path.join(assets_dir, "site.js"), site_js())
       File.write!(Path.join(assets_dir, "site.css"), site_css())
 
-      copy_optional_asset(
-        "assets/js/extraordinary_ui.js",
-        Path.join(assets_dir, "extraordinary_ui.js")
-      )
-
       Mix.shell().info("generated #{relative(output_dir)}")
       Mix.shell().info("entries: #{Catalog.entry_count()}")
       Mix.shell().info("open #{relative(Path.join(output_dir, "index.html"))} in a browser")
-    end
-  end
-
-  defp copy_optional_asset(source, target) do
-    if File.exists?(source) do
-      File.cp!(source, target)
-      Mix.shell().info("copied #{relative(target)}")
     end
   end
 
@@ -130,7 +118,6 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
           </main>
         </div>
 
-        <script src=\"./assets/extraordinary_ui.js\"></script>
         <script src=\"./assets/site.js\"></script>
       </body>
     </html>
@@ -197,6 +184,13 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
   defp site_js do
     """
     (() => {
+      const qs = (root, selector) => Array.from(root.querySelectorAll(selector))
+      const toggleVisibility = (el, visible) => {
+        if (!el) return
+        el.classList.toggle("hidden", !visible)
+        el.dataset.state = visible ? "open" : "closed"
+      }
+
       const searchInput = document.getElementById("component-search")
       const cards = Array.from(document.querySelectorAll("[data-component-card]"))
 
@@ -231,6 +225,141 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
             // no-op
           }
         })
+      })
+
+      // Dialogs (includes alert dialogs)
+      qs(document, "[data-slot='dialog']").forEach((root) => {
+        const overlay = root.querySelector("[data-dialog-overlay]")
+        const content = root.querySelector("[data-dialog-content]")
+
+        const sync = (open) => {
+          root.dataset.state = open ? "open" : "closed"
+          toggleVisibility(overlay, open)
+          toggleVisibility(content, open)
+        }
+
+        root.addEventListener("click", (event) => {
+          if (event.target.closest("[data-dialog-trigger]")) sync(true)
+          if (event.target.closest("[data-dialog-close]") || event.target.closest("[data-dialog-overlay]")) sync(false)
+        })
+
+        sync(root.dataset.state === "open")
+      })
+
+      // Drawers / sheets
+      qs(document, "[data-slot='drawer']").forEach((root) => {
+        const overlay = root.querySelector("[data-drawer-overlay]")
+        const content = root.querySelector("[data-drawer-content]")
+
+        const sync = (open) => {
+          root.dataset.state = open ? "open" : "closed"
+          toggleVisibility(overlay, open)
+          toggleVisibility(content, open)
+        }
+
+        root.addEventListener("click", (event) => {
+          if (event.target.closest("[data-drawer-trigger]")) sync(true)
+          if (event.target.closest("[data-drawer-overlay]")) sync(false)
+        })
+
+        sync(root.dataset.state === "open")
+      })
+
+      // Popovers
+      qs(document, "[data-slot='popover']").forEach((root) => {
+        const trigger = root.querySelector("[data-popover-trigger]")
+        const content = root.querySelector("[data-popover-content]")
+        let open = false
+
+        trigger?.addEventListener("click", (event) => {
+          event.preventDefault()
+          open = !open
+          toggleVisibility(content, open)
+        })
+
+        document.addEventListener("click", (event) => {
+          if (!root.contains(event.target)) {
+            open = false
+            toggleVisibility(content, false)
+          }
+        })
+      })
+
+      // Dropdown menus
+      qs(document, "[data-slot='dropdown-menu']").forEach((root) => {
+        const trigger = root.querySelector("[data-dropdown-trigger]")
+        const content = root.querySelector("[data-dropdown-content]")
+        let open = false
+
+        trigger?.addEventListener("click", (event) => {
+          event.preventDefault()
+          open = !open
+          toggleVisibility(content, open)
+        })
+
+        document.addEventListener("click", (event) => {
+          if (!root.contains(event.target)) {
+            open = false
+            toggleVisibility(content, false)
+          }
+        })
+      })
+
+      // Combobox previews
+      qs(document, "[data-slot='combobox']").forEach((root) => {
+        const input = root.querySelector("[data-combobox-input]")
+        const content = root.querySelector("[data-combobox-content]")
+        const items = qs(root, "[data-slot='combobox-item']")
+
+        input?.addEventListener("focus", () => toggleVisibility(content, true))
+        input?.addEventListener("input", () => {
+          const value = (input.value || "").toLowerCase()
+          items.forEach((item) => {
+            const text = (item.textContent || "").toLowerCase()
+            item.classList.toggle("hidden", !text.includes(value))
+          })
+          toggleVisibility(content, true)
+        })
+
+        items.forEach((item) => {
+          item.addEventListener("click", () => {
+            input.value = item.getAttribute("data-value") || (item.textContent || "").trim()
+            toggleVisibility(content, false)
+          })
+        })
+
+        document.addEventListener("click", (event) => {
+          if (!root.contains(event.target)) {
+            toggleVisibility(content, false)
+          }
+        })
+      })
+
+      // Carousel previews
+      qs(document, "[data-slot='carousel']").forEach((root) => {
+        const track = root.querySelector("[data-carousel-track]")
+        const items = qs(root, "[data-slot='carousel-item']")
+        const prev = root.querySelector("[data-carousel-prev]")
+        const next = root.querySelector("[data-carousel-next]")
+        let index = 0
+
+        const sync = () => {
+          if (!track || items.length === 0) return
+          track.style.transform = `translateX(-${index * 100}%)`
+          track.style.transition = "transform 240ms ease"
+        }
+
+        prev?.addEventListener("click", () => {
+          index = index === 0 ? items.length - 1 : index - 1
+          sync()
+        })
+
+        next?.addEventListener("click", () => {
+          index = index === items.length - 1 ? 0 : index + 1
+          sync()
+        })
+
+        sync()
       })
     })()
     """
