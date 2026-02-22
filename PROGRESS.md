@@ -159,4 +159,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `eaf9eca` - add consistent active indicator for sidebar Overview and current component links in static docs.
 - `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
 - `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
-- `pending` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
+- `733e521` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
