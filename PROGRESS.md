@@ -1,13 +1,10 @@
 # Extraordinary UI Progress
 
-## Execution Plan
+## Current Plan (February 22, 2026)
 
-1. Bootstrap the library skeleton and quality gates.
-2. Build core utilities (class composition, design tokens, and install templates).
-3. Implement a broad shadcn-inspired component surface area with Phoenix function components.
-4. Add Storybook coverage for component preview and interaction demos.
-5. Implement installer automation for Tailwind dependencies, CSS tokens, and JS hooks.
-6. Add tests and final documentation polish.
+1. Keep CI quality, coverage, docs export, static site export, and browser regression green for every change.
+2. Publish first Hex package + HexDocs and verify release documentation flow.
+3. Continue closing shadcn parity gaps in JS-heavy/scaffold components while preserving Phoenix-first APIs.
 
 ## Progress Log
 
@@ -27,10 +24,19 @@
 - `mix format`
 - `mix quality`
 - `MIX_ENV=test mix coveralls.cobertura --raise`
+- `mix extraordinary_ui.site.build --output tmp/verify-site --clean`
 - `cd sandbox/demo_app && mix format --check-formatted && mix test`
 - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
-All validation checks currently pass.
+All validation checks currently pass (last run: February 22, 2026).
+
+## Remaining Work
+
+- [ ] Publish Hex package and HexDocs for `extraordinary_ui`.
+- [ ] Add release automation for Hex publish (requires repository secrets and release gating decisions).
+- [ ] Implement `Context Menu` or formally document it as out-of-scope.
+- [ ] Deepen scaffold/progressive parity for `Calendar`, `Chart`, `Resizable`, `Sidebar`, and `Sonner`.
+- [ ] Expand browser tests for keyboard/focus accessibility behavior in progressive overlay/menu components.
 
 ## Milestones
 
@@ -117,6 +123,13 @@ All validation checks currently pass.
 - Added GitHub Pages publish workflow (`.github/workflows/publish-site.yml`) triggered on `release.published` and manual dispatch.
 - Updated README with commands and one-time GitHub Pages setup steps, plus Cloudflare/Vercel fallback deployment guidance.
 
+### Milestone 12: Documentation reality pass
+
+- Audited root and sandbox documentation against actual routes, workflows, and commands.
+- Replaced machine-specific absolute paths with repository-relative paths in docs.
+- Added explicit current-status and release-checklist guidance, including manual Hex publish status.
+- Added remaining-work tracking so incomplete items are clearly visible.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -131,3 +144,4 @@ All validation checks currently pass.
 - `6a9181a` - expand installer/docs test coverage and wire ExCoveralls coverage tooling.
 - `3ac6fa6` - add GitHub Actions CI for quality, coverage reporting, sandbox unit tests, and Playwright browser tests.
 - `e9e84bc` - add static developer site build task, tests, CI checks, and GitHub Pages release deployment workflow.
+- `pending` - run documentation reality pass, add remaining-work tracker, and add root AGENTS guide for future development.

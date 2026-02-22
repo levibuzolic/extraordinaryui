@@ -18,6 +18,12 @@ The project is intentionally aligned with:
 - Support style/theme overrides with the same CSS-variable model used by shadcn.
 - Ship Storybook stories for broad component preview coverage.
 
+## Current Status (February 22, 2026)
+
+- Core library, installer, static docs export, demo sandbox, CI quality gates, and Playwright visual regression are implemented and passing.
+- GitHub Pages deployment for the static developer site is wired to GitHub Releases (`release.published`).
+- Hex package and HexDocs publication are not automated yet (Hex links are pre-wired, pending first publish).
+
 ## Installation
 
 ### 1) Add dependency
@@ -279,7 +285,7 @@ This is fully static HTML/CSS/JS and can be deployed to GitHub Pages, Cloudflare
 
 This repo includes a local Phoenix host app for integration testing:
 
-- `/Users/levi/src/xmo/extraordinaryui/sandbox/demo_app`
+- `sandbox/demo_app`
 
 The sandbox renders the full component catalog at:
 
@@ -345,7 +351,7 @@ npx playwright test tests/browser/visual.spec.ts --update-snapshots
 
 Snapshot baselines are stored at:
 
-- `/Users/levi/src/xmo/extraordinaryui/sandbox/demo_app/tests/browser/visual.spec.ts-snapshots`
+- `sandbox/demo_app/tests/browser/visual.spec.ts-snapshots`
 
 ## JS Hooks
 
@@ -424,6 +430,27 @@ One-time repo setup:
 3. Publish a release to trigger deployment.
 
 If you prefer Cloudflare Pages or Vercel, point their build output to `dist/site` and run `mix extraordinary_ui.site.build --output dist/site --clean` in their build command.
+
+### Release Checklist
+
+1. Update version and changelog (`mix.exs`, `CHANGELOG.md`).
+2. Run full quality gates:
+
+```bash
+mix quality
+MIX_ENV=test mix coveralls.cobertura --raise
+cd sandbox/demo_app && mix format --check-formatted && mix test
+cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test
+```
+
+3. Publish package (manual today):
+
+```bash
+mix hex.publish
+mix hex.publish docs
+```
+
+4. Publish a GitHub release to trigger static site deployment to GitHub Pages.
 
 ## Notes on Feasibility
 

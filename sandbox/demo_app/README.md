@@ -39,8 +39,8 @@ mix test
 ```bash
 cd sandbox/demo_app
 mix deps.get
-mix assets.build
 npm ci
+mix assets.build
 npx playwright install --with-deps chromium
 npx playwright test
 ```
@@ -85,12 +85,12 @@ GitHub Actions run this sandbox in two jobs:
 
 Workflow file:
 
-- `/Users/levi/src/xmo/extraordinaryui/.github/workflows/ci.yml`
+- `.github/workflows/ci.yml`
 
 ## Export static docs site (from repo root)
 
 ```bash
-cd /Users/levi/src/xmo/extraordinaryui
+cd ../..
 mix extraordinary_ui.docs.build --output dist/docs --clean
 ```
 

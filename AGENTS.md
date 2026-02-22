@@ -1,0 +1,58 @@
+# AGENTS Guide
+
+Concise contributor guide for `extraordinary_ui`.
+
+## Scope
+
+- This repo is a Phoenix component library inspired by shadcn/ui.
+- Primary outputs:
+  - Hex package (`extraordinary_ui`)
+  - Static component docs (`dist/docs`)
+  - Static developer/marketing site (`dist/site`)
+  - Sandbox host app for integration/browser tests (`sandbox/demo_app`)
+
+## Architecture
+
+- Library code: `lib/extraordinary_ui/**`
+- Install/docs/site tasks:
+  - `lib/mix/tasks/extraordinary_ui.install.ex`
+  - `lib/mix/tasks/extraordinary_ui.docs.build.ex`
+  - `lib/mix/tasks/extraordinary_ui.site.build.ex`
+- Static docs catalog source: `lib/extraordinary_ui/docs/catalog.ex`
+- Sandbox app: `sandbox/demo_app`
+
+## Core Commands
+
+- Root quality:
+  - `mix quality`
+  - `MIX_ENV=test mix coveralls.cobertura --raise`
+- Static outputs:
+  - `mix extraordinary_ui.docs.build --output dist/docs --clean`
+  - `mix extraordinary_ui.site.build --output dist/site --clean`
+- Sandbox checks:
+  - `cd sandbox/demo_app && mix format --check-formatted && mix test`
+  - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
+
+## Engineering Standards
+
+- Keep APIs Phoenix-first (HEEx function components, predictable assigns, typed `attr`/`slot` docs).
+- Prefer component composition in docs/snippets; use raw HTML only when no library primitive exists.
+- Keep static docs and sandbox behavior aligned (theme controls, snippets, interactions).
+- Avoid machine-specific paths in docs; use repository-relative paths.
+- Update tests whenever component behavior, docs generation, or JS hooks change.
+
+## Documentation Requirements
+
+- Update both `README.md` and `PROGRESS.md` for any material feature/workflow change.
+- `PROGRESS.md` must include:
+  - current validated command set
+  - remaining work/incomplete items
+  - milestone and commit-log updates
+- Public component changes should include in-module docs and examples.
+
+## Release Flow
+
+1. Update `mix.exs` version + `CHANGELOG.md`.
+2. Run all quality/test/browser commands above.
+3. Publish package/docs to Hex (currently manual).
+4. Publish GitHub release (triggers Pages deploy via `.github/workflows/publish-site.yml`).
