@@ -115,6 +115,7 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added npm scripts to run/update visual baselines:
   - `npm run test:browser:visual`
   - `npm run test:browser:visual:update`
+- Hardened visual snapshots against cross-environment 1px card-height drift by targeting per-component preview containers and normalizing preview capture height in test CSS.
 
 ### Milestone 11: Static developer site + release publishing
 

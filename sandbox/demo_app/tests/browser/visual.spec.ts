@@ -27,6 +27,11 @@ test.describe("visual regression", () => {
         code, pre {
           font-family: "Courier New", monospace !important;
         }
+
+        [data-component-card] [data-testid^="preview-"] {
+          height: 220px !important;
+          overflow: hidden !important;
+        }
       `,
     })
   })
@@ -41,10 +46,11 @@ test.describe("visual regression", () => {
       const card = cards.nth(index)
       const id = await card.getAttribute("id")
       const snapshotName = `cards/${id ?? `card-${index}`}.png`
+      const preview = card.locator("[data-testid^='preview-']")
 
-      await card.scrollIntoViewIfNeeded()
-      await expect(card).toBeVisible()
-      await expect(card).toHaveScreenshot(snapshotName)
+      await preview.scrollIntoViewIfNeeded()
+      await expect(preview).toBeVisible()
+      await expect(preview).toHaveScreenshot(snapshotName)
     }
   })
 })
