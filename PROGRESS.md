@@ -167,4 +167,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `733e521` - fix duplicated disclosure arrows by refining summary marker CSS in static docs shell.
 - `98cc56e` - align native select arrow spacing with upstream shadcn v4 implementation.
 - `13bfd58` - fix switch preview rendering so native checkbox glyph is not visible.
-- `pending` - add multi-example detailed docs rendering and richer card-aligned sample implementations.
+- `1335d6d` - add multi-example detailed docs rendering and richer card-aligned sample implementations.
