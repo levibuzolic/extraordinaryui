@@ -157,4 +157,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `7313113` - render inline backtick segments as styled code spans throughout static docs shell text.
 - `eaf9eca` - add consistent active indicator for sidebar Overview and current component links in static docs.
 - `f50ad56` - add overview-card `Copy HEEx` actions on root static docs page.
-- `pending` - make overview-card HEEx snippets always expanded in root static docs.
+- `89d6aef` - make overview-card HEEx snippets always expanded in root static docs.
