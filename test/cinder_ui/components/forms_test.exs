@@ -39,4 +39,18 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "checked:bg-primary"
     assert html =~ "peer-checked:translate-x-[calc(100%-2px)]"
   end
+
+  test "input_group renders a unified control shell" do
+    html =
+      render_component(&Forms.input_group/1, %{
+        inner_block: [
+          %{inner_block: fn _, _ -> "stub" end}
+        ]
+      })
+
+    assert html =~ "data-slot=\"input-group\""
+    assert html =~ "has-[:focus-visible]:ring-[3px]"
+    assert html =~ "[&amp;&gt;[data-slot=input]]:border-0"
+    assert html =~ "[&amp;&gt;[data-slot=button]]:border-0"
+  end
 end

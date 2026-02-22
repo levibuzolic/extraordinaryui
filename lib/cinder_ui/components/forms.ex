@@ -432,7 +432,13 @@ defmodule CinderUI.Components.Forms do
   def input_group(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "flex w-full items-stretch rounded-md border border-input bg-transparent shadow-xs [&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:not(:last-child)]:border-r [&>*]:border-input",
+        "flex h-9 w-full items-stretch rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow]",
+        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:ring-[3px]",
+        "[&>*]:relative [&>*]:h-full [&>*]:focus-visible:z-10",
+        "[&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md",
+        "[&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-input",
+        "[&>[data-slot=input]]:h-full [&>[data-slot=input]]:rounded-none [&>[data-slot=input]]:border-0 [&>[data-slot=input]]:bg-transparent [&>[data-slot=input]]:shadow-none [&>[data-slot=input]]:focus-visible:ring-0",
+        "[&>[data-slot=button]]:h-full [&>[data-slot=button]]:rounded-none [&>[data-slot=button]]:border-0 [&>[data-slot=button]]:shadow-none [&>[data-slot=button]]:focus-visible:ring-0",
         assigns.class
       ])
 

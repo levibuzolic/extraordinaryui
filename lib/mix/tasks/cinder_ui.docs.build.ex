@@ -19,8 +19,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   use Mix.Task
 
+  alias CinderUI.Components.Forms
   alias CinderUI.Docs.Catalog
   alias Phoenix.HTML
+  alias Phoenix.HTML.Safe
 
   @impl true
   def run(argv) do
@@ -256,6 +258,24 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   defp current_page_attr(false), do: ""
 
   defp theme_controls_html do
+    color_select =
+      render_component(Forms, :native_select, %{
+        name: "theme-color",
+        value: "neutral",
+        option: native_select_options(["zinc", "slate", "stone", "gray", "neutral"]),
+        class: "h-8 text-xs",
+        rest: %{"id" => "theme-color", "aria-label" => "Theme color"}
+      })
+
+    radius_select =
+      render_component(Forms, :native_select, %{
+        name: "theme-radius",
+        value: "nova",
+        option: native_select_options(["maia", "mira", "nova", "lyra", "vega"]),
+        class: "h-8 text-xs",
+        rest: %{"id" => "theme-radius", "aria-label" => "Theme radius"}
+      })
+
     """
     <section class=\"mb-6 rounded-lg border p-3\">
       <h2 class=\"text-sm font-semibold\">Theme</h2>
@@ -271,25 +291,20 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
       <div class=\"mt-3\">
         <label for=\"theme-color\" class=\"mb-2 block text-xs font-medium text-muted-foreground\">Color</label>
-        <select id=\"theme-color\" class=\"border-input bg-background h-8 w-full rounded-md border px-2 text-xs\">
-          #{option_tags(["zinc", "slate", "stone", "gray", "neutral"])}
-        </select>
+        #{color_select}
       </div>
 
       <div class=\"mt-3\">
         <label for=\"theme-radius\" class=\"mb-2 block text-xs font-medium text-muted-foreground\">Radius</label>
-        <select id=\"theme-radius\" class=\"border-input bg-background h-8 w-full rounded-md border px-2 text-xs\">
-          #{option_tags(["maia", "mira", "nova", "lyra", "vega"])}
-        </select>
+        #{radius_select}
       </div>
     </section>
     """
   end
 
-  defp option_tags(options) do
-    Enum.map_join(options, "\n", fn option ->
-      label = option |> String.replace("_", " ") |> String.capitalize()
-      ~s(<option value="#{option}">#{label}</option>)
+  defp native_select_options(options) do
+    Enum.map(options, fn option ->
+      %{value: option, label: option |> String.replace("_", " ") |> String.capitalize()}
     end)
   end
 
@@ -581,6 +596,15 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
+
+  defp render_component(module, function, assigns) do
+    assigns = Map.put_new(assigns, :__changed__, %{})
+
+    module
+    |> apply(function, [assigns])
+    |> Safe.to_iodata()
+    |> IO.iodata_to_binary()
+  end
 
   defp site_js do
     """
