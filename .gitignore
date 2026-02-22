@@ -1,0 +1,12 @@
+/_build/
+/cover/
+/deps/
+/doc/
+/.elixir_ls/
+*.ez
+/*.iml
+/.idea/
+/.vscode/
+/assets/node_modules/
+/assets/.npm/
+/tmp/
