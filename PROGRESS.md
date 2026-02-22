@@ -160,6 +160,17 @@ All validation checks currently pass (last run: February 22, 2026).
 - Added inline-doc fenced example metadata parsing (`title="..."` and `title='...'`) so detailed docs pages can render multiple named examples from `@doc` content.
 - Added docs and tests validating titled inline examples and multi-example coverage expectations.
 
+### Milestone 14: Audience-focused docs split and licensing notices
+
+- Split contributor/maintainer workflow content out of `README.md` into new `CONTRIBUTING.md`.
+- Refocused `README.md` on application-consumer install/usage/theming/docs guidance.
+- Added `THIRD_PARTY_NOTICES.md` with licensing links and acknowledgements for:
+  - shadcn/ui
+  - Tailwind CSS
+  - tailwindcss-animate
+- Added package/docs metadata entries so `CONTRIBUTING.md` and `THIRD_PARTY_NOTICES.md` ship with Hex package docs context.
+- Updated `AGENTS.md` documentation requirements to preserve the README vs CONTRIBUTING audience split.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.

@@ -43,7 +43,10 @@ Concise contributor guide for `extraordinary_ui`.
 
 ## Documentation Requirements
 
-- Update both `README.md` and `PROGRESS.md` for any material feature/workflow change.
+- Keep docs split by audience:
+  - `README.md` is user-facing installation/usage guidance.
+  - `CONTRIBUTING.md` is contributor workflow and project maintenance guidance.
+- Update both `README.md`/`CONTRIBUTING.md` (as applicable) and `PROGRESS.md` for any material feature/workflow change.
 - `PROGRESS.md` must include:
   - current validated command set
   - remaining work/incomplete items
