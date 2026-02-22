@@ -12,7 +12,8 @@ Cinder UI is a Hex-oriented component library that ports shadcn/ui design patter
 def deps do
   [
     {:cinder_ui, "~> 0.1.0"},
-    {:lucide_icons, "~> 2.0"} # optional but recommended for <.icon /> and icon-based primitives
+    # optional but recommended for <.icon /> and icon-based primitives
+    {:lucide_icons, "~> 2.0"}
   ]
 end
 ```
@@ -83,7 +84,6 @@ import CinderUI.Components.Forms
 
 `CinderUI.Icons.icon/1` dispatches to [`lucide_icons`](https://hex.pm/packages/lucide_icons).
 
-- No sync task is needed.
 - Cinder UI reads `lucide_icons.icon_names/0` and caches names automatically.
 - Both kebab-case and snake_case icon names are supported.
 
@@ -94,7 +94,7 @@ Example:
 <.icon name="loader_circle" class="size-4 animate-spin" />
 ```
 
-If `lucide_icons` is missing and `<.icon />` is used, Cinder UI raises a descriptive error with install instructions.
+If `lucide_icons` is missing and `<.icon />` is used, Cinder UI raises an error.
 
 ## Theming and Style Overrides
 
@@ -251,7 +251,7 @@ A subset of shadcn components rely on browser-first stacks (Radix primitives, co
 
 ## Attribution and Third-Party Notices
 
-Cinder UI is deeply inspired by and interoperates with the work from these projects:
+Cinder UI is built on the shoulders of giants, leveraging the awesome work from these projects:
 
 - [shadcn/ui](https://ui.shadcn.com/docs) ([GitHub](https://github.com/shadcn-ui/ui))
 - [Tailwind CSS](https://tailwindcss.com/) ([GitHub](https://github.com/tailwindlabs/tailwindcss))
@@ -259,19 +259,13 @@ Cinder UI is deeply inspired by and interoperates with the work from these proje
 - [lucide_icons](https://hex.pm/packages/lucide_icons) ([GitHub](https://github.com/zoedsoupe/lucide_icons))
 - [Lucide Icons](https://lucide.dev/icons/)
 
-Thank you to the maintainers and contributors of these excellent projects.
+Thank you to the maintainers and contributors.
 
-For third-party license details and links to upstream license texts, see:
-
-- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)
+For third-party license details and links to upstream license texts, see: [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)
 
 ## Contributing
 
-Contributor setup, quality gates, testing, release workflow, and docs maintenance live in:
-
-- [`CONTRIBUTING.md`](CONTRIBUTING.md)
-
-Release publishing is automated via GitHub Actions for maintainers; see `CONTRIBUTING.md` for the one-time `HEX_API_KEY` secret setup.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for contributor setup, quality gates, testing, release workflow, and docs maintenance.
 
 ## License
 
