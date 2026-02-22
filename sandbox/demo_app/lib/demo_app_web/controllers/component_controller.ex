@@ -1,7 +1,7 @@
 defmodule DemoAppWeb.ComponentController do
   use DemoAppWeb, :controller
 
-  alias ExtraordinaryUI.Docs.Catalog
+  alias CinderUI.Docs.Catalog
 
   def index(conn, _params) do
     render(conn, :index,

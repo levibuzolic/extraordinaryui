@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Advanced do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Advanced.command/1
+  def function, do: &CinderUI.Components.Advanced.command/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Advanced,
+      {CinderUI.Components.Advanced,
        [item: 1, combobox: 1, calendar: 1, carousel: 1, chart: 1, sidebar: 1, sonner_toaster: 1]}
     ]
 

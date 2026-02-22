@@ -85,8 +85,8 @@ defmodule DemoAppWeb do
       # HTML escaping functionality
       import Phoenix.HTML
 
-      # Extraordinary UI component imports
-      use ExtraordinaryUI
+      # Cinder UI component imports
+      use CinderUI
 
       # Core UI components
       import DemoAppWeb.CoreComponents

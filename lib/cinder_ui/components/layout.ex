@@ -1,0 +1,298 @@
+defmodule CinderUI.Components.Layout do
+  @moduledoc """
+  Layout and structural primitives inspired by shadcn/ui.
+
+  Included:
+
+  - Card family (`card/1`, `card_header/1`, `card_title/1`, `card_description/1`, `card_action/1`, `card_content/1`, `card_footer/1`)
+  - `separator/1`
+  - `skeleton/1`
+  - `aspect_ratio/1`
+  - `kbd/1`
+  - `kbd_group/1`
+  - `scroll_area/1`
+  - `resizable/1`
+  """
+
+  use Phoenix.Component
+
+  import CinderUI.Classes
+
+  @doc """
+  Card container.
+
+  ## Example
+
+      <.card>
+        <.card_header>
+          <.card_title>Settings</.card_title>
+        </.card_header>
+        <.card_content>...</.card_content>
+      </.card>
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card(assigns) do
+    assigns =
+      assign(assigns, :classes, [
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        assigns.class
+      ])
+
+    ~H"""
+    <div data-slot="card" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Card header section.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card_header(assigns) do
+    assigns =
+      assign(assigns, :classes, [
+        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+        assigns.class
+      ])
+
+    ~H"""
+    <div data-slot="card-header" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Card title text.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card_title(assigns) do
+    assigns = assign(assigns, :classes, ["leading-none font-semibold", assigns.class])
+
+    ~H"""
+    <div data-slot="card-title" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Card description text.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card_description(assigns) do
+    assigns = assign(assigns, :classes, ["text-muted-foreground text-sm", assigns.class])
+
+    ~H"""
+    <div data-slot="card-description" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Right-aligned card action region for buttons/chips.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card_action(assigns) do
+    assigns =
+      assign(assigns, :classes, [
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        assigns.class
+      ])
+
+    ~H"""
+    <div data-slot="card-action" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Card content section.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card_content(assigns) do
+    assigns = assign(assigns, :classes, ["px-6", assigns.class])
+
+    ~H"""
+    <div data-slot="card-content" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Card footer section.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def card_footer(assigns) do
+    assigns =
+      assign(assigns, :classes, ["flex items-center px-6 [.border-t]:pt-6", assigns.class])
+
+    ~H"""
+    <div data-slot="card-footer" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    """
+  end
+
+  @doc """
+  Horizontal or vertical separator.
+  """
+  attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
+  attr :decorative, :boolean, default: true
+  attr :class, :string, default: nil
+
+  def separator(assigns) do
+    orientation_classes =
+      case assigns.orientation do
+        :horizontal -> "data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full"
+        :vertical -> "data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+      end
+
+    assigns =
+      assign(assigns, :classes, [
+        "bg-border shrink-0",
+        orientation_classes,
+        assigns.class
+      ])
+
+    ~H"""
+    <div
+      data-slot="separator"
+      role={if(@decorative, do: "none", else: "separator")}
+      aria-orientation={@orientation}
+      data-orientation={@orientation}
+      class={classes(@classes)}
+    />
+    """
+  end
+
+  @doc """
+  Animated skeleton placeholder.
+  """
+  attr :class, :string, default: nil
+
+  def skeleton(assigns) do
+    assigns = assign(assigns, :classes, ["bg-accent animate-pulse rounded-md", assigns.class])
+
+    ~H"""
+    <div data-slot="skeleton" class={classes(@classes)} />
+    """
+  end
+
+  @doc """
+  Maintains a fixed aspect ratio for content.
+
+  ## Example
+
+      <.aspect_ratio ratio="16 / 9">
+        <img src="..." class="h-full w-full object-cover" />
+      </.aspect_ratio>
+  """
+  attr :ratio, :string, default: "16 / 9"
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def aspect_ratio(assigns) do
+    assigns = assign(assigns, :classes, ["relative w-full overflow-hidden", assigns.class])
+
+    ~H"""
+    <div data-slot="aspect-ratio" class={classes(@classes)} style={"aspect-ratio: #{@ratio};"}>
+      <div class="absolute inset-0">{render_slot(@inner_block)}</div>
+    </div>
+    """
+  end
+
+  @doc """
+  Keyboard key badge.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def kbd(assigns) do
+    assigns =
+      assign(assigns, :classes, [
+        "bg-muted text-muted-foreground pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm px-1 font-sans text-xs font-medium select-none [&_svg:not([class*='size-'])]:size-3",
+        assigns.class
+      ])
+
+    ~H"""
+    <kbd data-slot="kbd" class={classes(@classes)}>{render_slot(@inner_block)}</kbd>
+    """
+  end
+
+  @doc """
+  Groups multiple `kbd/1` entries.
+  """
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def kbd_group(assigns) do
+    assigns = assign(assigns, :classes, ["inline-flex items-center gap-1", assigns.class])
+
+    ~H"""
+    <kbd data-slot="kbd-group" class={classes(@classes)}>{render_slot(@inner_block)}</kbd>
+    """
+  end
+
+  @doc """
+  Overflow container that mirrors shadcn `scroll-area` structure.
+  """
+  attr :class, :string, default: nil
+  attr :viewport_class, :string, default: nil
+  slot :inner_block, required: true
+
+  def scroll_area(assigns) do
+    assigns =
+      assigns
+      |> assign(:classes, ["relative overflow-hidden", assigns.class])
+      |> assign(:viewport_classes, [
+        "h-full w-full rounded-[inherit] overflow-auto",
+        assigns.viewport_class
+      ])
+
+    ~H"""
+    <div data-slot="scroll-area" class={classes(@classes)}>
+      <div data-slot="scroll-area-viewport" class={classes(@viewport_classes)}>
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Basic resizable split layout container.
+
+  This is a CSS structure helper. Persisting drag-based sizes requires optional
+  JavaScript.
+  """
+  attr :direction, :atom, default: :horizontal, values: [:horizontal, :vertical]
+  attr :class, :string, default: nil
+
+  slot :panel, required: true do
+    attr :size, :integer
+  end
+
+  def resizable(assigns) do
+    layout_class = if(assigns.direction == :horizontal, do: "flex-row", else: "flex-col")
+
+    assigns =
+      assign(assigns, :classes, ["flex min-h-[200px] w-full", layout_class, assigns.class])
+
+    ~H"""
+    <div data-slot="resizable" data-direction={@direction} class={classes(@classes)}>
+      <div
+        :for={panel <- @panel}
+        data-slot="resizable-panel"
+        style={if(panel[:size], do: "flex-basis: #{panel[:size]}%;", else: nil)}
+        class="min-w-0"
+      >
+        {render_slot(panel)}
+      </div>
+    </div>
+    """
+  end
+end

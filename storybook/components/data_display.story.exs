@@ -1,11 +1,11 @@
 defmodule Storybook.Components.DataDisplay do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.DataDisplay.avatar/1
+  def function, do: &CinderUI.Components.DataDisplay.avatar/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.DataDisplay,
+      {CinderUI.Components.DataDisplay,
        [
          avatar_group: 1,
          avatar_group_count: 1,
@@ -36,7 +36,7 @@ defmodule Storybook.Components.DataDisplay do
         id: :accordion,
         template: """
         <.accordion>
-          <:item title=\"What is Extraordinary UI?\" open={true}>A shadcn-inspired Phoenix component library.</:item>
+          <:item title=\"What is Cinder UI?\" open={true}>A shadcn-inspired Phoenix component library.</:item>
           <:item title=\"Does it support theming?\">Yes, through CSS tokens and style presets.</:item>
         </.accordion>
         """

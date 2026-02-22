@@ -46,7 +46,7 @@ jobs:
         run: mix deps.get
 
       - name: Build static site
-        run: mix extraordinary_ui.site.build --output dist/site --clean
+        run: mix cinder_ui.site.build --output dist/site --clean
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

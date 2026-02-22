@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Overlay do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Overlay.dialog/1
+  def function, do: &CinderUI.Components.Overlay.dialog/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Overlay,
+      {CinderUI.Components.Overlay,
        [popover: 1, tooltip: 1, hover_card: 1, dropdown_menu: 1, drawer: 1]}
     ]
 

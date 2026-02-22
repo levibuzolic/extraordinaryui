@@ -1,0 +1,39 @@
+defmodule CinderUI.Components.OverlayTest do
+  use ExUnit.Case, async: true
+
+  import Phoenix.LiveViewTest
+
+  alias CinderUI.Components.Overlay
+  alias CinderUI.TestHelpers
+
+  test "dialog renders trigger and content" do
+    html =
+      render_component(&Overlay.dialog/1, %{
+        id: "demo-dialog",
+        open: true,
+        trigger: [%{inner_block: fn _, _ -> "Open" end}],
+        title: [%{inner_block: fn _, _ -> "Title" end}],
+        description: [%{inner_block: fn _, _ -> "Desc" end}],
+        footer: [%{inner_block: fn _, _ -> "Footer" end}],
+        inner_block: TestHelpers.slot("Body")
+      })
+
+    assert html =~ "data-slot=\"dialog\""
+    assert html =~ "Open"
+    assert html =~ "Body"
+  end
+
+  test "dropdown menu renders items" do
+    html =
+      render_component(&Overlay.dropdown_menu/1, %{
+        id: "demo-dropdown",
+        trigger: [%{inner_block: fn _, _ -> "Open" end}],
+        item: [
+          %{href: "/settings", disabled: false, inner_block: fn _, _ -> "Settings" end}
+        ]
+      })
+
+    assert html =~ "data-slot=\"dropdown-menu\""
+    assert html =~ "Settings"
+  end
+end

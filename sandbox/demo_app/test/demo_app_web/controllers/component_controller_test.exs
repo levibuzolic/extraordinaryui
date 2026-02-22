@@ -5,7 +5,7 @@ defmodule DemoAppWeb.ComponentControllerTest do
     conn = get(conn, ~p"/")
     response = html_response(conn, 200)
 
-    assert response =~ "Extraordinary UI Sandbox"
+    assert response =~ "Cinder UI Sandbox"
     assert response =~ "Components:"
     assert response =~ "Actions.button/1"
     assert response =~ "data-component-card"
@@ -19,7 +19,7 @@ defmodule DemoAppWeb.ComponentControllerTest do
     conn = get(conn, ~p"/components")
     response = html_response(conn, 200)
 
-    assert response =~ "Extraordinary UI Sandbox"
+    assert response =~ "Cinder UI Sandbox"
     assert response =~ "Actions.button/1"
   end
 end

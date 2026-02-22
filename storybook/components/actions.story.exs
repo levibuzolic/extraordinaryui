@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Actions do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Actions.button/1
+  def function, do: &CinderUI.Components.Actions.button/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Actions, [toggle: 1, button_group: 1]}
+      {CinderUI.Components.Actions, [toggle: 1, button_group: 1]}
     ]
 
   def variations do

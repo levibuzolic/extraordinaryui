@@ -1,12 +1,12 @@
-defmodule ExtraordinaryUI.MixProject do
+defmodule CinderUI.MixProject do
   use Mix.Project
 
-  @source_url "https://github.com/levi/extraordinaryui"
+  @source_url "https://github.com/levi/cinder-ui"
   @version "0.1.0"
 
   def project do
     [
-      app: :extraordinary_ui,
+      app: :cinder_ui,
       version: @version,
       elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
@@ -110,24 +110,24 @@ defmodule ExtraordinaryUI.MixProject do
         "CHANGELOG.md"
       ],
       groups_for_modules: [
-        Core: [ExtraordinaryUI, ExtraordinaryUI.Classes, ExtraordinaryUI.Hooks],
-        "Static Docs": [ExtraordinaryUI.Docs.Catalog, Mix.Tasks.ExtraordinaryUi.Docs.Build],
+        Core: [CinderUI, CinderUI.Classes, CinderUI.Hooks],
+        "Static Docs": [CinderUI.Docs.Catalog, Mix.Tasks.CinderUi.Docs.Build],
         Components: [
-          ExtraordinaryUI.Components,
-          ExtraordinaryUI.Components.Advanced,
-          ExtraordinaryUI.Components.Actions,
-          ExtraordinaryUI.Components.DataDisplay,
-          ExtraordinaryUI.Components.Feedback,
-          ExtraordinaryUI.Components.Forms,
-          ExtraordinaryUI.Components.Layout,
-          ExtraordinaryUI.Components.Navigation,
-          ExtraordinaryUI.Components.Overlay
+          CinderUI.Components,
+          CinderUI.Components.Advanced,
+          CinderUI.Components.Actions,
+          CinderUI.Components.DataDisplay,
+          CinderUI.Components.Feedback,
+          CinderUI.Components.Forms,
+          CinderUI.Components.Layout,
+          CinderUI.Components.Navigation,
+          CinderUI.Components.Overlay
         ],
-        Storybook: [ExtraordinaryUI.Storybook],
+        Storybook: [CinderUI.Storybook],
         "Mix Tasks": [
-          Mix.Tasks.ExtraordinaryUi.Install,
-          Mix.Tasks.ExtraordinaryUi.Docs.Build,
-          Mix.Tasks.ExtraordinaryUi.Site.Build
+          Mix.Tasks.CinderUi.Install,
+          Mix.Tasks.CinderUi.Docs.Build,
+          Mix.Tasks.CinderUi.Site.Build
         ]
       ]
     ]

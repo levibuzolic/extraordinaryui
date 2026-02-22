@@ -1,4 +1,4 @@
-# Contributing to Extraordinary UI
+# Contributing to Cinder UI
 
 Thanks for contributing. This guide is for humans first: the goal is to help you get productive quickly, run the right checks, and submit high-signal changes.
 
@@ -6,7 +6,7 @@ Thanks for contributing. This guide is for humans first: the goal is to help you
 
 - Keep APIs Phoenix-first (`attr`/`slot`-typed function components, clear HEEx usage).
 - Keep styles aligned with shadcn conventions and token model.
-- Prefer composition with Extraordinary UI components in docs/examples.
+- Prefer composition with Cinder UI components in docs/examples.
 - Ship tests with behavior changes.
 - Keep `README.md` user-focused and keep contributor workflow docs here.
 
@@ -25,9 +25,9 @@ cd sandbox/demo_app && mix deps.get && npm ci
 
 ## Development Workspaces
 
-- Library: `lib/extraordinary_ui/**`
+- Library: `lib/cinder_ui/**`
 - Static docs/site tasks: `lib/mix/tasks/**`
-- Static docs catalog definitions: `lib/extraordinary_ui/docs/catalog.ex`
+- Static docs catalog definitions: `lib/cinder_ui/docs/catalog.ex`
 - Sandbox integration app: `sandbox/demo_app`
 - Browser tests: `sandbox/demo_app/tests/browser/**`
 
@@ -35,7 +35,7 @@ cd sandbox/demo_app && mix deps.get && npm ci
 
 1. Implement the component/task change in library code.
 2. Update docs/examples if API or behavior changed.
-3. Update static docs catalog sample(s) in `lib/extraordinary_ui/docs/catalog.ex`.
+3. Update static docs catalog sample(s) in `lib/cinder_ui/docs/catalog.ex`.
 4. Add or adjust unit/browser tests.
 5. Run quality gates.
 6. Update `PROGRESS.md` milestones/commit log for material changes.
@@ -54,8 +54,8 @@ MIX_ENV=test mix coveralls.cobertura --raise
 ### Static exports
 
 ```bash
-mix extraordinary_ui.docs.build --output tmp/ci-docs --clean
-mix extraordinary_ui.site.build --output tmp/ci-site --clean
+mix cinder_ui.docs.build --output tmp/ci-docs --clean
+mix cinder_ui.site.build --output tmp/ci-site --clean
 ```
 
 ### Sandbox unit tests
@@ -157,8 +157,8 @@ mix hex.publish docs
 
 If you are unsure where to implement a change:
 
-- API and behavior: component module in `lib/extraordinary_ui/components/**`
-- docs examples/static pages: `lib/extraordinary_ui/docs/catalog.ex` and docs build task
+- API and behavior: component module in `lib/cinder_ui/components/**`
+- docs examples/static pages: `lib/cinder_ui/docs/catalog.ex` and docs build task
 - browser behavior regressions: `sandbox/demo_app/tests/browser/**`
 
 Open a draft PR early for architecture feedback.

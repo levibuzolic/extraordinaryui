@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Feedback do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Feedback.badge/1
+  def function, do: &CinderUI.Components.Feedback.badge/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Feedback,
+      {CinderUI.Components.Feedback,
        [alert: 1, alert_title: 1, alert_description: 1, progress: 1, spinner: 1, empty_state: 1]}
     ]
 

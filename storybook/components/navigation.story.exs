@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Navigation do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Navigation.breadcrumb/1
+  def function, do: &CinderUI.Components.Navigation.breadcrumb/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Navigation,
+      {CinderUI.Components.Navigation,
        [
          breadcrumb_list: 1,
          breadcrumb_item: 1,

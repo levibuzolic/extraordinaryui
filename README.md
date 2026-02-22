@@ -1,8 +1,8 @@
-# Extraordinary UI
+# Cinder UI
 
 Shadcn-inspired UI components for Phoenix + LiveView.
 
-Extraordinary UI is a Hex-oriented component library that ports shadcn/ui design patterns, classes, tokens, and compositional structure into Elixir function components.
+Cinder UI is a Hex-oriented component library that ports shadcn/ui design patterns, classes, tokens, and compositional structure into Elixir function components.
 
 ## Installation
 
@@ -11,7 +11,7 @@ Extraordinary UI is a Hex-oriented component library that ports shadcn/ui design
 ```elixir
 def deps do
   [
-    {:extraordinary_ui, "~> 0.1.0"}
+    {:cinder_ui, "~> 0.1.0"}
   ]
 end
 ```
@@ -25,23 +25,23 @@ mix deps.get
 ### 3) Install assets and hooks
 
 ```bash
-mix extraordinary_ui.install
+mix cinder_ui.install
 ```
 
 Installer behavior:
 
-- Copies `assets/css/extraordinary_ui.css`
-- Copies `assets/js/extraordinary_ui.js`
+- Copies `assets/css/cinder_ui.css`
+- Copies `assets/js/cinder_ui.js`
 - Updates `assets/css/app.css` with:
-  - `@source "../../deps/extraordinary_ui";`
-  - `@import "./extraordinary_ui.css";`
-- Updates `assets/js/app.js` to merge `ExtraordinaryUIHooks` into LiveView hooks
+  - `@source "../../deps/cinder_ui";`
+  - `@import "./cinder_ui.css";`
+- Updates `assets/js/app.js` to merge `CinderUIHooks` into LiveView hooks
 - Installs `tailwindcss-animate` in your assets package manager
 
 Optional flags:
 
 ```bash
-mix extraordinary_ui.install --assets-path assets --package-manager pnpm --style nova
+mix cinder_ui.install --assets-path assets --package-manager pnpm --style nova
 ```
 
 Supported package managers: `npm`, `pnpm`, `yarn`, `bun`.
@@ -51,14 +51,14 @@ Supported style presets: `nova`, `maia`, `lyra`, `mira`, `vega`.
 If you want to avoid overwriting generated files when re-running the installer:
 
 ```bash
-mix extraordinary_ui.install --skip-existing
+mix cinder_ui.install --skip-existing
 ```
 
 `--skip-existing` skips overwriting:
 
-- `assets/css/extraordinary_ui.css`
-- `assets/js/extraordinary_ui.js`
-- `assets/css/.extraordinary_ui_style`
+- `assets/css/cinder_ui.css`
+- `assets/js/cinder_ui.js`
+- `assets/css/.cinder_ui_style`
 
 ## Usage in `MyAppWeb`
 
@@ -66,7 +66,7 @@ mix extraordinary_ui.install --skip-existing
 defp html_helpers do
   quote do
     use Phoenix.Component
-    use ExtraordinaryUI
+    use CinderUI
   end
 end
 ```
@@ -74,13 +74,13 @@ end
 You can also selectively import modules:
 
 ```elixir
-import ExtraordinaryUI.Components.Actions
-import ExtraordinaryUI.Components.Forms
+import CinderUI.Components.Actions
+import CinderUI.Components.Forms
 ```
 
 ## Theming and Style Overrides
 
-Extraordinary UI uses shadcn-style CSS variables (`--background`, `--foreground`, `--primary`, etc.) and dark mode with `.dark`.
+Cinder UI uses shadcn-style CSS variables (`--background`, `--foreground`, `--primary`, etc.) and dark mode with `.dark`.
 
 ### Override tokens globally
 
@@ -182,7 +182,7 @@ This project ships story files in `/storybook` and a helper module:
 defmodule MyAppWeb.Storybook do
   use PhoenixStorybook,
     otp_app: :my_app,
-    content_path: ExtraordinaryUI.Storybook.content_path(),
+    content_path: CinderUI.Storybook.content_path(),
     css_path: "/assets/app.css",
     js_path: "/assets/app.js"
 end
@@ -193,7 +193,7 @@ end
 Generate a fully static docs site (HTML/CSS/JS) without Phoenix running in production:
 
 ```bash
-mix extraordinary_ui.docs.build
+mix cinder_ui.docs.build
 ```
 
 Output:
@@ -206,7 +206,7 @@ Output:
 Optional flags:
 
 ```bash
-mix extraordinary_ui.docs.build --output public/docs --clean
+mix cinder_ui.docs.build --output public/docs --clean
 ```
 
 The generated site includes:
@@ -228,11 +228,11 @@ mix docs
 
 ## Feasibility Notes
 
-A subset of shadcn components rely on browser-first stacks (Radix primitives, complex keyboard navigation, chart engines, or heavy client state). For these, Extraordinary UI provides either progressive LiveView hook behavior or a scaffold component with stable API + styling.
+A subset of shadcn components rely on browser-first stacks (Radix primitives, complex keyboard navigation, chart engines, or heavy client state). For these, Cinder UI provides either progressive LiveView hook behavior or a scaffold component with stable API + styling.
 
 ## Attribution and Third-Party Notices
 
-Extraordinary UI is deeply inspired by and interoperates with the work from these projects:
+Cinder UI is deeply inspired by and interoperates with the work from these projects:
 
 - [shadcn/ui](https://ui.shadcn.com/docs) ([GitHub](https://github.com/shadcn-ui/ui))
 - [Tailwind CSS](https://tailwindcss.com/) ([GitHub](https://github.com/tailwindlabs/tailwindcss))

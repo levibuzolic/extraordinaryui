@@ -1,4 +1,4 @@
-defmodule ExtraordinaryUI.TestHelpers do
+defmodule CinderUI.TestHelpers do
   @moduledoc false
 
   def slot(content) when is_binary(content) do

@@ -103,5 +103,5 @@
 [data-phx-session], [data-phx-teleported-src] { display: contents }
 
 /* This file is for your main application CSS */
-@source "../../deps/extraordinary_ui";
-@import "./extraordinary_ui.css";
+@source "../../deps/cinder_ui";
+@import "./cinder_ui.css";

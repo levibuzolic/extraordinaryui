@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Layout do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Layout.card/1
+  def function, do: &CinderUI.Components.Layout.card/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Layout,
+      {CinderUI.Components.Layout,
        [
          card_header: 1,
          card_title: 1,

@@ -1,10 +1,10 @@
 # Demo Sandbox (`sandbox/demo_app`)
 
-This Phoenix app embeds `extraordinary_ui` as a local path dependency to provide an end-to-end host environment for manual QA and browser automation.
+This Phoenix app embeds `cinder_ui` as a local path dependency to provide an end-to-end host environment for manual QA and browser automation.
 
 ## What it provides
 
-- `GET /` - full Extraordinary UI component catalog preview (default entry)
+- `GET /` - full Cinder UI component catalog preview (default entry)
 - `GET /components` - alias route for the same catalog view
 - shadcn-style theme controls on the catalog page:
   - mode (`light`/`dark`/`auto`)
@@ -18,7 +18,7 @@ This Phoenix app embeds `extraordinary_ui` as a local path dependency to provide
 ```bash
 cd sandbox/demo_app
 mix deps.get
-mix extraordinary_ui.install --skip-existing
+mix cinder_ui.install --skip-existing
 mix phx.server
 ```
 
@@ -91,7 +91,7 @@ Workflow file:
 
 ```bash
 cd ../..
-mix extraordinary_ui.docs.build --output dist/docs --clean
+mix cinder_ui.docs.build --output dist/docs --clean
 ```
 
 Output:

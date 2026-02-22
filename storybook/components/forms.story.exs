@@ -1,11 +1,11 @@
 defmodule Storybook.Components.Forms do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExtraordinaryUI.Components.Forms.field/1
+  def function, do: &CinderUI.Components.Forms.field/1
 
   def imports,
     do: [
-      {ExtraordinaryUI.Components.Forms,
+      {CinderUI.Components.Forms,
        [
          label: 1,
          input: 1,

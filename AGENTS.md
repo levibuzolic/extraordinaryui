@@ -1,24 +1,24 @@
 # AGENTS Guide
 
-Concise contributor guide for `extraordinary_ui`.
+Concise contributor guide for `cinder_ui`.
 
 ## Scope
 
 - This repo is a Phoenix component library inspired by shadcn/ui.
 - Primary outputs:
-  - Hex package (`extraordinary_ui`)
+  - Hex package (`cinder_ui`)
   - Static component docs (`dist/docs`)
   - Static developer/marketing site (`dist/site`)
   - Sandbox host app for integration/browser tests (`sandbox/demo_app`)
 
 ## Architecture
 
-- Library code: `lib/extraordinary_ui/**`
+- Library code: `lib/cinder_ui/**`
 - Install/docs/site tasks:
-  - `lib/mix/tasks/extraordinary_ui.install.ex`
-  - `lib/mix/tasks/extraordinary_ui.docs.build.ex`
-  - `lib/mix/tasks/extraordinary_ui.site.build.ex`
-- Static docs catalog source: `lib/extraordinary_ui/docs/catalog.ex`
+  - `lib/mix/tasks/cinder_ui.install.ex`
+  - `lib/mix/tasks/cinder_ui.docs.build.ex`
+  - `lib/mix/tasks/cinder_ui.site.build.ex`
+- Static docs catalog source: `lib/cinder_ui/docs/catalog.ex`
 - Sandbox app: `sandbox/demo_app`
 
 ## Core Commands
@@ -27,8 +27,8 @@ Concise contributor guide for `extraordinary_ui`.
   - `mix quality`
   - `MIX_ENV=test mix coveralls.cobertura --raise`
 - Static outputs:
-  - `mix extraordinary_ui.docs.build --output dist/docs --clean`
-  - `mix extraordinary_ui.site.build --output dist/site --clean`
+  - `mix cinder_ui.docs.build --output dist/docs --clean`
+  - `mix cinder_ui.site.build --output dist/site --clean`
 - Sandbox checks:
   - `cd sandbox/demo_app && mix format --check-formatted && mix test`
   - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`

@@ -80,8 +80,8 @@ if (process.env.NODE_ENV === "development") {
     window.liveReloader = reloader
   })
 }
-import { ExtraordinaryUIHooks } from "./extraordinary_ui"
+import { CinderUIHooks } from "./cinder_ui"
 
 let Hooks = window.Hooks || {}
-Object.assign(Hooks, ExtraordinaryUIHooks)
+Object.assign(Hooks, CinderUIHooks)
 window.Hooks = Hooks
