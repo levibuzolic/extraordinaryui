@@ -96,7 +96,7 @@ test.describe("interactive previews", () => {
     const afterNext = await track.evaluate((el) => getComputedStyle(el).transform)
     expect(afterNext).not.toBe(before)
 
-    await carousel.locator("[data-carousel-prev]").click()
+    await carousel.locator("[data-carousel-prev]").evaluate((el: HTMLElement) => el.click())
     await page.waitForTimeout(300)
     const afterPrev = await track.evaluate((el) => getComputedStyle(el).transform)
     expect(afterPrev).not.toBe(afterNext)
