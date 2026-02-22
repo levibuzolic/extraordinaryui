@@ -224,23 +224,20 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
   defp sidebar_links(sections, root_prefix, active_entry_id) do
     index_href = "#{root_prefix}/index.html"
+    overview_active? = is_nil(active_entry_id)
 
     section_blocks =
       Enum.map_join(sections, "\n", fn section ->
         entries =
-          Enum.map_join(section.entries, "\n", fn entry ->
-            active = active_entry_class(entry.id, active_entry_id)
-
-            """
-            <li>
-              <a class=\"#{active} text-sm\" href=\"#{root_prefix}/#{entry.docs_path}\">#{entry.title}</a>
-            </li>
-            """
-          end)
+          Enum.map_join(
+            section.entries,
+            "\n",
+            &sidebar_entry_html(&1, root_prefix, active_entry_id)
+          )
 
         """
         <div>
-          <a href=\"#{index_href}##{section.id}\" class=\"text-sm font-semibold\">#{section.title}</a>
+          <a href=\"#{index_href}##{section.id}\" class=\"sidebar-section-link text-sm font-semibold\">#{section.title}</a>
           <ul class=\"mt-2 space-y-1\">#{entries}</ul>
         </div>
         """
@@ -248,11 +245,25 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
 
     """
     <div>
-      <a href=\"#{index_href}\" class=\"text-sm font-semibold\">Overview</a>
+      <a href=\"#{index_href}\" class=\"#{sidebar_link_class(overview_active?)}\"#{current_page_attr(overview_active?)}>Overview</a>
     </div>
     #{section_blocks}
     """
   end
+
+  defp sidebar_entry_html(entry, root_prefix, active_entry_id) do
+    active? = entry.id == active_entry_id
+    active_class = sidebar_link_class(active?)
+
+    """
+    <li>
+      <a class=\"#{active_class}\" href=\"#{root_prefix}/#{entry.docs_path}\"#{current_page_attr(active?)}>#{entry.title}</a>
+    </li>
+    """
+  end
+
+  defp current_page_attr(true), do: ~s( aria-current="page")
+  defp current_page_attr(false), do: ""
 
   defp theme_controls_html do
     """
@@ -470,11 +481,13 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
     end)
   end
 
-  defp active_entry_class(entry_id, active_entry_id) do
-    if entry_id == active_entry_id do
-      "text-foreground font-medium"
+  defp sidebar_link_class(active?) do
+    base = "sidebar-link block rounded-md px-2 py-1.5 text-sm transition-colors"
+
+    if active? do
+      "#{base} bg-accent text-accent-foreground font-medium"
     else
-      "text-muted-foreground hover:text-foreground"
+      "#{base} text-muted-foreground hover:bg-accent/50 hover:text-foreground"
     end
   end
 
@@ -954,6 +967,20 @@ defmodule Mix.Tasks.ExtraordinaryUi.Docs.Build do
       background: var(--accent);
       color: var(--accent-foreground);
       border-color: var(--border);
+    }
+
+    .sidebar-link[aria-current="page"] {
+      box-shadow: inset 2px 0 0 var(--ring);
+    }
+
+    .sidebar-section-link {
+      color: var(--foreground);
+    }
+
+    .sidebar-section-link:hover {
+      color: var(--foreground);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
     }
 
     summary::-webkit-details-marker {

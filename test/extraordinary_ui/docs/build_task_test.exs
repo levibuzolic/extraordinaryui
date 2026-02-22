@@ -28,6 +28,9 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert index =~ "data-theme-mode"
     assert index =~ "theme-color"
     assert index =~ "theme-radius"
+    assert index =~ ~s(href="./index.html")
+    assert index =~ ~s(aria-current="page")
+    assert index =~ "sidebar-link"
 
     assert component_page =~ "Original shadcn/ui docs"
     assert component_page =~ "Usage (HEEx)"
@@ -44,6 +47,8 @@ defmodule ExtraordinaryUI.Docs.BuildTaskTest do
     assert component_page =~ "docs-markdown"
     assert component_page =~ "<h2>Attributes</h2>"
     assert component_page =~ "<ul>"
+    assert component_page =~ ~s(href="../components/actions-button.html")
+    assert component_page =~ ~s(aria-current="page")
     refute component_page =~ "## Attributes"
 
     site_js = File.read!(Path.join(@output, "assets/site.js"))
