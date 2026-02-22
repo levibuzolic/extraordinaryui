@@ -25,6 +25,13 @@ defmodule ExtraordinaryUI.Site.BuildTaskTest do
     assert index =~ "./docs/index.html"
     assert index =~ "https://hexdocs.pm/extraordinary_ui"
     assert index =~ "GitHub repository"
+    assert index =~ "Component examples on the homepage"
+    assert index =~ "Actions.button_group/1"
+    assert index =~ "Forms.field/1"
+    assert index =~ "Navigation.tabs/1"
+    assert index =~ "https://ui.shadcn.com/docs"
+    assert index =~ "style-nova"
+    assert index =~ "shadcn/ui reference"
 
     docs_index = File.read!(Path.join(@output, "docs/index.html"))
     assert docs_index =~ "Component Library"

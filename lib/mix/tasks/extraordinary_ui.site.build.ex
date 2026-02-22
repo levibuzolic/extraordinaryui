@@ -25,6 +25,15 @@ defmodule Mix.Tasks.ExtraordinaryUi.Site.Build do
 
   use Mix.Task
 
+  alias ExtraordinaryUI.Components.Actions
+  alias ExtraordinaryUI.Components.DataDisplay
+  alias ExtraordinaryUI.Components.Feedback
+  alias ExtraordinaryUI.Components.Forms
+  alias ExtraordinaryUI.Components.Layout
+  alias ExtraordinaryUI.Components.Navigation
+  alias Phoenix.HTML
+  alias Phoenix.HTML.Safe
+
   @switches [
     output: :string,
     clean: :boolean,
@@ -62,6 +71,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Site.Build do
     github_url = opts.github_url || to_string(project[:source_url] || "")
     hexdocs_url = opts.hexdocs_url || "https://hexdocs.pm/extraordinary_ui"
     version = to_string(project[:version] || "0.0.0")
+    theme_css = theme_css()
 
     maybe_clean_output!(output_dir, opts.clean?)
     File.mkdir_p!(output_dir)
@@ -74,7 +84,7 @@ defmodule Mix.Tasks.ExtraordinaryUi.Site.Build do
 
     File.write!(
       Path.join(output_dir, "index.html"),
-      index_html(version, github_url, hexdocs_url)
+      index_html(version, github_url, hexdocs_url, theme_css)
     )
 
     File.write!(Path.join(assets_dir, "site.css"), site_css())
@@ -95,341 +105,493 @@ defmodule Mix.Tasks.ExtraordinaryUi.Site.Build do
     Mix.Task.run("extraordinary_ui.docs.build", ["--output", docs_dir, "--clean"])
   end
 
-  defp index_html(version, github_url, hexdocs_url) do
+  defp theme_css do
+    "assets/css/extraordinary_ui.css"
+    |> File.read!()
+    |> String.replace(~r/^@import\s+"tailwindcss";\n?/m, "")
+    |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
+  end
+
+  defp index_html(version, github_url, hexdocs_url, theme_css) do
+    shadcn_url = "https://ui.shadcn.com/docs"
+
     """
     <!doctype html>
-    <html lang="en">
+    <html lang="en" class="style-nova">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Extraordinary UI</title>
         <meta
           name="description"
-          content="Shadcn-inspired UI component library for Phoenix + LiveView."
+          content="Phoenix + LiveView component library with upstream-compatible patterns, static docs, and installer tooling."
         />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <style type="text/tailwindcss">
+    #{theme_css}
+
+    @layer base {
+      body {
+        @apply min-h-screen;
+      }
+    }
+        </style>
         <link rel="stylesheet" href="./assets/site.css" />
       </head>
-      <body>
-        <header class="site-header">
-          <div class="container header-inner">
-            <a class="brand" href="./index.html">Extraordinary UI</a>
-            <nav class="header-nav" aria-label="Primary">
-              <a href="./docs/index.html">Component docs</a>
-              <a href="#install">Install</a>
-              <a href="#links">Links</a>
-            </nav>
-          </div>
-        </header>
-
-        <main>
-          <section class="hero">
-            <div class="container hero-grid">
-              <div>
-                <p class="kicker">Phoenix + LiveView UI Library</p>
-                <h1>Shadcn-style components for Elixir teams.</h1>
-                <p class="lede">
-                  Extraordinary UI provides server-rendered Phoenix components with shadcn-style
-                  design tokens, compositional patterns, installer tooling, static docs, and browser tests.
-                </p>
-                <div class="hero-actions">
-                  <a class="btn btn-primary" href="./docs/index.html">Browse Component Library</a>
-                  <a class="btn btn-secondary" href="#install">Quick Start</a>
-                </div>
-              </div>
-
-              <aside class="hero-panel" aria-label="Project summary">
-                <p><strong>Current version:</strong> v#{version}</p>
-                <p><strong>Static docs:</strong> included at <code>/docs</code></p>
-                <p><strong>Hex package:</strong> <code>extraordinary_ui</code></p>
-              </aside>
+      <body class="bg-background text-foreground">
+        <div class="site-shell mx-auto max-w-[1200px] px-4 py-6 md:px-6">
+          <header class="mb-8 rounded-xl border bg-card p-4 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <a href="./index.html" class="text-lg font-semibold tracking-tight">Extraordinary UI</a>
+              #{header_nav_html()}
             </div>
-          </section>
+            <p class="mt-3 text-sm text-muted-foreground">
+              Built for Phoenix teams who want
+              <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+              patterns with Elixir-native components and static docs.
+            </p>
+          </header>
 
-          <section id="install" class="section">
-            <div class="container">
-              <h2>Install</h2>
-              <p>Add the dependency, install assets, and render components in HEEx templates.</p>
-              <pre><code>def deps do
+          <main class="space-y-10">
+            #{hero_html(version, shadcn_url)}
+            #{component_examples_html(shadcn_url)}
+            #{install_html(version)}
+            #{features_html(shadcn_url)}
+            #{links_html(github_url, hexdocs_url, shadcn_url)}
+          </main>
+
+          <footer class="mt-10 rounded-xl border bg-card p-4 text-sm text-muted-foreground shadow-sm">
+            <p>
+              Extraordinary UI references
+              <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+              patterns and ships with a neutral token palette by default.
+            </p>
+          </footer>
+        </div>
+      </body>
+    </html>
+    """
+  end
+
+  defp header_nav_html do
+    render_component(Navigation, :navigation_menu, %{
+      item: [
+        nav_item("Component docs", "./docs/index.html", true),
+        nav_item("Examples", "#examples", false),
+        nav_item("Install", "#install", false),
+        nav_item("Links", "#links", false)
+      ]
+    })
+  end
+
+  defp hero_html(version, shadcn_url) do
+    hero_badge =
+      render_component(Feedback, :badge, %{
+        variant: :secondary,
+        inner_block: slot("Neutral style preset")
+      })
+
+    primary_cta =
+      render_component(Actions, :button, %{
+        as: "a",
+        rest: %{href: "./docs/index.html"},
+        inner_block: slot("Browse Component Library")
+      })
+
+    secondary_cta =
+      render_component(Actions, :button, %{
+        as: "a",
+        variant: :outline,
+        rest: %{href: "#install"},
+        inner_block: slot("Quick Start")
+      })
+
+    summary_title =
+      render_component(Layout, :card_title, %{inner_block: slot("Project snapshot")})
+
+    summary_description =
+      render_component(Layout, :card_description, %{
+        inner_block: slot("Versioned, static-exportable, and ready for Phoenix apps.")
+      })
+
+    summary_header =
+      render_component(Layout, :card_header, %{
+        inner_block: slot(summary_title <> summary_description)
+      })
+
+    summary_content =
+      render_component(Layout, :card_content, %{
+        inner_block:
+          slot("""
+          <ul class=\"space-y-1 text-sm text-muted-foreground\">
+            <li><strong class=\"text-foreground\">Current version:</strong> v#{version}</li>
+            <li><strong class=\"text-foreground\">Theme baseline:</strong> neutral tokens + <code>style-nova</code></li>
+            <li><strong class=\"text-foreground\">Static docs:</strong> bundled at <code>/docs</code></li>
+          </ul>
+          """)
+      })
+
+    summary_card =
+      render_component(Layout, :card, %{
+        class: "h-full",
+        inner_block: slot(summary_header <> summary_content)
+      })
+
+    """
+    <section>
+      <div class="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
+        <div class="space-y-4">
+          #{hero_badge}
+          <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+            component patterns, packaged for Phoenix + LiveView.
+          </h1>
+          <p class="max-w-2xl text-base text-muted-foreground">
+            Extraordinary UI provides server-rendered components, installer automation,
+            and static docs that keep parity with
+            <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+            conventions.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            #{primary_cta}
+            #{secondary_cta}
+          </div>
+        </div>
+
+        #{summary_card}
+      </div>
+    </section>
+    """
+  end
+
+  defp component_examples_html(shadcn_url) do
+    """
+    <section id="examples" class="space-y-4">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 class="text-2xl font-semibold tracking-tight">Component examples on the homepage</h2>
+        <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="text-sm text-muted-foreground underline underline-offset-4">Reference: shadcn/ui docs ↗</a>
+      </div>
+
+      <p class="text-sm text-muted-foreground">
+        These previews are rendered with Extraordinary UI components so users can immediately see the API and visual system they will use in production.
+      </p>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        #{button_group_example_card(shadcn_url)}
+        #{form_example_card(shadcn_url)}
+        #{alert_example_card(shadcn_url)}
+        #{tabs_example_card(shadcn_url)}
+      </div>
+    </section>
+    """
+  end
+
+  defp button_group_example_card(shadcn_url) do
+    preview =
+      render_component(Actions, :button_group, %{
+        inner_block:
+          slot(
+            render_component(Actions, :button, %{inner_block: slot("Deploy")}) <>
+              "\n" <>
+              render_component(Actions, :button, %{
+                variant: :outline,
+                inner_block: slot("Rollback")
+              })
+          )
+      })
+
+    snippet = """
+    <.button_group>
+      <.button>Deploy</.button>
+      <.button variant={:outline}>Rollback</.button>
+    </.button_group>
+    """
+
+    example_card(
+      "Actions.button_group/1",
+      "Grouped primary + secondary actions.",
+      preview,
+      snippet,
+      "#{shadcn_url}/components/button"
+    )
+  end
+
+  defp form_example_card(shadcn_url) do
+    label_html =
+      render_component(Forms, :label, %{for: "site-email", inner_block: slot("Team email")})
+
+    input_html =
+      render_component(Forms, :input, %{id: "site-email", placeholder: "team@example.com"})
+
+    switch_html =
+      render_component(Forms, :switch, %{
+        id: "site-updates",
+        checked: true,
+        inner_block: slot("Send release updates")
+      })
+
+    preview =
+      render_component(Forms, :field, %{
+        label: slot(label_html),
+        description: slot("Used for release announcements."),
+        inner_block: slot(input_html <> "<div class=\"pt-2\">#{switch_html}</div>")
+      })
+
+    snippet = """
+    <.field>
+      <:label><.label for="site-email">Team email</.label></:label>
+      <.input id="site-email" placeholder="team@example.com" />
+      <:description>Used for release announcements.</:description>
+    </.field>
+    """
+
+    example_card(
+      "Forms.field/1",
+      "Label + input + helper text using the shared token model.",
+      preview,
+      snippet,
+      "#{shadcn_url}/components/form"
+    )
+  end
+
+  defp alert_example_card(shadcn_url) do
+    alert_title = render_component(Feedback, :alert_title, %{inner_block: slot("Release ready")})
+
+    alert_description =
+      render_component(Feedback, :alert_description, %{
+        inner_block: slot("All quality checks passed. Publish when ready.")
+      })
+
+    preview =
+      render_component(Feedback, :alert, %{
+        inner_block:
+          slot("""
+          <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" class=\"size-4\">
+            <path d=\"M12 2a10 10 0 100 20 10 10 0 000-20z\" />
+          </svg>
+          #{alert_title}
+          #{alert_description}
+          """)
+      })
+
+    snippet = """
+    <.alert>
+      <.alert_title>Release ready</.alert_title>
+      <.alert_description>All quality checks passed.</.alert_description>
+    </.alert>
+    """
+
+    example_card(
+      "Feedback.alert/1",
+      "Status messaging aligned with upstream alert patterns.",
+      preview,
+      snippet,
+      "#{shadcn_url}/components/alert"
+    )
+  end
+
+  defp tabs_example_card(shadcn_url) do
+    preview =
+      render_component(Navigation, :tabs, %{
+        value: "overview",
+        trigger: [
+          %{value: "overview", inner_block: fn _, _ -> "Overview" end},
+          %{value: "api", inner_block: fn _, _ -> "API" end}
+        ],
+        content: [
+          %{
+            value: "overview",
+            inner_block: fn _, _ -> "Use components directly in HEEx templates." end
+          },
+          %{
+            value: "api",
+            inner_block: fn _, _ -> "Typed attrs/slots and generated docs metadata." end
+          }
+        ]
+      })
+
+    snippet = """
+    <.tabs value="overview">
+      <:trigger value="overview">Overview</:trigger>
+      <:trigger value="api">API</:trigger>
+      <:content value="overview">Use components in HEEx.</:content>
+      <:content value="api">Typed attrs and slots.</:content>
+    </.tabs>
+    """
+
+    example_card(
+      "Navigation.tabs/1",
+      "Tab primitives with server-driven active state.",
+      preview,
+      snippet,
+      "#{shadcn_url}/components/tabs"
+    )
+  end
+
+  defp example_card(title, description, preview_html, snippet, shadcn_component_url) do
+    card_title = render_component(Layout, :card_title, %{inner_block: slot(title)})
+
+    card_description =
+      render_component(Layout, :card_description, %{inner_block: slot(description)})
+
+    header =
+      render_component(Layout, :card_header, %{inner_block: slot(card_title <> card_description)})
+
+    content =
+      render_component(Layout, :card_content, %{
+        inner_block:
+          slot("""
+          <div class=\"rounded-lg border bg-background p-4\">#{preview_html}</div>
+          <div class=\"mt-3\">#{render_component(DataDisplay, :code_block, %{inner_block: slot(snippet)})}</div>
+          """)
+      })
+
+    footer =
+      render_component(Layout, :card_footer, %{
+        class: "justify-between gap-2",
+        inner_block:
+          slot("""
+          <span class=\"text-xs text-muted-foreground\">Rendered using Extraordinary UI components</span>
+          <a href=\"#{shadcn_component_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-xs underline underline-offset-4\">shadcn/ui reference ↗</a>
+          """)
+      })
+
+    render_component(Layout, :card, %{inner_block: slot(header <> content <> footer)})
+  end
+
+  defp install_html(version) do
+    install_code = """
+    def deps do
       [
         {:extraordinary_ui, "~> #{version}"}
       ]
     end
 
     mix deps.get
-    mix extraordinary_ui.install</code></pre>
-            </div>
-          </section>
-
-          <section class="section section-alt">
-            <div class="container">
-              <h2>What You Get</h2>
-              <ul class="feature-grid">
-                <li>
-                  <h3>Component Coverage</h3>
-                  <p>Broad shadcn-inspired API surface with Phoenix-first composability.</p>
-                </li>
-                <li>
-                  <h3>Static Docs + Catalog</h3>
-                  <p>Fully static component docs and HEEx snippets; host anywhere.</p>
-                </li>
-                <li>
-                  <h3>Installer & Theme Tokens</h3>
-                  <p>Tailwind setup automation with token-driven customization.</p>
-                </li>
-                <li>
-                  <h3>Quality Gates</h3>
-                  <p>Unit tests, browser tests, and visual regression coverage via Playwright.</p>
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          <section id="links" class="section">
-            <div class="container">
-              <h2>Project Links</h2>
-              <ul class="links">
-                <li><a href="#{github_url}" target="_blank" rel="noopener noreferrer">GitHub repository</a></li>
-                <li><a href="#{hexdocs_url}" target="_blank" rel="noopener noreferrer">HexDocs (published docs link)</a></li>
-                <li><a href="./docs/index.html">Static component library</a></li>
-              </ul>
-            </div>
-          </section>
-        </main>
-
-        <footer class="site-footer">
-          <div class="container footer-inner">
-            <p>Extraordinary UI is open source and deployable on any static host.</p>
-          </div>
-        </footer>
-      </body>
-    </html>
+    mix extraordinary_ui.install --skip-existing
     """
+
+    code_block = render_component(DataDisplay, :code_block, %{inner_block: slot(install_code)})
+
+    """
+    <section id="install" class="space-y-3">
+      <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
+      <p class="text-sm text-muted-foreground">
+        Add the dependency, run the installer, and start using HEEx components immediately.
+      </p>
+      #{code_block}
+    </section>
+    """
+  end
+
+  defp features_html(shadcn_url) do
+    """
+    <section class="space-y-3">
+      <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        #{feature_card("Component coverage", "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions.")}
+        #{feature_card("Static docs export", "Deployable HTML/CSS/JS docs with generated attrs/slots and HEEx snippets.")}
+        #{feature_card("Installer and hooks", "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks.")}
+        #{feature_card("Tested quality", "Unit coverage plus browser + visual regression suites in CI.")}
+      </div>
+    </section>
+    """
+  end
+
+  defp feature_card(title, body_html) do
+    card_title = render_component(Layout, :card_title, %{inner_block: slot(title)})
+    card_header = render_component(Layout, :card_header, %{inner_block: slot(card_title)})
+
+    card_content =
+      render_component(Layout, :card_content, %{
+        inner_block: slot("<p class=\"text-sm text-muted-foreground\">#{body_html}</p>")
+      })
+
+    render_component(Layout, :card, %{inner_block: slot(card_header <> card_content)})
+  end
+
+  defp links_html(github_url, hexdocs_url, shadcn_url) do
+    github_button =
+      render_component(Actions, :button, %{
+        as: "a",
+        variant: :outline,
+        rest: %{href: github_url, target: "_blank", rel: "noopener noreferrer"},
+        inner_block: slot("GitHub repository")
+      })
+
+    hexdocs_button =
+      render_component(Actions, :button, %{
+        as: "a",
+        variant: :outline,
+        rest: %{href: hexdocs_url, target: "_blank", rel: "noopener noreferrer"},
+        inner_block: slot("HexDocs")
+      })
+
+    docs_button =
+      render_component(Actions, :button, %{
+        as: "a",
+        rest: %{href: "./docs/index.html"},
+        inner_block: slot("Static component docs")
+      })
+
+    shadcn_button =
+      render_component(Actions, :button, %{
+        as: "a",
+        variant: :ghost,
+        rest: %{href: shadcn_url, target: "_blank", rel: "noopener noreferrer"},
+        inner_block: slot("shadcn/ui docs")
+      })
+
+    """
+    <section id="links" class="space-y-3">
+      <h2 class="text-2xl font-semibold tracking-tight">Project links</h2>
+      <div class="flex flex-wrap gap-2">
+        #{github_button}
+        #{hexdocs_button}
+        #{docs_button}
+        #{shadcn_button}
+      </div>
+    </section>
+    """
+  end
+
+  defp nav_item(label, href, active) do
+    %{href: href, active: active, inner_block: fn _, _ -> label end}
+  end
+
+  defp render_component(module, function, assigns) do
+    assigns = Map.put_new(assigns, :__changed__, %{})
+
+    module
+    |> apply(function, [assigns])
+    |> Safe.to_iodata()
+    |> IO.iodata_to_binary()
+  end
+
+  defp slot(content) do
+    [
+      %{
+        inner_block: fn _, _ -> HTML.raw(content) end
+      }
+    ]
   end
 
   defp site_css do
     """
     :root {
-      --bg: #0b1020;
-      --surface: #111a33;
-      --surface-alt: #0f1730;
-      --text: #f4f7ff;
-      --muted: #b7c0dd;
-      --border: #2a365f;
-      --accent: #7dd3fc;
-      --accent-2: #22d3ee;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color-scheme: light;
     }
 
-    * {
-      box-sizing: border-box;
+    .site-shell {
+      background-image:
+        radial-gradient(circle at 100% -10%, color-mix(in oklab, var(--muted) 25%, transparent) 0, transparent 46%),
+        radial-gradient(circle at -10% 120%, color-mix(in oklab, var(--accent) 18%, transparent) 0, transparent 44%);
     }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      background: radial-gradient(1200px 600px at 10% -20%, #1f2d57 0%, var(--bg) 55%);
-      color: var(--text);
-      font-family: "Inter", "Avenir Next", "Segoe UI", sans-serif;
-      line-height: 1.5;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      width: min(1120px, calc(100% - 2rem));
-      margin: 0 auto;
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      background: color-mix(in oklab, var(--bg) 82%, black 18%);
-    }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 0;
-    }
-
-    .brand {
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
-    .header-nav {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .hero {
-      padding: 4.5rem 0 3rem;
-    }
-
-    .hero-grid {
-      display: grid;
-      gap: 1.5rem;
-      grid-template-columns: 1.3fr 1fr;
-      align-items: start;
-    }
-
-    .kicker {
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 0.8rem;
-      color: var(--accent-2);
-      font-weight: 700;
-    }
-
-    h1 {
-      margin: 0.5rem 0 0;
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-
-    .lede {
-      color: var(--muted);
-      max-width: 68ch;
-      margin-top: 1rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-top: 1.25rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0.6rem;
-      padding: 0.6rem 0.95rem;
-      border: 1px solid transparent;
-      font-weight: 600;
-    }
-
-    .btn-primary {
-      background: linear-gradient(120deg, #22d3ee, #7dd3fc);
-      color: #001220;
-    }
-
-    .btn-secondary {
-      border-color: var(--border);
-      color: var(--text);
-      background: var(--surface);
-    }
-
-    .hero-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 0.9rem;
-      padding: 1rem;
-      color: var(--muted);
-    }
-
-    .hero-panel code {
-      font-family: var(--mono);
-      color: #d1e4ff;
-    }
-
-    .section {
-      padding: 2rem 0;
-    }
-
-    .section-alt {
-      background: color-mix(in oklab, var(--surface-alt) 75%, transparent);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.6rem;
-      letter-spacing: -0.01em;
-    }
-
-    pre {
-      overflow-x: auto;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      border-radius: 0.75rem;
-    }
-
-    code {
-      font-family: var(--mono);
-      font-size: 0.9rem;
-    }
-
-    .feature-grid {
-      list-style: none;
-      padding: 0;
-      margin: 1rem 0 0;
-      display: grid;
-      gap: 0.8rem;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .feature-grid li {
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      padding: 0.85rem;
-      background: var(--surface);
-    }
-
-    .feature-grid h3 {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    .feature-grid p {
-      margin: 0.45rem 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .links {
-      margin: 0.8rem 0 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 0.5rem;
-      font-size: 1.05rem;
-    }
-
-    .site-footer {
-      border-top: 1px solid var(--border);
-      margin-top: 2rem;
-    }
-
-    .footer-inner {
-      padding: 1rem 0 2rem;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 960px) {
-      .hero-grid,
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
+    pre[data-slot="code-block"],
+    [data-slot="code-block"] {
+      white-space: pre-wrap;
+      word-break: break-word;
     }
     """
   end
