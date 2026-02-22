@@ -15,6 +15,8 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   alias ExtraordinaryUI.Components.Layout
   alias ExtraordinaryUI.Components.Navigation
   alias ExtraordinaryUI.Components.Overlay
+  alias Phoenix.HTML
+  alias Phoenix.HTML.Safe
 
   @sections [
     %{id: "actions", title: "Actions", module: Actions},
@@ -117,15 +119,15 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
     module
     |> apply(function, [assigns])
-    |> Phoenix.HTML.Safe.to_iodata()
+    |> Safe.to_iodata()
     |> IO.iodata_to_binary()
   rescue
     exception ->
       escaped =
         exception
         |> Exception.format(:error)
-        |> Phoenix.HTML.html_escape()
-        |> Phoenix.HTML.safe_to_string()
+        |> HTML.html_escape()
+        |> HTML.safe_to_string()
 
       "<pre class=\"text-destructive text-xs\">#{escaped}</pre>"
   end
@@ -236,7 +238,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp slot_body(%{inner_block: inner_block}) do
     inner_block
     |> Kernel.apply([%{}, nil])
-    |> Phoenix.HTML.Safe.to_iodata()
+    |> Safe.to_iodata()
     |> IO.iodata_to_binary()
     |> String.trim()
   rescue
@@ -287,7 +289,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
       label: slot("Username"),
       description: slot("This is your public identifier."),
       error: slot(""),
-      inner_block: slot("<input class=\"h-9 w-full rounded-md border px-3\" value=\"levi\" />")
+      inner_block: slot(~S(<input class="h-9 w-full rounded-md border px-3" value="levi" />))
     }
   end
 
@@ -472,7 +474,7 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
   defp sample_assigns(DataDisplay, :table_body),
     do: %{
-      inner_block: slot("<tr data-slot=\"table-row\"><td data-slot=\"table-cell\">Cell</td></tr>")
+      inner_block: slot(~S(<tr data-slot="table-row"><td data-slot="table-cell">Cell</td></tr>))
     }
 
   defp sample_assigns(DataDisplay, :table_caption), do: %{inner_block: slot("Table caption")}
@@ -480,15 +482,14 @@ defmodule ExtraordinaryUI.Docs.Catalog do
 
   defp sample_assigns(DataDisplay, :table_footer),
     do: %{
-      inner_block:
-        slot("<tr data-slot=\"table-row\"><td data-slot=\"table-cell\">Footer</td></tr>")
+      inner_block: slot(~S(<tr data-slot="table-row"><td data-slot="table-cell">Footer</td></tr>))
     }
 
   defp sample_assigns(DataDisplay, :table_head), do: %{inner_block: slot("Head")}
 
   defp sample_assigns(DataDisplay, :table_header),
     do: %{
-      inner_block: slot("<tr data-slot=\"table-row\"><th data-slot=\"table-head\">Head</th></tr>")
+      inner_block: slot(~S(<tr data-slot="table-row"><th data-slot="table-head">Head</th></tr>))
     }
 
   defp sample_assigns(DataDisplay, :table_row),

@@ -15,7 +15,9 @@ defmodule ExtraordinaryUI.MixProject do
       package: package(),
       docs: docs(),
       source_url: @source_url,
-      aliases: aliases()
+      aliases: aliases(),
+      preferred_cli_env: preferred_cli_env(),
+      test_coverage: [tool: ExCoveralls, summary: [threshold: 90]]
     ]
   end
 
@@ -31,6 +33,22 @@ defmodule ExtraordinaryUI.MixProject do
     ]
   end
 
+  defp preferred_cli_env do
+    [
+      "test.all": :test,
+      quality: :test,
+      credo: :test,
+      coveralls: :test,
+      "coveralls.detail": :test,
+      "coveralls.github": :test,
+      "coveralls.html": :test,
+      "coveralls.json": :test,
+      "coveralls.lcov": :test,
+      "coveralls.cobertura": :test,
+      "coveralls.xml": :test
+    ]
+  end
+
   defp deps do
     [
       {:phoenix, "~> 1.7 or ~> 1.8"},
@@ -38,13 +56,21 @@ defmodule ExtraordinaryUI.MixProject do
       {:phoenix_storybook, "~> 0.9.3", optional: true},
       {:jason, "~> 1.4", optional: true},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: :test},
       {:floki, ">= 0.35.0", only: :test}
     ]
   end
 
   defp aliases do
     [
-      "test.all": ["test"]
+      "test.all": ["test"],
+      quality: [
+        "format --check-formatted",
+        "compile --warnings-as-errors",
+        "credo --strict",
+        "cmd env MIX_ENV=test mix coveralls --raise"
+      ]
     ]
   end
 
