@@ -40,6 +40,9 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     native_select: "select",
     sonner_toaster: "sonner"
   }
+  @avatar_data_levi "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzIyYzU1ZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA2YjZkNCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cxKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZWNmZWZmIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNlY2ZlZmYiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
+  @avatar_data_ari "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2Y5NzMxNiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2UxMWQ0OCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cyKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZmZmMWYyIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNmZmYxZjIiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
+  @avatar_data_noor "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzYzNjZmMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzhiNWNmNiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2czKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZWVmMmZmIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNlZWYyZmYiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
 
   @sections [
     %{id: "actions", title: "Actions", module: Actions},
@@ -596,19 +599,38 @@ defmodule ExtraordinaryUI.Docs.Catalog do
     }
   end
 
-  defp sample_assigns(DataDisplay, :avatar), do: %{alt: "Levi Noah"}
+  defp sample_assigns(DataDisplay, :avatar) do
+    %{src: avatar_sample_data_uri(:levi), alt: "Levi Noah"}
+  end
 
   defp sample_assigns(DataDisplay, :avatar_group) do
+    preview_html =
+      [
+        render_component(DataDisplay, :avatar, %{
+          src: avatar_sample_data_uri(:levi),
+          alt: "Levi Noah"
+        }),
+        render_component(DataDisplay, :avatar, %{
+          src: avatar_sample_data_uri(:ari),
+          alt: "Ari Miles"
+        }),
+        render_component(DataDisplay, :avatar, %{
+          src: avatar_sample_data_uri(:noor),
+          alt: "Noor Hale"
+        }),
+        render_component(DataDisplay, :avatar_group_count, %{inner_block: slot("+2")})
+      ]
+      |> Enum.join("\n")
+
     %{
       inner_block:
         slot(
+          preview_html,
           """
-          <div data-slot=\"avatar\" class=\"size-8 rounded-full bg-muted\"></div>
-          <div data-slot=\"avatar\" class=\"size-8 rounded-full bg-muted/60\"></div>
-          """,
-          """
-          <.avatar alt="Levi Noah" />
-          <.avatar alt="Ari Miles" />
+          <.avatar src="#{avatar_sample_data_uri(:levi)}" alt="Levi Noah" />
+          <.avatar src="#{avatar_sample_data_uri(:ari)}" alt="Ari Miles" />
+          <.avatar src="#{avatar_sample_data_uri(:noor)}" alt="Noor Hale" />
+          <.avatar_group_count>+2</.avatar_group_count>
           """
         )
     }
@@ -963,6 +985,10 @@ defmodule ExtraordinaryUI.Docs.Catalog do
   defp sample_assigns(Advanced, :sonner_toaster), do: %{position: "bottom-right"}
 
   defp sample_assigns(Components, _function), do: %{}
+
+  defp avatar_sample_data_uri(:levi), do: @avatar_data_levi
+  defp avatar_sample_data_uri(:ari), do: @avatar_data_ari
+  defp avatar_sample_data_uri(:noor), do: @avatar_data_noor
 
   defp slot(content, template_content \\ nil) do
     [

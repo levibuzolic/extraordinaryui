@@ -99,6 +99,7 @@ All validation checks currently pass.
 - Added shadcn/ui reference links per component entry with derived URL mapping and safe fallbacks.
 - Added generated attributes and slots docs sourced from Phoenix component metadata (`__components__/0`) so docs stay aligned with `attr`/`slot` definitions.
 - Kept the index page as an overview with links into each detailed component page.
+- Added embedded base64 sample avatars in avatar and avatar-group docs previews (and snippets) for production-like visual fidelity.
 
 ## Commit Log
 

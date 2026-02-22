@@ -66,4 +66,24 @@ defmodule ExtraordinaryUI.Docs.CatalogTest do
     assert "size" in attribute_names
     assert "inner_block" in Enum.map(button_entry.slots, & &1.name)
   end
+
+  test "avatar docs samples use base64 image data for realistic previews" do
+    avatar_entry =
+      Catalog.sections()
+      |> Enum.flat_map(& &1.entries)
+      |> Enum.find(fn entry ->
+        entry.module == ExtraordinaryUI.Components.DataDisplay and entry.function == :avatar
+      end)
+
+    avatar_group_entry =
+      Catalog.sections()
+      |> Enum.flat_map(& &1.entries)
+      |> Enum.find(fn entry ->
+        entry.module == ExtraordinaryUI.Components.DataDisplay and entry.function == :avatar_group
+      end)
+
+    assert avatar_entry.preview_html =~ "data:image/svg+xml;base64,"
+    assert avatar_group_entry.preview_html =~ "data:image/svg+xml;base64,"
+    assert avatar_group_entry.template_heex =~ "<.avatar_group_count>"
+  end
 end
