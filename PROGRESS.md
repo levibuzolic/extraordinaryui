@@ -149,4 +149,4 @@ All validation checks currently pass (last run: February 22, 2026).
 - `e9e84bc` - add static developer site build task, tests, CI checks, and GitHub Pages release deployment workflow.
 - `e6f9866` - run documentation reality pass, add remaining-work tracker, and add root AGENTS guide for future development.
 - `bfeb4d4` - refine README shadcn coverage matrix with emoji status + compatibility breakdown columns.
-- `pending` - render function docs markdown in static docs and style markdown output blocks.
+- `87a9ab1` - render function docs markdown in static docs and style markdown output blocks.
