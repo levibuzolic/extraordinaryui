@@ -10,6 +10,8 @@ defmodule CinderUI.Components.Feedback do
   - `alert_description/1`
   - `progress/1`
   - `spinner/1`
+  - `toast/1`
+  - `toast_item/1`
   - `empty_state/1`
   """
 
@@ -184,6 +186,72 @@ defmodule CinderUI.Components.Feedback do
       aria-hidden="true"
       {@rest}
     />
+    """
+  end
+
+  @doc """
+  Toast container for stacking notification items.
+
+  This is a presentational primitive intended to wrap one or more `toast_item/1`
+  children.
+  """
+  attr :position, :atom,
+    default: :bottom_right,
+    values: [:top_left, :top_center, :top_right, :bottom_left, :bottom_center, :bottom_right]
+
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def toast(assigns) do
+    position_classes =
+      case assigns.position do
+        :top_left -> "top-0 left-0"
+        :top_center -> "top-0 left-1/2 -translate-x-1/2"
+        :top_right -> "top-0 right-0"
+        :bottom_left -> "bottom-0 left-0"
+        :bottom_center -> "bottom-0 left-1/2 -translate-x-1/2"
+        :bottom_right -> "bottom-0 right-0"
+      end
+
+    assigns =
+      assign(assigns, :classes, [
+        "pointer-events-none fixed z-50 flex w-full max-w-[420px] flex-col gap-2 p-4",
+        position_classes,
+        assigns.class
+      ])
+
+    ~H"""
+    <div data-slot="toast" data-position={@position} class={classes(@classes)}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
+  Toast item panel.
+  """
+  attr :variant, :atom, default: :default, values: [:default, :destructive]
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def toast_item(assigns) do
+    variant_class =
+      case assigns.variant do
+        :default -> "border bg-card text-card-foreground"
+        :destructive -> "border-destructive/60 bg-destructive/5 text-foreground"
+      end
+
+    assigns =
+      assign(assigns, :classes, [
+        "pointer-events-auto rounded-lg px-4 py-3 text-sm shadow-lg",
+        variant_class,
+        assigns.class
+      ])
+
+    ~H"""
+    <div data-slot="toast-item" data-variant={@variant} role="status" class={classes(@classes)}>
+      {render_slot(@inner_block)}
+    </div>
     """
   end
 

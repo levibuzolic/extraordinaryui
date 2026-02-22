@@ -38,6 +38,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - [ ] Implement `Context Menu` or formally document it as out-of-scope.
 - [ ] Deepen scaffold/progressive parity for `Calendar`, `Chart`, `Resizable`, `Sidebar`, and `Sonner`.
 - [ ] Expand browser tests for keyboard/focus accessibility behavior in progressive overlay/menu components.
+- [ ] Daisy gap phase 2: evaluate/implement `steps`, `timeline`, and toast orchestration hooks after validating phase 1 adoption feedback.
 
 ## Milestones
 
@@ -230,6 +231,18 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Refined marketing-site copy to focus on end-user Phoenix/LiveView adoption benefits (Phoenix-native API, fast integration, shadcn-aligned styles) and removed static-docs-export framing from feature messaging.
 - Clarified marketing install section by splitting `mix.exs` dependency edits from terminal commands (`mix deps.get` + installer), including explicit optional `lucide_icons` guidance.
 
+### Milestone 21: Input/docs parity and daisy gap phase 1
+
+- Aligned `Forms.input_group/1` with shadcn grouped-control behavior (single shell border, flattened child borders/shadows, unified focus ring).
+- Updated `input_group` docs examples to match the refined structure (`outline` action button).
+- Replaced static docs sidebar theme `<select>` markup with library-native `Forms.native_select/1` rendering so dropdown controls match package styles/classes.
+- Added lightweight syntax highlighting for HEEx code snippets in both static docs and marketing site outputs (no additional runtime dependency).
+- Completed a daisyUI/Phoenix gap pass against `phcurado/daisy_ui_components` and identified high-value additions.
+- Executed phase 1 additions:
+  - `Navigation.menu/1` (daisy-inspired menu primitive)
+  - `Feedback.toast/1` + `Feedback.toast_item/1` (presentational toast primitives)
+- Added catalog samples, slug mappings, and component tests for the new primitives.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -268,3 +281,5 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `(working tree)` - enable automatic GitHub Pages site publish on every `main` push and document workflow behavior.
 - `(working tree)` - retarget marketing-site messaging to existing Phoenix/LiveView app benefits and update site assertions.
 - `(working tree)` - clarify homepage install docs with separate `mix.exs` and terminal command blocks.
+- `(working tree)` - align input_group and docs theme dropdown controls with library/upstream styles.
+- `(working tree)` - add lightweight HEEx syntax highlighting to docs/site and implement daisy-gap phase 1 primitives (`menu`, `toast`).

@@ -660,6 +660,36 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       color: var(--accent-foreground);
       border-color: var(--border);
     }
+
+    .code-highlight {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      line-height: 1.5;
+    }
+
+    .code-highlight .tok-tag {
+      color: color-mix(in oklab, var(--primary) 75%, var(--foreground));
+    }
+
+    .code-highlight .tok-attr {
+      color: color-mix(in oklab, var(--chart-2) 75%, var(--foreground));
+    }
+
+    .code-highlight .tok-string {
+      color: color-mix(in oklab, var(--chart-4) 85%, var(--foreground));
+    }
+
+    .code-highlight .tok-expr {
+      color: color-mix(in oklab, var(--chart-5) 85%, var(--foreground));
+    }
+
+    .code-highlight .tok-keyword {
+      color: color-mix(in oklab, var(--chart-1) 80%, var(--foreground));
+    }
+
+    .code-highlight .tok-comment {
+      color: var(--muted-foreground);
+      font-style: italic;
+    }
     """
   end
 
@@ -685,6 +715,34 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         const storageKey = "cinder_ui:site:theme";
         const root = document.documentElement;
         const buttons = Array.from(document.querySelectorAll("[data-site-theme]"));
+        const qs = (selector) => Array.from(document.querySelectorAll(selector));
+        const escapeHtml = (value) =>
+          value
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        const highlightHeex = (source) => {
+          let html = escapeHtml(source);
+          html = html.replace(/(&lt;!--[\\s\\S]*?--&gt;)/g, '<span class="tok-comment">$1</span>');
+          html = html.replace(/(&lt;\\/?)([:A-Za-z0-9_.-]+)/g, '$1<span class="tok-tag">$2</span>');
+          html = html.replace(/([:@A-Za-z0-9_-]+)(=)/g, '<span class="tok-attr">$1</span>$2');
+          html = html.replace(/(&quot;[^&]*?&quot;)/g, '<span class="tok-string">$1</span>');
+          html = html.replace(/(\\{[^\\n]*?\\})/g, '<span class="tok-expr">$1</span>');
+          html = html.replace(/\\b(true|false|nil|do|end)\\b/g, '<span class="tok-keyword">$1</span>');
+          return html;
+        };
+        const highlightCodeBlocks = () => {
+          qs("pre code").forEach((block) => {
+            if (block.dataset.highlighted === "true") return;
+            const source = block.textContent || "";
+            if (source.trim() === "") return;
+            const isHeexLike =
+              source.includes("<.") || source.includes("</.") || source.includes("<:");
+            block.innerHTML = isHeexLike ? highlightHeex(source) : escapeHtml(source);
+            block.classList.add("code-highlight");
+            block.dataset.highlighted = "true";
+          });
+        };
 
         const apply = (mode) => {
           const normalized = mode === "dark" ? "dark" : "light";
@@ -709,6 +767,8 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
             apply(mode);
           });
         });
+
+        highlightCodeBlocks();
       })();
     </script>
     """

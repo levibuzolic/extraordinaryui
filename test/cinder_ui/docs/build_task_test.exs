@@ -38,6 +38,8 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert index =~ "data-theme-mode"
     assert index =~ "theme-color"
     assert index =~ "theme-radius"
+    assert index =~ "data-slot=\"native-select-wrapper\""
+    assert index =~ "data-slot=\"native-select\""
     assert index =~ ~s(href="./index.html")
     assert index =~ ~s(aria-current="page")
     assert index =~ "sidebar-link"
@@ -71,10 +73,13 @@ defmodule CinderUI.Docs.BuildTaskTest do
     site_js = File.read!(Path.join(@output, "assets/site.js"))
     assert site_js =~ "themedTokenKeys"
     assert site_js =~ "removeProperty"
+    assert site_js =~ "highlightCodeBlocks"
+    assert site_js =~ "tok-tag"
 
     site_css = File.read!(Path.join(@output, "assets/site.css"))
     assert site_css =~ ".docs-markdown"
     assert site_css =~ "summary:not([data-slot])::after"
     assert site_css =~ "summary::marker"
+    assert site_css =~ ".code-highlight .tok-tag"
   end
 end

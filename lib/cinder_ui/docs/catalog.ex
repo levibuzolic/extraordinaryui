@@ -39,7 +39,9 @@ defmodule CinderUI.Docs.Catalog do
     icon: nil,
     input_otp: "input-otp",
     item: "command",
+    menu: "navigation-menu",
     native_select: "select",
+    toast: "sonner",
     sonner_toaster: "sonner"
   }
   @avatar_data_levi "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzIyYzU1ZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA2YjZkNCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cxKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZWNmZWZmIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNlY2ZlZmYiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
@@ -1266,6 +1268,27 @@ defmodule CinderUI.Docs.Catalog do
   defp sample_assigns(Feedback, :progress), do: %{value: 72}
   defp sample_assigns(Feedback, :spinner), do: %{}
 
+  defp sample_assigns(Feedback, :toast) do
+    toast_item_html =
+      render_component(Feedback, :toast_item, %{
+        inner_block: slot("Project settings saved.")
+      })
+
+    %{
+      class: "static z-0 w-full max-w-none p-0",
+      inner_block:
+        slot(
+          toast_item_html,
+          """
+          <.toast_item>Project settings saved.</.toast_item>
+          """
+        )
+    }
+  end
+
+  defp sample_assigns(Feedback, :toast_item),
+    do: %{inner_block: slot("Project settings saved.")}
+
   defp sample_assigns(DataDisplay, :accordion) do
     %{
       item: [
@@ -1482,6 +1505,16 @@ defmodule CinderUI.Docs.Catalog do
       item: [
         %{href: "#", active: true, inner_block: fn _, _ -> "Overview" end},
         %{href: "#", inner_block: fn _, _ -> "Settings" end}
+      ]
+    }
+  end
+
+  defp sample_assigns(Navigation, :menu) do
+    %{
+      item: [
+        %{href: "#", active: true, inner_block: fn _, _ -> "Overview" end},
+        %{href: "#", inner_block: fn _, _ -> "Team" end},
+        %{href: "#", disabled: true, inner_block: fn _, _ -> "Billing" end}
       ]
     }
   end

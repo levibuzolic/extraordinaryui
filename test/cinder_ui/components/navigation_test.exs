@@ -34,4 +34,19 @@ defmodule CinderUI.Components.NavigationTest do
     assert html =~ "data-slot=\"tabs\""
     assert html =~ "Profile Content"
   end
+
+  test "menu renders active and disabled items" do
+    html =
+      render_component(&Navigation.menu/1, %{
+        item: [
+          %{href: "#", active: true, inner_block: fn _, _ -> "Overview" end},
+          %{href: "#", disabled: true, inner_block: fn _, _ -> "Billing" end}
+        ]
+      })
+
+    assert html =~ "data-slot=\"menu\""
+    assert html =~ "data-slot=\"menu-item\""
+    assert html =~ "data-active"
+    assert html =~ "aria-disabled=\"true\""
+  end
 end

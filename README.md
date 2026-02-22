@@ -170,6 +170,7 @@ Legend:
 | Kbd | ✅ Full | Server-rendered | - |
 | Label | ✅ Full | Server-rendered | - |
 | Menubar | ⚡ Progressive | Server + hooks | Hook layer handles interactive menu behavior |
+| Menu | ✅ Full | Server-rendered | daisyUI-inspired navigation list primitive |
 | Native Select | ✅ Full | Server-rendered | Native HTML select with shadcn-style classes |
 | Navigation Menu | ✅ Full | Server-rendered | - |
 | Pagination | ✅ Full | Server-rendered | - |
@@ -185,6 +186,7 @@ Legend:
 | Skeleton | ✅ Full | Server-rendered | - |
 | Slider | ✅ Full | Server-rendered | Native range input style |
 | Sonner | 🧱 Scaffold | Static shell | Mount point API; toast engine not bundled |
+| Toast | ✅ Full | Server-rendered | Presentational toast container/items for app-level notifications |
 | Spinner | ✅ Full | Server-rendered | - |
 | Switch | ✅ Full | Server-rendered | - |
 | Table | ✅ Full | Server-rendered | - |

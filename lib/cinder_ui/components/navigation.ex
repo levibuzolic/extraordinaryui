@@ -7,6 +7,7 @@ defmodule CinderUI.Components.Navigation do
   - Breadcrumb family (`breadcrumb/1`, `breadcrumb_list/1`, `breadcrumb_item/1`, `breadcrumb_link/1`, `breadcrumb_page/1`, `breadcrumb_separator/1`, `breadcrumb_ellipsis/1`)
   - Pagination family (`pagination/1`, `pagination_content/1`, `pagination_item/1`, `pagination_link/1`, `pagination_previous/1`, `pagination_next/1`, `pagination_ellipsis/1`)
   - `tabs/1`
+  - `menu/1`
   - `navigation_menu/1`
   """
 
@@ -367,6 +368,61 @@ defmodule CinderUI.Components.Navigation do
         {render_slot(content)}
       </div>
     </div>
+    """
+  end
+
+  @doc """
+  Generic application menu list inspired by daisyUI's menu primitive.
+
+  Supports vertical and horizontal layouts with active/disabled item states.
+  """
+  attr :orientation, :atom, default: :vertical, values: [:vertical, :horizontal]
+  attr :class, :string, default: nil
+
+  slot :item, required: true do
+    attr :href, :string
+    attr :active, :boolean
+    attr :disabled, :boolean
+  end
+
+  def menu(assigns) do
+    orientation_classes =
+      case assigns.orientation do
+        :vertical -> "w-full flex-col"
+        :horizontal -> "w-fit flex-row items-center"
+      end
+
+    assigns =
+      assigns
+      |> assign(:root_classes, ["w-full", assigns.class])
+      |> assign(:list_classes, [
+        "border-border bg-card text-card-foreground flex gap-1 rounded-lg border p-1",
+        orientation_classes
+      ])
+
+    ~H"""
+    <nav data-slot="menu" data-orientation={@orientation} class={classes(@root_classes)}>
+      <ul class={classes(@list_classes)}>
+        <li :for={item <- @item} class="contents">
+          <a
+            data-slot="menu-item"
+            href={item[:href] || "#"}
+            data-active={item[:active]}
+            aria-disabled={if(item[:disabled], do: "true", else: nil)}
+            class={
+              classes([
+                "inline-flex min-h-9 items-center rounded-md px-3 py-2 text-sm transition-colors",
+                "hover:bg-accent hover:text-accent-foreground",
+                item[:active] && "bg-accent text-accent-foreground font-medium",
+                item[:disabled] && "pointer-events-none opacity-50"
+              ])
+            }
+          >
+            {render_slot(item)}
+          </a>
+        </li>
+      </ul>
+    </nav>
     """
   end
 
