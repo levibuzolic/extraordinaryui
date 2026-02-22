@@ -115,7 +115,11 @@ defmodule ExtraordinaryUI.MixProject do
           ExtraordinaryUI.Components.Overlay
         ],
         Storybook: [ExtraordinaryUI.Storybook],
-        "Mix Tasks": [Mix.Tasks.ExtraordinaryUi.Install, Mix.Tasks.ExtraordinaryUi.Docs.Build]
+        "Mix Tasks": [
+          Mix.Tasks.ExtraordinaryUi.Install,
+          Mix.Tasks.ExtraordinaryUi.Docs.Build,
+          Mix.Tasks.ExtraordinaryUi.Site.Build
+        ]
       ]
     ]
   end

@@ -55,6 +55,9 @@ jobs:
       - name: Build static docs export
         run: mix extraordinary_ui.docs.build --output tmp/ci-docs --clean
 
+      - name: Build static developer site
+        run: mix extraordinary_ui.site.build --output tmp/ci-site --clean
+
   root_tests:
     name: Root Tests + Coverage
     runs-on: ubuntu-latest
