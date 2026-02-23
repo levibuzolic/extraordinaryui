@@ -130,7 +130,60 @@ defmodule CinderUI.Components.DataDisplay do
   @doc """
   Table wrapper with overflow container.
 
-  ## Example
+  ## Examples
+
+      <.table>
+        <.table_caption>Active deployments across environments.</.table_caption>
+        <.table_header>
+          <.table_row>
+            <.table_head>Service</.table_head>
+            <.table_head>Status</.table_head>
+            <.table_head class="text-right">Latency</.table_head>
+          </.table_row>
+        </.table_header>
+        <.table_body>
+          <.table_row>
+            <.table_cell>API</.table_cell>
+            <.table_cell>Healthy</.table_cell>
+            <.table_cell class="text-right">82ms</.table_cell>
+          </.table_row>
+          <.table_row>
+            <.table_cell>Worker</.table_cell>
+            <.table_cell>Degraded</.table_cell>
+            <.table_cell class="text-right">164ms</.table_cell>
+          </.table_row>
+        </.table_body>
+      </.table>
+
+      <.table>
+        <.table_header>
+          <.table_row>
+            <.table_head>Invoice</.table_head>
+            <.table_head>State</.table_head>
+            <.table_head class="text-right">Amount</.table_head>
+          </.table_row>
+        </.table_header>
+        <.table_body>
+          <.table_row>
+            <.table_cell>INV-001</.table_cell>
+            <.table_cell>Paid</.table_cell>
+            <.table_cell class="text-right">$120.00</.table_cell>
+          </.table_row>
+          <.table_row state="selected">
+            <.table_cell>INV-002</.table_cell>
+            <.table_cell>Pending</.table_cell>
+            <.table_cell class="text-right">$48.00</.table_cell>
+          </.table_row>
+        </.table_body>
+        <.table_footer>
+          <.table_row>
+            <.table_cell class="font-medium" colspan="2">Total</.table_cell>
+            <.table_cell class="text-right font-medium">$168.00</.table_cell>
+          </.table_row>
+        </.table_footer>
+      </.table>
+
+  ## Minimal
 
       <.table>
         <.table_header>
@@ -244,6 +297,7 @@ defmodule CinderUI.Components.DataDisplay do
   Table data cell (`td`).
   """
   attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(colspan rowspan)
   slot :inner_block, required: true
 
   def table_cell(assigns) do
@@ -254,7 +308,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <td data-slot="table-cell" class={classes(@classes)}>{render_slot(@inner_block)}</td>
+    <td data-slot="table-cell" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</td>
     """
   end
 

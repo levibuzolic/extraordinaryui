@@ -64,15 +64,14 @@ defmodule CinderUI.Docs.BuildTaskTest do
     refute component_page =~ "docs-markdown"
     assert component_page =~ ~s(href="../components/actions-button.html")
     assert component_page =~ ~s(aria-current="page")
-    assert component_page =~ "Primary CTA"
-    assert component_page =~ "Destructive Loading"
+    assert component_page =~ "Primary submit action"
+    assert component_page =~ "Loading destructive action"
     refute component_page =~ "Inline Docs Examples"
-    refute component_page =~ "Outline small action"
-    refute component_page =~ "Loading destructive action"
     refute component_page =~ "## Attributes"
 
-    assert card_page =~ "Profile Card"
-    assert card_page =~ "Pricing Card"
+    assert card_page =~ "Inline docs example 1"
+    assert card_page =~ "Project status"
+    assert card_page =~ "Team invite"
     assert card_page =~ "&lt;.card_header&gt;"
     assert card_page =~ "Usage (HEEx)"
 

@@ -307,6 +307,55 @@ defmodule CinderUI.Components.Navigation do
   Tab container with trigger and content slots.
 
   State is controlled through the `value` assign.
+
+  ## Examples
+
+  ```heex title="Settings tabs"
+  <.tabs value="account">
+    <:trigger value="account">Account</:trigger>
+    <:trigger value="security">Security</:trigger>
+    <:trigger value="notifications">Notifications</:trigger>
+
+    <:content value="account">
+      <.card>
+        <.card_header>
+          <.card_title>Account</.card_title>
+          <.card_description>Update your profile details.</.card_description>
+        </.card_header>
+      </.card>
+    </:content>
+    <:content value="security">
+      <p class="text-sm">Manage password and two-factor settings.</p>
+    </:content>
+    <:content value="notifications">
+      <p class="text-sm">Choose how you receive alerts.</p>
+    </:content>
+  </.tabs>
+  ```
+
+  ```heex title="Line variant for analytics views"
+  <.tabs value="overview" variant={:line}>
+    <:trigger value="overview">Overview</:trigger>
+    <:trigger value="usage">Usage</:trigger>
+    <:trigger value="logs">Logs</:trigger>
+
+    <:content value="overview">Overview content</:content>
+    <:content value="usage">Usage content</:content>
+    <:content value="logs">Logs content</:content>
+  </.tabs>
+  ```
+
+  ```heex title="Vertical tabs for admin panels"
+  <.tabs value="general" orientation={:vertical} class="items-start">
+    <:trigger value="general">General</:trigger>
+    <:trigger value="members">Members</:trigger>
+    <:trigger value="api">API Keys</:trigger>
+
+    <:content value="general">General settings</:content>
+    <:content value="members">Team membership</:content>
+    <:content value="api">API key management</:content>
+  </.tabs>
+  ```
   """
   attr :value, :string, required: true
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]

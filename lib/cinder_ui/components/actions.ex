@@ -54,8 +54,22 @@ defmodule CinderUI.Components.Actions do
 
   ## Examples
 
+  ```heex title="Primary submit action"
+  <.button type="submit">Save changes</.button>
+  ```
+
   ```heex title="Outline small action"
   <.button variant={:outline} size={:sm}>Edit</.button>
+  ```
+
+  ```heex title="Ghost icon action"
+  <.button variant={:ghost} size={:icon} aria-label="Refresh">
+    <CinderUI.Icons.icon name="refresh-cw" />
+  </.button>
+  ```
+
+  ```heex title="Link-style navigation button"
+  <.button as="a" href="/billing" variant={:link}>Manage billing</.button>
   ```
 
   ```heex title="Loading destructive action"
@@ -109,12 +123,36 @@ defmodule CinderUI.Components.Actions do
   @doc """
   Renders a horizontal or vertical button group.
 
-  ## Example
+  ## Examples
 
+  ```heex title="Primary and secondary actions"
+  <.button_group>
+    <.button>Deploy</.button>
+    <.button variant={:outline}>Rollback</.button>
+  </.button_group>
+  ```
+
+  ```heex title="Compact table row controls"
+  <.button_group>
+    <.button size={:sm} variant={:secondary}>Edit</.button>
+    <.button size={:sm} variant={:outline}>Duplicate</.button>
+    <.button size={:sm} variant={:destructive}>Archive</.button>
+  </.button_group>
+  ```
+
+  ```heex title="Vertical stack for mobile sheets"
+  <.button_group orientation={:vertical} class="w-full">
+    <.button class="w-full">Save draft</.button>
+    <.button class="w-full" variant={:outline}>Discard</.button>
+  </.button_group>
+  ```
+
+  ```heex title="Wizard navigation"
       <.button_group>
         <.button size={:sm}>Back</.button>
         <.button size={:sm}>Next</.button>
       </.button_group>
+  ```
   """
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :class, :string, default: nil

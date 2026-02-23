@@ -21,7 +21,39 @@ defmodule CinderUI.Components.Layout do
   @doc """
   Card container.
 
-  ## Example
+  ## Examples
+
+      <.card>
+        <.card_header>
+          <.card_title>Project status</.card_title>
+          <.card_description>Active deployments across environments.</.card_description>
+        </.card_header>
+        <.card_content>
+          <p class="text-sm">Production healthy, staging pending one migration.</p>
+        </.card_content>
+      </.card>
+
+      <.card class="max-w-md">
+        <.card_header class="border-b">
+          <.card_title>Team invite</.card_title>
+          <.card_action>
+            <.button size={:sm} variant={:outline}>Skip</.button>
+          </.card_action>
+          <.card_description>Invite teammates before your first deploy.</.card_description>
+        </.card_header>
+        <.card_content class="space-y-3">
+          <.field>
+            <:label><.label for="invite_email">Email</.label></:label>
+            <.input id="invite_email" type="email" placeholder="dev@company.com" />
+          </.field>
+        </.card_content>
+        <.card_footer class="justify-end gap-2 border-t">
+          <.button variant={:outline}>Cancel</.button>
+          <.button>Send invite</.button>
+        </.card_footer>
+      </.card>
+
+  ## Minimal
 
       <.card>
         <.card_header>
@@ -47,6 +79,16 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Card header section.
+
+  ## Example
+
+      <.card_header class="border-b">
+        <.card_title>Billing</.card_title>
+        <.card_action>
+          <.button size={:sm} variant={:outline}>Manage</.button>
+        </.card_action>
+        <.card_description>Usage and invoices for this workspace.</.card_description>
+      </.card_header>
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -65,6 +107,12 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Card title text.
+
+  ## Examples
+
+      <.card_title>Payment method</.card_title>
+
+      <.card_title class="text-xl">Pro plan</.card_title>
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -79,6 +127,14 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Card description text.
+
+  ## Examples
+
+      <.card_description>Connect your billing details to unlock premium features.</.card_description>
+
+      <.card_description class="text-xs">
+        Last updated 5 minutes ago.
+      </.card_description>
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -93,6 +149,12 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Right-aligned card action region for buttons/chips.
+
+  ## Example
+
+      <.card_action>
+        <.button size={:sm} variant={:ghost}>Edit</.button>
+      </.card_action>
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -111,6 +173,16 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Card content section.
+
+  ## Example
+
+      <.card_content class="space-y-3">
+        <p class="text-sm">Your API key was generated successfully.</p>
+        <.input_group>
+          <.input value="ck_live_************************" readonly />
+          <.button variant={:outline} size={:sm}>Copy</.button>
+        </.input_group>
+      </.card_content>
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -125,6 +197,13 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Card footer section.
+
+  ## Example
+
+      <.card_footer class="justify-end gap-2 border-t">
+        <.button variant={:outline}>Cancel</.button>
+        <.button>Save</.button>
+      </.card_footer>
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true

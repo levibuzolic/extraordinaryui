@@ -27,6 +27,59 @@ defmodule CinderUI.Components.Overlay do
 
   Set `open` from LiveView assigns for server-controlled state, or rely on the
   optional `EuiDialog` JS hook for client toggling.
+
+  ## Examples
+
+  ```heex title="Basic confirmation dialog"
+  <.dialog id="delete-project-dialog">
+    <:trigger>
+      <.button variant={:destructive}>Delete project</.button>
+    </:trigger>
+    <:title>Delete project?</:title>
+    <:description>This action cannot be undone.</:description>
+    Are you sure you want to permanently remove this project?
+    <:footer>
+      <.button variant={:outline} type="button">Cancel</.button>
+      <.button variant={:destructive} type="button">Delete</.button>
+    </:footer>
+  </.dialog>
+  ```
+
+  ```heex title="Form inside dialog"
+  <.dialog id="invite-member-dialog">
+    <:trigger><.button>Invite member</.button></:trigger>
+    <:title>Invite teammate</:title>
+    <:description>Grant access to this workspace.</:description>
+
+    <div class="grid gap-4">
+      <.field>
+        <:label><.label for="invite_email">Email</.label></:label>
+        <.input id="invite_email" type="email" placeholder="dev@company.com" />
+      </.field>
+      <.field>
+        <:label><.label for="invite_role">Role</.label></:label>
+        <.select name="invite_role" value="member">
+          <:option value="member" label="Member" />
+          <:option value="admin" label="Admin" />
+        </.select>
+      </.field>
+    </div>
+
+    <:footer>
+      <.button variant={:outline} type="button">Cancel</.button>
+      <.button type="button">Send invite</.button>
+    </:footer>
+  </.dialog>
+  ```
+
+  ```heex title="Server-controlled open state"
+  <.dialog id="billing-dialog" open={@show_billing}>
+    <:trigger><.button>Open billing</.button></:trigger>
+    <:title>Billing details</:title>
+    <:description>Review your subscription and payment method.</:description>
+    <p class="text-sm">Current plan: Pro</p>
+  </.dialog>
+  ```
   """
   attr :id, :string, required: true
   attr :open, :boolean, default: false

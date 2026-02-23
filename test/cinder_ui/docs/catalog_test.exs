@@ -77,23 +77,18 @@ defmodule CinderUI.Docs.CatalogTest do
     assert "inner_block" in Enum.map(button_entry.slots, & &1.name)
   end
 
-  test "core families expose multiple complete generated examples" do
+  test "core families expose generated examples extracted from function docs" do
     entries = Catalog.sections() |> Enum.flat_map(& &1.entries)
 
-    assert length(find_entry(entries, CinderUI.Components.Actions, :button).examples) == 2
-    assert length(find_entry(entries, CinderUI.Components.Forms, :field).examples) == 2
-    assert length(find_entry(entries, CinderUI.Components.Feedback, :alert).examples) == 2
-
-    assert length(find_entry(entries, CinderUI.Components.DataDisplay, :accordion).examples) == 2
-
-    assert length(find_entry(entries, CinderUI.Components.Navigation, :tabs).examples) == 2
-    assert length(find_entry(entries, CinderUI.Components.Overlay, :dialog).examples) == 2
-
-    assert length(find_entry(entries, CinderUI.Components.Advanced, :command).examples) ==
-             2
+    assert length(find_entry(entries, CinderUI.Components.Actions, :button).examples) >= 2
+    assert length(find_entry(entries, CinderUI.Components.Forms, :field).examples) >= 2
+    assert length(find_entry(entries, CinderUI.Components.Layout, :card).examples) >= 2
+    assert length(find_entry(entries, CinderUI.Components.Navigation, :tabs).examples) >= 2
+    assert length(find_entry(entries, CinderUI.Components.Overlay, :dialog).examples) >= 2
+    assert length(find_entry(entries, CinderUI.Components.DataDisplay, :table).examples) >= 2
   end
 
-  test "composite components can expose multiple generated examples" do
+  test "composite components can expose doc-derived generated examples" do
     card_entry =
       Catalog.sections()
       |> Enum.flat_map(& &1.entries)
@@ -102,18 +97,18 @@ defmodule CinderUI.Docs.CatalogTest do
       end)
 
     assert card_entry
-    assert length(card_entry.examples) == 2
+    assert length(card_entry.examples) >= 2
 
-    profile_example = Enum.find(card_entry.examples, &(&1.id == "profile"))
-    pricing_example = Enum.find(card_entry.examples, &(&1.id == "pricing"))
+    extended_example = Enum.find(card_entry.examples, &(&1.template_heex =~ "<.card_footer"))
+    minimal_example = Enum.find(card_entry.examples, &(&1.template_heex =~ "<.card_content>"))
 
-    assert profile_example
-    assert pricing_example
-    assert profile_example.template_heex =~ "<.card_header>"
-    assert pricing_example.template_heex =~ "<.card_footer>"
+    assert extended_example
+    assert minimal_example
+    assert extended_example.template_heex =~ "<.card_header"
+    assert extended_example.template_heex =~ "<.card_footer"
   end
 
-  test "avatar docs samples use base64 image data for realistic previews" do
+  test "avatar docs samples are sourced from documented usage snippets" do
     avatar_entry =
       Catalog.sections()
       |> Enum.flat_map(& &1.entries)
@@ -128,9 +123,9 @@ defmodule CinderUI.Docs.CatalogTest do
         entry.module == CinderUI.Components.DataDisplay and entry.function == :avatar_group
       end)
 
-    assert avatar_entry.preview_html =~ "data:image/svg+xml;base64,"
-    assert avatar_group_entry.preview_html =~ "data:image/svg+xml;base64,"
-    assert avatar_group_entry.template_heex =~ "<.avatar_group_count>"
+    assert avatar_entry.template_heex =~ "<.avatar"
+    assert avatar_entry.template_heex =~ "alt=\"Levi\""
+    assert avatar_group_entry.template_heex =~ "<.avatar_group"
   end
 
   test "icons section includes lucide wrapper entry" do

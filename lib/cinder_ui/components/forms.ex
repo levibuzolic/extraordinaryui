@@ -24,9 +24,14 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders a form label.
 
-  ## Example
+  ## Examples
 
       <.label for="email">Email</.label>
+
+      <.label for="project_name">
+        Project name
+        <span class="text-destructive">*</span>
+      </.label>
   """
   attr :for, :string, default: nil
   attr :class, :string, default: nil
@@ -50,12 +55,19 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Field wrapper for label, control, description, and errors.
 
-  ## Example
+  ## Examples
 
       <.field>
         <:label><.label for="name">Name</.label></:label>
         <.input id="name" name="name" />
         <:description>Shown in your profile.</:description>
+      </.field>
+
+      <.field>
+        <:label><.label for="email">Work email</.label></:label>
+        <.input id="email" name="email" type="email" />
+        <:description>We'll send deployment alerts here.</:description>
+        <:error>Please use your company domain.</:error>
       </.field>
   """
   attr :class, :string, default: nil
@@ -84,9 +96,13 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders an input with shadcn classes.
 
-  ## Example
+  ## Examples
 
       <.input id="email" type="email" placeholder="name@example.com" />
+
+      <.input id="username" name="username" value="levi" />
+
+      <.input id="avatar" name="avatar" type="file" accept="image/*" />
   """
   attr :id, :string, default: nil
   attr :type, :string, default: "text"
@@ -94,7 +110,9 @@ defmodule CinderUI.Components.Forms do
   attr :value, :string, default: nil
   attr :placeholder, :string, default: nil
   attr :class, :string, default: nil
-  attr :rest, :global
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete disabled maxlength minlength pattern readonly required step)
 
   def input(assigns) do
     assigns =
@@ -122,9 +140,18 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders a textarea with shadcn classes.
 
-  ## Example
+  ## Examples
 
       <.textarea id="bio" name="bio" rows={4} />
+
+      <.textarea
+        id="release_notes"
+        name="release_notes"
+        rows={8}
+        placeholder="Summarize what changed in this release..."
+      />
+
+      <.textarea id="support_message" name="support_message" disabled value="Request submitted." />
   """
   attr :id, :string, default: nil
   attr :name, :string, default: nil
@@ -132,7 +159,7 @@ defmodule CinderUI.Components.Forms do
   attr :placeholder, :string, default: nil
   attr :rows, :integer, default: 4
   attr :class, :string, default: nil
-  attr :rest, :global
+  attr :rest, :global, include: ~w(disabled maxlength minlength readonly required)
 
   def textarea(assigns) do
     assigns =
@@ -157,9 +184,13 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders a checkbox control with optional inline label content.
 
-  ## Example
+  ## Examples
 
       <.checkbox id="terms" name="terms">Accept terms</.checkbox>
+
+      <.checkbox id="product_updates" name="product_updates" checked={true}>
+        Notify me about product updates
+      </.checkbox>
   """
   attr :id, :string, required: true
   attr :name, :string, default: nil
@@ -200,9 +231,15 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders a switch control with optional label content.
 
-  ## Example
+  ## Examples
 
       <.switch id="marketing" checked={@enabled}>Email updates</.switch>
+
+      <.switch id="2fa" name="two_factor" checked={true} size={:sm}>
+        Require two-factor authentication
+      </.switch>
+
+      <.switch id="notifications" disabled={true}>Push notifications</.switch>
   """
   attr :id, :string, required: true
   attr :name, :string, default: nil
@@ -285,10 +322,21 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders a native `<select>` element with shadcn styles.
 
-  ## Example
+  ## Examples
 
       <.select name="timezone" value="utc">
         <:option value="utc" label="UTC" />
+      </.select>
+
+      <.select name="framework" value="phoenix">
+        <:option value="phoenix" label="Phoenix" />
+        <:option value="rails" label="Rails" />
+        <:option value="laravel" label="Laravel" />
+      </.select>
+
+      <.select name="assignee" placeholder="Assign a teammate">
+        <:option value="levi" label="Levi" />
+        <:option value="sam" label="Sam" />
       </.select>
   """
   attr :name, :string, default: nil
@@ -332,11 +380,16 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Renders a radio group with native radio inputs.
 
-  ## Example
+  ## Examples
 
       <.radio_group name="plan" value="pro">
         <:option value="free" label="Free" />
         <:option value="pro" label="Pro" />
+      </.radio_group>
+
+      <.radio_group name="billing_cycle" value="yearly">
+        <:option value="monthly" label="Monthly billing" />
+        <:option value="yearly" label="Yearly billing (save 20%)" />
       </.radio_group>
   """
   attr :name, :string, default: nil
@@ -375,6 +428,12 @@ defmodule CinderUI.Components.Forms do
 
   Use `min`, `max`, and `step` for scalar values. For range sliders, render two
   controls and sync values in LiveView.
+
+  ## Examples
+
+      <.slider id="volume" name="volume" value={45} min={0} max={100} step={1} />
+
+      <.slider id="cpu_limit" name="cpu_limit" value={2} min={1} max={8} step={1} />
   """
   attr :id, :string, default: nil
   attr :name, :string, default: nil
@@ -411,11 +470,21 @@ defmodule CinderUI.Components.Forms do
   @doc """
   Wraps an input and sibling controls (buttons/icons) in a single inline group.
 
-  ## Example
+  ## Examples
 
       <.input_group>
         <.input placeholder="Search" />
         <.button size={:sm}>Go</.button>
+      </.input_group>
+
+      <.input_group>
+        <span class="text-muted-foreground inline-flex items-center px-3 text-sm">@</span>
+        <.input placeholder="organization" />
+      </.input_group>
+
+      <.input_group>
+        <.input placeholder="https://example.com" />
+        <.button variant={:outline} size={:sm}>Copy</.button>
       </.input_group>
   """
   attr :class, :string, default: nil
@@ -446,6 +515,16 @@ defmodule CinderUI.Components.Forms do
 
   This component renders one input per position and can be wired using standard
   Phoenix input names such as `code[]`.
+
+  ## Examples
+
+      <.input_otp name="verification_code[]" length={6} />
+
+      <.input_otp
+        name="recovery_code[]"
+        length={8}
+        values={["1", "2", "3", "", "", "", "", ""]}
+      />
   """
   attr :name, :string, default: "code[]"
   attr :length, :integer, default: 6

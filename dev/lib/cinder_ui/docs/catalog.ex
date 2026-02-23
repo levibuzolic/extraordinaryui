@@ -107,9 +107,9 @@ defmodule CinderUI.Docs.Catalog do
 
   defp entry(module, function) do
     doc = function_doc(module, function)
-    generated_examples = generated_examples(module, function)
-    primary_example = List.first(generated_examples)
     inline_doc_examples = inline_doc_examples(doc)
+    generated_examples = generated_examples(module, function, inline_doc_examples)
+    primary_example = List.first(generated_examples)
     id = "#{module_slug(module)}-#{function}"
     slug = shadcn_slug(function)
 
@@ -375,21 +375,35 @@ defmodule CinderUI.Docs.Catalog do
     |> Enum.map_join("\n", &(indentation <> &1))
   end
 
-  defp generated_examples(module, function) do
-    module
-    |> sample_examples(function)
-    |> Enum.with_index(1)
-    |> Enum.map(fn {example, index} ->
-      assigns = example.assigns
+  defp generated_examples(module, function, inline_doc_examples) do
+    if inline_doc_examples != [] do
+      inline_doc_examples
+      |> Enum.with_index(1)
+      |> Enum.map(fn {example, index} ->
+        %{
+          id: normalize_example_id(example.id, index),
+          title: example.title || default_example_title(index),
+          description: nil,
+          preview_html: render_heex_example(module, function, example.template_heex),
+          template_heex: example.template_heex
+        }
+      end)
+    else
+      module
+      |> sample_examples(function)
+      |> Enum.with_index(1)
+      |> Enum.map(fn {example, index} ->
+        assigns = example.assigns
 
-      %{
-        id: normalize_example_id(example[:id], index),
-        title: example[:title] || default_example_title(index),
-        description: example[:description],
-        preview_html: render_component(module, function, assigns),
-        template_heex: render_template(function, assigns)
-      }
-    end)
+        %{
+          id: normalize_example_id(example[:id], index),
+          title: example[:title] || default_example_title(index),
+          description: example[:description],
+          preview_html: render_component(module, function, assigns),
+          template_heex: render_template(function, assigns)
+        }
+      end)
+    end
   end
 
   defp default_example_title(1), do: "Default"
@@ -407,6 +421,59 @@ defmodule CinderUI.Docs.Catalog do
       "" -> "example-#{index}"
       value -> value
     end
+  end
+
+  defp render_heex_example(module, function, code) when is_binary(code) do
+    snippet =
+      code
+      |> String.trim()
+      |> String.replace("\r\n", "\n")
+
+    cond do
+      snippet == "" ->
+        render_component(module, function, sample_assigns(module, function))
+
+      true ->
+        unique = System.unique_integer([:positive, :monotonic])
+        renderer = Module.concat(__MODULE__, :"DocExample#{unique}")
+        file = "docs_example_#{unique}.ex"
+        snippet_block = indent_block(snippet, 6)
+
+        source = """
+        defmodule #{inspect(renderer)} do
+          use Phoenix.Component
+          use CinderUI.Components
+
+          def render(assigns) do
+            ~H\"\"\"
+        #{snippet_block}
+            \"\"\"
+          end
+        end
+        """
+
+        try do
+          Code.compile_string(source, file)
+
+          renderer.render(default_snippet_assigns(snippet))
+          |> Safe.to_iodata()
+          |> IO.iodata_to_binary()
+        rescue
+          _ ->
+            render_component(module, function, sample_assigns(module, function))
+        after
+          :code.purge(renderer)
+          :code.delete(renderer)
+        end
+    end
+  end
+
+  defp default_snippet_assigns(snippet) do
+    Regex.scan(~r/@([a-zA-Z_]\w*)/, snippet, capture: :all_but_first)
+    |> List.flatten()
+    |> Enum.uniq()
+    |> Map.new(fn key -> {String.to_atom(key), nil} end)
+    |> Map.put(:__changed__, %{})
   end
 
   defp inline_doc_examples(doc) do

@@ -268,6 +268,30 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 - Kept component-catalog theme controls and behavior intact (`light`/`dark`/`auto`, palette, radius presets).
 - Stabilized dialog browser interaction test by using direct close-button click evaluation in Playwright.
 - Regenerated sandbox visual snapshots for intentional UI baseline changes.
+
+### Milestone 24: Expanded high-value component `@doc` examples
+
+- Expanded HEEx examples in core usage modules to better mirror shadcn-style documentation patterns (non-RTL):
+  - `Actions.button/1`, `Actions.button_group/1`
+  - `Forms.label/1`, `Forms.field/1`, `Forms.input/1`, `Forms.textarea/1`, `Forms.checkbox/1`, `Forms.switch/1`, `Forms.select/1`, `Forms.radio_group/1`, `Forms.slider/1`, `Forms.input_group/1`, `Forms.input_otp/1`
+  - `Layout.card/1` and related card subcomponents (`card_header`, `card_title`, `card_description`, `card_action`, `card_content`, `card_footer`)
+- Added multi-scenario examples covering common production flows (auth/settings, CRUD actions, form validation, grouped inputs).
+- Extended the same docs expansion pass to additional high-traffic components:
+  - `Navigation.tabs/1`
+  - `Overlay.dialog/1`
+  - `DataDisplay.table/1`
+- Added richer examples for settings tabs, modal form flows, server-controlled dialog state, and table layouts with captions/footer summaries.
+
+### Milestone 25: Docs catalog now derives examples from `@doc`
+
+- Updated `CinderUI.Docs.Catalog` to treat extracted `@doc` HEEx snippets as the primary source of generated examples.
+- Added dynamic HEEx snippet rendering for preview generation so docs examples and rendered previews stay in sync.
+- Kept legacy sample-assign fallback only for components with no extractable `@doc` example.
+- Updated docs/catalog and build-task tests to validate doc-derived example titles/content instead of hardcoded catalog-only fixtures.
+- Added pass-through HTML attrs needed by documented examples:
+  - `Forms.input/1`: `accept`, `readonly`, and related input attrs
+  - `Forms.textarea/1`: `disabled`, `readonly`, and related textarea attrs
+  - `DataDisplay.table_cell/1`: `colspan`, `rowspan`
   - `sandbox/demo_app`
 - Updated contributor docs (`CONTRIBUTING.md`) local setup guidance to use `./bin/bootstrap`.
 
