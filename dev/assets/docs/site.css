@@ -178,3 +178,19 @@ details[open] > summary:not([data-slot])::after {
   padding: 0;
   font-size: 0.95em;
 }
+
+.docs-markdown blockquote {
+  margin: 0.8rem 0;
+  border-left: 3px solid color-mix(in oklab, var(--primary) 45%, var(--border));
+  background: color-mix(in oklab, var(--muted) 28%, transparent);
+  padding: 0.6rem 0.8rem;
+  border-radius: 0 0.4rem 0.4rem 0;
+  color: var(--foreground);
+}
+
+.docs-markdown blockquote h1,
+.docs-markdown blockquote h2,
+.docs-markdown blockquote h3,
+.docs-markdown blockquote h4 {
+  margin-top: 0;
+}

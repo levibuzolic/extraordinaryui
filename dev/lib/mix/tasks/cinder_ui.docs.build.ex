@@ -210,7 +210,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp component_body_html(entry, sections) do
     examples_html = component_examples_html(entry)
-    docs_html = inline_code_html(entry.docs)
+    docs_html = summary_markdown_html(entry.docs)
     attrs_html = attributes_table_html(entry.attributes)
     slots_html = slots_table_html(entry.slots)
     function_docs_html = function_docs_panel_html(entry.docs_full, entry.docs)
@@ -253,8 +253,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       <h2 class="mt-1 text-2xl font-semibold tracking-tight">
         <code>{@entry.module_name}.{@entry.title}</code>
       </h2>
-      <p class="text-muted-foreground mt-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</p>
+      <div class="docs-markdown mt-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
     </section>
+
+    {Phoenix.HTML.raw(@function_docs_html)}
 
     <section class="mb-8 space-y-4">{Phoenix.HTML.raw(@examples_html)}</section>
 
@@ -267,8 +269,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       <h3 class="mb-3 text-sm font-semibold">Slots</h3>
       {Phoenix.HTML.raw(@slots_html)}
     </section>
-
-    {Phoenix.HTML.raw(@function_docs_html)}
     """
     |> to_html()
   end
@@ -459,7 +459,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   defp overview_entry_html(entry) do
     assigns = %{
       entry: entry,
-      docs_html: inline_code_html(entry.docs),
+      docs_html: summary_markdown_html(entry.docs),
       template_html: escape(entry.template_heex),
       attrs_count: length(entry.attributes),
       slots_count: length(entry.slots),
@@ -492,7 +492,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             </Actions.button>
           </div>
         </div>
-        <p class="text-muted-foreground mt-2 text-sm">{Phoenix.HTML.raw(@docs_html)}</p>
+        <div class="docs-markdown mt-2 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
       </header>
 
       <div
@@ -613,6 +613,16 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       "<article class=\"docs-markdown\"><p>#{escaped_doc}</p></article>"
   end
 
+  defp summary_markdown_html(text) do
+    case Earmark.as_html(text, compact_output: true) do
+      {:ok, html, _messages} -> sanitize_docs_html(html)
+      {:error, html, _messages} -> sanitize_docs_html(html)
+    end
+  rescue
+    _ ->
+      "<p>#{escape(text)}</p>"
+  end
+
   defp function_docs_panel_html(docs_full, summary) do
     residual = docs_residual(docs_full, summary)
 
@@ -658,28 +668,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     html
     |> String.replace(~r/<script\b[^>]*>.*?<\/script>/is, "")
     |> String.replace(~r/<style\b[^>]*>.*?<\/style>/is, "")
-  end
-
-  defp inline_code_html(text) do
-    text
-    |> String.split(~r/(`[^`\n]+`)/, include_captures: true, trim: false)
-    |> Enum.map_join(&inline_code_segment_html/1)
-  end
-
-  defp inline_code_segment_html(""), do: ""
-
-  defp inline_code_segment_html(segment) do
-    if String.starts_with?(segment, "`") and String.ends_with?(segment, "`") and
-         String.length(segment) > 1 do
-      code =
-        segment
-        |> String.trim_leading("`")
-        |> String.trim_trailing("`")
-
-      ~s(<code class="inline-code">#{escape(code)}</code>)
-    else
-      escape(segment)
-    end
   end
 
   defp attributes_table_html([]) do
