@@ -35,6 +35,8 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
+  @template_dir Path.expand("../../../priv/site_templates", __DIR__)
+
   @switches [
     output: :string,
     clean: :boolean,
@@ -116,65 +118,23 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   defp index_html(version, github_url, hexdocs_url, theme_css) do
     shadcn_url = "https://ui.shadcn.com/docs"
 
-    """
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Cinder UI</title>
-        <meta
-          name="description"
-          content="Phoenix + LiveView component library with shadcn-inspired patterns, typed HEEx APIs, and installer tooling for existing apps."
-        />
-        #{theme_bootstrap_script()}
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <style type="text/tailwindcss">
-    #{theme_css}
+    assigns = [
+      theme_bootstrap_script: theme_bootstrap_script(),
+      theme_css: theme_css,
+      header_controls_html: header_controls_html(),
+      shadcn_url: shadcn_url,
+      hero_html: hero_html(version, shadcn_url),
+      component_examples_html: component_examples_html(shadcn_url),
+      install_html: install_html(version),
+      theme_tokens_html: theme_tokens_html(),
+      features_html: features_html(shadcn_url),
+      links_html: links_html(github_url, hexdocs_url, shadcn_url),
+      theme_toggle_script: theme_toggle_script()
+    ]
 
-    @layer base {
-      body {
-        @apply min-h-screen;
-      }
-    }
-        </style>
-        <link rel="stylesheet" href="./assets/site.css" />
-      </head>
-      <body class="bg-background text-foreground">
-        <div class="site-shell mx-auto max-w-[1200px] px-4 py-6 md:px-6">
-          <header class="mb-8 rounded-xl border bg-card p-4 shadow-sm">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <a href="./index.html" class="text-lg font-semibold tracking-tight">Cinder UI</a>
-              #{header_controls_html()}
-            </div>
-            <p class="mt-3 text-sm text-muted-foreground">
-              Built for Phoenix teams who want
-              <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-              patterns with Elixir-native components in existing Phoenix apps.
-            </p>
-          </header>
-
-          <main class="space-y-10">
-            #{hero_html(version, shadcn_url)}
-            #{component_examples_html(shadcn_url)}
-            #{install_html(version)}
-            #{theme_tokens_html()}
-            #{features_html(shadcn_url)}
-            #{links_html(github_url, hexdocs_url, shadcn_url)}
-          </main>
-
-          <footer class="mt-10 rounded-xl border bg-card p-4 text-sm text-muted-foreground shadow-sm">
-            <p>
-              Cinder UI references
-              <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-              patterns and exposes shadcn-style CSS tokens you can override in your app stylesheet.
-            </p>
-          </footer>
-        </div>
-        #{theme_toggle_script()}
-      </body>
-    </html>
-    """
+    "index.html.eex"
+    |> template!()
+    |> EEx.eval_string(assigns)
   end
 
   defp header_controls_html do
@@ -696,76 +656,13 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp site_css do
-    """
-    :root {
-      color-scheme: light;
-    }
-
-    html.dark {
-      color-scheme: dark;
-    }
-
-    .site-shell {
-      background-image:
-        radial-gradient(circle at 100% -10%, color-mix(in oklab, var(--muted) 25%, transparent) 0, transparent 46%),
-        radial-gradient(circle at -10% 120%, color-mix(in oklab, var(--accent) 18%, transparent) 0, transparent 44%);
-    }
-
-    pre[data-slot="code-block"],
-    [data-slot="code-block"] {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .site-theme-toggle [data-site-theme][data-active="true"] {
-      background: var(--accent);
-      color: var(--accent-foreground);
-      border-color: var(--border);
-    }
-
-    .code-highlight {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      line-height: 1.5;
-    }
-
-    .code-highlight .tok-tag {
-      color: color-mix(in oklab, var(--primary) 75%, var(--foreground));
-    }
-
-    .code-highlight .tok-attr {
-      color: color-mix(in oklab, var(--chart-2) 75%, var(--foreground));
-    }
-
-    .code-highlight .tok-string {
-      color: color-mix(in oklab, var(--chart-4) 85%, var(--foreground));
-    }
-
-    .code-highlight .tok-expr {
-      color: color-mix(in oklab, var(--chart-5) 85%, var(--foreground));
-    }
-
-    .code-highlight .tok-keyword {
-      color: color-mix(in oklab, var(--chart-1) 80%, var(--foreground));
-    }
-
-    .code-highlight .tok-comment {
-      color: var(--muted-foreground);
-      font-style: italic;
-    }
-    """
+    template!("site.css")
   end
 
   defp theme_bootstrap_script do
     """
     <script>
-      (() => {
-        try {
-          const mode = localStorage.getItem("cinder_ui:site:theme") === "dark" ? "dark" : "light";
-          const root = document.documentElement;
-          root.classList.toggle("dark", mode === "dark");
-          root.dataset.themeMode = mode;
-        } catch (_error) {}
-      })();
+    #{template!("theme_bootstrap.js")}
     </script>
     """
   end
@@ -773,68 +670,12 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   defp theme_toggle_script do
     """
     <script>
-      (() => {
-        const storageKey = "cinder_ui:site:theme";
-        const root = document.documentElement;
-        const buttons = Array.from(document.querySelectorAll("[data-site-theme]"));
-        const qs = (selector) => Array.from(document.querySelectorAll(selector));
-        const escapeHtml = (value) =>
-          value
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
-        const highlightHeex = (source) => {
-          let html = escapeHtml(source);
-          html = html.replace(/(&lt;!--[\\s\\S]*?--&gt;)/g, '<span class="tok-comment">$1</span>');
-          html = html.replace(/([:@A-Za-z0-9_-]+)(=)/g, '<span class="tok-attr">$1</span>$2');
-          html = html.replace(/(&lt;\\/?)([:A-Za-z0-9_.-]+)/g, '$1<span class="tok-tag">$2</span>');
-          html = html.replace(/(&quot;[^&]*?&quot;)/g, '<span class="tok-string">$1</span>');
-          html = html.replace(/(\\{[^\\n]*?\\})/g, '<span class="tok-expr">$1</span>');
-          html = html.replace(/\\b(true|false|nil|do|end)\\b/g, '<span class="tok-keyword">$1</span>');
-          return html;
-        };
-        const highlightCodeBlocks = () => {
-          qs("pre code").forEach((block) => {
-            if (block.dataset.highlighted === "true") return;
-            const source = block.textContent || "";
-            if (source.trim() === "") return;
-            const isHeexLike =
-              source.includes("<.") || source.includes("</.") || source.includes("<:");
-            block.innerHTML = isHeexLike ? highlightHeex(source) : escapeHtml(source);
-            block.classList.add("code-highlight");
-            block.dataset.highlighted = "true";
-          });
-        };
-
-        const apply = (mode) => {
-          const normalized = mode === "dark" ? "dark" : "light";
-          root.classList.toggle("dark", normalized === "dark");
-          root.dataset.themeMode = normalized;
-
-          buttons.forEach((button) => {
-            const active = button.dataset.siteTheme === normalized;
-            button.dataset.active = active ? "true" : "false";
-            button.setAttribute("aria-pressed", active ? "true" : "false");
-          });
-        };
-
-        apply(root.dataset.themeMode === "dark" ? "dark" : "light");
-
-        buttons.forEach((button) => {
-          button.addEventListener("click", () => {
-            const mode = button.dataset.siteTheme === "dark" ? "dark" : "light";
-            try {
-              localStorage.setItem(storageKey, mode);
-            } catch (_error) {}
-            apply(mode);
-          });
-        });
-
-        highlightCodeBlocks();
-      })();
+    #{template!("theme_toggle.js")}
     </script>
     """
   end
+
+  defp template!(name), do: File.read!(Path.join(@template_dir, name))
 
   defp relative(path), do: Path.relative_to(path, File.cwd!())
 

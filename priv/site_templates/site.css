@@ -1,0 +1,55 @@
+:root {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+.site-shell {
+  background-image:
+    radial-gradient(circle at 100% -10%, color-mix(in oklab, var(--muted) 25%, transparent) 0, transparent 46%),
+    radial-gradient(circle at -10% 120%, color-mix(in oklab, var(--accent) 18%, transparent) 0, transparent 44%);
+}
+
+pre[data-slot="code-block"],
+[data-slot="code-block"] {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.site-theme-toggle [data-site-theme][data-active="true"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border);
+}
+
+.code-highlight {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  line-height: 1.5;
+}
+
+.code-highlight .tok-tag {
+  color: color-mix(in oklab, var(--primary) 75%, var(--foreground));
+}
+
+.code-highlight .tok-attr {
+  color: color-mix(in oklab, var(--chart-2) 75%, var(--foreground));
+}
+
+.code-highlight .tok-string {
+  color: color-mix(in oklab, var(--chart-4) 85%, var(--foreground));
+}
+
+.code-highlight .tok-expr {
+  color: color-mix(in oklab, var(--chart-5) 85%, var(--foreground));
+}
+
+.code-highlight .tok-keyword {
+  color: color-mix(in oklab, var(--chart-1) 80%, var(--foreground));
+}
+
+.code-highlight .tok-comment {
+  color: var(--muted-foreground);
+  font-style: italic;
+}
