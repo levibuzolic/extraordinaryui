@@ -18,10 +18,28 @@ defmodule CinderUI.Components.DataDisplay do
   @doc """
   Renders a circular avatar with optional image and fallback.
 
-  ## Example
+  ## Examples
 
-  ```heex title="Profile avatar"
+  ```heex title="Image with fallback"
   <.avatar src="example.png" alt="Levi" fallback="LV" />
+  ```
+
+  ```heex title="Fallback initials only"
+  <.avatar alt="Mira Chen" />
+  ```
+
+  ```heex title="Sizes"
+  <div class="flex items-center gap-3">
+    <.avatar size={:sm} alt="Small User" />
+    <.avatar alt="Default User" />
+    <.avatar size={:lg} alt="Large User" />
+  </div>
+  ```
+
+  ```heex title="Presence badge"
+  <.avatar src="example.png" alt="Online User">
+    <:badge />
+  </.avatar>
   ```
   """
   attr :src, :string, default: nil
@@ -94,7 +112,7 @@ defmodule CinderUI.Components.DataDisplay do
   @doc """
   Groups avatars with overlap.
 
-  ## Example
+  ## Examples
 
   ```heex title="Team avatars"
   <.avatar_group>
@@ -102,6 +120,14 @@ defmodule CinderUI.Components.DataDisplay do
     <.avatar src="example.png" alt="Mira" />
     <.avatar src="example.png" alt="Shadcn" />
     <.avatar_group_count>+2</.avatar_group_count>
+  </.avatar_group>
+  ```
+
+  ```heex title="Fallback-only group"
+  <.avatar_group>
+    <.avatar alt="Levi Buzolic" />
+    <.avatar alt="Mira Jones" />
+    <.avatar alt="Sam Patel" />
   </.avatar_group>
   ```
   """

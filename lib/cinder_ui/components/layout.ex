@@ -83,13 +83,18 @@ defmodule CinderUI.Components.Layout do
   ## Example
 
   ```heex title="Card header with action" align="full"
-  <.card_header class="border-b">
-    <.card_title>Billing</.card_title>
-    <.card_action>
-      <.button size={:sm} variant={:outline}>Manage</.button>
-    </.card_action>
-    <.card_description>Usage and invoices for this workspace.</.card_description>
-  </.card_header>
+  <.card class="max-w-md">
+    <.card_header class="border-b">
+      <.card_title>Billing</.card_title>
+      <.card_action>
+        <.button size={:sm} variant={:outline}>Manage</.button>
+      </.card_action>
+      <.card_description>Usage and invoices for this workspace.</.card_description>
+    </.card_header>
+    <.card_content>
+      <p class="text-sm">Current cycle usage: 72%.</p>
+    </.card_content>
+  </.card>
   ```
   """
   attr :class, :string, default: nil
@@ -112,9 +117,25 @@ defmodule CinderUI.Components.Layout do
 
   ## Examples
 
+  ```heex title="Basic title" align="full"
+  <.card class="max-w-sm">
+    <.card_header>
       <.card_title>Payment method</.card_title>
+    </.card_header>
+    <.card_content>
+      <p class="text-sm">Visa ending in 4242.</p>
+    </.card_content>
+  </.card>
+  ```
 
+  ```heex title="Custom title size" align="full"
+  <.card class="max-w-sm">
+    <.card_header>
       <.card_title class="text-xl">Pro plan</.card_title>
+      <.card_description>Renews on the 1st of each month.</.card_description>
+    </.card_header>
+  </.card>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -132,11 +153,25 @@ defmodule CinderUI.Components.Layout do
 
   ## Examples
 
-      <.card_description>Connect your billing details to unlock premium features.</.card_description>
-
-      <.card_description class="text-xs">
-        Last updated 5 minutes ago.
+  ```heex title="Standard description" align="full"
+  <.card class="max-w-sm">
+    <.card_header>
+      <.card_title>Billing setup</.card_title>
+      <.card_description>
+        Connect your billing details to unlock premium features.
       </.card_description>
+    </.card_header>
+  </.card>
+  ```
+
+  ```heex title="Muted timestamp description" align="full"
+  <.card class="max-w-sm">
+    <.card_header>
+      <.card_title>System status</.card_title>
+      <.card_description class="text-xs">Last updated 5 minutes ago.</.card_description>
+    </.card_header>
+  </.card>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -154,9 +189,17 @@ defmodule CinderUI.Components.Layout do
 
   ## Example
 
+  ```heex title="Header action slot" align="full"
+  <.card class="max-w-sm">
+    <.card_header>
+      <.card_title>Project details</.card_title>
       <.card_action>
         <.button size={:sm} variant={:ghost}>Edit</.button>
       </.card_action>
+      <.card_description>Manage metadata and ownership.</.card_description>
+    </.card_header>
+  </.card>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -179,13 +222,19 @@ defmodule CinderUI.Components.Layout do
   ## Example
 
   ```heex title="Card content body" align="full"
-  <.card_content class="space-y-3">
-    <p class="text-sm">Your API key was generated successfully.</p>
-    <.input_group>
-      <.input value="ck_live_************************" readonly />
-      <.button variant={:outline} size={:sm}>Copy</.button>
-    </.input_group>
-  </.card_content>
+  <.card class="max-w-md">
+    <.card_header>
+      <.card_title>API key</.card_title>
+      <.card_description>Use this key for server-to-server requests.</.card_description>
+    </.card_header>
+    <.card_content class="space-y-3">
+      <p class="text-sm">Your API key was generated successfully.</p>
+      <.input_group>
+        <.input value="ck_live_************************" readonly />
+        <.button variant={:outline} size={:sm}>Copy</.button>
+      </.input_group>
+    </.card_content>
+  </.card>
   ```
   """
   attr :class, :string, default: nil
@@ -205,10 +254,16 @@ defmodule CinderUI.Components.Layout do
   ## Example
 
   ```heex title="Card footer actions" align="full"
-  <.card_footer class="justify-end gap-2 border-t">
-    <.button variant={:outline}>Cancel</.button>
-    <.button>Save</.button>
-  </.card_footer>
+  <.card class="max-w-sm">
+    <.card_header>
+      <.card_title>Notification settings</.card_title>
+      <.card_description>Choose how you want to be notified.</.card_description>
+    </.card_header>
+    <.card_footer class="justify-end gap-2 border-t">
+      <.button variant={:outline}>Cancel</.button>
+      <.button>Save</.button>
+    </.card_footer>
+  </.card>
   ```
   """
   attr :class, :string, default: nil
@@ -257,6 +312,36 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Animated skeleton placeholder.
+
+  ## Examples
+
+  ```heex title="Single line placeholder"
+  <.skeleton class="h-4 w-[220px]" />
+  ```
+
+  ```heex title="Avatar + text row" align="full"
+  <div class="flex items-center gap-3">
+    <.skeleton class="size-10 rounded-full" />
+    <div class="space-y-2">
+      <.skeleton class="h-4 w-[180px]" />
+      <.skeleton class="h-4 w-[120px]" />
+    </div>
+  </div>
+  ```
+
+  ```heex title="Card loading state" align="full"
+  <.card class="max-w-sm">
+    <.card_header>
+      <.skeleton class="h-5 w-[140px]" />
+      <.skeleton class="h-4 w-[220px]" />
+    </.card_header>
+    <.card_content class="space-y-2">
+      <.skeleton class="h-4 w-full" />
+      <.skeleton class="h-4 w-[90%]" />
+      <.skeleton class="h-4 w-[75%]" />
+    </.card_content>
+  </.card>
+  ```
   """
   attr :class, :string, default: nil
 
@@ -274,7 +359,7 @@ defmodule CinderUI.Components.Layout do
   ## Example
 
       <.aspect_ratio ratio="16 / 9">
-        <img src="..." class="h-full w-full object-cover" />
+        <img src="https://picsum.photos/id/191/800/800" class="h-full w-full object-cover" />
       </.aspect_ratio>
   """
   attr :ratio, :string, default: "16 / 9"
@@ -452,7 +537,7 @@ defmodule CinderUI.Components.Layout do
           aria-orientation={@direction}
           class={
             classes([
-              "bg-border relative shrink-0 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+              "bg-border relative shrink-0 touch-none outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]",
               if(@direction == :horizontal,
                 do: "w-px cursor-col-resize",
                 else: "h-px cursor-row-resize"
@@ -460,6 +545,18 @@ defmodule CinderUI.Components.Layout do
             ])
           }
         >
+          <span
+            aria-hidden="true"
+            class={
+              classes([
+                "absolute bg-transparent",
+                if(@direction == :horizontal,
+                  do: "inset-y-0 -left-2 w-5",
+                  else: "inset-x-0 -top-2 h-5"
+                )
+              ])
+            }
+          />
           <span
             :if={@with_handle}
             aria-hidden="true"

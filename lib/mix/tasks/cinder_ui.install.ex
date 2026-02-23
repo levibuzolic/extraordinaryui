@@ -121,6 +121,16 @@ defmodule Mix.Tasks.CinderUi.Install do
 
   defp inject_hooks_merge(content) do
     cond do
+      String.contains?(content, "...CinderUIHooks") ->
+        content
+
+      Regex.match?(~r/hooks:\s*\{\s*\.\.\.colocatedHooks\s*\}/, content) ->
+        Regex.replace(
+          ~r/hooks:\s*\{\s*\.\.\.colocatedHooks\s*\}/,
+          content,
+          "hooks: {...colocatedHooks, ...CinderUIHooks}"
+        )
+
       String.contains?(content, "Object.assign(Hooks, CinderUIHooks)") ->
         content
 

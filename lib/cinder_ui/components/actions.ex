@@ -189,9 +189,30 @@ defmodule CinderUI.Components.Actions do
   @doc """
   Renders a shadcn-style toggle button.
 
-  ## Example
+  ## Examples
 
-      <.toggle pressed={true}>Bold</.toggle>
+  ```heex title="Default toggle"
+  <.toggle pressed={true}>Bold</.toggle>
+  ```
+
+  ```heex title="Outline variant"
+  <.toggle variant={:outline}>
+    <CinderUI.Icons.icon name="italic" />
+    Italic
+  </.toggle>
+  ```
+
+  ```heex title="Sizes"
+  <div class="flex items-center gap-2">
+    <.toggle size={:sm}>S</.toggle>
+    <.toggle>Default</.toggle>
+    <.toggle size={:lg}>Large</.toggle>
+  </div>
+  ```
+
+  ```heex title="Disabled toggle"
+  <.toggle disabled>Disabled</.toggle>
+  ```
   """
   attr :pressed, :boolean, default: false
   attr :variant, :atom, default: :default, values: [:default, :outline]
@@ -233,13 +254,31 @@ defmodule CinderUI.Components.Actions do
   This component provides structure and classes only. State management should be
   handled by LiveView assigns or JS hooks.
 
-  ## Example
+  ## Examples
 
-      <.toggle_group type={:single}>
-        <.toggle pressed={@value == "left"}>Left</.toggle>
-        <.toggle pressed={@value == "center"}>Center</.toggle>
-        <.toggle pressed={@value == "right"}>Right</.toggle>
-      </.toggle_group>
+  ```heex title="Single-select alignment controls"
+  <.toggle_group type={:single}>
+    <.toggle pressed={@value == "left"}>Left</.toggle>
+    <.toggle pressed={@value == "center"}>Center</.toggle>
+    <.toggle pressed={@value == "right"}>Right</.toggle>
+  </.toggle_group>
+  ```
+
+  ```heex title="Multi-select text formatting"
+  <.toggle_group type={:multiple}>
+    <.toggle pressed={true}>Bold</.toggle>
+    <.toggle>Italic</.toggle>
+    <.toggle pressed={true}>Underline</.toggle>
+  </.toggle_group>
+  ```
+
+  ```heex title="Vertical stack"
+  <.toggle_group orientation={:vertical} class="items-start">
+    <.toggle>Alpha</.toggle>
+    <.toggle pressed={true}>Beta</.toggle>
+    <.toggle>Gamma</.toggle>
+  </.toggle_group>
+  ```
   """
   attr :type, :atom, default: :single, values: [:single, :multiple]
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]

@@ -23,14 +23,31 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/demo_app"
+import { CinderUIHooks } from "./cinder_ui"
 import topbar from "../vendor/topbar"
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks: {...colocatedHooks, ...CinderUIHooks},
 })
+
+const mountStandaloneResizable = () => {
+  const hasLiveViewRoot = document.querySelector("[data-phx-main], [data-phx-session]")
+  if (hasLiveViewRoot) return
+
+  const Hook = CinderUIHooks.EuiResizable
+  if (!Hook || typeof Hook.mounted !== "function") return
+
+  document.querySelectorAll("[phx-hook='EuiResizable']").forEach((el) => {
+    if (el.dataset.cinderResizableMounted === "true") return
+
+    const instance = Object.assign({el}, Hook)
+    instance.mounted()
+    el.dataset.cinderResizableMounted = "true"
+  })
+}
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
@@ -39,6 +56,7 @@ window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
+mountStandaloneResizable()
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
@@ -80,8 +98,3 @@ if (process.env.NODE_ENV === "development") {
     window.liveReloader = reloader
   })
 }
-import { CinderUIHooks } from "./cinder_ui"
-
-let Hooks = window.Hooks || {}
-Object.assign(Hooks, CinderUIHooks)
-window.Hooks = Hooks

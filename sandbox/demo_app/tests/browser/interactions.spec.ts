@@ -102,6 +102,31 @@ test.describe("interactive previews", () => {
     expect(afterPrev).not.toBe(afterNext)
   })
 
+  test("resizable drag updates panel sizes", async ({ page }) => {
+    const resizable = page.locator("#layout-resizable [data-slot='resizable']")
+    const panels = resizable.locator(":scope > [data-slot='resizable-panel']")
+    const handle = resizable.locator(":scope > [data-slot='resizable-handle']").first()
+
+    await resizable.scrollIntoViewIfNeeded()
+
+    const firstBefore = await panels.nth(0).evaluate((el) => getComputedStyle(el).flexBasis)
+    const secondBefore = await panels.nth(1).evaluate((el) => getComputedStyle(el).flexBasis)
+
+    const box = await handle.boundingBox()
+    if (!box) throw new Error("Resizable handle is not visible")
+
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(box.x + box.width / 2 + 120, box.y + box.height / 2)
+    await page.mouse.up()
+
+    const firstAfter = await panels.nth(0).evaluate((el) => getComputedStyle(el).flexBasis)
+    const secondAfter = await panels.nth(1).evaluate((el) => getComputedStyle(el).flexBasis)
+
+    expect(firstAfter).not.toBe(firstBefore)
+    expect(secondAfter).not.toBe(secondBefore)
+  })
+
   test("theme controls apply mode, color, and radius", async ({ page }) => {
     await page.getByRole("button", { name: "Dark" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)

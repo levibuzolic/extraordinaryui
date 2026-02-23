@@ -463,6 +463,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       template_html: escape(entry.template_heex),
       attrs_count: length(entry.attributes),
       slots_count: length(entry.slots),
+      examples_count: length(entry.examples),
       preview_align: entry.preview_align || :center
     }
 
@@ -523,6 +524,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <span class="text-muted-foreground">
           attrs: <span class="font-medium text-foreground">{@attrs_count}</span>
           · slots: <span class="font-medium text-foreground">{@slots_count}</span>
+          · examples: <span class="font-medium text-foreground">{@examples_count}</span>
         </span>
         <a
           href={@entry.shadcn_url}

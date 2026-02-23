@@ -36,6 +36,28 @@ defmodule CinderUI.Components.Feedback do
   ## Variants
 
   `:default`, `:secondary`, `:destructive`, `:outline`, `:ghost`, `:link`
+
+  ## Examples
+
+  ```heex title="Default badge"
+  <.badge>New</.badge>
+  ```
+
+  ```heex title="Variant set"
+  <div class="flex flex-wrap items-center gap-2">
+    <.badge>Default</.badge>
+    <.badge variant={:secondary}>Secondary</.badge>
+    <.badge variant={:destructive}>Destructive</.badge>
+    <.badge variant={:outline}>Outline</.badge>
+  </div>
+  ```
+
+  ```heex title="Badge with icon"
+  <.badge variant={:secondary}>
+    <CinderUI.Icons.icon name="check" />
+    Verified
+  </.badge>
+  ```
   """
   attr :variant, :atom,
     default: :default,
@@ -69,6 +91,28 @@ defmodule CinderUI.Components.Feedback do
   Renders an alert container.
 
   Compose with `alert_title/1` and `alert_description/1` for canonical structure.
+
+  ## Examples
+
+  ```heex title="Default alert" align="full"
+  <.alert>
+    <CinderUI.Icons.icon name="circle-alert" />
+    <.alert_title>Heads up!</.alert_title>
+    <.alert_description>
+      You can add components to your app using the install task.
+    </.alert_description>
+  </.alert>
+  ```
+
+  ```heex title="Destructive alert" align="full"
+  <.alert variant={:destructive}>
+    <CinderUI.Icons.icon name="triangle-alert" />
+    <.alert_title>Unable to deploy</.alert_title>
+    <.alert_description>
+      Your build failed. Check logs and try again.
+    </.alert_description>
+  </.alert>
+  ```
   """
   attr :variant, :atom, default: :default, values: [:default, :destructive]
   attr :class, :string, default: nil
@@ -91,6 +135,18 @@ defmodule CinderUI.Components.Feedback do
 
   @doc """
   Alert title element.
+
+  ## Example
+
+  ```heex title="Title within alert" align="full"
+  <.alert>
+    <CinderUI.Icons.icon name="circle-alert" />
+    <.alert_title>Heads up!</.alert_title>
+    <.alert_description>
+      This action requires admin access.
+    </.alert_description>
+  </.alert>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -109,6 +165,18 @@ defmodule CinderUI.Components.Feedback do
 
   @doc """
   Alert description element.
+
+  ## Example
+
+  ```heex title="Description within alert" align="full"
+  <.alert variant={:destructive}>
+    <CinderUI.Icons.icon name="triangle-alert" />
+    <.alert_title>Build failed</.alert_title>
+    <.alert_description>
+      Your tests failed during CI. Review the logs and re-run.
+    </.alert_description>
+  </.alert>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
