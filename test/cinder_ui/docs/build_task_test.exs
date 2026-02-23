@@ -31,7 +31,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert marketing_index =~ "./docs/index.html"
     assert marketing_index =~ "https://hexdocs.pm/cinder_ui"
     assert marketing_index =~ "GitHub repository"
-    assert marketing_index =~ "Component examples on the homepage"
+    assert marketing_index =~ "Component examples"
 
     assert docs_index =~ "Component Library"
     assert docs_index =~ "Actions.button"

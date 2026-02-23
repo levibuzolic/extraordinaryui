@@ -151,7 +151,6 @@ defmodule CinderUI.Site.Marketing do
     <section>
       <div class="grid gap-6 lg:grid-cols-[1.45fr_0.55fr]">
         <div class="space-y-4">
-          <Feedback.badge variant={:secondary}>Shadcn-style CSS tokens</Feedback.badge>
           <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
             <a
               href={@shadcn_url}
@@ -187,10 +186,7 @@ defmodule CinderUI.Site.Marketing do
         </div>
 
         <Layout.card class="lg:self-start">
-          <Layout.card_header>
-            <Layout.card_title>Project snapshot</Layout.card_title>
-          </Layout.card_header>
-          <Layout.card_content class="pt-0">
+          <Layout.card_content>
             <dl class="space-y-2 text-sm">
               <div class="flex items-center justify-between gap-2">
                 <dt class="text-muted-foreground">Project version</dt>
@@ -221,7 +217,7 @@ defmodule CinderUI.Site.Marketing do
     ~H"""
     <section id="examples" class="space-y-4">
       <div class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 class="text-2xl font-semibold tracking-tight">Component examples on the homepage</h2>
+        <h2 class="text-2xl font-semibold tracking-tight">Component examples</h2>
         <a
           href={@shadcn_url}
           target="_blank"
@@ -233,7 +229,7 @@ defmodule CinderUI.Site.Marketing do
       </div>
 
       <p class="text-sm text-muted-foreground">
-        These previews are rendered with Cinder UI components so users can immediately see the API and visual system they will use in production.
+        These previews are rendered with Cinder UI components
       </p>
 
       <div class="grid gap-4 md:grid-cols-2">
@@ -393,22 +389,6 @@ defmodule CinderUI.Site.Marketing do
           <DataDisplay.code_block>{@snippet}</DataDisplay.code_block>
         </div>
       </Layout.card_content>
-      <Layout.card_footer class="justify-between gap-2">
-        <Layout.card_description class="text-xs">
-          Rendered using Cinder UI components
-        </Layout.card_description>
-        <Actions.button
-          as="a"
-          variant={:link}
-          size={:xs}
-          class="h-auto p-0 text-xs"
-          href={@shadcn_component_url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          shadcn/ui reference ↗
-        </Actions.button>
-      </Layout.card_footer>
     </Layout.card>
     """
     |> to_html()
