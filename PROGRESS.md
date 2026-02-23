@@ -24,6 +24,7 @@
 
 - `mix format`
 - `mix quality`
+- `mix credo --strict`
 - `MIX_ENV=test mix coveralls.cobertura --raise`
 - `mix cinder_ui.docs.build --output tmp/ci-docs --clean`
 - `mix cinder_ui.site.build --output tmp/ci-site --clean`
@@ -94,6 +95,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Added root unit test + coverage job with Cobertura report generation and coverage summary output.
 - Added sandbox unit test job and sandbox browser test job with Playwright + Chromium.
 - Added local commands in README docs to mirror CI exactly.
+- Added repository-level Credo config at `.credo.exs` for explicit lint scope and CI parity.
 
 ### Milestone 8: HEEx snippet composition quality
 
