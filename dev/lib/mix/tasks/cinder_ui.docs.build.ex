@@ -491,7 +491,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     doc
     |> String.trim()
     |> maybe_strip_leading_summary(summary)
-    |> strip_markdown_sections(~w(example examples attribute attributes slot slots usage))
+    |> strip_markdown_sections(
+      ~w(example examples attribute attributes slot slots usage variant variants)
+    )
     |> String.trim()
   end
 
@@ -660,7 +662,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp required_badge_html(extra_class) do
     render_component(Feedback, :badge, %{
-      variant: :outline,
+      variant: :destructive,
       class: "align-middle #{extra_class}",
       inner_block: [
         %{

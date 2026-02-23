@@ -30,11 +30,12 @@ pre[data-slot="code-block"],
 }
 
 .code-highlight .tok-tag {
-  color: color-mix(in oklab, var(--primary) 75%, var(--foreground));
+  color: color-mix(in oklab, var(--primary) 78%, var(--foreground));
+  font-weight: 600;
 }
 
 .code-highlight .tok-attr {
-  color: color-mix(in oklab, var(--chart-2) 75%, var(--foreground));
+  color: color-mix(in oklab, var(--chart-2) 78%, var(--foreground));
 }
 
 .code-highlight .tok-string {
@@ -42,11 +43,30 @@ pre[data-slot="code-block"],
 }
 
 .code-highlight .tok-expr {
+  color: color-mix(in oklab, var(--chart-5) 88%, var(--foreground));
+}
+
+.code-highlight .tok-atom {
   color: color-mix(in oklab, var(--chart-5) 85%, var(--foreground));
 }
 
 .code-highlight .tok-keyword {
   color: color-mix(in oklab, var(--chart-1) 80%, var(--foreground));
+  font-weight: 600;
+}
+
+.code-highlight .tok-number {
+  color: color-mix(in oklab, var(--chart-3) 82%, var(--foreground));
+}
+
+.code-highlight .tok-operator,
+.code-highlight .tok-punct {
+  color: color-mix(in oklab, var(--muted-foreground) 78%, var(--foreground));
+}
+
+.code-highlight .tok-ident,
+.code-highlight .tok-text {
+  color: var(--foreground);
 }
 
 .code-highlight .tok-comment {

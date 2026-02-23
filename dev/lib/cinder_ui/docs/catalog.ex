@@ -380,12 +380,14 @@ defmodule CinderUI.Docs.Catalog do
       inline_doc_examples
       |> Enum.with_index(1)
       |> Enum.map(fn {example, index} ->
+        template_heex = normalize_template_heex(example.template_heex)
+
         %{
           id: normalize_example_id(example.id, index),
           title: doc_example_title(example.title, function, index),
           description: nil,
-          preview_html: render_heex_example(module, function, example.template_heex),
-          template_heex: example.template_heex
+          preview_html: render_heex_example(module, function, template_heex),
+          template_heex: template_heex
         }
       end)
     else
@@ -394,16 +396,23 @@ defmodule CinderUI.Docs.Catalog do
       |> Enum.with_index(1)
       |> Enum.map(fn {example, index} ->
         assigns = example.assigns
+        template_heex = render_template(function, assigns) |> normalize_template_heex()
 
         %{
           id: normalize_example_id(example[:id], index),
           title: example[:title] || default_example_title(index),
           description: example[:description],
           preview_html: render_component(module, function, assigns),
-          template_heex: render_template(function, assigns)
+          template_heex: template_heex
         }
       end)
     end
+  end
+
+  defp normalize_template_heex(template_heex) when is_binary(template_heex) do
+    template_heex
+    |> String.replace(~r/<\s*CinderUI\.Icons\.icon\b/u, "<.icon")
+    |> String.replace(~r/<\/\s*CinderUI\.Icons\.icon\s*>/u, "</.icon>")
   end
 
   defp default_example_title(1), do: "Default"

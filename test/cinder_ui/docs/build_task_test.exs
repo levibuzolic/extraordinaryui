@@ -93,13 +93,15 @@ defmodule CinderUI.Docs.BuildTaskTest do
     site_js = File.read!(Path.join(@output, "assets/site.js"))
     assert site_js =~ "themedTokenKeys"
     assert site_js =~ "removeProperty"
-    refute site_js =~ "highlightCodeBlocks"
-    refute site_js =~ "tok-tag"
+    assert site_js =~ "highlightCodeBlocks"
+    assert site_js =~ "tok-tag"
+    assert site_js =~ "tok-operator"
 
     site_css = File.read!(Path.join(@output, "assets/site.css"))
     assert site_css =~ ".docs-markdown"
     assert site_css =~ "summary:not([data-slot])::after"
     assert site_css =~ "summary::marker"
-    refute site_css =~ ".code-highlight .tok-tag"
+    assert site_css =~ ".code-highlight .tok-tag"
+    assert site_css =~ ".code-highlight .tok-punct"
   end
 end

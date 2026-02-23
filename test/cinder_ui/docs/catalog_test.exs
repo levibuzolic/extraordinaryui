@@ -42,8 +42,14 @@ defmodule CinderUI.Docs.CatalogTest do
       Enum.each(section.entries, fn entry ->
         refute entry.preview_html =~ "Render error"
         assert entry.template_heex =~ "<."
+        refute entry.template_heex =~ "CinderUI.Icons.icon"
         assert is_list(entry.examples)
         assert entry.examples != []
+
+        Enum.each(entry.examples, fn example ->
+          refute example.template_heex =~ "CinderUI.Icons.icon"
+        end)
+
         assert is_list(entry.attributes)
         assert is_list(entry.slots)
         assert entry.docs_path =~ "components/"
