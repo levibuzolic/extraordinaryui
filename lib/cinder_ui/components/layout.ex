@@ -82,13 +82,15 @@ defmodule CinderUI.Components.Layout do
 
   ## Example
 
-      <.card_header class="border-b">
-        <.card_title>Billing</.card_title>
-        <.card_action>
-          <.button size={:sm} variant={:outline}>Manage</.button>
-        </.card_action>
-        <.card_description>Usage and invoices for this workspace.</.card_description>
-      </.card_header>
+  ```heex title="Card header with action" align="full"
+  <.card_header class="border-b">
+    <.card_title>Billing</.card_title>
+    <.card_action>
+      <.button size={:sm} variant={:outline}>Manage</.button>
+    </.card_action>
+    <.card_description>Usage and invoices for this workspace.</.card_description>
+  </.card_header>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -176,13 +178,15 @@ defmodule CinderUI.Components.Layout do
 
   ## Example
 
-      <.card_content class="space-y-3">
-        <p class="text-sm">Your API key was generated successfully.</p>
-        <.input_group>
-          <.input value="ck_live_************************" readonly />
-          <.button variant={:outline} size={:sm}>Copy</.button>
-        </.input_group>
-      </.card_content>
+  ```heex title="Card content body" align="full"
+  <.card_content class="space-y-3">
+    <p class="text-sm">Your API key was generated successfully.</p>
+    <.input_group>
+      <.input value="ck_live_************************" readonly />
+      <.button variant={:outline} size={:sm}>Copy</.button>
+    </.input_group>
+  </.card_content>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -200,10 +204,12 @@ defmodule CinderUI.Components.Layout do
 
   ## Example
 
-      <.card_footer class="justify-end gap-2 border-t">
-        <.button variant={:outline}>Cancel</.button>
-        <.button>Save</.button>
-      </.card_footer>
+  ```heex title="Card footer actions" align="full"
+  <.card_footer class="justify-end gap-2 border-t">
+    <.button variant={:outline}>Cancel</.button>
+    <.button>Save</.button>
+  </.card_footer>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -319,6 +325,19 @@ defmodule CinderUI.Components.Layout do
 
   @doc """
   Overflow container that mirrors shadcn `scroll-area` structure.
+
+  ## Example
+
+  ```heex title="Scrollable container" align="full"
+  <.scroll_area class="h-24 rounded-md border">
+    <div class="space-y-2 text-sm">
+      <div>Scrollable content</div>
+      <div>Scrollable content</div>
+      <div>Scrollable content</div>
+      <div>Scrollable content</div>
+    </div>
+  </.scroll_area>
+  ```
   """
   attr :class, :string, default: nil
   attr :viewport_class, :string, default: nil
@@ -347,6 +366,19 @@ defmodule CinderUI.Components.Layout do
 
   This is a CSS structure helper. Persisting drag-based sizes requires optional
   JavaScript.
+
+  ## Example
+
+  ```heex title="Horizontal split panels" align="full"
+  <.resizable direction={:horizontal}>
+    <:panel size={35}>
+      <div class="rounded-md bg-muted p-2 text-xs">Panel A</div>
+    </:panel>
+    <:panel size={65}>
+      <div class="rounded-md bg-muted/60 p-2 text-xs">Panel B</div>
+    </:panel>
+  </.resizable>
+  ```
   """
   attr :direction, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :class, :string, default: nil

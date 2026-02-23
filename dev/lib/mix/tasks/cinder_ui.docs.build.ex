@@ -32,14 +32,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
-  @overview_preview_start_aligned_ids MapSet.new([
-                                        "forms-field",
-                                        "forms-input-group",
-                                        "layout-resizable",
-                                        "data-display-table",
-                                        "navigation-tabs"
-                                      ])
-
   @impl true
   def run(argv) do
     {opts, _, _} =
@@ -167,7 +159,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
       <body class="bg-background text-foreground">
-        <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_1fr]">
+        <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
           <aside class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6">
             <div class="mb-6">
               <h1 class="text-xl font-semibold">Cinder UI</h1>
@@ -186,7 +178,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             </div>
           </aside>
 
-          <main class="px-5 py-6 lg:px-8">
+          <main class="min-w-0 px-5 py-6 lg:px-8">
             {Phoenix.HTML.raw(@body_content)}
           </main>
         </div>
@@ -465,15 +457,13 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp overview_entry_html(entry) do
-    preview_align = overview_preview_alignment(entry.id)
-
     assigns = %{
       entry: entry,
       docs_html: inline_code_html(entry.docs),
       template_html: escape(entry.template_heex),
       attrs_count: length(entry.attributes),
       slots_count: length(entry.slots),
-      preview_align: preview_align
+      preview_align: entry.preview_align || :center
     }
 
     ~H"""
@@ -492,14 +482,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           </h4>
           <div class="flex items-center gap-1">
             <Actions.button
-              data-copy-template={@entry.id}
-              type="button"
-              variant={:outline}
-              size={:xs}
-            >
-              Copy HEEx
-            </Actions.button>
-            <Actions.button
               as="a"
               href={"./#{@entry.docs_path}"}
               variant={:outline}
@@ -515,7 +497,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       <div
         class={[
           "bg-background border-border/70 flex min-h-[7rem] flex-1 p-4",
-          @preview_align == :center && "items-center justify-center",
+          @preview_align == :center && "items-center justify-center"
         ]}
         data-preview-align={@preview_align}
       >
@@ -523,7 +505,20 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           {Phoenix.HTML.raw(@entry.preview_html)}
         </div>
       </div>
-      <pre class="max-h-56 overflow-auto border-t border-b border-border/70 bg-muted/30 p-4 text-xs"><code id={"code-#{@entry.id}"}><%= Phoenix.HTML.raw(@template_html) %></code></pre>
+      <div class="relative min-w-0 border-t border-b border-border/70 bg-muted/30">
+        <button
+          type="button"
+          data-copy-template={@entry.id}
+          aria-label="Copy HEEx"
+          title="Copy HEEx"
+          class="absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground"
+        >
+          <Icons.icon name="copy" class="size-3.5" />
+        </button>
+        <pre class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs">
+          <code id={"code-#{@entry.id}"} class="block min-w-max whitespace-pre"><%= Phoenix.HTML.raw(@template_html) %></code>
+        </pre>
+      </div>
       <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
         <span class="text-muted-foreground">
           attrs: <span class="font-medium text-foreground">{@attrs_count}</span>
@@ -541,10 +536,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     </article>
     """
     |> to_html()
-  end
-
-  defp overview_preview_alignment(entry_id) do
-    if MapSet.member?(@overview_preview_start_aligned_ids, entry_id), do: :start, else: :center
   end
 
   defp component_examples_html(entry) do
@@ -567,9 +558,19 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         </header>
 
         <div data-slot="component-preview" class="mt-4 overflow-hidden rounded-xl border">
-          <div data-slot="preview" class="p-4 sm:p-6">{Phoenix.HTML.raw(example.preview_html)}</div>
+          <div
+            data-slot="preview"
+            data-preview-align={example.preview_align || :center}
+            class={[
+              "p-4 sm:p-6",
+              (example.preview_align || :center) == :center &&
+                "flex items-center justify-center"
+            ]}
+          >
+            {Phoenix.HTML.raw(example.preview_html)}
+          </div>
 
-          <div data-slot="code" class="relative border-t bg-muted/20">
+          <div data-slot="code" class="relative min-w-0 border-t bg-muted/20">
             <button
               type="button"
               data-copy-template={"#{@entry.id}-#{example.id}"}
@@ -579,7 +580,12 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             >
               <Icons.icon name="copy" class="size-3.5" />
             </button>
-            <pre class="max-h-96 overflow-auto bg-muted/30 p-4 text-xs"><code id={"code-#{@entry.id}-#{example.id}"}>{example.template_heex}</code></pre>
+            <pre class="min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs">
+              <code
+                id={"code-#{@entry.id}-#{example.id}"}
+                class="block min-w-max whitespace-pre"
+              >{example.template_heex}</code>
+            </pre>
           </div>
         </div>
       </section>

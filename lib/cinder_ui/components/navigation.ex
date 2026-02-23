@@ -310,7 +310,7 @@ defmodule CinderUI.Components.Navigation do
 
   ## Examples
 
-  ```heex title="Settings tabs"
+  ```heex title="Settings tabs" align="full"
   <.tabs value="account">
     <:trigger value="account">Account</:trigger>
     <:trigger value="security">Security</:trigger>

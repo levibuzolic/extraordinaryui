@@ -24,6 +24,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
     component_page = File.read!(Path.join(@output, "components/actions-button.html"))
     card_page = File.read!(Path.join(@output, "components/layout-card.html"))
     resizable_page = File.read!(Path.join(@output, "components/layout-resizable.html"))
+    scroll_area_page = File.read!(Path.join(@output, "components/layout-scroll_area.html"))
     carousel_page = File.read!(Path.join(@output, "components/advanced-carousel.html"))
 
     assert index =~ "Cinder UI"
@@ -33,7 +34,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert index =~ "https://hex.pm/packages/cinder_ui"
     refute index =~ "href=\"../index.html\""
     assert index =~ "Actions.button"
-    assert index =~ "Copy HEEx"
+    assert index =~ ~s(aria-label="Copy HEEx")
     assert index =~ "Open docs"
     assert index =~ "./components/actions-button.html"
 
@@ -50,8 +51,9 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert index =~ "data-slot=\"native-select\""
     assert index =~ ~s(id="actions-button")
     assert index =~ ~s(id="forms-field")
+    assert index =~ ~r/id="layout-scroll_area"[\s\S]*?data-preview-align="full"/
     assert index =~ ~s(data-preview-align="center")
-    assert index =~ ~s(data-preview-align="start")
+    assert index =~ ~s(data-preview-align="full")
     assert index =~ ~s(href="./index.html")
     assert index =~ ~s(aria-current="page")
     assert index =~ "sidebar-link"
@@ -84,6 +86,8 @@ defmodule CinderUI.Docs.BuildTaskTest do
 
     assert resizable_page =~ "<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>"
     assert resizable_page =~ "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>"
+    assert scroll_area_page =~ ~s(data-slot="preview")
+    assert scroll_area_page =~ ~s(data-preview-align="full")
 
     refute resizable_page =~
              "&amp;lt;div class=&amp;quot;rounded-md bg-muted p-2 text-xs&amp;quot;&amp;gt;Panel A&amp;lt;/div&amp;gt;"

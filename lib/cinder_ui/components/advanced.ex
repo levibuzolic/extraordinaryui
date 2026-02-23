@@ -217,6 +217,16 @@ defmodule CinderUI.Components.Advanced do
 
   @doc """
   Chart frame component for wrapping chart libraries with shadcn tokens.
+
+  ## Example
+
+  ```heex title="Chart shell" align="full"
+  <.chart>
+    <:title>Traffic</:title>
+    <:description>Requests over the last 7 days.</:description>
+    <div class="h-40 rounded-md bg-muted/60"></div>
+  </.chart>
+  ```
   """
   attr :class, :string, default: nil
   slot :title
@@ -244,10 +254,19 @@ defmodule CinderUI.Components.Advanced do
 
   ## Example
 
-      <.sidebar>
-        <:inset>Main content</:inset>
-        <:rail>Navigation</:rail>
-      </.sidebar>
+  ```heex title="Sidebar layout" align="full"
+  <.sidebar>
+    <:rail>
+      <div class="space-y-2 text-sm">
+        <div>Overview</div>
+        <div>Settings</div>
+      </div>
+    </:rail>
+    <:inset>
+      <div class="rounded bg-muted p-4 text-sm">Main content</div>
+    </:inset>
+  </.sidebar>
+  ```
   """
   attr :class, :string, default: nil
   slot :rail, required: true

@@ -43,9 +43,9 @@ defmodule CinderUI.Docs.Catalog do
     toast: "sonner",
     sonner_toaster: "sonner"
   }
-  @avatar_data_levi "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzIyYzU1ZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA2YjZkNCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cxKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZWNmZWZmIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNlY2ZlZmYiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
-  @avatar_data_ari "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2Y5NzMxNiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2UxMWQ0OCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cyKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZmZmMWYyIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNmZmYxZjIiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
-  @avatar_data_noor "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzYzNjZmMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzhiNWNmNiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2czKSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE0IiBmaWxsPSIjZWVmMmZmIiBmaWxsLW9wYWNpdHk9IjAuOSIvPjxwYXRoIGQ9Ik0xNiA2NmM0LTE0IDE2LTIyIDI0LTIyczIwIDggMjQgMjIiIGZpbGw9IiNlZWYyZmYiIGZpbGwtb3BhY2l0eT0iMC45Ii8+PC9zdmc+"
+  @avatar_levi "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVFRkVIh4kHhweJB42KiYmKjY+NDI0PkxERExfWl98fKcBBgYGBgcGBwgIBwoLCgsKDw4MDA4PFhAREBEQFiIVGRUVGRUiHiQeHB4kHjYqJiYqNj40MjQ+TERETF9aX3x8p//CABEIAEAAQAMBIQACEQEDEQH/xAAzAAABBQEBAQAAAAAAAAAAAAAEAgMFBgcAAQgBAAIDAQAAAAAAAAAAAAAAAAADAQIEBf/aAAwDAQACEAMQAAAA3j28eJB5YI4GRwrGBKZM7DMDWNi/niPYQlzw7RqnSxxXS50T7W0nN8zqBV9q4lPR5pbi5efxbSYOZYRswafn8xCu5Ng7Nl6MfpzUqkqaKZW0pBxMluDFfPvVvyQfbBWuB//EADIQAAIBAwMDAwEECwAAAAAAAAECAwAEEQUSIQYxQRMicVEHEBTBFjIzUlVhc4GCk6H/2gAIAQEAAT8AxQo0DSiiOKJFZFGRFGWIFPfQK2FYE/IrqrqqDQtMe6OJGyURU8MQSM1d/az1HLLmO6jt0/p7q0n7Z9egkjW/tILuEkAvH7HApevdEnt4ZbaUujjPIKn4IPY0nWli8jI7Y+jCrLWbS6jVo5lNXHUer3DNJPfSliT5xj+QqfWr+RNpupSvkbjWrXVzPCiyTPhm8nNaBpWlvpcayWiSM3O5gMmtS6Os5VP4S2/DyeCv5irCz1Owu7qOdxgHbx5NS3c0Zzu81F1BNCuYyQaa5TGDUc8ftJxwO1W8cOpW88ZC4Xkk4G0eGHmriwnvLGJbS+aH2DKLwTxQ0nWI9JKWupuZxOCXMndceM1qNxeRzywzPumQgPJjuQooy8cGtzGvUVePT/7WEfHu+RjirCeF7yBI4nZDIY3kHCdskZ81YdRSQ+pbOQHUsqlqjaS2u2v2ZWIG45QouO3B+tXF2bmaWQtkO5bHzWR+7RlCnGBTdBWn8SuB/ildXWdpo00dnb38sszLumDAAKp7Djya0/WI7RLQSoSIm3KAPDAgn55q/tIblvXikJLDgpTi7Sxnae6kIC+xPBxWnXlou1Ln1lTw0QDEfIatN6a0rU4PWtNaMi5ww9MBlP0YHkV+gMJPGqH/AFitX6u1AyywWs7RorFS4OWYjg4PgVNI8rFpHZye5Ylif7mmDAjH0qxnRZYyxK7HDD8xWq6nBOVWJWwqEEkY70mcVp+oTafdR3EbMNv64BxuTyKtwrpuRrhlIBU7icg0SfI+7BrHII7iniKwxy4G2QtjnkbO4oUTXTlzcz6LZFHcFAYs5J/ZnFf/xAAiEQACAgEEAQUAAAAAAAAAAAAAAQIRAwQSIUEgEDFRYXH/2gAIAQIBAT8A8Zyd0iDb4b5KOzUcSZgm3Kn0QraVJIzWsklLpmlSc36NtcmeLl+0aVK5P6QrZKtpO1JSMTXxwKhsfsRVKhPx/8QAIhEAAgIBAwQDAAAAAAAAAAAAAQIAEQQDEiEQIDFBMnKR/9oACAEDAQE/AO1VFWY4A5A64o3TJQKtjwY3mXNBVOkhXgkc/szdyqovoJjPsA+0zW+IvopJM06KFfd3NW+LNmoWI9QCDgiO25iYwvt//9k="
+  @avatar_shadcn "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVFRkVIh4kHhweJB42KiYmKjY+NDI0PkxERExfWl98fKcBBgYGBgcGBwgIBwoLCgsKDw4MDA4PFhAREBEQFiIVGRUVGRUiHiQeHB4kHjYqJiYqNj40MjQ+TERETF9aX3x8p//CABEIAEAAQAMBIQACEQEDEQH/xAAzAAACAgMBAAAAAAAAAAAAAAAEBgUHAQIDCAEAAwADAQAAAAAAAAAAAAAABAUGAQIDB//aAAwDAQACEAMQAAAA659ZnmntFZkczlGdRe9hrPvmITPMoeZLJE9mLRPLxZPpLGxkTjCsnoT3g2Z88sCb1196rw4SQbzSgrOlcSKpq7ksRQy0SyuEVUFKxaIRWldrHA1jFXs2CHKzWMcXHk3QHmDVGPUdqXOadNJlOT5oUzKAmyPuAd//xAAxEAACAgIBAwIFAgQHAAAAAAABAgMEBREABhIhEzEiMkFRcRRhB4GhwRUkkaKx4vL/2gAIAQEAAT8AM9qF1CxuQV0zDwdH38a5DN6UrGJp4nkXTFQybH2J5Uz/AKcEFezGGjjGvVLMWGvqfck8rZfp2J1m7rMDBSO87AG/cDlLO4OGH0sfZimR5CzgszaJ5Bk8PdvGtPSkLlwsZQMwbfuf2HMtgMYIhqKQEn5VYEf7ufxB6XgigW9TjcegAsoP1T/rzHdYZlQP1CwzL+Crf6jkWfW+/Zoo2jpCP69w5JbntWVqUkMsvbtj8oA+5+y8r/w9qTokmRuSvIR8kWlUcufw6RE78ZkJY5F8qsumU/zHOlupZ0ycmDy9RIrsa7hlYBQ+v3/4PJbHUMkgMTV+zu+oDrrleL9bRnr5aGqBMGVo0BAKH3BJ4I+weByvM1erclQgOUCKftvnS+YxFHFonrmzesMXmSupmddnSh+3YXQ5QyvUl6zd9F5IhA6RJCYkdR8Abb/Uk7+/MnmMpgYK8+VppNBK6x+vV2GDkFjuJ/poe4POosngMjFRuw2U9eCQFAw7HKv7jTc6feRJ6bQ3oInnb40MneCm/lEQGwx183MteeKN41iBHszN/Ycinqy/K6/g+Dzp6XH08xC9rsCMhCF/k7+Q14iqRVkSNHkI+BQBrfv456WWwFua5iav6yKeMCeszhXDp8siE6B+xB5erZvqOaJspC9OFEk9BJXBYzOpXvIRiAFB5hk6Yr4aF7IWywhMVqIupSJk+FwdjmJeWKgkid0QaWSSHRIZY3Ysg/bS8sdU52WzI0WWtqEcqgD+ABzPxVsTPDHDaN1HRmLrEY+zR0A3lgSeYk281YNXH1ZLEqxtIYho/AugTon9+dL3riwRV7lSSCxB4ZHXW1+jDgcOgaMg7Hg8ZBIOyWJWU/zH9edRYnDWr0JejC8xIaZ9aJVfYNxlxlgS1Q0iP6ZC9x0ASPAB536XzoEDz+eC3DXQySNpCODPSxTzzxMIOxfg9NuxnGwddy86Hy0Wcvtj79h0ldmevNsl/wADnp5bFZKlRu2qK/qpSkErP2GX8L9TybqtY7NqrYnrVJYZTGTIGO/sV5ey9CRHWHKRd7H4nLHbH88N/CvbqmWzWMMZ32SEeD9/HvzNY+nldiCOGAk7EyRAOADy1kWmITekA19+TTqoIUDWz2+NE/nmNt2IJ688EzxyxMrxup0VZfYjmVyCdX9I2c9YRTm8BLHI4jJRJarEd2051wBHmauQh1+nyNFJI9exCf8Aoc9eOQdwY/vx22Sd8GZFTGx2Zht3TSID87cSyQAANDn+Jf5KSqYYj3Or+p5D7XlawFbnSWbkrZUwR0Zbcd+vLSnqx6LTJOutL+4PHx2XPStXp+/UcZXEWgYgGVw8E/hoy6kgFD51zK9O9SYqGWaSi3pEbM0LCVF/OvI4+Wt+wlb+nFvzSLuSVjrwAf7Dn//EACsRAAIBAwMCBAYDAAAAAAAAAAECAwAEEQUSITFBIjJRYRMUgZGhsUJScf/aAAgBAgEBPwAxxsreRgw8QOO1avbW9o7M06BZP4t+gBVzYMWe4jcqSu7OQARWl6k5mRGKnjHvWna2FfF0uf6uo/Yq9mlvLqS4lJJboPRfStOAmieAA8KzKuc4IGT9CB96urKOJA8KOHUitu36A/mrG0imcmaUIuCffArR4D8zFcQPvi3FXI6rnjkVrWDdgmNlJzyRjcAcCgnUHuDRAZGQk4YYNWVwYIJIYBhW2LnHQZNalHulQHnEAx/uTTgRyFWI4PbkVKoWRwPWtOdo7kOCcKCTip7tbiMOeOCPSnJ3KAO47Vew7phtGDjtUNpcRFwYiRxhx0NXDqIQhhHU+Yfke9JEFXPc81dphRKDgqR9qiIMPJ7CrzGAaSbK8mpirRSDPVajvI40+Ez+M5we3NS3DueWOK//xAArEQACAQMDAwMCBwAAAAAAAAABAgMABBEFEiExQVETImEGoRRCYnGRsdH/2gAIAQMBAT8A1zQNY0YXT2EcUliHefLgJ6PwtaGmp6haxTLbkOQWyvTHnJqw1O5tT6DjaykqRg7hX4iS5sRHIFOOVIHI21e28d5ZTwTKDHKjI6+VYYqztLfT7SO1tV2xR8Lk5J8k5rW7bIFyDiQYGQMbh/oqx1KYuFklAH8U0m1GbwPuKvLtINP9VQXIdVAHlu+TxgVq96p0994KyDBXb0bBGQD5wajy/vJB3+8+Mnk0WDKRng1fQrLbiHHGVbj4Na1pz3BsVBEUTu2/9OAMf1X0vp8DHV1mhLMl2VAkOSAUU0mohEDypsI655FGWKeOKaNgVYdqkt0ufThdQ4aReDz35+1XkCQtwAM9T5xTxqbaV2xjBA6HnHXB6itOltra2MUmcsGcEd38Y7Vpl1ZO7yFsFMrz+Vu4NanNE6YjkDFjkkdRVzemV1QYwnA4+fNNnYrg9MVbts1I4PEqc/uORTjOKDIGJVMcEdc1HJmBloW10ojuFQ7UI5qK6dnwTX//2Q=="
+  @avatar_mira "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAMDAwMDAwQEBAQFBQUFBQcHBgYHBwsICQgJCAsRCwwLCwwLEQ8SDw4PEg8bFRMTFRsfGhkaHyYiIiYwLTA+PlQBAwMDAwMDBAQEBAUFBQUFBwcGBgcHCwgJCAkICxELDAsLDAsRDxIPDg8SDxsVExMVGx8aGRofJiIiJjAtMD4+VP/CABEIAEAAQAMBEQACEQEDEQH/xAAuAAACAwEBAQEAAAAAAAAAAAAFBgQHCAkCAQMBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAANnhInGZgKayB4KDQRF45pF2GzCeCwwSzNpR4xGtxjIAQPhiYpEXDehbxOP3F05xiuUydIi3h/PYgnMchDAaQL5LRPYpHPImjyNZf5Yh4IZlIQSWGDWQaP/EADUQAAEDAwIDBQYEBwAAAAAAAAIBAwQABREGEgcTIQgiMTJBFBVRYXGBM0JSwTRDRHKSoaL/2gAIAQEAAT8AZYptmm2a4x9oyFoC5LYNO21u9XkP4je4oR4y/oMhRVU64a9pR+/X2DZNX2ZLPJuL3KhymkdWM456NkrogokvpTjNOtU+1TLdA3Wtr8mlNI3e7pjmRopqyi+rpd0E/wAlrQnu2TrWNJmo5Ly6484SplXDRfHr0XJKpLXGU7JNtBQWdgS4psSGz7qKBASEJD1zlK03Ocu+m7RPd88qAw6fzIgRVp1un26ZCvLXaWvhs6Ug2hnqcyYLppnHdYRSH/uuD0Zu32IyAEX2yS4wkpUHu8lMd7cqYRVyqVxMcgOaO1CUpltTbjogSQFE2OYyKAaqu754rRMY4GjdPxXPOzaogl9UbSiTNPhTfhThV2n7iUW82wFLO6ESiP0KuzxL1HCh3V9mWhx35z7/ACXU3t5JeqonpXFLiLeLnPccmPsOw2nkbhQY7a7HNq4Mj6qpqS92tNcUdQ3e3xTd081He5Qc1pXiTb08uMLhasl6YvUPng2bRCSg60XmAk9KexSHhK1Fd3LVbyeaATdIxbbQvLuL1X5JXaE1XLm3xtZcgX1iR3ABUFBTcfj4Vw7v9l0nYYDKmMo7lZ1lzYo5/nIQAHw6CmVqFDvN61Iz7mgk+lubKRHjedAZjqiIRblTKIpJnr1WtLBc41vhHPHlS5cZuSY/JxEX0Va0HJUnLm3uz32jX6qipRlRF0rXrhDYicHqrUlksffH71xwjyyfIcb33XcD8F/SKfer8FrjOFbIbT0YYEGJDkOdB5iMsiqqmF6qqljK1w3lTLPZdaToDTQPSbTyWzNvfgB3Gm3PzSuHOqr1qCy2dy4qJq1aBbE+WgrkD2qmR8Urhwqm7dT9EVkfv1WlWs5GtYNq5pu6bURSCMZj9Q737Vrh11NT2y/u2yRJtduejHhB/G2Oirh9fyilcXEn6h4gA9GsMpqPcGGBaAG1VXnF7iACkgD3lxmtB3DU/DSFrSx3DTpmoQ2lD0wPI6+RD/Mq1pK/3a6WyANxtqW51q1smjCkpEPtBE53s4WuGbChZpMhf6iYap9G0QaIqR1NtSNj4E2aIomiiSL8F6LV7iE5ajgm62y7GlHHVxwdyDhVbyqfDC5rUb/Fi56Q07dlmW3n2m4+zSXAJBRQZXKeImqb9iVrybr+HetZP3G6pbrbcNHo488w4O8E3qOBUURc7fAq0w1bGIj8q1BIKMTTLDJPKpOPkCbNy7uuSWtNw1tFkgwy87TKcz+8upf7Wjd6V//EABQRAQAAAAAAAAAAAAAAAAAAAGD/2gAIAQIBAT8AAf/EABQRAQAAAAAAAAAAAAAAAAAAAGD/2gAIAQMBAT8AAf/Z"
 
   @sections [
     %{id: "actions", title: "Actions", module: Actions},
@@ -123,6 +123,7 @@ defmodule CinderUI.Docs.Catalog do
       docs_full: doc,
       preview_html: primary_example.preview_html,
       template_heex: primary_example.template_heex,
+      preview_align: primary_example.preview_align || :center,
       examples: generated_examples,
       inline_doc_examples: inline_doc_examples,
       attributes: component_attributes(module, function),
@@ -380,14 +381,19 @@ defmodule CinderUI.Docs.Catalog do
       inline_doc_examples
       |> Enum.with_index(1)
       |> Enum.map(fn {example, index} ->
-        template_heex = normalize_template_heex(example.template_heex)
+        template_heex =
+          example.template_heex
+          |> normalize_template_heex()
+
+        display_template_heex = sanitize_template_heex_for_display(template_heex)
 
         %{
           id: normalize_example_id(example.id, index),
           title: doc_example_title(example.title, function, index),
           description: nil,
           preview_html: render_heex_example(module, function, template_heex),
-          template_heex: template_heex
+          template_heex: display_template_heex,
+          preview_align: example.preview_align || :center
         }
       end)
     else
@@ -396,14 +402,21 @@ defmodule CinderUI.Docs.Catalog do
       |> Enum.with_index(1)
       |> Enum.map(fn {example, index} ->
         assigns = example.assigns
-        template_heex = render_template(function, assigns) |> normalize_template_heex()
+
+        template_heex =
+          function
+          |> render_template(assigns)
+          |> normalize_template_heex()
+
+        display_template_heex = sanitize_template_heex_for_display(template_heex)
 
         %{
           id: normalize_example_id(example[:id], index),
           title: example[:title] || default_example_title(index),
           description: example[:description],
           preview_html: render_component(module, function, assigns),
-          template_heex: template_heex
+          template_heex: display_template_heex,
+          preview_align: :center
         }
       end)
     end
@@ -413,6 +426,12 @@ defmodule CinderUI.Docs.Catalog do
     template_heex
     |> String.replace(~r/<\s*CinderUI\.Icons\.icon\b/u, "<.icon")
     |> String.replace(~r/<\/\s*CinderUI\.Icons\.icon\s*>/u, "</.icon>")
+  end
+
+  defp sanitize_template_heex_for_display(template_heex) when is_binary(template_heex) do
+    template_heex
+    |> String.replace(~r/"data:[^"]*"/u, "\"example.png\"")
+    |> String.replace(~r/'data:[^']*'/u, "'example.png'")
   end
 
   defp default_example_title(1), do: "Default"
@@ -456,6 +475,8 @@ defmodule CinderUI.Docs.Catalog do
       |> String.trim()
       |> String.replace("\r\n", "\n")
 
+    preview_snippet = hydrate_template_heex_for_preview(snippet, module, function)
+
     cond do
       snippet == "" ->
         render_component(module, function, sample_assigns(module, function))
@@ -464,7 +485,7 @@ defmodule CinderUI.Docs.Catalog do
         unique = System.unique_integer([:positive, :monotonic])
         renderer = Module.concat(__MODULE__, :"DocExample#{unique}")
         file = "docs_example_#{unique}.ex"
-        snippet_block = indent_block(snippet, 6)
+        snippet_block = indent_block(preview_snippet, 6)
 
         source = """
         defmodule #{inspect(renderer)} do
@@ -503,16 +524,37 @@ defmodule CinderUI.Docs.Catalog do
     |> Map.put(:__changed__, %{})
   end
 
+  defp hydrate_template_heex_for_preview(snippet, DataDisplay, :avatar) do
+    replace_first_example_image(avatar_sample_data_uri(:levi), snippet)
+  end
+
+  defp hydrate_template_heex_for_preview(snippet, DataDisplay, :avatar_group) do
+    [:levi, :mira, :ari]
+    |> Enum.map(&avatar_sample_data_uri/1)
+    |> Enum.reduce(snippet, &replace_first_example_image/2)
+  end
+
+  defp hydrate_template_heex_for_preview(snippet, _module, _function), do: snippet
+
+  defp replace_first_example_image(data_uri, snippet) when is_binary(snippet) do
+    Regex.replace(
+      ~r/src=(["'])example\.png\1/u,
+      snippet,
+      fn _full, quote -> "src=#{quote}#{data_uri}#{quote}" end,
+      global: false
+    )
+  end
+
   defp inline_doc_examples(doc) do
     fenced_examples =
       doc
       |> String.trim()
       |> then(&Regex.scan(~r/```([^\n]*)\n(.*?)```/s, &1, capture: :all_but_first))
       |> Enum.map(fn [info, code] ->
-        {lang, title} = parse_fence_info(info)
-        {lang, title, String.trim(code)}
+        {lang, title, preview_align} = parse_fence_info(info)
+        {lang, title, preview_align, String.trim(code)}
       end)
-      |> Enum.filter(fn {lang, _title, code} ->
+      |> Enum.filter(fn {lang, _title, _preview_align, code} ->
         code != "" and (lang in ["", "heex", "html", "elixir"] and String.contains?(code, "<."))
       end)
 
@@ -530,16 +572,17 @@ defmodule CinderUI.Docs.Catalog do
         |> String.trim()
       end)
       |> Enum.filter(&String.contains?(&1, "<."))
-      |> Enum.map(&{"", nil, &1})
+      |> Enum.map(&{"", nil, :center, &1})
 
     (fenced_examples ++ indented_examples)
     |> Enum.uniq()
     |> Enum.with_index(1)
-    |> Enum.map(fn {{lang, title, code}, index} ->
+    |> Enum.map(fn {{lang, title, preview_align, code}, index} ->
       %{
         id: "inline-#{index}",
         title: inline_doc_example_title(title, lang, index),
-        template_heex: code
+        template_heex: code,
+        preview_align: preview_align
       }
     end)
   end
@@ -547,10 +590,11 @@ defmodule CinderUI.Docs.Catalog do
   defp parse_fence_info(info) do
     trimmed = String.trim(info)
     title = fence_title(trimmed)
+    preview_align = fence_preview_align(trimmed)
 
     case String.split(trimmed, ~r/\s+/, trim: true) do
       [] ->
-        {"", title}
+        {"", title, preview_align}
 
       [lang | rest] ->
         fallback_title =
@@ -559,7 +603,7 @@ defmodule CinderUI.Docs.Catalog do
             tokens -> Enum.join(tokens, " ")
           end
 
-        {String.downcase(lang), title || fallback_title}
+        {String.downcase(lang), title || fallback_title, preview_align}
     end
   end
 
@@ -573,6 +617,26 @@ defmodule CinderUI.Docs.Catalog do
           [title] -> title
           _ -> nil
         end
+    end
+  end
+
+  defp fence_preview_align(info) do
+    case Regex.run(~r/align\s*=\s*"([^"]+)"/, info, capture: :all_but_first) do
+      [value] ->
+        normalize_preview_align(value)
+
+      _ ->
+        case Regex.run(~r/align\s*=\s*'([^']+)'/, info, capture: :all_but_first) do
+          [value] -> normalize_preview_align(value)
+          _ -> :center
+        end
+    end
+  end
+
+  defp normalize_preview_align(value) when is_binary(value) do
+    case String.downcase(String.trim(value)) do
+      "full" -> :full
+      _ -> :center
     end
   end
 
@@ -1401,7 +1465,7 @@ defmodule CinderUI.Docs.Catalog do
   end
 
   defp sample_assigns(DataDisplay, :avatar) do
-    %{src: avatar_sample_data_uri(:levi), alt: "Philip J. Fry"}
+    %{src: avatar_sample_data_uri(:levi), alt: "Levi"}
   end
 
   defp sample_assigns(DataDisplay, :avatar_group) do
@@ -1409,15 +1473,15 @@ defmodule CinderUI.Docs.Catalog do
       [
         render_component(DataDisplay, :avatar, %{
           src: avatar_sample_data_uri(:levi),
-          alt: "Philip J. Fry"
+          alt: "Levi"
         }),
         render_component(DataDisplay, :avatar, %{
           src: avatar_sample_data_uri(:ari),
-          alt: "Ari Miles"
+          alt: "Shadcn"
         }),
         render_component(DataDisplay, :avatar, %{
           src: avatar_sample_data_uri(:noor),
-          alt: "Noor Hale"
+          alt: "Mira"
         }),
         render_component(DataDisplay, :avatar_group_count, %{inner_block: slot("+2")})
       ]
@@ -1428,9 +1492,9 @@ defmodule CinderUI.Docs.Catalog do
         slot(
           preview_html,
           """
-          <.avatar src="#{avatar_sample_data_uri(:levi)}" alt="Philip J. Fry" />
-          <.avatar src="#{avatar_sample_data_uri(:ari)}" alt="Ari Miles" />
-          <.avatar src="#{avatar_sample_data_uri(:noor)}" alt="Noor Hale" />
+          <.avatar src="#{avatar_sample_data_uri(:levi)}" alt="Levi" />
+          <.avatar src="#{avatar_sample_data_uri(:noor)}" alt="Mira" />
+          <.avatar src="#{avatar_sample_data_uri(:ari)}" alt="Shadcn" />
           <.avatar_group_count>+2</.avatar_group_count>
           """
         )
@@ -1878,9 +1942,10 @@ defmodule CinderUI.Docs.Catalog do
 
   defp sample_assigns(Components, _function), do: %{}
 
-  defp avatar_sample_data_uri(:levi), do: @avatar_data_levi
-  defp avatar_sample_data_uri(:ari), do: @avatar_data_ari
-  defp avatar_sample_data_uri(:noor), do: @avatar_data_noor
+  defp avatar_sample_data_uri(:levi), do: @avatar_levi
+  defp avatar_sample_data_uri(:ari), do: @avatar_shadcn
+  defp avatar_sample_data_uri(:mira), do: @avatar_mira
+  defp avatar_sample_data_uri(:noor), do: @avatar_mira
 
   defp slot(content, template_content \\ nil) do
     [

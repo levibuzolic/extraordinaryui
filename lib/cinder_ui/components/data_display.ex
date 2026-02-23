@@ -20,7 +20,9 @@ defmodule CinderUI.Components.DataDisplay do
 
   ## Example
 
-      <.avatar src="/images/user.png" alt="Levi" fallback="LV" />
+  ```heex title="Profile avatar"
+  <.avatar src="example.png" alt="Levi" fallback="LV" />
+  ```
   """
   attr :src, :string, default: nil
   attr :alt, :string, default: ""
@@ -91,6 +93,17 @@ defmodule CinderUI.Components.DataDisplay do
 
   @doc """
   Groups avatars with overlap.
+
+  ## Example
+
+  ```heex title="Team avatars"
+  <.avatar_group>
+    <.avatar src="example.png" alt="Levi" />
+    <.avatar src="example.png" alt="Mira" />
+    <.avatar src="example.png" alt="Shadcn" />
+    <.avatar_group_count>+2</.avatar_group_count>
+  </.avatar_group>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -131,6 +144,31 @@ defmodule CinderUI.Components.DataDisplay do
   Table wrapper with overflow container.
 
   ## Examples
+
+  ```heex title="Service status table" align="full"
+  <.table>
+    <.table_caption>Active deployments across environments.</.table_caption>
+    <.table_header>
+      <.table_row>
+        <.table_head>Service</.table_head>
+        <.table_head>Status</.table_head>
+        <.table_head class="text-right">Latency</.table_head>
+      </.table_row>
+    </.table_header>
+    <.table_body>
+      <.table_row>
+        <.table_cell>API</.table_cell>
+        <.table_cell>Healthy</.table_cell>
+        <.table_cell class="text-right">82ms</.table_cell>
+      </.table_row>
+      <.table_row>
+        <.table_cell>Worker</.table_cell>
+        <.table_cell>Degraded</.table_cell>
+        <.table_cell class="text-right">164ms</.table_cell>
+      </.table_row>
+    </.table_body>
+  </.table>
+  ```
 
       <.table>
         <.table_caption>Active deployments across environments.</.table_caption>

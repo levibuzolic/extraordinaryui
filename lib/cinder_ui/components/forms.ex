@@ -57,18 +57,22 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.field>
-        <:label><.label for="name">Name</.label></:label>
-        <.input id="name" name="name" />
-        <:description>Shown in your profile.</:description>
-      </.field>
+  ```heex title="Profile field" align="full"
+  <.field>
+    <:label><.label for="name">Name</.label></:label>
+    <.input id="name" name="name" />
+    <:description>Shown in your profile.</:description>
+  </.field>
+  ```
 
-      <.field>
-        <:label><.label for="email">Work email</.label></:label>
-        <.input id="email" name="email" type="email" />
-        <:description>We'll send deployment alerts here.</:description>
-        <:error>Please use your company domain.</:error>
-      </.field>
+  ```heex title="Validation state" align="full"
+  <.field>
+    <:label><.label for="email">Work email</.label></:label>
+    <.input id="email" name="email" type="email" />
+    <:description>We'll send deployment alerts here.</:description>
+    <:error>Please use your company domain.</:error>
+  </.field>
+  ```
   """
   attr :class, :string, default: nil
   slot :label
@@ -472,20 +476,26 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.input_group>
-        <.input placeholder="Search" />
-        <.button variant={:ghost} size={:xs}>Go</.button>
-      </.input_group>
+  ```heex title="Search with action" align="full"
+  <.input_group>
+    <.input placeholder="Search" />
+    <.button variant={:ghost} size={:xs}>Go</.button>
+  </.input_group>
+  ```
 
-      <.input_group>
-        <span class="text-muted-foreground inline-flex items-center px-3 text-sm">@</span>
-        <.input placeholder="organization" />
-      </.input_group>
+  ```heex title="Handle input" align="full"
+  <.input_group>
+    <span class="text-muted-foreground inline-flex items-center px-3 text-sm">@</span>
+    <.input placeholder="organization" />
+  </.input_group>
+  ```
 
-      <.input_group>
-        <.input placeholder="https://example.com" />
-        <.button variant={:outline} size={:sm}>Copy</.button>
-      </.input_group>
+  ```heex title="Copy URL action" align="full"
+  <.input_group>
+    <.input placeholder="https://example.com" />
+    <.button variant={:outline} size={:sm}>Copy</.button>
+  </.input_group>
+  ```
   """
   attr :class, :string, default: nil
   slot :inner_block, required: true

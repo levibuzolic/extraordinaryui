@@ -43,11 +43,13 @@ defmodule CinderUI.Docs.CatalogTest do
         refute entry.preview_html =~ "Render error"
         assert entry.template_heex =~ "<."
         refute entry.template_heex =~ "CinderUI.Icons.icon"
+        assert entry.preview_align in [:center, :full]
         assert is_list(entry.examples)
         assert entry.examples != []
 
         Enum.each(entry.examples, fn example ->
           refute example.template_heex =~ "CinderUI.Icons.icon"
+          assert example.preview_align in [:center, :full]
         end)
 
         assert is_list(entry.attributes)
@@ -130,8 +132,14 @@ defmodule CinderUI.Docs.CatalogTest do
       end)
 
     assert avatar_entry.template_heex =~ "<.avatar"
+    assert avatar_entry.template_heex =~ "example.png"
     assert avatar_entry.template_heex =~ "alt=\"Levi\""
+    refute avatar_entry.template_heex =~ "data:image/"
+    assert avatar_entry.preview_html =~ "data:image/"
     assert avatar_group_entry.template_heex =~ "<.avatar_group"
+    assert avatar_group_entry.template_heex =~ "example.png"
+    refute avatar_group_entry.template_heex =~ "data:image/"
+    assert avatar_group_entry.preview_html =~ "data:image/"
   end
 
   test "icons section includes lucide wrapper entry" do
