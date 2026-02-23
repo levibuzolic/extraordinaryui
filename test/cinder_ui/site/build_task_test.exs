@@ -32,7 +32,7 @@ defmodule CinderUI.Site.BuildTaskTest do
     assert index =~ "Add dependencies to <code>mix.exs</code>"
     assert index =~ "Run in terminal"
 
-    assert index =~ "{:lucide_icons, \"~> 2.0\"} # optional, recommended for <.icon />"
+    assert index =~ "{:lucide_icons, &quot;~&gt; 2.0&quot;} # optional, recommended for &lt;.icon /&gt;"
 
     assert index =~ "mix cinder_ui.install --skip-existing"
     assert index =~ "Drop-in for existing Phoenix + LiveView projects."

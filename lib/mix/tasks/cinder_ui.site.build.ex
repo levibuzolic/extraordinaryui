@@ -486,7 +486,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         inner_block:
           slot("""
           <div class=\"rounded-lg border bg-background p-4\">#{preview_html}</div>
-          <div class=\"mt-3\">#{render_component(DataDisplay, :code_block, %{inner_block: slot(snippet)})}</div>
+          <div class=\"mt-3\">#{render_component(DataDisplay, :code_block, %{inner_block: slot(escape(snippet))})}</div>
           """)
       })
 
@@ -518,10 +518,11 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     mix cinder_ui.install --skip-existing
     """
 
-    deps_block = render_component(DataDisplay, :code_block, %{inner_block: slot(deps_code)})
+    deps_block =
+      render_component(DataDisplay, :code_block, %{inner_block: slot(escape(deps_code))})
 
     terminal_block =
-      render_component(DataDisplay, :code_block, %{inner_block: slot(terminal_code)})
+      render_component(DataDisplay, :code_block, %{inner_block: slot(escape(terminal_code))})
 
     """
     <section id="install" class="space-y-3">
@@ -775,4 +776,6 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp relative(path), do: Path.relative_to(path, File.cwd!())
+
+  defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 end
