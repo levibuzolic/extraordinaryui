@@ -160,7 +160,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       </head>
       <body class="bg-background text-foreground">
         <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <aside class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6">
+          <aside
+            data-docs-sidebar
+            class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6"
+          >
             <div class="mb-6">
               <h1 class="text-xl font-semibold">Cinder UI</h1>
               <p class="text-muted-foreground mt-1 text-sm">Static component docs</p>

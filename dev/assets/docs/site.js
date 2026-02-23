@@ -484,9 +484,36 @@
   )
   const media = window.matchMedia("(prefers-color-scheme: dark)")
   const root = document.documentElement
+  const sidebar = document.querySelector("[data-docs-sidebar]")
   const modeButtons = qs(document, "[data-theme-mode]")
   const colorSelect = document.getElementById("theme-color")
   const radiusSelect = document.getElementById("theme-radius")
+  const sidebarScrollStorageKey = "eui:docs:sidebar-scroll-top"
+
+  const restoreSidebarScroll = () => {
+    if (!sidebar) return
+
+    try {
+      const saved = Number.parseInt(sessionStorage.getItem(sidebarScrollStorageKey) || "", 10)
+      if (!Number.isFinite(saved) || saved < 0) return
+
+      // Delay until layout is stable so the sticky sidebar has final height.
+      requestAnimationFrame(() => {
+        sidebar.scrollTop = saved
+      })
+    } catch (_error) {
+      // no-op
+    }
+  }
+
+  const persistSidebarScroll = () => {
+    if (!sidebar) return
+    try {
+      sessionStorage.setItem(sidebarScrollStorageKey, String(sidebar.scrollTop))
+    } catch (_error) {
+      // no-op
+    }
+  }
 
   const readSetting = (key, fallback) => localStorage.getItem(key) || fallback
   const writeSetting = (key, value) => localStorage.setItem(key, value)
@@ -551,7 +578,14 @@
   }
 
   applyTheme()
+  restoreSidebarScroll()
   highlightCodeBlocks()
+
+  sidebar?.addEventListener("scroll", persistSidebarScroll, { passive: true })
+  qs(sidebar || document, "a[href]").forEach((link) => {
+    link.addEventListener("click", persistSidebarScroll)
+  })
+  window.addEventListener("beforeunload", persistSidebarScroll)
 
   const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))
   copyButtons.forEach((button) => {
