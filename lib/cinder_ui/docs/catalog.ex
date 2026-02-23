@@ -623,8 +623,859 @@ defmodule CinderUI.Docs.Catalog do
   end
 
   defp sample_examples(module, function) do
-    [%{id: "default", title: "Default", assigns: sample_assigns(module, function)}]
+    assigns = sample_assigns(module, function)
+
+    [
+      %{id: "default", title: "Default", assigns: assigns},
+      alternate_example(module, function, assigns)
+    ]
   end
+
+  defp alternate_example(Actions, :button_group, assigns) do
+    %{
+      id: "vertical",
+      title: "Vertical Group",
+      description: "Stacked actions similar to shadcn toolbar patterns",
+      assigns: Map.put(assigns, :orientation, :vertical)
+    }
+  end
+
+  defp alternate_example(Actions, :toggle, _assigns) do
+    %{
+      id: "outline",
+      title: "Outline Small Toggle",
+      description: "Compact outline treatment for dense controls",
+      assigns: %{pressed: false, variant: :outline, size: :sm, inner_block: slot("Italic")}
+    }
+  end
+
+  defp alternate_example(Actions, :toggle_group, _assigns) do
+    toggle_l_html =
+      render_component(Actions, :toggle, %{variant: :outline, size: :sm, inner_block: slot("L")})
+
+    toggle_r_html =
+      render_component(Actions, :toggle, %{variant: :outline, size: :sm, inner_block: slot("R")})
+
+    %{
+      id: "multiple-vertical",
+      title: "Vertical Multi-select",
+      description: "Multiple selection with vertical arrangement",
+      assigns: %{
+        type: :multiple,
+        orientation: :vertical,
+        inner_block:
+          slot(
+            toggle_l_html <> "\n" <> toggle_r_html,
+            """
+            <.toggle variant={:outline} size={:sm}>L</.toggle>
+            <.toggle variant={:outline} size={:sm}>R</.toggle>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Forms, :checkbox, assigns) do
+    %{
+      id: "unchecked",
+      title: "Unchecked",
+      description: "Unselected state before user confirmation",
+      assigns: Map.put(assigns, :checked, false)
+    }
+  end
+
+  defp alternate_example(Forms, :input, _assigns) do
+    %{
+      id: "password",
+      title: "Password Input",
+      description: "Credential-style input with hidden value",
+      assigns: %{id: "docs-input-password", type: "password", placeholder: "••••••••"}
+    }
+  end
+
+  defp alternate_example(Forms, :input_group, _assigns) do
+    input_html = render_component(Forms, :input, %{placeholder: "Filter by team..."})
+
+    filter_button_html =
+      render_component(Actions, :button, %{variant: :outline, inner_block: slot("Filter")})
+
+    %{
+      id: "filter",
+      title: "Filter Group",
+      description: "Search + action affordance inspired by docs toolbars",
+      assigns: %{
+        inner_block:
+          slot(
+            input_html <> "\n" <> filter_button_html,
+            """
+            <.input placeholder="Filter by team..." />
+            <.button variant={:outline}>Filter</.button>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Forms, :input_otp, _assigns) do
+    %{
+      id: "partial",
+      title: "Partially Entered",
+      description: "OTP with incomplete values",
+      assigns: %{name: "recovery_code[]", values: ["9", "4", "1", "", "", ""]}
+    }
+  end
+
+  defp alternate_example(Forms, :radio_group, _assigns) do
+    %{
+      id: "plan-selection",
+      title: "Plan Selection",
+      description: "Alternative option set for billing choices",
+      assigns: %{
+        name: "plan-tier",
+        value: "team",
+        option: [
+          %{value: "starter", label: "Starter"},
+          %{value: "team", label: "Team"},
+          %{value: "enterprise", label: "Enterprise"}
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Forms, :select, _assigns) do
+    %{
+      id: "timezone",
+      title: "Timezone Select",
+      description: "A common settings form select",
+      assigns: %{
+        name: "timezone",
+        value: "utc",
+        option: [
+          %{value: "utc", label: "UTC"},
+          %{value: "pst", label: "Pacific (PST)"},
+          %{value: "est", label: "Eastern (EST)"}
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Forms, :slider, assigns) do
+    %{
+      id: "low-value",
+      title: "Low Value",
+      description: "Smaller progress point for subtle adjustments",
+      assigns: Map.put(assigns, :value, 20)
+    }
+  end
+
+  defp alternate_example(Forms, :switch, assigns) do
+    %{
+      id: "small-off",
+      title: "Small Off",
+      description: "Compact inactive switch state",
+      assigns: assigns |> Map.put(:checked, false) |> Map.put(:size, :sm)
+    }
+  end
+
+  defp alternate_example(Forms, :textarea, _assigns) do
+    %{
+      id: "longform",
+      title: "Longform",
+      description: "Expanded text area for release notes",
+      assigns: %{
+        id: "docs-textarea-notes",
+        rows: 6,
+        value: "Release notes draft:\n- API stabilization\n- docs refresh"
+      }
+    }
+  end
+
+  defp alternate_example(Layout, :aspect_ratio, _assigns) do
+    %{
+      id: "square",
+      title: "Square Ratio",
+      description: "1:1 media framing for avatars and tiles",
+      assigns: %{
+        ratio: "1 / 1",
+        inner_block:
+          slot(
+            "<div class=\"flex h-full w-full items-center justify-center bg-muted text-xs text-muted-foreground\">1:1</div>"
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Layout, :kbd, _assigns) do
+    %{
+      id: "shift-enter",
+      title: "Multi-key",
+      description: "Compound shortcut glyph",
+      assigns: %{inner_block: slot("Shift ↵")}
+    }
+  end
+
+  defp alternate_example(Layout, :kbd_group, _assigns) do
+    %{
+      id: "open-command",
+      title: "Command Group",
+      description: "Grouped shortcut keys for command palette actions",
+      assigns: %{inner_block: slot("<span>⌘</span><span>P</span>")}
+    }
+  end
+
+  defp alternate_example(Layout, :resizable, _assigns) do
+    %{
+      id: "vertical",
+      title: "Vertical Split",
+      description: "Stacked panel arrangement",
+      assigns: %{
+        direction: :vertical,
+        panel: [
+          %{
+            size: 50,
+            inner_block: fn _, _ ->
+              HTML.raw("<div class=\"rounded-md bg-muted p-2 text-xs\">Top panel</div>")
+            end,
+            template: "<div class=\"rounded-md bg-muted p-2 text-xs\">Top panel</div>"
+          },
+          %{
+            size: 50,
+            inner_block: fn _, _ ->
+              HTML.raw("<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Bottom panel</div>")
+            end,
+            template: "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Bottom panel</div>"
+          }
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Layout, :scroll_area, _assigns) do
+    %{
+      id: "taller",
+      title: "Taller Viewport",
+      description: "Expanded scroll region for longer content",
+      assigns: %{
+        class: "h-32 rounded-md border",
+        inner_block:
+          slot(
+            Enum.map_join(1..12, "", fn index ->
+              ~s(<div class="py-1 text-sm">Item #{index}</div>)
+            end),
+            Enum.map_join(1..12, "\n", fn index ->
+              ~s(<div class="py-1 text-sm">Item #{index}</div>)
+            end)
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Layout, :separator, assigns) do
+    %{
+      id: "vertical",
+      title: "Vertical Separator",
+      description: "Vertical divider between adjacent controls",
+      assigns: assigns |> Map.put(:orientation, :vertical) |> Map.put(:class, "h-8")
+    }
+  end
+
+  defp alternate_example(Layout, :skeleton, _assigns) do
+    %{
+      id: "card-line",
+      title: "Card Skeleton Line",
+      description: "Wider placeholder for card sections",
+      assigns: %{class: "h-5 w-full max-w-xs"}
+    }
+  end
+
+  defp alternate_example(Icons, :icon, _assigns) do
+    %{
+      id: "calendar",
+      title: "Calendar Icon",
+      description: "Alternate lucide glyph sample",
+      assigns: %{name: "calendar-days", class: "size-5"}
+    }
+  end
+
+  defp alternate_example(Feedback, :badge, _assigns) do
+    %{
+      id: "outline",
+      title: "Outline Badge",
+      description: "Subtle neutral badge for metadata",
+      assigns: %{variant: :outline, inner_block: slot("Draft")}
+    }
+  end
+
+  defp alternate_example(Feedback, :alert_description, _assigns) do
+    %{
+      id: "detailed",
+      title: "Detailed Description",
+      description: "Richer alert body copy",
+      assigns: %{inner_block: slot("Last deploy finished in 1m 21s with zero errors.")}
+    }
+  end
+
+  defp alternate_example(Feedback, :alert_title, _assigns) do
+    %{
+      id: "warning-title",
+      title: "Warning Title",
+      description: "Alternative alert headline",
+      assigns: %{inner_block: slot("Action required")}
+    }
+  end
+
+  defp alternate_example(Feedback, :progress, assigns) do
+    %{
+      id: "complete",
+      title: "Near Complete",
+      description: "High completion state for long-running tasks",
+      assigns: Map.put(assigns, :value, 96)
+    }
+  end
+
+  defp alternate_example(Feedback, :spinner, _assigns) do
+    %{
+      id: "large",
+      title: "Large Spinner",
+      description: "More prominent loading indicator",
+      assigns: %{class: "size-6"}
+    }
+  end
+
+  defp alternate_example(Feedback, :toast, _assigns) do
+    destructive_item =
+      render_component(Feedback, :toast_item, %{
+        variant: :destructive,
+        inner_block: slot("Deployment failed. Retry in a few seconds.")
+      })
+
+    %{
+      id: "top-right",
+      title: "Top Right Stack",
+      description: "Pinned toast stack at the top edge",
+      assigns: %{
+        position: :top_right,
+        class: "static z-0 w-full max-w-none p-0",
+        inner_block:
+          slot(
+            destructive_item,
+            """
+            <.toast_item variant={:destructive}>Deployment failed. Retry in a few seconds.</.toast_item>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Feedback, :toast_item, _assigns) do
+    %{
+      id: "destructive",
+      title: "Destructive Toast",
+      description: "Error-state toast item variant",
+      assigns: %{variant: :destructive, inner_block: slot("Build failed on production branch.")}
+    }
+  end
+
+  defp alternate_example(Feedback, :empty_state, _assigns) do
+    cta_html =
+      render_component(Actions, :button, %{
+        variant: :default,
+        size: :sm,
+        inner_block: slot("Create project")
+      })
+
+    %{
+      id: "with-primary-cta",
+      title: "Primary CTA",
+      description: "Motivates next action with stronger hierarchy",
+      assigns: %{
+        title: slot("No active projects"),
+        description: slot("Start by creating your first project workspace."),
+        action: slot(cta_html, "<.button size={:sm}>Create project</.button>"),
+        icon: slot("<span class=\"text-xl\">+</span>")
+      }
+    }
+  end
+
+  defp alternate_example(DataDisplay, :avatar, _assigns) do
+    %{
+      id: "fallback",
+      title: "Fallback Initials",
+      description: "Avatar without image source",
+      assigns: %{alt: "Nina Hall", size: :lg}
+    }
+  end
+
+  defp alternate_example(DataDisplay, :avatar_group, _assigns) do
+    preview_html =
+      [
+        render_component(DataDisplay, :avatar, %{alt: "Jordan Miles", fallback: "JM"}),
+        render_component(DataDisplay, :avatar, %{alt: "Sara Lo", fallback: "SL"}),
+        render_component(DataDisplay, :avatar_group_count, %{inner_block: slot("+6")})
+      ]
+      |> Enum.join("\n")
+
+    %{
+      id: "fallback-group",
+      title: "Fallback Group",
+      description: "Group with initials and larger overflow count",
+      assigns: %{
+        inner_block:
+          slot(
+            preview_html,
+            """
+            <.avatar alt="Jordan Miles" fallback="JM" />
+            <.avatar alt="Sara Lo" fallback="SL" />
+            <.avatar_group_count>+6</.avatar_group_count>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(DataDisplay, :avatar_group_count, _assigns) do
+    %{
+      id: "higher-count",
+      title: "Higher Count",
+      description: "Larger overflow quantity",
+      assigns: %{inner_block: slot("+12")}
+    }
+  end
+
+  defp alternate_example(DataDisplay, :code_block, _assigns) do
+    %{
+      id: "install-command",
+      title: "Install Command",
+      description: "CLI snippet variant",
+      assigns: %{inner_block: slot("mix cinder_ui.install")}
+    }
+  end
+
+  defp alternate_example(DataDisplay, :collapsible, assigns) do
+    %{
+      id: "closed",
+      title: "Closed by Default",
+      description: "Collapsed state until explicitly opened",
+      assigns: assigns |> Map.put(:open, false) |> Map.put(:trigger, slot("Release details"))
+    }
+  end
+
+  defp alternate_example(DataDisplay, :table_row, assigns) do
+    %{
+      id: "selected-row",
+      title: "Selected Row",
+      description: "Highlighted state for active row",
+      assigns: Map.put(assigns, :state, "selected")
+    }
+  end
+
+  defp alternate_example(Navigation, :breadcrumb, _assigns) do
+    %{
+      id: "with-ellipsis",
+      title: "Collapsed Trail",
+      description: "Long-path breadcrumb with ellipsis",
+      assigns: %{
+        inner_block:
+          slot(
+            """
+            <ol data-slot=\"breadcrumb-list\" class=\"flex items-center gap-2\">
+              <li data-slot=\"breadcrumb-item\"><a data-slot=\"breadcrumb-link\" href=\"#\">Home</a></li>
+              <li data-slot=\"breadcrumb-separator\">/</li>
+              <li data-slot=\"breadcrumb-item\"><span data-slot=\"breadcrumb-ellipsis\">…</span></li>
+              <li data-slot=\"breadcrumb-separator\">/</li>
+              <li data-slot=\"breadcrumb-item\"><span data-slot=\"breadcrumb-page\">Settings</span></li>
+            </ol>
+            """,
+            """
+            <.breadcrumb_list>
+              <.breadcrumb_item><.breadcrumb_link href="#">Home</.breadcrumb_link></.breadcrumb_item>
+              <.breadcrumb_separator>/</.breadcrumb_separator>
+              <.breadcrumb_item><.breadcrumb_ellipsis /></.breadcrumb_item>
+              <.breadcrumb_separator>/</.breadcrumb_separator>
+              <.breadcrumb_item><.breadcrumb_page>Settings</.breadcrumb_page></.breadcrumb_item>
+            </.breadcrumb_list>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Navigation, :breadcrumb_link, assigns) do
+    %{
+      id: "project-link",
+      title: "Project Link",
+      description: "Alternate breadcrumb target",
+      assigns: assigns |> Map.put(:href, "/projects") |> Map.put(:inner_block, slot("Projects"))
+    }
+  end
+
+  defp alternate_example(Navigation, :breadcrumb_page, _assigns) do
+    %{
+      id: "settings-page",
+      title: "Settings Page",
+      description: "Current page item for settings context",
+      assigns: %{inner_block: slot("Settings")}
+    }
+  end
+
+  defp alternate_example(Navigation, :breadcrumb_separator, _assigns) do
+    %{
+      id: "chevron",
+      title: "Chevron Separator",
+      description: "Chevron separator style",
+      assigns: %{inner_block: slot(">")}
+    }
+  end
+
+  defp alternate_example(Navigation, :menu, assigns) do
+    %{
+      id: "horizontal",
+      title: "Horizontal Menu",
+      description: "Top-nav style menu layout",
+      assigns: Map.put(assigns, :orientation, :horizontal)
+    }
+  end
+
+  defp alternate_example(Navigation, :navigation_menu, _assigns) do
+    %{
+      id: "docs-nav",
+      title: "Docs Navigation",
+      description: "Three-link navigation menu example",
+      assigns: %{
+        item: [
+          %{href: "#", inner_block: fn _, _ -> "Components" end},
+          %{href: "#", active: true, inner_block: fn _, _ -> "Examples" end},
+          %{href: "#", inner_block: fn _, _ -> "Changelog" end}
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Navigation, :pagination_link, assigns) do
+    %{
+      id: "inactive",
+      title: "Inactive Link",
+      description: "Default inactive pagination link",
+      assigns: assigns |> Map.put(:active, false) |> Map.put(:inner_block, slot("3"))
+    }
+  end
+
+  defp alternate_example(Navigation, :tabs, _assigns) do
+    %{
+      id: "vertical",
+      title: "Vertical Tabs",
+      description: "Sidebar-style tab orientation",
+      assigns: %{
+        value: "account",
+        orientation: :vertical,
+        trigger: [
+          %{value: "account", inner_block: fn _, _ -> "Account" end},
+          %{value: "security", inner_block: fn _, _ -> "Security" end}
+        ],
+        content: [
+          %{value: "account", inner_block: fn _, _ -> "Account settings content" end},
+          %{value: "security", inner_block: fn _, _ -> "Security settings content" end}
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Overlay, :alert_dialog, _assigns) do
+    trigger_html =
+      render_component(Actions, :button, %{
+        variant: :destructive,
+        inner_block: slot("Delete user")
+      })
+
+    keep_html =
+      render_component(Actions, :button, %{
+        variant: :outline,
+        size: :sm,
+        inner_block: slot("Keep")
+      })
+
+    remove_html =
+      render_component(Actions, :button, %{
+        variant: :destructive,
+        size: :sm,
+        inner_block: slot("Remove")
+      })
+
+    %{
+      id: "destructive",
+      title: "Destructive Alert Dialog",
+      description: "Irreversible confirmation flow",
+      assigns: %{
+        id: "docs-alert-dialog-delete",
+        open: false,
+        trigger: slot(trigger_html, "<.button variant={:destructive}>Delete user</.button>"),
+        title: slot("Delete this user?"),
+        description: slot("This permanently removes profile data."),
+        inner_block: slot("This action cannot be undone."),
+        footer:
+          slot(
+            keep_html <> "\n" <> remove_html,
+            """
+            <.button variant={:outline} size={:sm}>Keep</.button>
+            <.button variant={:destructive} size={:sm}>Remove</.button>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Overlay, :drawer, assigns) do
+    %{
+      id: "left-drawer",
+      title: "Left Drawer",
+      description: "Alternate entry side for navigation surfaces",
+      assigns: Map.put(assigns, :side, :left)
+    }
+  end
+
+  defp alternate_example(Overlay, :dropdown_menu, _assigns) do
+    %{
+      id: "mixed-items",
+      title: "Mixed Action Menu",
+      description: "Includes link and disabled action entries",
+      assigns: %{
+        id: "docs-dropdown-mixed",
+        trigger: slot("Manage"),
+        item: [
+          %{href: "#", inner_block: fn _, _ -> "Open settings" end},
+          %{inner_block: fn _, _ -> "Duplicate" end},
+          %{inner_block: fn _, _ -> "Archive" end, disabled: true}
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Overlay, :hover_card, _assigns) do
+    %{
+      id: "profile",
+      title: "Profile Hover Card",
+      description: "Profile summary preview on hover",
+      assigns: %{
+        trigger: slot("@levi"),
+        content: slot("Maintainer · ships weekly docs and component updates.")
+      }
+    }
+  end
+
+  defp alternate_example(Overlay, :menubar, _assigns) do
+    open_html =
+      render_component(Actions, :button, %{
+        variant: :ghost,
+        size: :sm,
+        class: "w-full justify-start",
+        inner_block: slot("Open…")
+      })
+
+    export_html =
+      render_component(Actions, :button, %{
+        variant: :ghost,
+        size: :sm,
+        class: "w-full justify-start",
+        inner_block: slot("Export")
+      })
+
+    %{
+      id: "file-and-share",
+      title: "Two Menus",
+      description: "File and share menu groups",
+      assigns: %{
+        menu: [
+          %{
+            label: "File",
+            inner_block: fn _, _ -> HTML.raw(open_html) end,
+            template:
+              "<.button variant={:ghost} size={:sm} class=\"w-full justify-start\">Open…</.button>"
+          },
+          %{
+            label: "Share",
+            inner_block: fn _, _ -> HTML.raw(export_html) end,
+            template:
+              "<.button variant={:ghost} size={:sm} class=\"w-full justify-start\">Export</.button>"
+          }
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Overlay, :popover, assigns) do
+    %{
+      id: "details",
+      title: "Details Popover",
+      description: "Contextual details popover",
+      assigns:
+        assigns
+        |> Map.put(:trigger, slot("View details"))
+        |> Map.put(:content, slot("Last deployment: 3 minutes ago"))
+    }
+  end
+
+  defp alternate_example(Overlay, :sheet, assigns) do
+    %{
+      id: "bottom-sheet",
+      title: "Bottom Sheet",
+      description: "Mobile-oriented sheet placement",
+      assigns: Map.put(assigns, :side, :bottom)
+    }
+  end
+
+  defp alternate_example(Overlay, :tooltip, _assigns) do
+    button_html =
+      render_component(Actions, :button, %{
+        variant: :ghost,
+        size: :sm,
+        inner_block: slot("Need help?")
+      })
+
+    %{
+      id: "help-tooltip",
+      title: "Help Tooltip",
+      description: "Assistive copy on hover/focus",
+      assigns: %{
+        text: "You can edit this setting later.",
+        inner_block:
+          slot(
+            button_html,
+            """
+            <.button variant={:ghost} size={:sm}>Need help?</.button>
+            """
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Advanced, :calendar, _assigns) do
+    %{
+      id: "month-grid",
+      title: "Month Grid Shell",
+      description: "Calendar scaffold with placeholder grid",
+      assigns: %{
+        inner_block:
+          slot(
+            "<div class=\"grid grid-cols-7 gap-1 text-center text-xs text-muted-foreground\"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>"
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Advanced, :carousel, _assigns) do
+    %{
+      id: "three-slides",
+      title: "Three Slides",
+      description: "Additional slide for onboarding tour",
+      assigns: %{
+        id: "docs-carousel-tour",
+        item: [
+          %{
+            inner_block: fn _, _ ->
+              HTML.raw("<div class=\"h-24 rounded-md bg-muted p-4 text-xs\">Step 1</div>")
+            end,
+            template: "<div class=\"h-24 rounded-md bg-muted p-4 text-xs\">Step 1</div>"
+          },
+          %{
+            inner_block: fn _, _ ->
+              HTML.raw("<div class=\"h-24 rounded-md bg-muted/70 p-4 text-xs\">Step 2</div>")
+            end,
+            template: "<div class=\"h-24 rounded-md bg-muted/70 p-4 text-xs\">Step 2</div>"
+          },
+          %{
+            inner_block: fn _, _ ->
+              HTML.raw("<div class=\"h-24 rounded-md bg-muted/40 p-4 text-xs\">Step 3</div>")
+            end,
+            template: "<div class=\"h-24 rounded-md bg-muted/40 p-4 text-xs\">Step 3</div>"
+          }
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Advanced, :chart, _assigns) do
+    %{
+      id: "weekly-signups",
+      title: "Weekly Signups",
+      description: "Alternative chart frame metadata",
+      assigns: %{
+        title: slot("Signups"),
+        description: slot("Last 7 days"),
+        inner_block:
+          slot(
+            "<div class=\"h-24 rounded bg-muted p-2 text-xs text-muted-foreground\">Chart placeholder</div>"
+          )
+      }
+    }
+  end
+
+  defp alternate_example(Advanced, :combobox, _assigns) do
+    %{
+      id: "team-picker",
+      title: "Team Picker",
+      description: "Combobox with team options",
+      assigns: %{
+        id: "docs-combobox-team",
+        placeholder: "Select a team",
+        value: "Platform",
+        option: [
+          %{value: "Platform", label: "Platform"},
+          %{value: "Design", label: "Design"},
+          %{value: "Support", label: "Support"}
+        ]
+      }
+    }
+  end
+
+  defp alternate_example(Advanced, :item, _assigns) do
+    %{
+      id: "disabled-item",
+      title: "Disabled Item",
+      description: "Unavailable command item state",
+      assigns: %{value: "archived", disabled: true, inner_block: slot("Archived project")}
+    }
+  end
+
+  defp alternate_example(Advanced, :sidebar, _assigns) do
+    %{
+      id: "docs-layout",
+      title: "Docs Layout",
+      description: "Sidebar scaffold for documentation surfaces",
+      assigns: %{
+        rail:
+          slot(
+            "<nav class=\"space-y-2 text-sm\"><p>Overview</p><p>Components</p><p>Changelog</p></nav>"
+          ),
+        inset: slot("<div class=\"rounded bg-muted p-4 text-sm\">Main docs content region</div>")
+      }
+    }
+  end
+
+  defp alternate_example(Advanced, :sonner_toaster, _assigns) do
+    %{
+      id: "top-center",
+      title: "Top Center",
+      description: "Centered toast mount position",
+      assigns: %{position: "top-center"}
+    }
+  end
+
+  defp alternate_example(_module, _function, assigns) do
+    %{
+      id: "compact",
+      title: "Compact",
+      description: "Compact variation inspired by shadcn density patterns",
+      assigns: put_compact_class(assigns)
+    }
+  end
+
+  defp put_compact_class(assigns) when is_map(assigns) do
+    Map.put(assigns, :class, merge_classes(assigns[:class], "max-w-sm"))
+  end
+
+  defp merge_classes(nil, class), do: class
+  defp merge_classes("", class), do: class
+  defp merge_classes(existing, class), do: "#{existing} #{class}"
 
   defp card_profile_assigns do
     badge_html =

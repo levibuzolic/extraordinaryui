@@ -93,6 +93,23 @@ defmodule CinderUI.Docs.CatalogTest do
              2
   end
 
+  test "every entry includes multiple generated examples without rtl variants" do
+    entries = Catalog.sections() |> Enum.flat_map(& &1.entries)
+
+    assert entries != []
+
+    Enum.each(entries, fn entry ->
+      assert length(entry.examples) >= 2
+
+      Enum.each(entry.examples, fn example ->
+        title = String.downcase(to_string(example.title || ""))
+        description = String.downcase(to_string(example.description || ""))
+        refute String.contains?(title, "rtl")
+        refute String.contains?(description, "rtl")
+      end)
+    end)
+  end
+
   test "composite components can expose multiple generated examples" do
     card_entry =
       Catalog.sections()

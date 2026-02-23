@@ -32,7 +32,7 @@
 - `cd sandbox/demo_app && mix format --check-formatted && mix test`
 - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
-All validation checks currently pass (last run: February 22, 2026, including Lucide icon integration and updated visual baselines).
+All validation checks currently pass (last run: February 23, 2026, including expanded multi-example docs coverage validation).
 
 ## Remaining Work
 
@@ -276,6 +276,14 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Added env-aware compile paths in `mix.exs` so internal tooling compiles in `:dev`/`:test` while remaining excluded from packaged runtime code.
 - Simplified Hex package file list back to `lib` now that internal tooling is outside the shipped source tree.
 
+### Milestone 25: Expanded docs examples across all components
+
+- Expanded generated docs examples so every component entry now renders multiple examples by default.
+- Added shadcn-inspired alternate examples across component families (actions, forms, layout, icons, feedback, data display, navigation, overlay, advanced).
+- Kept existing hand-crafted rich examples intact for core showcase components (`button`, `field`, `alert`, `accordion`, `tabs`, `dialog`, `command`, `card`).
+- Explicitly excluded RTL-focused example variants from generated docs examples.
+- Added catalog tests to enforce multi-example coverage and guard against RTL-labelled examples.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -319,3 +327,4 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `(working tree)` - add lightweight HEEx syntax highlighting to docs/site and implement daisy-gap phase 1 primitives (`menu`, `toast`).
 - `(working tree)` - tighten Hex package files to runtime API + installer task only, and document docs/site build tasks as repo-only.
 - `(working tree)` - move docs/site build internals under `dev/lib` and simplify Hex package file list to `lib`.
+- `(working tree)` - expand shadcn-inspired docs examples for every component entry and exclude RTL variants.
