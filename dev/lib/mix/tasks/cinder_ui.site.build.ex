@@ -24,6 +24,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   """
 
   use Mix.Task
+  use Phoenix.Component
 
   alias CinderUI.Components.Actions
   alias CinderUI.Components.DataDisplay
@@ -149,12 +150,15 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp header_controls_html do
-    """
-    <div class=\"flex flex-wrap items-center gap-2\">
-      #{header_nav_html()}
-      #{theme_toggle_html()}
+    assigns = %{header_nav_html: header_nav_html(), theme_toggle_html: theme_toggle_html()}
+
+    ~H"""
+    <div class="flex flex-wrap items-center gap-2">
+      {Phoenix.HTML.raw(@header_nav_html)}
+      {Phoenix.HTML.raw(@theme_toggle_html)}
     </div>
     """
+    |> to_html()
   end
 
   defp header_nav_html do
@@ -179,7 +183,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           "aria-label" => "Switch to light mode",
           "type" => "button"
         },
-        inner_block: slot("Light")
+        inner_block: html_slot("Light")
       })
 
     dark_button =
@@ -192,12 +196,12 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           "aria-label" => "Switch to dark mode",
           "type" => "button"
         },
-        inner_block: slot("Dark")
+        inner_block: html_slot("Dark")
       })
 
     render_component(Actions, :button_group, %{
       class: "site-theme-toggle",
-      inner_block: slot(light_button <> dark_button)
+      inner_block: html_slot(light_button <> dark_button)
     })
   end
 
@@ -205,14 +209,14 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     hero_badge =
       render_component(Feedback, :badge, %{
         variant: :secondary,
-        inner_block: slot("Shadcn-style CSS tokens")
+        inner_block: html_slot("Shadcn-style CSS tokens")
       })
 
     primary_cta =
       render_component(Actions, :button, %{
         as: "a",
         rest: %{href: "./docs/index.html"},
-        inner_block: slot("Browse Component Library")
+        inner_block: html_slot("Browse Component Library")
       })
 
     secondary_cta =
@@ -220,26 +224,26 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         as: "a",
         variant: :outline,
         rest: %{href: "#install"},
-        inner_block: slot("Quick Start")
+        inner_block: html_slot("Quick Start")
       })
 
     summary_title =
-      render_component(Layout, :card_title, %{inner_block: slot("Project snapshot")})
+      render_component(Layout, :card_title, %{inner_block: html_slot("Project snapshot")})
 
     summary_description =
       render_component(Layout, :card_description, %{
-        inner_block: slot("Drop-in for existing Phoenix + LiveView projects.")
+        inner_block: html_slot("Drop-in for existing Phoenix + LiveView projects.")
       })
 
     summary_header =
       render_component(Layout, :card_header, %{
-        inner_block: slot(summary_title <> summary_description)
+        inner_block: html_slot(summary_title <> summary_description)
       })
 
     summary_content =
       render_component(Layout, :card_content, %{
         inner_block:
-          slot("""
+          html_slot("""
           <ul class=\"space-y-1 text-sm text-muted-foreground\">
             <li><strong class=\"text-foreground\">Current version:</strong> v#{version}</li>
             <li><strong class=\"text-foreground\">Theme baseline:</strong> neutral semantic tokens + <code>--radius</code> defaults</li>
@@ -251,42 +255,80 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     summary_card =
       render_component(Layout, :card, %{
         class: "h-full",
-        inner_block: slot(summary_header <> summary_content)
+        inner_block: html_slot(summary_header <> summary_content)
       })
 
-    """
+    assigns = %{
+      hero_badge: hero_badge,
+      shadcn_url: shadcn_url,
+      primary_cta: primary_cta,
+      secondary_cta: secondary_cta,
+      summary_card: summary_card
+    }
+
+    ~H"""
     <section>
       <div class="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
         <div class="space-y-4">
-          #{hero_badge}
+          {Phoenix.HTML.raw(@hero_badge)}
           <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
-            <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+            <a
+              href={@shadcn_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline underline-offset-4"
+            >
+              shadcn/ui
+            </a>
             component patterns, packaged for Phoenix + LiveView.
           </h1>
           <p class="max-w-2xl text-base text-muted-foreground">
             Cinder UI provides server-rendered components, typed attrs/slots,
             and installer automation that keep parity with
-            <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+            <a
+              href={@shadcn_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline underline-offset-4"
+            >
+              shadcn/ui
+            </a>
             conventions while fitting Phoenix conventions.
           </p>
           <div class="flex flex-wrap gap-2">
-            #{primary_cta}
-            #{secondary_cta}
+            {Phoenix.HTML.raw(@primary_cta)}
+            {Phoenix.HTML.raw(@secondary_cta)}
           </div>
         </div>
 
-        #{summary_card}
+        {Phoenix.HTML.raw(@summary_card)}
       </div>
     </section>
     """
+    |> to_html()
   end
 
   defp component_examples_html(shadcn_url) do
-    """
+    assigns = %{
+      shadcn_url: shadcn_url,
+      button_group_example_card: button_group_example_card(shadcn_url),
+      form_example_card: form_example_card(shadcn_url),
+      alert_example_card: alert_example_card(shadcn_url),
+      tabs_example_card: tabs_example_card(shadcn_url)
+    }
+
+    ~H"""
     <section id="examples" class="space-y-4">
       <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h2 class="text-2xl font-semibold tracking-tight">Component examples on the homepage</h2>
-        <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="text-sm text-muted-foreground underline underline-offset-4">Reference: shadcn/ui docs ↗</a>
+        <a
+          href={@shadcn_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-muted-foreground underline underline-offset-4"
+        >
+          Reference: shadcn/ui docs ↗
+        </a>
       </div>
 
       <p class="text-sm text-muted-foreground">
@@ -294,25 +336,26 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       </p>
 
       <div class="grid gap-4 md:grid-cols-2">
-        #{button_group_example_card(shadcn_url)}
-        #{form_example_card(shadcn_url)}
-        #{alert_example_card(shadcn_url)}
-        #{tabs_example_card(shadcn_url)}
+        {Phoenix.HTML.raw(@button_group_example_card)}
+        {Phoenix.HTML.raw(@form_example_card)}
+        {Phoenix.HTML.raw(@alert_example_card)}
+        {Phoenix.HTML.raw(@tabs_example_card)}
       </div>
     </section>
     """
+    |> to_html()
   end
 
   defp button_group_example_card(shadcn_url) do
     preview =
       render_component(Actions, :button_group, %{
         inner_block:
-          slot(
-            render_component(Actions, :button, %{inner_block: slot("Deploy")}) <>
+          html_slot(
+            render_component(Actions, :button, %{inner_block: html_slot("Deploy")}) <>
               "\n" <>
               render_component(Actions, :button, %{
                 variant: :outline,
-                inner_block: slot("Rollback")
+                inner_block: html_slot("Rollback")
               })
           )
       })
@@ -335,7 +378,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
 
   defp form_example_card(shadcn_url) do
     label_html =
-      render_component(Forms, :label, %{for: "site-email", inner_block: slot("Team email")})
+      render_component(Forms, :label, %{for: "site-email", inner_block: html_slot("Team email")})
 
     input_html =
       render_component(Forms, :input, %{id: "site-email", placeholder: "team@example.com"})
@@ -344,14 +387,14 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
       render_component(Forms, :switch, %{
         id: "site-updates",
         checked: true,
-        inner_block: slot("Send release updates")
+        inner_block: html_slot("Send release updates")
       })
 
     preview =
       render_component(Forms, :field, %{
-        label: slot(label_html),
-        description: slot("Used for release announcements."),
-        inner_block: slot(input_html <> "<div class=\"pt-2\">#{switch_html}</div>")
+        label: html_slot(label_html),
+        description: html_slot("Used for release announcements."),
+        inner_block: html_slot(input_html <> "<div class=\"pt-2\">#{switch_html}</div>")
       })
 
     snippet = """
@@ -372,17 +415,18 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp alert_example_card(shadcn_url) do
-    alert_title = render_component(Feedback, :alert_title, %{inner_block: slot("Release ready")})
+    alert_title =
+      render_component(Feedback, :alert_title, %{inner_block: html_slot("Release ready")})
 
     alert_description =
       render_component(Feedback, :alert_description, %{
-        inner_block: slot("All quality checks passed. Publish when ready.")
+        inner_block: html_slot("All quality checks passed. Publish when ready.")
       })
 
     preview =
       render_component(Feedback, :alert, %{
         inner_block:
-          slot("""
+          html_slot("""
           #{render_component(Icons, :icon, %{name: "circle-alert", class: "size-4"})}
           #{alert_title}
           #{alert_description}
@@ -445,34 +489,48 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp example_card(title, description, preview_html, snippet, shadcn_component_url) do
-    card_title = render_component(Layout, :card_title, %{inner_block: slot(title)})
+    card_title = render_component(Layout, :card_title, %{inner_block: html_slot(title)})
 
     card_description =
-      render_component(Layout, :card_description, %{inner_block: slot(description)})
+      render_component(Layout, :card_description, %{inner_block: html_slot(description)})
 
     header =
-      render_component(Layout, :card_header, %{inner_block: slot(card_title <> card_description)})
+      render_component(Layout, :card_header, %{
+        inner_block: html_slot(card_title <> card_description)
+      })
 
     content =
       render_component(Layout, :card_content, %{
         inner_block:
-          slot("""
+          html_slot("""
           <div class=\"rounded-lg border bg-background p-4\">#{preview_html}</div>
-          <div class=\"mt-3\">#{render_component(DataDisplay, :code_block, %{inner_block: slot(escape(snippet))})}</div>
+          <div class=\"mt-3\">#{render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(snippet))})}</div>
           """)
+      })
+
+    footer_note =
+      render_component(Layout, :card_description, %{
+        class: "text-xs",
+        inner_block: html_slot("Rendered using Cinder UI components")
+      })
+
+    footer_reference =
+      render_component(Actions, :button, %{
+        as: "a",
+        variant: :link,
+        size: :xs,
+        class: "h-auto p-0 text-xs",
+        rest: %{href: shadcn_component_url, target: "_blank", rel: "noopener noreferrer"},
+        inner_block: html_slot("shadcn/ui reference ↗")
       })
 
     footer =
       render_component(Layout, :card_footer, %{
         class: "justify-between gap-2",
-        inner_block:
-          slot("""
-          <span class=\"text-xs text-muted-foreground\">Rendered using Cinder UI components</span>
-          <a href=\"#{shadcn_component_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-xs underline underline-offset-4\">shadcn/ui reference ↗</a>
-          """)
+        inner_block: html_slot(footer_note <> footer_reference)
       })
 
-    render_component(Layout, :card, %{inner_block: slot(header <> content <> footer)})
+    render_component(Layout, :card, %{inner_block: html_slot(header <> content <> footer)})
   end
 
   defp install_html(version) do
@@ -491,24 +549,29 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
 
     deps_block =
-      render_component(DataDisplay, :code_block, %{inner_block: slot(escape(deps_code))})
+      render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(deps_code))})
 
     terminal_block =
-      render_component(DataDisplay, :code_block, %{inner_block: slot(escape(terminal_code))})
+      render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(terminal_code))})
 
-    """
+    assigns = %{deps_block: deps_block, terminal_block: terminal_block}
+
+    ~H"""
     <section id="install" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
       <div class="space-y-2">
         <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
-        #{deps_block}
+        {Phoenix.HTML.raw(@deps_block)}
       </div>
       <div class="space-y-2">
-        <p class="text-sm font-medium text-foreground">2) Install and run setup commands in your terminal</p>
-        #{terminal_block}
+        <p class="text-sm font-medium text-foreground">
+          2) Install and run setup commands in your terminal
+        </p>
+        {Phoenix.HTML.raw(@terminal_block)}
       </div>
     </section>
     """
+    |> to_html()
   end
 
   defp theme_tokens_html do
@@ -560,44 +623,77 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
 
     tokens_block =
-      render_component(DataDisplay, :code_block, %{inner_block: slot(escape(tokens_code))})
+      render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(tokens_code))})
 
-    """
+    assigns = %{tokens_block: tokens_block}
+
+    ~H"""
     <section id="tokens" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Configure tokens like shadcn/ui</h2>
       <p class="text-sm text-muted-foreground">
         Customize your theme in <code>assets/css/app.css</code> by overriding semantic CSS variables.
         Radius is controlled via <code>--radius</code>; component radii are derived from it automatically.
       </p>
-      #{tokens_block}
+      {Phoenix.HTML.raw(@tokens_block)}
     </section>
     """
+    |> to_html()
   end
 
   defp features_html(shadcn_url) do
-    """
+    assigns = %{
+      shadcn_url: shadcn_url,
+      feature_1:
+        feature_card(
+          "Phoenix-native API",
+          "Typed HEEx function components with predictable attrs/slots and composable primitives."
+        ),
+      feature_2:
+        feature_card(
+          "Fast app integration",
+          "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects."
+        ),
+      feature_3:
+        feature_card(
+          "shadcn-aligned styles",
+          "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics."
+        ),
+      feature_4:
+        feature_card(
+          "Production confidence",
+          "Unit, browser, and visual regression coverage keeps components stable as your app evolves."
+        )
+    }
+
+    ~H"""
     <section class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
       <div class="grid gap-4 md:grid-cols-2">
-        #{feature_card("Phoenix-native API", "Typed HEEx function components with predictable attrs/slots and composable primitives.")}
-        #{feature_card("Fast app integration", "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects.")}
-        #{feature_card("shadcn-aligned styles", "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics.")}
-        #{feature_card("Production confidence", "Unit, browser, and visual regression coverage keeps components stable as your app evolves.")}
+        {Phoenix.HTML.raw(@feature_1)}
+        {Phoenix.HTML.raw(@feature_2)}
+        {Phoenix.HTML.raw(@feature_3)}
+        {Phoenix.HTML.raw(@feature_4)}
       </div>
     </section>
     """
+    |> to_html()
   end
 
   defp feature_card(title, body_html) do
-    card_title = render_component(Layout, :card_title, %{inner_block: slot(title)})
-    card_header = render_component(Layout, :card_header, %{inner_block: slot(card_title)})
+    card_title = render_component(Layout, :card_title, %{inner_block: html_slot(title)})
+    card_header = render_component(Layout, :card_header, %{inner_block: html_slot(card_title)})
+
+    body =
+      render_component(Layout, :card_description, %{
+        inner_block: html_slot(body_html)
+      })
 
     card_content =
       render_component(Layout, :card_content, %{
-        inner_block: slot("<p class=\"text-sm text-muted-foreground\">#{body_html}</p>")
+        inner_block: html_slot(body)
       })
 
-    render_component(Layout, :card, %{inner_block: slot(card_header <> card_content)})
+    render_component(Layout, :card, %{inner_block: html_slot(card_header <> card_content)})
   end
 
   defp links_html(github_url, hexdocs_url, shadcn_url) do
@@ -606,7 +702,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         as: "a",
         variant: :outline,
         rest: %{href: github_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: slot("GitHub repository")
+        inner_block: html_slot("GitHub repository")
       })
 
     hexdocs_button =
@@ -614,14 +710,14 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         as: "a",
         variant: :outline,
         rest: %{href: hexdocs_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: slot("HexDocs")
+        inner_block: html_slot("HexDocs")
       })
 
     docs_button =
       render_component(Actions, :button, %{
         as: "a",
         rest: %{href: "./docs/index.html"},
-        inner_block: slot("Component reference")
+        inner_block: html_slot("Component reference")
       })
 
     shadcn_button =
@@ -629,20 +725,28 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         as: "a",
         variant: :ghost,
         rest: %{href: shadcn_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: slot("shadcn/ui docs")
+        inner_block: html_slot("shadcn/ui docs")
       })
 
-    """
+    assigns = %{
+      github_button: github_button,
+      hexdocs_button: hexdocs_button,
+      docs_button: docs_button,
+      shadcn_button: shadcn_button
+    }
+
+    ~H"""
     <section id="links" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Project links</h2>
       <div class="flex flex-wrap gap-2">
-        #{github_button}
-        #{hexdocs_button}
-        #{docs_button}
-        #{shadcn_button}
+        {Phoenix.HTML.raw(@github_button)}
+        {Phoenix.HTML.raw(@hexdocs_button)}
+        {Phoenix.HTML.raw(@docs_button)}
+        {Phoenix.HTML.raw(@shadcn_button)}
       </div>
     </section>
     """
+    |> to_html()
   end
 
   defp nav_item(label, href, active) do
@@ -658,7 +762,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     |> IO.iodata_to_binary()
   end
 
-  defp slot(content) do
+  defp html_slot(content) do
     [
       %{
         inner_block: fn _, _ -> HTML.raw(content) end
@@ -671,19 +775,25 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp theme_bootstrap_script do
-    """
+    assigns = %{script: template!("theme_bootstrap.js")}
+
+    ~H"""
     <script>
-    #{template!("theme_bootstrap.js")}
+      {Phoenix.HTML.raw(@script)}
     </script>
     """
+    |> to_html()
   end
 
   defp theme_toggle_script do
-    """
+    assigns = %{script: template!("theme_toggle.js")}
+
+    ~H"""
     <script>
-    #{template!("theme_toggle.js")}
+      {Phoenix.HTML.raw(@script)}
     </script>
     """
+    |> to_html()
   end
 
   defp template!(name), do: File.read!(Path.join(@template_dir, name))
@@ -691,4 +801,10 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   defp relative(path), do: Path.relative_to(path, File.cwd!())
 
   defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
+
+  defp to_html(rendered) do
+    rendered
+    |> Safe.to_iodata()
+    |> IO.iodata_to_binary()
+  end
 end

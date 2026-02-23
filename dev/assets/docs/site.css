@@ -18,7 +18,7 @@ html.dark {
 }
 
 .code-highlight .tok-tag {
-  color: color-mix(in oklab, var(--primary) 78%, var(--foreground));
+  color: color-mix(in oklab, var(--chart-6) 78%, var(--foreground));
   font-weight: 600;
 }
 
