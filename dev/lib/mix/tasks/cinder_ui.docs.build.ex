@@ -24,6 +24,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   alias CinderUI.Components.Forms
   alias CinderUI.Docs.Catalog
+  alias CinderUI.Icons
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
@@ -405,6 +406,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp component_examples_html(entry) do
     total = length(entry.examples)
+    copy_icon_html = render_component(Icons, :icon, %{name: "copy", class: "size-3.5"})
 
     entry.examples
     |> Enum.with_index(1)
@@ -423,31 +425,32 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         end
 
       """
-      <article class=\"rounded-lg border bg-muted/20 p-4\">
-        <header class=\"mb-3\">
+      <section class=\"mb-10\">
+        <header>
           <h3 class=\"text-sm font-semibold\">#{escape(heading)}</h3>
           #{description}
         </header>
 
-        <div>
-          <h4 class=\"text-sm font-semibold\">Preview</h4>
-          <div class=\"mt-2 rounded-lg border bg-background p-4\">#{example.preview_html}</div>
-        </div>
+        <div data-slot=\"component-preview\" class=\"mt-4 overflow-hidden rounded-xl border\">
+          <div data-slot=\"preview\" class=\"p-4 sm:p-6\">
+            #{example.preview_html}
+          </div>
 
-        <div class=\"mt-4\">
-          <h4 class=\"text-sm font-semibold\">Usage (HEEx)</h4>
-          <div class=\"mt-2 relative\">
+          <div data-slot=\"code\" class=\"relative border-t bg-muted/20\">
+            <div class=\"flex items-center justify-between border-b px-4 py-2\">
+              <h4 class=\"text-xs font-semibold\">Usage (HEEx)</h4>
+            </div>
             <button
               type=\"button\"
               data-copy-template=\"#{copy_id}\"
               aria-label=\"Copy HEEx\"
               title=\"Copy HEEx\"
-              class=\"absolute top-2 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground\"
-            >⧉</button>
-            <pre class=\"max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
+              class=\"absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground\"
+            >#{copy_icon_html}</button>
+            <pre class=\"max-h-96 overflow-auto bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
           </div>
         </div>
-      </article>
+      </section>
       """
     end)
   end
