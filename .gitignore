@@ -11,3 +11,5 @@
 /assets/.npm/
 /tmp/
 /dist/
+/*.tar
+/*.dump
