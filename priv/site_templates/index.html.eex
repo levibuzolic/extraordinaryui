@@ -52,6 +52,7 @@
         </p>
       </footer>
     </div>
+    <%= shared_script %>
     <%= theme_toggle_script %>
   </body>
 </html>

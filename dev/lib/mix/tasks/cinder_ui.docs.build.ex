@@ -815,11 +815,23 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 
-  defp site_js, do: docs_asset!("site.js")
-  defp site_css, do: docs_asset!("site.css")
+  defp site_js do
+    [site_asset!("shared.js"), docs_asset!("site.js")]
+    |> Enum.join(";\n\n")
+    |> Kernel.<>(";\n")
+  end
+
+  defp site_css do
+    site_asset!("site.css")
+  end
 
   defp docs_asset!(name) do
     Path.join([File.cwd!(), "dev", "assets", "docs", name])
+    |> File.read!()
+  end
+
+  defp site_asset!(name) do
+    Path.join([File.cwd!(), "dev", "assets", "site", name])
     |> File.read!()
   end
 

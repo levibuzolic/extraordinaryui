@@ -10,7 +10,6 @@ defmodule CinderUI.Site.Marketing do
   alias CinderUI.Components.Layout
   alias CinderUI.Components.Navigation
   alias CinderUI.Icons
-  alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
   @template_dir Path.expand("../../../../priv/site_templates", __DIR__)
@@ -48,6 +47,7 @@ defmodule CinderUI.Site.Marketing do
       theme_bootstrap_script: theme_bootstrap_script(),
       theme_css: theme_css,
       site_css_path: site_css_path,
+      shared_script: shared_script(),
       header_controls_html: header_controls_html(docs_path),
       shadcn_url: shadcn_url,
       hero_html: hero_html(version, shadcn_url),
@@ -65,130 +65,38 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp header_controls_html(docs_path) do
-    assigns = %{
-      header_nav_html: header_nav_html(docs_path),
-      theme_toggle_html: theme_toggle_html()
-    }
+    assigns = %{docs_path: docs_path}
 
     ~H"""
     <div class="flex flex-wrap items-center gap-2">
-      {Phoenix.HTML.raw(@header_nav_html)}
-      {Phoenix.HTML.raw(@theme_toggle_html)}
+      <Navigation.navigation_menu>
+        <:item href={@docs_path} active={true}>Component docs</:item>
+        <:item href="#examples" active={false}>Examples</:item>
+        <:item href="#install" active={false}>Install</:item>
+        <:item href="#links" active={false}>Links</:item>
+      </Navigation.navigation_menu>
+
+      <Navigation.tabs
+        value="auto"
+        class="site-theme-toggle w-full max-w-xs gap-0 [&_[data-slot=tabs-list]]:w-full"
+      >
+        <:trigger value="light" data_theme_mode="light" class="theme-mode-btn">Light</:trigger>
+        <:trigger value="dark" data_theme_mode="dark" class="theme-mode-btn">Dark</:trigger>
+        <:trigger value="auto" data_theme_mode="auto" class="theme-mode-btn">Auto</:trigger>
+      </Navigation.tabs>
     </div>
     """
     |> to_html()
   end
 
-  defp header_nav_html(docs_path) do
-    render_component(Navigation, :navigation_menu, %{
-      item: [
-        nav_item("Component docs", docs_path, true),
-        nav_item("Examples", "#examples", false),
-        nav_item("Install", "#install", false),
-        nav_item("Links", "#links", false)
-      ]
-    })
-  end
-
-  defp theme_toggle_html do
-    light_button =
-      render_component(Actions, :button, %{
-        variant: :outline,
-        size: :sm,
-        class: "theme-toggle-btn",
-        rest: %{
-          "data-site-theme" => "light",
-          "aria-label" => "Switch to light mode",
-          "type" => "button"
-        },
-        inner_block: html_slot("Light")
-      })
-
-    dark_button =
-      render_component(Actions, :button, %{
-        variant: :outline,
-        size: :sm,
-        class: "theme-toggle-btn",
-        rest: %{
-          "data-site-theme" => "dark",
-          "aria-label" => "Switch to dark mode",
-          "type" => "button"
-        },
-        inner_block: html_slot("Dark")
-      })
-
-    render_component(Actions, :button_group, %{
-      class: "site-theme-toggle",
-      inner_block: html_slot(light_button <> dark_button)
-    })
-  end
-
   defp hero_html(version, shadcn_url) do
-    hero_badge =
-      render_component(Feedback, :badge, %{
-        variant: :secondary,
-        inner_block: html_slot("Shadcn-style CSS tokens")
-      })
-
-    primary_cta =
-      render_component(Actions, :button, %{
-        as: "a",
-        rest: %{href: "./docs/index.html"},
-        inner_block: html_slot("Browse Component Library")
-      })
-
-    secondary_cta =
-      render_component(Actions, :button, %{
-        as: "a",
-        variant: :outline,
-        rest: %{href: "#install"},
-        inner_block: html_slot("Quick Start")
-      })
-
-    summary_title =
-      render_component(Layout, :card_title, %{inner_block: html_slot("Project snapshot")})
-
-    summary_description =
-      render_component(Layout, :card_description, %{
-        inner_block: html_slot("Drop-in for existing Phoenix + LiveView projects.")
-      })
-
-    summary_header =
-      render_component(Layout, :card_header, %{
-        inner_block: html_slot(summary_title <> summary_description)
-      })
-
-    summary_content =
-      render_component(Layout, :card_content, %{
-        inner_block:
-          html_slot("""
-          <ul class=\"space-y-1 text-sm text-muted-foreground\">
-            <li><strong class=\"text-foreground\">Current version:</strong> v#{version}</li>
-            <li><strong class=\"text-foreground\">Theme baseline:</strong> neutral semantic tokens + <code>--radius</code> defaults</li>
-            <li><strong class=\"text-foreground\">Integration:</strong> <code>mix cinder_ui.install</code> for existing Phoenix assets</li>
-          </ul>
-          """)
-      })
-
-    summary_card =
-      render_component(Layout, :card, %{
-        class: "h-full",
-        inner_block: html_slot(summary_header <> summary_content)
-      })
-
-    assigns = %{
-      hero_badge: hero_badge,
-      shadcn_url: shadcn_url,
-      primary_cta: primary_cta,
-      secondary_cta: secondary_cta,
-      summary_card: summary_card
-    }
+    assigns = %{version: version, shadcn_url: shadcn_url}
 
     ~H"""
     <section>
       <div class="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
         <div class="space-y-4">
-          {Phoenix.HTML.raw(@hero_badge)}
+          <Feedback.badge variant={:secondary}>Shadcn-style CSS tokens</Feedback.badge>
           <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
             <a
               href={@shadcn_url}
@@ -214,12 +122,37 @@ defmodule CinderUI.Site.Marketing do
             conventions while fitting Phoenix conventions.
           </p>
           <div class="flex flex-wrap gap-2">
-            {Phoenix.HTML.raw(@primary_cta)}
-            {Phoenix.HTML.raw(@secondary_cta)}
+            <Actions.button as="a" href="./docs/index.html">
+              Browse Component Library
+            </Actions.button>
+            <Actions.button as="a" variant={:outline} href="#install">
+              Quick Start
+            </Actions.button>
           </div>
         </div>
 
-        {Phoenix.HTML.raw(@summary_card)}
+        <Layout.card class="h-full">
+          <Layout.card_header>
+            <Layout.card_title>Project snapshot</Layout.card_title>
+            <Layout.card_description>
+              Drop-in for existing Phoenix + LiveView projects.
+            </Layout.card_description>
+          </Layout.card_header>
+          <Layout.card_content>
+            <ul class="space-y-1 text-sm text-muted-foreground">
+              <li><strong class="text-foreground">Current version:</strong> v{@version}</li>
+              <li>
+                <strong class="text-foreground">Theme baseline:</strong>
+                neutral semantic tokens + <code>--radius</code>
+                defaults
+              </li>
+              <li>
+                <strong class="text-foreground">Integration:</strong>
+                <code>mix cinder_ui.install</code> for existing Phoenix assets
+              </li>
+            </ul>
+          </Layout.card_content>
+        </Layout.card>
       </div>
     </section>
     """
@@ -265,18 +198,15 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp button_group_example_card(shadcn_url) do
+    assigns = %{}
+
     preview =
-      render_component(Actions, :button_group, %{
-        inner_block:
-          html_slot(
-            render_component(Actions, :button, %{inner_block: html_slot("Deploy")}) <>
-              "\n" <>
-              render_component(Actions, :button, %{
-                variant: :outline,
-                inner_block: html_slot("Rollback")
-              })
-          )
-      })
+      to_html(~H"""
+      <Actions.button_group>
+        <Actions.button>Deploy</Actions.button>
+        <Actions.button variant={:outline}>Rollback</Actions.button>
+      </Actions.button_group>
+      """)
 
     snippet = """
     <.button_group>
@@ -295,25 +225,21 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp form_example_card(shadcn_url) do
-    label_html =
-      render_component(Forms, :label, %{for: "site-email", inner_block: html_slot("Team email")})
-
-    input_html =
-      render_component(Forms, :input, %{id: "site-email", placeholder: "team@example.com"})
-
-    switch_html =
-      render_component(Forms, :switch, %{
-        id: "site-updates",
-        checked: true,
-        inner_block: html_slot("Send release updates")
-      })
+    assigns = %{}
 
     preview =
-      render_component(Forms, :field, %{
-        label: html_slot(label_html),
-        description: html_slot("Used for release announcements."),
-        inner_block: html_slot(input_html <> "<div class=\"pt-2\">#{switch_html}</div>")
-      })
+      to_html(~H"""
+      <Forms.field>
+        <:label>
+          <Forms.label for="site-email">Team email</Forms.label>
+        </:label>
+        <Forms.input id="site-email" placeholder="team@example.com" />
+        <:description>Used for release announcements.</:description>
+        <div class="pt-2">
+          <Forms.switch id="site-updates" checked={true}>Send release updates</Forms.switch>
+        </div>
+      </Forms.field>
+      """)
 
     snippet = """
     <.field>
@@ -333,23 +259,18 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp alert_example_card(shadcn_url) do
-    alert_title =
-      render_component(Feedback, :alert_title, %{inner_block: html_slot("Release ready")})
-
-    alert_description =
-      render_component(Feedback, :alert_description, %{
-        inner_block: html_slot("All quality checks passed. Publish when ready.")
-      })
+    assigns = %{}
 
     preview =
-      render_component(Feedback, :alert, %{
-        inner_block:
-          html_slot("""
-          #{render_component(Icons, :icon, %{name: "circle-alert", class: "size-4"})}
-          #{alert_title}
-          #{alert_description}
-          """)
-      })
+      to_html(~H"""
+      <Feedback.alert>
+        <Icons.icon name="circle-alert" class="size-4" />
+        <Feedback.alert_title>Release ready</Feedback.alert_title>
+        <Feedback.alert_description>
+          All quality checks passed. Publish when ready.
+        </Feedback.alert_description>
+      </Feedback.alert>
+      """)
 
     snippet = """
     <.alert>
@@ -369,24 +290,17 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp tabs_example_card(shadcn_url) do
+    assigns = %{}
+
     preview =
-      render_component(Navigation, :tabs, %{
-        value: "overview",
-        trigger: [
-          %{value: "overview", inner_block: fn _, _ -> "Overview" end},
-          %{value: "api", inner_block: fn _, _ -> "API" end}
-        ],
-        content: [
-          %{
-            value: "overview",
-            inner_block: fn _, _ -> "Use components directly in HEEx templates." end
-          },
-          %{
-            value: "api",
-            inner_block: fn _, _ -> "Typed attrs/slots with compile-time checks." end
-          }
-        ]
-      })
+      to_html(~H"""
+      <Navigation.tabs value="overview">
+        <:trigger value="overview">Overview</:trigger>
+        <:trigger value="api">API</:trigger>
+        <:content value="overview">Use components directly in HEEx templates.</:content>
+        <:content value="api">Typed attrs/slots with compile-time checks.</:content>
+      </Navigation.tabs>
+      """)
 
     snippet = """
     <.tabs value="overview">
@@ -407,48 +321,47 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp example_card(title, description, preview_html, snippet, shadcn_component_url) do
-    card_title = render_component(Layout, :card_title, %{inner_block: html_slot(title)})
+    assigns = %{
+      title: title,
+      description: description,
+      preview_html: preview_html,
+      snippet: snippet,
+      shadcn_component_url: shadcn_component_url
+    }
 
-    card_description =
-      render_component(Layout, :card_description, %{inner_block: html_slot(description)})
-
-    header =
-      render_component(Layout, :card_header, %{
-        inner_block: html_slot(card_title <> card_description)
-      })
-
-    content =
-      render_component(Layout, :card_content, %{
-        inner_block:
-          html_slot("""
-          <div class=\"rounded-lg border bg-background p-4\">#{preview_html}</div>
-          <div class=\"mt-3\">#{render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(snippet))})}</div>
-          """)
-      })
-
-    footer_note =
-      render_component(Layout, :card_description, %{
-        class: "text-xs",
-        inner_block: html_slot("Rendered using Cinder UI components")
-      })
-
-    footer_reference =
-      render_component(Actions, :button, %{
-        as: "a",
-        variant: :link,
-        size: :xs,
-        class: "h-auto p-0 text-xs",
-        rest: %{href: shadcn_component_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: html_slot("shadcn/ui reference ↗")
-      })
-
-    footer =
-      render_component(Layout, :card_footer, %{
-        class: "justify-between gap-2",
-        inner_block: html_slot(footer_note <> footer_reference)
-      })
-
-    render_component(Layout, :card, %{inner_block: html_slot(header <> content <> footer)})
+    ~H"""
+    <Layout.card>
+      <Layout.card_header>
+        <Layout.card_title>{@title}</Layout.card_title>
+        <Layout.card_description>{@description}</Layout.card_description>
+      </Layout.card_header>
+      <Layout.card_content>
+        <div class="rounded-lg border bg-background p-4">
+          {Phoenix.HTML.raw(@preview_html)}
+        </div>
+        <div class="mt-3">
+          <DataDisplay.code_block>{@snippet}</DataDisplay.code_block>
+        </div>
+      </Layout.card_content>
+      <Layout.card_footer class="justify-between gap-2">
+        <Layout.card_description class="text-xs">
+          Rendered using Cinder UI components
+        </Layout.card_description>
+        <Actions.button
+          as="a"
+          variant={:link}
+          size={:xs}
+          class="h-auto p-0 text-xs"
+          href={@shadcn_component_url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          shadcn/ui reference ↗
+        </Actions.button>
+      </Layout.card_footer>
+    </Layout.card>
+    """
+    |> to_html()
   end
 
   defp install_html(version) do
@@ -466,26 +379,20 @@ defmodule CinderUI.Site.Marketing do
     mix cinder_ui.install --skip-existing
     """
 
-    deps_block =
-      render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(deps_code))})
-
-    terminal_block =
-      render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(terminal_code))})
-
-    assigns = %{deps_block: deps_block, terminal_block: terminal_block}
+    assigns = %{deps_code: deps_code, terminal_code: terminal_code}
 
     ~H"""
     <section id="install" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
       <div class="space-y-2">
         <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
-        {Phoenix.HTML.raw(@deps_block)}
+        <DataDisplay.code_block>{@deps_code}</DataDisplay.code_block>
       </div>
       <div class="space-y-2">
         <p class="text-sm font-medium text-foreground">
           2) Install and run setup commands in your terminal
         </p>
-        {Phoenix.HTML.raw(@terminal_block)}
+        <DataDisplay.code_block>{@terminal_code}</DataDisplay.code_block>
       </div>
     </section>
     """
@@ -540,10 +447,7 @@ defmodule CinderUI.Site.Marketing do
     }
     """
 
-    tokens_block =
-      render_component(DataDisplay, :code_block, %{inner_block: html_slot(escape(tokens_code))})
-
-    assigns = %{tokens_block: tokens_block}
+    assigns = %{tokens_code: tokens_code}
 
     ~H"""
     <section id="tokens" class="space-y-3">
@@ -552,7 +456,7 @@ defmodule CinderUI.Site.Marketing do
         Customize your theme in <code>assets/css/app.css</code> by overriding semantic CSS variables.
         Radius is controlled via <code>--radius</code>; component radii are derived from it automatically.
       </p>
-      {Phoenix.HTML.raw(@tokens_block)}
+      <DataDisplay.code_block>{@tokens_code}</DataDisplay.code_block>
     </section>
     """
     |> to_html()
@@ -598,121 +502,82 @@ defmodule CinderUI.Site.Marketing do
   end
 
   defp feature_card(title, body_html) do
-    card_title = render_component(Layout, :card_title, %{inner_block: html_slot(title)})
-    card_header = render_component(Layout, :card_header, %{inner_block: html_slot(card_title)})
+    assigns = %{title: title, body_html: body_html}
 
-    body =
-      render_component(Layout, :card_description, %{
-        inner_block: html_slot(body_html)
-      })
-
-    card_content =
-      render_component(Layout, :card_content, %{
-        inner_block: html_slot(body)
-      })
-
-    render_component(Layout, :card, %{inner_block: html_slot(card_header <> card_content)})
+    ~H"""
+    <Layout.card>
+      <Layout.card_header>
+        <Layout.card_title>{@title}</Layout.card_title>
+      </Layout.card_header>
+      <Layout.card_content>
+        <Layout.card_description>
+          {Phoenix.HTML.raw(@body_html)}
+        </Layout.card_description>
+      </Layout.card_content>
+    </Layout.card>
+    """
+    |> to_html()
   end
 
   defp links_html(github_url, hexdocs_url, shadcn_url) do
-    github_button =
-      render_component(Actions, :button, %{
-        as: "a",
-        variant: :outline,
-        rest: %{href: github_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: html_slot("GitHub repository")
-      })
-
-    hexdocs_button =
-      render_component(Actions, :button, %{
-        as: "a",
-        variant: :outline,
-        rest: %{href: hexdocs_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: html_slot("HexDocs")
-      })
-
-    docs_button =
-      render_component(Actions, :button, %{
-        as: "a",
-        rest: %{href: "./docs/index.html"},
-        inner_block: html_slot("Component reference")
-      })
-
-    shadcn_button =
-      render_component(Actions, :button, %{
-        as: "a",
-        variant: :ghost,
-        rest: %{href: shadcn_url, target: "_blank", rel: "noopener noreferrer"},
-        inner_block: html_slot("shadcn/ui docs")
-      })
-
-    assigns = %{
-      github_button: github_button,
-      hexdocs_button: hexdocs_button,
-      docs_button: docs_button,
-      shadcn_button: shadcn_button
-    }
+    assigns = %{github_url: github_url, hexdocs_url: hexdocs_url, shadcn_url: shadcn_url}
 
     ~H"""
     <section id="links" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Project links</h2>
       <div class="flex flex-wrap gap-2">
-        {Phoenix.HTML.raw(@github_button)}
-        {Phoenix.HTML.raw(@hexdocs_button)}
-        {Phoenix.HTML.raw(@docs_button)}
-        {Phoenix.HTML.raw(@shadcn_button)}
+        <Actions.button
+          as="a"
+          variant={:outline}
+          href={@github_url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub repository
+        </Actions.button>
+        <Actions.button
+          as="a"
+          variant={:outline}
+          href={@hexdocs_url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          HexDocs
+        </Actions.button>
+        <Actions.button as="a" href="./docs/index.html">
+          Component reference
+        </Actions.button>
+        <Actions.button
+          as="a"
+          variant={:ghost}
+          href={@shadcn_url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          shadcn/ui docs
+        </Actions.button>
       </div>
     </section>
     """
     |> to_html()
   end
 
-  defp nav_item(label, href, active) do
-    %{href: href, active: active, inner_block: fn _, _ -> label end}
-  end
-
-  defp render_component(module, function, assigns) do
-    assigns = Map.put_new(assigns, :__changed__, %{})
-
-    module
-    |> apply(function, [assigns])
-    |> Safe.to_iodata()
-    |> IO.iodata_to_binary()
-  end
-
-  defp html_slot(content) do
-    [
-      %{
-        inner_block: fn _, _ -> HTML.raw(content) end
-      }
-    ]
-  end
-
   defp theme_bootstrap_script do
-    assigns = %{script: template!("theme_bootstrap.js")}
+    "<script>\n#{template!("theme_bootstrap.js")}\n</script>"
+  end
 
-    ~H"""
-    <script>
-      {Phoenix.HTML.raw(@script)}
-    </script>
-    """
-    |> to_html()
+  defp shared_script do
+    "<script>\n#{shared_asset!("shared.js")}\n</script>"
   end
 
   defp theme_toggle_script do
-    assigns = %{script: template!("theme_toggle.js")}
-
-    ~H"""
-    <script>
-      {Phoenix.HTML.raw(@script)}
-    </script>
-    """
-    |> to_html()
+    "<script>\n#{template!("theme_toggle.js")}\n</script>"
   end
 
   defp template!(name), do: File.read!(Path.join(@template_dir, name))
 
-  defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
+  defp shared_asset!(name),
+    do: File.read!(Path.join([File.cwd!(), "dev", "assets", "site", name]))
 
   defp to_html(rendered) do
     rendered

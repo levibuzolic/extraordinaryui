@@ -1,3 +1,7 @@
+:root {
+  color-scheme: light;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -6,11 +10,16 @@ html.dark {
   color-scheme: dark;
 }
 
-.theme-mode-btn[data-active="true"] {
-  background: var(--accent);
-  color: var(--accent-foreground);
-  border-color: var(--border);
+pre[data-slot="code-block"], [data-slot="code-block"] {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
+
+/*
+--------------------------------------------------------------------------------
+MARK: Syntax Highlighting
+--------------------------------------------------------------------------------
+*/
 
 .code-highlight {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -62,6 +71,24 @@ html.dark {
   font-style: italic;
 }
 
+/*
+--------------------------------------------------------------------------------
+MARK: Home Page
+--------------------------------------------------------------------------------
+*/
+
+.site-theme-toggle [data-site-theme][data-active="true"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border);
+}
+
+.theme-mode-btn[data-active="true"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border);
+}
+
 .sidebar-section-link {
   color: var(--foreground);
 }
@@ -99,6 +126,12 @@ details[open] > summary:not([data-slot])::after {
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
+
+/*
+--------------------------------------------------------------------------------
+MARK: Markdown
+--------------------------------------------------------------------------------
+*/
 
 .docs-markdown {
   color: var(--muted-foreground);
