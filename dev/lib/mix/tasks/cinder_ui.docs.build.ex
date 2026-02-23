@@ -72,7 +72,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     Marketing.write_marketing_index!(output_dir, %{
       github_url: github_url,
+      hex_url: hex_package_url,
       hexdocs_url: hexdocs_url,
+      component_count: length(entries),
       docs_path: "./docs/index.html",
       site_css_path: "./docs/assets/site.css"
     })

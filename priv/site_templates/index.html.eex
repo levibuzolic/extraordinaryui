@@ -22,19 +22,14 @@
     <link rel="stylesheet" href="<%= site_css_path %>" />
   </head>
   <body class="bg-background text-foreground">
-    <div class="site-shell mx-auto max-w-[1200px] px-4 py-6 md:px-6">
-      <header class="mb-8 rounded-xl border bg-card p-4 shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <a href="./index.html" class="text-lg font-semibold tracking-tight">Cinder UI</a>
-          <%= header_controls_html %>
-        </div>
-        <p class="mt-3 text-sm text-muted-foreground">
-          Built for Phoenix teams who want
-          <a href="<%= shadcn_url %>" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-          patterns with Elixir-native components in existing Phoenix apps.
-        </p>
-      </header>
+    <header class="border-b bg-card/80">
+      <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-3 px-4 py-4 md:px-6">
+        <a href="./index.html" class="text-lg font-semibold tracking-tight">Cinder UI</a>
+        <%= header_controls_html %>
+      </div>
+    </header>
 
+    <div class="site-shell mx-auto max-w-[1200px] px-4 py-6 md:px-6">
       <main class="space-y-10">
         <%= hero_html %>
         <%= component_examples_html %>

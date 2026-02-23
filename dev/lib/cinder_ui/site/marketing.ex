@@ -17,8 +17,10 @@ defmodule CinderUI.Site.Marketing do
   def write_marketing_index!(output_dir, opts \\ %{}) do
     project = Mix.Project.config()
     github_url = Map.get(opts, :github_url, to_string(project[:source_url] || ""))
+    hex_url = Map.get(opts, :hex_url, "https://hex.pm/packages/cinder_ui")
     hexdocs_url = Map.get(opts, :hexdocs_url, "https://hexdocs.pm/cinder_ui")
     version = Map.get(opts, :version, to_string(project[:version] || "0.0.0"))
+    component_count = Map.get(opts, :component_count, 0)
     docs_path = Map.get(opts, :docs_path, "./docs/index.html")
     site_css_path = Map.get(opts, :site_css_path, "./assets/site.css")
     theme_css = Map.get(opts, :theme_css, theme_css())
@@ -27,7 +29,16 @@ defmodule CinderUI.Site.Marketing do
 
     File.write!(
       Path.join(output_dir, "index.html"),
-      index_html(version, github_url, hexdocs_url, theme_css, docs_path, site_css_path)
+      index_html(
+        version,
+        component_count,
+        github_url,
+        hex_url,
+        hexdocs_url,
+        theme_css,
+        docs_path,
+        site_css_path
+      )
     )
 
     File.write!(Path.join(output_dir, ".nojekyll"), "")
@@ -40,7 +51,16 @@ defmodule CinderUI.Site.Marketing do
     |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
   end
 
-  defp index_html(version, github_url, hexdocs_url, theme_css, docs_path, site_css_path) do
+  defp index_html(
+         version,
+         component_count,
+         github_url,
+         hex_url,
+         hexdocs_url,
+         theme_css,
+         docs_path,
+         site_css_path
+       ) do
     shadcn_url = "https://ui.shadcn.com/docs"
 
     assigns = [
@@ -48,9 +68,9 @@ defmodule CinderUI.Site.Marketing do
       theme_css: theme_css,
       site_css_path: site_css_path,
       shared_script: shared_script(),
-      header_controls_html: header_controls_html(docs_path),
+      header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
-      hero_html: hero_html(version, shadcn_url),
+      hero_html: hero_html(version, component_count, shadcn_url),
       component_examples_html: component_examples_html(shadcn_url),
       install_html: install_html(version),
       theme_tokens_html: theme_tokens_html(),
@@ -64,14 +84,52 @@ defmodule CinderUI.Site.Marketing do
     |> EEx.eval_string(assigns)
   end
 
-  defp header_controls_html(docs_path) do
-    assigns = %{docs_path: docs_path}
+  defp header_controls_html(docs_path, github_url, hex_url, hexdocs_url) do
+    assigns = %{
+      docs_path: docs_path,
+      github_url: github_url,
+      hex_url: hex_url,
+      hexdocs_url: hexdocs_url
+    }
 
     ~H"""
-    <div class="flex items-center gap-2">
-      <Navigation.navigation_menu>
-        <:item href={@docs_path} active={true}>Component docs</:item>
-      </Navigation.navigation_menu>
+    <div class="flex flex-wrap items-center gap-2 md:justify-end">
+      <Actions.button as="a" href={@docs_path} variant={:outline} size={:sm}>
+        Component docs
+      </Actions.button>
+      <Actions.button
+        :if={is_binary(@github_url) and @github_url != ""}
+        as="a"
+        href={@github_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant={:outline}
+        size={:sm}
+      >
+        GitHub
+      </Actions.button>
+      <Actions.button
+        :if={is_binary(@hex_url) and @hex_url != ""}
+        as="a"
+        href={@hex_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant={:outline}
+        size={:sm}
+      >
+        Hex
+      </Actions.button>
+      <Actions.button
+        :if={is_binary(@hexdocs_url) and @hexdocs_url != ""}
+        as="a"
+        href={@hexdocs_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant={:outline}
+        size={:sm}
+      >
+        HexDocs
+      </Actions.button>
 
       <Navigation.tabs
         value="auto"
@@ -86,12 +144,12 @@ defmodule CinderUI.Site.Marketing do
     |> to_html()
   end
 
-  defp hero_html(version, shadcn_url) do
-    assigns = %{version: version, shadcn_url: shadcn_url}
+  defp hero_html(version, component_count, shadcn_url) do
+    assigns = %{version: version, component_count: component_count, shadcn_url: shadcn_url}
 
     ~H"""
     <section>
-      <div class="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
+      <div class="grid gap-6 lg:grid-cols-[1.45fr_0.55fr]">
         <div class="space-y-4">
           <Feedback.badge variant={:secondary}>Shadcn-style CSS tokens</Feedback.badge>
           <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -128,26 +186,21 @@ defmodule CinderUI.Site.Marketing do
           </div>
         </div>
 
-        <Layout.card class="h-full">
+        <Layout.card class="lg:self-start">
           <Layout.card_header>
             <Layout.card_title>Project snapshot</Layout.card_title>
-            <Layout.card_description>
-              Drop-in for existing Phoenix + LiveView projects.
-            </Layout.card_description>
           </Layout.card_header>
-          <Layout.card_content>
-            <ul class="space-y-1 text-sm text-muted-foreground">
-              <li><strong class="text-foreground">Current version:</strong> v{@version}</li>
-              <li>
-                <strong class="text-foreground">Theme baseline:</strong>
-                neutral semantic tokens + <code>--radius</code>
-                defaults
-              </li>
-              <li>
-                <strong class="text-foreground">Integration:</strong>
-                <code>mix cinder_ui.install</code> for existing Phoenix assets
-              </li>
-            </ul>
+          <Layout.card_content class="pt-0">
+            <dl class="space-y-2 text-sm">
+              <div class="flex items-center justify-between gap-2">
+                <dt class="text-muted-foreground">Project version</dt>
+                <dd class="font-medium">v{@version}</dd>
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <dt class="text-muted-foreground">Components</dt>
+                <dd class="font-medium">{@component_count}</dd>
+              </div>
+            </dl>
           </Layout.card_content>
         </Layout.card>
       </div>
