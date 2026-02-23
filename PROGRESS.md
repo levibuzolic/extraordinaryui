@@ -32,7 +32,7 @@
 - `cd sandbox/demo_app && mix format --check-formatted && mix test`
 - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
-All validation checks currently pass (last run: February 22, 2026, including Lucide icon integration and updated visual baselines).
+All validation checks currently pass (last run: February 23, 2026, including demo-app DaisyUI removal and refreshed browser visual baselines).
 
 ## Remaining Work
 
@@ -258,6 +258,16 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Added `bin/bootstrap` to standardize local setup across the monorepo-style root + sandbox layout.
 - Script now runs `mise trust`, `mise install`, and dependency installation (`mix deps.get` / `npm ci`) for both:
   - repository root
+
+### Milestone 23: Demo app DaisyUI removal
+
+- Removed DaisyUI plugin/theme wiring from `sandbox/demo_app/assets/css/app.css`.
+- Removed vendored DaisyUI bundles from `sandbox/demo_app/assets/vendor`.
+- Migrated demo app layout/theme script from `data-theme` attribute usage to root `.dark` class toggling.
+- Replaced Daisy-specific classes in sandbox Phoenix scaffold components (`layouts.ex`, `core_components.ex`) with Tailwind utility styling.
+- Kept component-catalog theme controls and behavior intact (`light`/`dark`/`auto`, palette, radius presets).
+- Stabilized dialog browser interaction test by using direct close-button click evaluation in Playwright.
+- Regenerated sandbox visual snapshots for intentional UI baseline changes.
   - `sandbox/demo_app`
 - Updated contributor docs (`CONTRIBUTING.md`) local setup guidance to use `./bin/bootstrap`.
 

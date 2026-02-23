@@ -12,21 +12,34 @@
     </script>
     <script>
       (() => {
-        const setTheme = (theme) => {
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+        const root = document.documentElement;
+
+        const applyTheme = (theme) => {
           if (theme === "system") {
             localStorage.removeItem("phx:theme");
-            document.documentElement.removeAttribute("data-theme");
+            root.classList.toggle("dark", media.matches);
           } else {
             localStorage.setItem("phx:theme", theme);
-            document.documentElement.setAttribute("data-theme", theme);
+            root.classList.toggle("dark", theme === "dark");
           }
         };
-        if (!document.documentElement.hasAttribute("data-theme")) {
-          setTheme(localStorage.getItem("phx:theme") || "system");
+
+        applyTheme(localStorage.getItem("phx:theme") || "system");
+
+        if (typeof media.addEventListener === "function") {
+          media.addEventListener("change", () => {
+            if (!localStorage.getItem("phx:theme")) applyTheme("system");
+          });
         }
-        window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
-        
-        window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
+
+        window.addEventListener("storage", (event) => {
+          if (event.key === "phx:theme") applyTheme(event.newValue || "system");
+        });
+
+        window.addEventListener("phx:set-theme", (event) => {
+          applyTheme(event.target.dataset.phxTheme || "system");
+        });
       })();
     </script>
   </head>

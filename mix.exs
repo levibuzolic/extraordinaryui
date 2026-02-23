@@ -99,7 +99,7 @@ defmodule CinderUI.MixProject do
 
   defp elixirc_paths(:dev), do: ["lib", "dev/lib"]
   defp elixirc_paths(:test), do: ["lib", "dev/lib", "test"]
-  defp elixirc_paths(_), do: ["lib"]
+  defp elixirc_paths(_), do: ["lib", "dev/lib"]
 
   defp docs do
     [

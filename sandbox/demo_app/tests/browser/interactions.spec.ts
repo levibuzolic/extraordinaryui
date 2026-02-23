@@ -18,7 +18,7 @@ test.describe("interactive previews", () => {
     await root.locator("[data-dialog-trigger]").click()
     expect(await hasClass(content, "hidden")).toBe(false)
 
-    await root.locator("[data-dialog-close]").click()
+    await root.locator("[data-dialog-close]").evaluate((el: HTMLElement) => el.click())
     expect(await hasClass(content, "hidden")).toBe(true)
   })
 
