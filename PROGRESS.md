@@ -22,6 +22,7 @@
 
 ## Validation
 
+- `./bin/bootstrap`
 - `mix format`
 - `mix quality`
 - `MIX_ENV=test mix coveralls.cobertura --raise`
@@ -243,6 +244,14 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
   - `Feedback.toast/1` + `Feedback.toast_item/1` (presentational toast primitives)
 - Added catalog samples, slug mappings, and component tests for the new primitives.
 
+### Milestone 22: Bootstrap workflow script
+
+- Added `bin/bootstrap` to standardize local setup across the monorepo-style root + sandbox layout.
+- Script now runs `mise trust`, `mise install`, and dependency installation (`mix deps.get` / `npm ci`) for both:
+  - repository root
+  - `sandbox/demo_app`
+- Updated contributor docs (`CONTRIBUTING.md`) local setup guidance to use `./bin/bootstrap`.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -278,6 +287,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `8a82db2` - rebuild static marketing site landing page with component-native examples and shadcn reference linking.
 - `(working tree)` - add automated Hex publish workflow, release secret setup docs, and progress tracking updates.
 - `cc6c4f1` - add optional `lucide_icons` integration via `CinderUI.Icons`, migrate examples/sandbox icons, and update docs/tests/licenses.
+- `(working tree)` - add `bin/bootstrap` to trust/install mise tooling and install dependencies for root + sandbox demo app.
 - `(working tree)` - enable automatic GitHub Pages site publish on every `main` push and document workflow behavior.
 - `(working tree)` - retarget marketing-site messaging to existing Phoenix/LiveView app benefits and update site assertions.
 - `(working tree)` - clarify homepage install docs with separate `mix.exs` and terminal command blocks.
