@@ -19,12 +19,12 @@ Thanks for contributing. This guide is for humans first: the goal is to help you
 ## Local Setup
 
 ```bash
-mix deps.get
-cd sandbox/demo_app && mix deps.get && npm ci
+./bin/bootstrap
 ```
 
 Notes:
 
+- `./bin/bootstrap` runs `mise trust`, `mise install`, and dependency installation for both the repo root and `sandbox/demo_app`.
 - Root package includes `lucide_icons` as an optional dependency for `CinderUI.Icons.icon/1` and icon-backed component primitives.
 - Sandbox includes `lucide_icons` directly so browser/docs examples always render icon previews.
 

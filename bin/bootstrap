@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+DEMO_DIR="${ROOT_DIR}/sandbox/demo_app"
+
+require_cmd() {
+  local cmd="$1"
+
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "error: required command '$cmd' is not installed or not on PATH" >&2
+    exit 1
+  fi
+}
+
+run_with_mise() {
+  local dir="$1"
+  shift
+
+  (cd "$dir" && mise exec -- "$@")
+}
+
+has_mise_config() {
+  local dir="$1"
+
+  [[ -f "${dir}/.mise.toml" || -f "${dir}/.tool-versions" ]]
+}
+
+run_mise_setup() {
+  local dir="$1"
+  local label="$2"
+
+  if has_mise_config "$dir"; then
+    echo "==> ${label}: mise trust"
+    (cd "$dir" && mise trust)
+
+    echo "==> ${label}: mise install"
+    (cd "$dir" && mise install)
+  else
+    echo "==> ${label}: no mise config found, skipping mise setup"
+  fi
+}
+
+run_mix_deps_get() {
+  local dir="$1"
+  local label="$2"
+
+  if [[ -f "${dir}/mix.exs" ]]; then
+    echo "==> ${label}: mix deps.get"
+    run_with_mise "$dir" mix deps.get
+  else
+    echo "==> ${label}: no mix.exs found, skipping Elixir deps"
+  fi
+}
+
+run_node_install() {
+  local dir="$1"
+  local label="$2"
+
+  if [[ -f "${dir}/package.json" ]]; then
+    echo "==> ${label}: npm ci"
+    run_with_mise "$dir" npm ci
+  else
+    echo "==> ${label}: no package.json found, skipping Node deps"
+  fi
+}
+
+require_cmd mise
+
+echo "Bootstrapping repository at ${ROOT_DIR}"
+run_mise_setup "$ROOT_DIR" "root"
+run_mise_setup "$DEMO_DIR" "sandbox/demo_app"
+
+run_mix_deps_get "$ROOT_DIR" "root"
+run_mix_deps_get "$DEMO_DIR" "sandbox/demo_app"
+
+run_node_install "$ROOT_DIR" "root"
+run_node_install "$DEMO_DIR" "sandbox/demo_app"
+
+echo "Bootstrap complete."
