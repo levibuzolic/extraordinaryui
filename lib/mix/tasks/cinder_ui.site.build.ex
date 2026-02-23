@@ -724,8 +724,8 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
         const highlightHeex = (source) => {
           let html = escapeHtml(source);
           html = html.replace(/(&lt;!--[\\s\\S]*?--&gt;)/g, '<span class="tok-comment">$1</span>');
-          html = html.replace(/(&lt;\\/?)([:A-Za-z0-9_.-]+)/g, '$1<span class="tok-tag">$2</span>');
           html = html.replace(/([:@A-Za-z0-9_-]+)(=)/g, '<span class="tok-attr">$1</span>$2');
+          html = html.replace(/(&lt;\\/?)([:A-Za-z0-9_.-]+)/g, '$1<span class="tok-tag">$2</span>');
           html = html.replace(/(&quot;[^&]*?&quot;)/g, '<span class="tok-string">$1</span>');
           html = html.replace(/(\\{[^\\n]*?\\})/g, '<span class="tok-expr">$1</span>');
           html = html.replace(/\\b(true|false|nil|do|end)\\b/g, '<span class="tok-keyword">$1</span>');
