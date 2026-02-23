@@ -118,7 +118,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
 
     """
     <!doctype html>
-    <html lang="en" class="style-nova">
+    <html lang="en">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -158,6 +158,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
             #{hero_html(version, shadcn_url)}
             #{component_examples_html(shadcn_url)}
             #{install_html(version)}
+            #{theme_tokens_html()}
             #{features_html(shadcn_url)}
             #{links_html(github_url, hexdocs_url, shadcn_url)}
           </main>
@@ -166,7 +167,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
             <p>
               Cinder UI references
               <a href="#{shadcn_url}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-              patterns and ships with a neutral token palette by default.
+              patterns and exposes shadcn-style CSS tokens you can override in your app stylesheet.
             </p>
           </footer>
         </div>
@@ -233,7 +234,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     hero_badge =
       render_component(Feedback, :badge, %{
         variant: :secondary,
-        inner_block: slot("Neutral style preset")
+        inner_block: slot("Shadcn-style CSS tokens")
       })
 
     primary_cta =
@@ -270,7 +271,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
           slot("""
           <ul class=\"space-y-1 text-sm text-muted-foreground\">
             <li><strong class=\"text-foreground\">Current version:</strong> v#{version}</li>
-            <li><strong class=\"text-foreground\">Theme baseline:</strong> neutral tokens + <code>style-nova</code></li>
+            <li><strong class=\"text-foreground\">Theme baseline:</strong> neutral semantic tokens + <code>--radius</code> defaults</li>
             <li><strong class=\"text-foreground\">Integration:</strong> <code>mix cinder_ui.install</code> for existing Phoenix assets</li>
           </ul>
           """)
@@ -527,17 +528,77 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     """
     <section id="install" class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
-      <p class="text-sm text-muted-foreground">
-        Step 1: update <code>mix.exs</code>. Step 2: run setup commands in your terminal.
-      </p>
       <div class="space-y-2">
         <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
         #{deps_block}
       </div>
       <div class="space-y-2">
-        <p class="text-sm font-medium text-foreground">2) Run in terminal</p>
+        <p class="text-sm font-medium text-foreground">2) Install and run setup commands in your terminal</p>
         #{terminal_block}
       </div>
+    </section>
+    """
+  end
+
+  defp theme_tokens_html do
+    tokens_code = """
+    :root {
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.145 0 0);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.145 0 0);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.145 0 0);
+      --primary: oklch(0.205 0 0);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.97 0 0);
+      --secondary-foreground: oklch(0.205 0 0);
+      --muted: oklch(0.97 0 0);
+      --muted-foreground: oklch(0.556 0 0);
+      --accent: oklch(0.97 0 0);
+      --accent-foreground: oklch(0.205 0 0);
+      --destructive: oklch(0.577 0.245 27.325);
+      --destructive-foreground: oklch(0.985 0 0);
+      --border: oklch(0.922 0 0);
+      --input: oklch(0.922 0 0);
+      --ring: oklch(0.708 0 0);
+      --radius: 0.75rem;
+    }
+
+    .dark {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.205 0 0);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --destructive-foreground: oklch(0.985 0 0);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.556 0 0);
+    }
+    """
+
+    tokens_block =
+      render_component(DataDisplay, :code_block, %{inner_block: slot(escape(tokens_code))})
+
+    """
+    <section id="tokens" class="space-y-3">
+      <h2 class="text-2xl font-semibold tracking-tight">Configure tokens like shadcn/ui</h2>
+      <p class="text-sm text-muted-foreground">
+        Customize your theme in <code>assets/css/app.css</code> by overriding semantic CSS variables.
+        Radius is controlled via <code>--radius</code>; component radii are derived from it automatically.
+      </p>
+      #{tokens_block}
     </section>
     """
   end

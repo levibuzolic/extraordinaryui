@@ -9,7 +9,7 @@ This Phoenix app embeds `cinder_ui` as a local path dependency to provide an end
 - shadcn-style theme controls on the catalog page:
   - mode (`light`/`dark`/`auto`)
   - palette (`zinc`/`slate`/`stone`/`gray`/`neutral`)
-  - radius (`maia`/`mira`/`nova`/`lyra`/`vega`)
+  - radius presets with explicit sizes (`Compact 6px`, `Small 8px`, `Default 12px`, `Large 14px`, `XL 16px`)
 - copyable component snippets as Phoenix template tags (`Copy HEEx`)
 - client-side interactions for overlay/component demos (dialog, drawer, popover, dropdown, combobox, carousel)
 

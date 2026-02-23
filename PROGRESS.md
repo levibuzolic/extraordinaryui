@@ -178,7 +178,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 ### Milestone 15: Marketing site component-native refresh
 
 - Rebuilt the static marketing landing page to render using Cinder UI component functions instead of custom ad-hoc HTML controls.
-- Set marketing site baseline to the neutral token palette with `style-nova` radius profile and Tailwind v4 browser styling.
+- Set marketing site baseline to the neutral token palette with CSS-variable-driven radius defaults (`--radius`) and Tailwind v4 browser styling.
 - Added a persistent dark/light mode toggle to the static marketing site (`localStorage` + `.dark` root class) with active-state UI controls in the header.
 - Added a homepage examples section with live previews/snippets for:
   - `Actions.button_group`
@@ -201,7 +201,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
   - app/package identifiers (`:cinder_ui`, `CinderUI`)
   - file paths and module namespaces (`lib/cinder_ui/**`, `test/cinder_ui/**`)
   - Mix task names (`mix cinder_ui.install`, `mix cinder_ui.docs.build`, `mix cinder_ui.site.build`)
-  - installer asset/template filenames (`cinder_ui.css`, `cinder_ui.js`, `.cinder_ui_style`)
+  - installer asset/template filenames (`cinder_ui.css`, `cinder_ui.js`)
   - sandbox dependency integration and docs references.
 - Updated GitHub Actions workflows and contributor commands to use renamed Mix tasks.
 - Refreshed browser visual baselines impacted by text and branding changes.
@@ -221,6 +221,13 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
   - kebab-case and snake_case name support
   - cached icon-name lookup sourced from `lucide_icons.icon_names/0` (no sync task needed)
 - Added optional root dependency metadata for `lucide_icons` and included `CinderUI.Icons` in generated docs module grouping.
+
+### Milestone 20: Radius variables and token configuration guidance
+
+- Removed legacy `.style-*` radius classes from shared Cinder UI CSS and installer templates.
+- Updated installer flow to remove obsolete `--style` metadata handling and `.cinder_ui_style` marker output.
+- Kept component-docs radius presets, but relabeled them with explicit size values (px/rem) while still applying `--radius`.
+- Added shadcn-style token configuration guidance to README and the static marketing homepage, including `:root`/`.dark` examples for radius and semantic color variables.
 - Migrated internal icon usage from inline SVG/Heroicons patterns to `CinderUI.Icons.icon/1` where appropriate (`Actions`, `Forms`, `Feedback`, docs/site samples, sandbox components).
 - Added an `Icons` section in static docs catalog and corresponding catalog/unit tests.
 - Added sandbox `lucide_icons` dependency and removed stale Heroicons dependency + vendor script.

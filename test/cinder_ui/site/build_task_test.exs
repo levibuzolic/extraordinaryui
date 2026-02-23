@@ -30,7 +30,7 @@ defmodule CinderUI.Site.BuildTaskTest do
     assert index =~ "Forms.field"
     assert index =~ "Navigation.tabs"
     assert index =~ "Add dependencies to <code>mix.exs</code>"
-    assert index =~ "Run in terminal"
+    assert index =~ "Install and run setup commands in your terminal"
 
     assert index =~ "{:lucide_icons, &quot;~&gt; 2.0&quot;} # optional, recommended for &lt;.icon /&gt;"
 
@@ -41,7 +41,9 @@ defmodule CinderUI.Site.BuildTaskTest do
     assert index =~ "Component reference"
     refute index =~ "Static docs export"
     assert index =~ "https://ui.shadcn.com/docs"
-    assert index =~ "style-nova"
+    assert index =~ "Configure tokens like shadcn/ui"
+    assert index =~ "--radius: 0.75rem;"
+    refute index =~ "style-nova"
     assert index =~ "shadcn/ui reference"
     assert index =~ "data-site-theme"
     assert index =~ "cinder_ui:site:theme"

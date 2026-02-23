@@ -100,26 +100,6 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-.style-maia {
-  --radius: 0.375rem;
-}
-
-.style-lyra {
-  --radius: 0.875rem;
-}
-
-.style-mira {
-  --radius: 0.5rem;
-}
-
-.style-nova {
-  --radius: 0.75rem;
-}
-
-.style-vega {
-  --radius: 1rem;
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;

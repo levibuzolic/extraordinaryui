@@ -271,7 +271,14 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       render_component(Forms, :native_select, %{
         name: "theme-radius",
         value: "nova",
-        option: native_select_options(["maia", "mira", "nova", "lyra", "vega"]),
+        option:
+          native_select_entries([
+            {"maia", "Compact (6px / 0.375rem)"},
+            {"mira", "Small (8px / 0.5rem)"},
+            {"nova", "Default (12px / 0.75rem)"},
+            {"lyra", "Large (14px / 0.875rem)"},
+            {"vega", "XL (16px / 1rem)"}
+          ]),
         class: "h-8 text-xs",
         rest: %{"id" => "theme-radius", "aria-label" => "Theme radius"}
       })
@@ -306,6 +313,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     Enum.map(options, fn option ->
       %{value: option, label: option |> String.replace("_", " ") |> String.capitalize()}
     end)
+  end
+
+  defp native_select_entries(options) do
+    Enum.map(options, fn {value, label} -> %{value: value, label: label} end)
   end
 
   defp overview_sections_html(sections) do

@@ -18,19 +18,17 @@ defmodule Mix.Tasks.CinderUi.Install do
 
     * `--assets-path` - path to the assets directory (default: `assets`)
     * `--package-manager` - `npm`, `pnpm`, `yarn`, or `bun`
-    * `--style` - one of `nova`, `maia`, `lyra`, `mira`, `vega` (metadata only)
     * `--skip-existing` - do not overwrite Cinder UI generated files if they already exist
 
   ## Example
 
-      mix cinder_ui.install --package-manager pnpm --style nova
+      mix cinder_ui.install --package-manager pnpm
   """
 
   use Mix.Task
 
   @template_dir Path.expand("../../../priv/templates", __DIR__)
   @supported_pm ~w(npm pnpm yarn bun)
-  @supported_styles ~w(nova maia lyra mira vega)
 
   @impl true
   def run(argv) do
@@ -39,7 +37,6 @@ defmodule Mix.Tasks.CinderUi.Install do
         strict: [
           assets_path: :string,
           package_manager: :string,
-          style: :string,
           skip_existing: :boolean,
           help: :boolean
         ]
@@ -49,7 +46,6 @@ defmodule Mix.Tasks.CinderUi.Install do
       Mix.shell().info(@moduledoc)
     else
       assets_path = Path.expand(opts[:assets_path] || "assets", File.cwd!())
-      style = normalize_style(opts[:style])
       package_install_path = resolve_package_install_path!(assets_path)
       package_manager = normalize_package_manager(opts[:package_manager], package_install_path)
       skip_existing = opts[:skip_existing] || false
@@ -61,9 +57,7 @@ defmodule Mix.Tasks.CinderUi.Install do
       patch_app_css!(assets_path)
       patch_app_js!(assets_path)
       maybe_install_package!(package_install_path, package_manager, "tailwindcss-animate")
-      write_install_marker!(assets_path, style, skip_existing)
-
-      Mix.shell().info("Cinder UI install complete (style: #{style}).")
+      Mix.shell().info("Cinder UI install complete.")
     end
   end
 
@@ -193,11 +187,6 @@ defmodule Mix.Tasks.CinderUi.Install do
   defp package_command("yarn", package), do: {"yarn", ["add", "-D", package]}
   defp package_command("bun", package), do: {"bun", ["add", "-d", package]}
 
-  defp write_install_marker!(assets_path, style, skip_existing) do
-    marker_path = Path.join([assets_path, "css", ".cinder_ui_style"])
-    write_generated_file!(marker_path, style <> "\n", skip_existing, "wrote")
-  end
-
   defp write_generated_file!(path, content, true, verb) do
     if File.exists?(path) do
       Mix.shell().info("skipped existing #{relative(path)}")
@@ -226,15 +215,6 @@ defmodule Mix.Tasks.CinderUi.Install do
   defp normalize_package_manager(value, _assets_path) do
     Mix.raise(
       "unsupported package manager: #{inspect(value)}. Expected one of #{Enum.join(@supported_pm, ", ")}"
-    )
-  end
-
-  defp normalize_style(nil), do: "nova"
-  defp normalize_style(style) when style in @supported_styles, do: style
-
-  defp normalize_style(style) do
-    Mix.raise(
-      "unsupported style: #{inspect(style)}. Expected one of #{Enum.join(@supported_styles, ", ")}"
     )
   end
 

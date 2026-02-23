@@ -124,21 +124,6 @@ defmodule CinderUI.InstallTaskTest do
     assert File.read!(Path.join(assets, "js/cinder_ui.js")) == "// sentinel js\n"
   end
 
-  test "raises for unsupported style", %{tmp_dir: tmp_dir} do
-    project = Path.join(tmp_dir, "project")
-    assets = Path.join(project, "assets")
-
-    File.mkdir_p!(assets)
-
-    File.cd!(project, fn ->
-      Mix.Task.reenable(@task)
-
-      assert_raise Mix.Error, ~r/unsupported style/, fn ->
-        Mix.Task.run(@task, ["--assets-path", "assets", "--style", "unknown"])
-      end
-    end)
-  end
-
   defp with_fake_path(bin_dir, fun) do
     original = System.get_env("PATH") || ""
     System.put_env("PATH", "#{bin_dir}:#{original}")

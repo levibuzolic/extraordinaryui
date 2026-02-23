@@ -43,12 +43,10 @@ Installer behavior:
 Optional flags:
 
 ```bash
-mix cinder_ui.install --assets-path assets --package-manager pnpm --style nova
+mix cinder_ui.install --assets-path assets --package-manager pnpm
 ```
 
 Supported package managers: `npm`, `pnpm`, `yarn`, `bun`.
-
-Supported style presets: `nova`, `maia`, `lyra`, `mira`, `vega`.
 
 If you want to avoid overwriting generated files when re-running the installer:
 
@@ -60,7 +58,6 @@ mix cinder_ui.install --skip-existing
 
 - `assets/css/cinder_ui.css`
 - `assets/js/cinder_ui.js`
-- `assets/css/.cinder_ui_style`
 
 ## Usage in `MyAppWeb`
 
@@ -100,34 +97,52 @@ If `lucide_icons` is missing and `<.icon />` is used, Cinder UI raises an error.
 
 Cinder UI uses shadcn-style CSS variables (`--background`, `--foreground`, `--primary`, etc.) and dark mode with `.dark`.
 
-### Override tokens globally
+### Configure variables (shadcn-style)
 
 ```css
 :root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.54 0.22 262);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   --radius: 0.75rem;
 }
 
 .dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
   --primary: oklch(0.72 0.18 262);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
 }
 ```
 
-### Use style presets
-
-Preset radius profiles are included:
-
-- `.style-maia`
-- `.style-lyra`
-- `.style-mira`
-- `.style-nova`
-- `.style-vega`
-
-Apply one at app root:
-
-```html
-<html class="style-nova">
-```
+Set your preferred corner scale by changing `--radius`; component classes (`rounded-md`, `rounded-lg`, etc.) derive from that value through the Tailwind token mapping in `assets/css/cinder_ui.css`.
 
 ## Component Coverage
 
@@ -237,7 +252,7 @@ The generated site includes:
 - links to the corresponding shadcn/ui docs
 - generated attributes and slots docs from `attr/slot` definitions
 - copyable HEEx usage snippets
-- light/dark/auto + color + radius theme controls
+- light/dark/auto + color + radius theme controls (radius presets are labeled with explicit px/rem values)
 
 ## API Docs
 
