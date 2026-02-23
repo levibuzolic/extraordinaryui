@@ -501,7 +501,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           {Phoenix.HTML.raw(@entry.preview_html)}
         </div>
       </div>
-      <div class="relative min-w-0 border-t border-b border-border/70 bg-muted/30">
+      <div class="relative min-w-0 border-t border-b border-border/70">
         <button
           type="button"
           data-copy-template={@entry.id}
@@ -511,9 +511,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         >
           <Icons.icon name="copy" class="size-4" />
         </button>
-        <pre class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs">
-          <code id={"code-#{@entry.id}"} class="block min-w-max whitespace-pre"><%= Phoenix.HTML.raw(@template_html) %></code>
-        </pre>
+        <pre class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs"><code id={"code-#{@entry.id}"} class="block min-w-max whitespace-pre"><%= Phoenix.HTML.raw(@template_html) %></code></pre>
       </div>
       <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
         <span class="text-muted-foreground">

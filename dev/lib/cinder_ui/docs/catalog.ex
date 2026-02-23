@@ -560,20 +560,24 @@ defmodule CinderUI.Docs.Catalog do
       end)
 
     indented_examples =
-      doc
-      |> String.split("\n")
-      |> Enum.chunk_by(&String.starts_with?(&1, "    "))
-      |> Enum.filter(fn
-        [line | _] -> String.starts_with?(line, "    ")
-        _ -> false
-      end)
-      |> Enum.map(fn chunk ->
-        chunk
-        |> Enum.map_join("\n", &String.trim_leading(&1, "    "))
-        |> String.trim()
-      end)
-      |> Enum.filter(&String.contains?(&1, "<."))
-      |> Enum.map(&{"", nil, :center, &1})
+      if fenced_examples == [] do
+        doc
+        |> String.split("\n")
+        |> Enum.chunk_by(&String.starts_with?(&1, "    "))
+        |> Enum.filter(fn
+          [line | _] -> String.starts_with?(line, "    ")
+          _ -> false
+        end)
+        |> Enum.map(fn chunk ->
+          chunk
+          |> Enum.map_join("\n", &String.trim_leading(&1, "    "))
+          |> String.trim()
+        end)
+        |> Enum.filter(&String.contains?(&1, "<."))
+        |> Enum.map(&{"", nil, :center, &1})
+      else
+        []
+      end
 
     (fenced_examples ++ indented_examples)
     |> Enum.uniq()

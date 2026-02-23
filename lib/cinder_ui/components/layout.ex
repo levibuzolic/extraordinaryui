@@ -225,7 +225,7 @@ defmodule CinderUI.Components.Layout do
   <.card class="max-w-md">
     <.card_header>
       <.card_title>API key</.card_title>
-      <.card_description>Use this key for server-to-server requests.</.card_description>
+      <.card_description>Use this key for network requests.</.card_description>
     </.card_header>
     <.card_content class="space-y-3">
       <p class="text-sm">Your API key was generated successfully.</p>
@@ -415,7 +415,8 @@ defmodule CinderUI.Components.Layout do
 
   ```heex title="Scrollable container" align="full"
   <.scroll_area class="h-24 rounded-md border">
-    <div class="space-y-2 text-sm">
+    <div class="space-y-2 text-sm p-4">
+      <div>Scrollable content</div>
       <div>Scrollable content</div>
       <div>Scrollable content</div>
       <div>Scrollable content</div>
