@@ -375,7 +375,6 @@
       <div class="docs-k-panel" role="dialog" aria-modal="true" aria-label="Jump to component">
         <div class="docs-k-input-row">
           <input type="text" class="docs-k-input" placeholder="Jump to component..." />
-          <kbd class="docs-k-hint">ESC</kbd>
         </div>
         <ul class="docs-k-list"></ul>
       </div>

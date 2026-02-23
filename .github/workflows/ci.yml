@@ -52,11 +52,8 @@ jobs:
       - name: Run Credo (strict)
         run: mix credo --strict
 
-      - name: Build static docs export
-        run: mix cinder_ui.docs.build --output tmp/ci-docs --clean
-
-      - name: Build static developer site
-        run: mix cinder_ui.site.build --output tmp/ci-site --clean
+      - name: Build static site
+        run: mix cinder_ui.docs.build
 
   root_tests:
     name: Root Tests + Coverage

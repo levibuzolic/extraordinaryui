@@ -1,7 +1,7 @@
 defmodule CinderUI.MixProject do
   use Mix.Project
 
-  @source_url "https://github.com/levibuzolic/cinder-ui"
+  @source_url "https://github.com/levibuzolic/cinder_ui"
   @version "0.0.1"
 
   def project do

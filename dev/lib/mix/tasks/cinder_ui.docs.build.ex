@@ -161,7 +161,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6"
           >
             <div class="mb-6">
-              <h1 class="text-xl font-semibold">Cinder UI</h1>
+              <h1 class="text-xl font-semibold">
+                <a href={@home_url}>Cinder UI</a>
+              </h1>
               <p class="text-muted-foreground mt-1 text-sm">Static component docs</p>
               {Phoenix.HTML.raw(header_links_html(@home_url, @github_url, @hex_package_url))}
             </div>

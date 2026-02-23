@@ -93,9 +93,6 @@ defmodule CinderUI.Site.Marketing do
 
     ~H"""
     <div class="flex flex-wrap items-center gap-2 md:justify-end">
-      <Actions.button as="a" href={@docs_path} variant={:outline} size={:sm}>
-        Component docs
-      </Actions.button>
       <Actions.button
         :if={is_binary(@github_url) and @github_url != ""}
         as="a"
@@ -188,12 +185,12 @@ defmodule CinderUI.Site.Marketing do
           <Layout.card_content>
             <dl class="space-y-2 text-sm">
               <div class="flex items-center justify-between gap-2">
-                <dt class="text-muted-foreground">Project version</dt>
-                <dd class="font-medium">v{@version}</dd>
+                <dt class="text-muted-foreground">Latest release</dt>
+                <dd class="font-medium"><code>v{@version}</code></dd>
               </div>
               <div class="flex items-center justify-between gap-2">
                 <dt class="text-muted-foreground">Components</dt>
-                <dd class="font-medium">{@component_count}</dd>
+                <dd class="font-medium"><code>{@component_count}</code></dd>
               </div>
             </dl>
           </Layout.card_content>
@@ -215,22 +212,7 @@ defmodule CinderUI.Site.Marketing do
 
     ~H"""
     <section id="examples" class="space-y-4">
-      <div class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 class="text-2xl font-semibold tracking-tight">Component examples</h2>
-        <a
-          href={@shadcn_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-sm text-muted-foreground underline underline-offset-4"
-        >
-          Reference: shadcn/ui docs ↗
-        </a>
-      </div>
-
-      <p class="text-sm text-muted-foreground">
-        These previews are rendered with Cinder UI components
-      </p>
-
+      <h2 class="text-2xl font-semibold tracking-tight">Component examples</h2>
       <div class="grid gap-4 md:grid-cols-2">
         {Phoenix.HTML.raw(@button_group_example_card)}
         {Phoenix.HTML.raw(@form_example_card)}
