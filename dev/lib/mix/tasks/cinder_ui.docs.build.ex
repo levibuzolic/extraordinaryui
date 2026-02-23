@@ -21,6 +21,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   """
 
   use Mix.Task
+  use Phoenix.Component
 
   alias CinderUI.Components.Feedback
   alias CinderUI.Components.Forms
@@ -94,22 +95,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp overview_page_html(sections, theme_css, home_url, github_url, hex_package_url) do
-    content = """
-    <section class=\"mb-8\">
-      <h2 class=\"text-2xl font-semibold tracking-tight\">Component Library</h2>
-      <p class=\"text-muted-foreground mt-2 max-w-3xl text-sm\">
-        Static docs for Cinder UI components. Open any component for preview, HEEx usage,
-        generated attributes/slots docs, and a link to the original shadcn/ui reference.
-      </p>
-    </section>
-
-    #{overview_sections_html(sections)}
-    """
-
     page_shell(
       title: "Cinder UI Docs",
       description: "Static component docs for Cinder UI",
-      body_content: content,
+      body_content: overview_body_html(sections),
       theme_css: theme_css,
       asset_prefix: ".",
       sidebar: sidebar_links(sections, ".", nil),
@@ -120,41 +109,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url) do
-    examples_html = component_examples_html(entry)
-
-    content = """
-    <div class=\"mb-6 flex flex-wrap items-center justify-between gap-3\">
-      <a href=\"../index.html##{section_id_for_entry(sections, entry.id)}\" class=\"inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent\">← Back to index</a>
-      <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent\">Original shadcn/ui docs ↗</a>
-    </div>
-
-    <section class=\"mb-6\">
-      <p class=\"text-muted-foreground text-xs\">#{entry.module_name}</p>
-      <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}</code></h2>
-      <p class=\"text-muted-foreground mt-3 text-sm\">#{inline_code_html(entry.docs)}</p>
-    </section>
-
-    <section class=\"mb-8 space-y-4\">
-      #{examples_html}
-    </section>
-
-    <section class=\"mb-6\">
-      <h3 class=\"mb-3 text-sm font-semibold\">Attributes</h3>
-      #{attributes_table_html(entry.attributes)}
-    </section>
-
-    <section class=\"mb-6\">
-      <h3 class=\"mb-3 text-sm font-semibold\">Slots</h3>
-      #{slots_table_html(entry.slots)}
-    </section>
-
-    #{function_docs_panel_html(entry.docs_full, entry.docs)}
-    """
-
     page_shell(
       title: "#{entry.module_name}.#{entry.title} · Cinder UI",
       description: entry.docs,
-      body_content: content,
+      body_content: component_body_html(entry, sections),
       theme_css: theme_css,
       asset_prefix: "..",
       sidebar: sidebar_links(sections, "..", entry.id),
@@ -165,65 +123,149 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp page_shell(opts) do
-    title = opts[:title]
-    description = opts[:description]
-    body_content = opts[:body_content]
-    theme_css = opts[:theme_css]
-    asset_prefix = opts[:asset_prefix]
-    sidebar = opts[:sidebar]
-    home_url = opts[:home_url]
-    github_url = opts[:github_url]
-    hex_package_url = opts[:hex_package_url]
-
-    """
-    <!doctype html>
-    <html lang=\"en\">
-      <head>
-        <meta charset=\"utf-8\" />
-        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-        <title>#{escape(title)}</title>
-        <meta name=\"description\" content=\"#{escape(description)}\" />
-        <script src=\"https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4\"></script>
-        <style type=\"text/tailwindcss\">
-    #{theme_css}
-
-    @layer base {
-      body {
-        @apply min-h-screen;
-      }
+    assigns = %{
+      title: opts[:title],
+      description: opts[:description],
+      body_content: opts[:body_content],
+      theme_css: opts[:theme_css],
+      asset_prefix: opts[:asset_prefix],
+      sidebar: opts[:sidebar],
+      home_url: opts[:home_url],
+      github_url: opts[:github_url],
+      hex_package_url: opts[:hex_package_url]
     }
+
+    ~H"""
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{@title}</title>
+        <meta name="description" content={@description} />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4">
+        </script>
+        <style type="text/tailwindcss">
+          <%= Phoenix.HTML.raw(@theme_css) %>
+
+          @layer base {
+            body {
+              @apply min-h-screen;
+            }
+          }
+              
         </style>
-        <link rel=\"stylesheet\" href=\"#{asset_prefix}/assets/site.css\" />
+        <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
-      <body class=\"bg-background text-foreground\">
-        <div class=\"mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_1fr]\">
-          <aside class=\"border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6\">
-            <div class=\"mb-6\">
-              <h1 class=\"text-xl font-semibold\">Cinder UI</h1>
-              <p class=\"text-muted-foreground mt-1 text-sm\">Static component docs</p>
-              #{header_links_html(home_url, github_url, hex_package_url)}
+      <body class="bg-background text-foreground">
+        <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_1fr]">
+          <aside class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6">
+            <div class="mb-6">
+              <h1 class="text-xl font-semibold">Cinder UI</h1>
+              <p class="text-muted-foreground mt-1 text-sm">Static component docs</p>
+              {Phoenix.HTML.raw(header_links_html(@home_url, @github_url, @hex_package_url))}
             </div>
 
-            #{theme_controls_html()}
+            {Phoenix.HTML.raw(theme_controls_html())}
 
-            <nav class=\"space-y-4\" aria-label=\"Component sections\">
-              #{sidebar}
+            <nav class="space-y-4" aria-label="Component sections">
+              {Phoenix.HTML.raw(@sidebar)}
             </nav>
 
-            <div class=\"mt-6 text-xs text-muted-foreground\">
+            <div class="mt-6 text-xs text-muted-foreground">
               Generated by <code>mix cinder_ui.docs.build</code>
             </div>
           </aside>
 
-          <main class=\"px-5 py-6 lg:px-8\">
-            #{body_content}
+          <main class="px-5 py-6 lg:px-8">
+            {Phoenix.HTML.raw(@body_content)}
           </main>
         </div>
 
-        <script src=\"#{asset_prefix}/assets/site.js\"></script>
+        <script src={"#{@asset_prefix}/assets/site.js"}>
+        </script>
       </body>
     </html>
     """
+    |> to_html()
+  end
+
+  defp overview_body_html(sections) do
+    assigns = %{sections: sections}
+
+    ~H"""
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold tracking-tight">Component Library</h2>
+      <p class="text-muted-foreground mt-2 max-w-3xl text-sm">
+        Static docs for Cinder UI components. Open any component for preview, HEEx usage,
+        generated attributes/slots docs, and a link to the original shadcn/ui reference.
+      </p>
+    </section>
+
+    {Phoenix.HTML.raw(overview_sections_html(@sections))}
+    """
+    |> to_html()
+  end
+
+  defp component_body_html(entry, sections) do
+    examples_html = component_examples_html(entry)
+    docs_html = inline_code_html(entry.docs)
+    attrs_html = attributes_table_html(entry.attributes)
+    slots_html = slots_table_html(entry.slots)
+    function_docs_html = function_docs_panel_html(entry.docs_full, entry.docs)
+    back_section_id = section_id_for_entry(sections, entry.id)
+
+    assigns = %{
+      entry: entry,
+      examples_html: examples_html,
+      docs_html: docs_html,
+      attrs_html: attrs_html,
+      slots_html: slots_html,
+      function_docs_html: function_docs_html,
+      back_section_id: back_section_id
+    }
+
+    ~H"""
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <a
+        href={"../index.html##{@back_section_id}"}
+        class="inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent"
+      >
+        ← Back to index
+      </a>
+      <a
+        href={@entry.shadcn_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent"
+      >
+        Original shadcn/ui docs ↗
+      </a>
+    </div>
+
+    <section class="mb-6">
+      <p class="text-muted-foreground text-xs">{@entry.module_name}</p>
+      <h2 class="mt-1 text-2xl font-semibold tracking-tight">
+        <code>{@entry.module_name}.{@entry.title}</code>
+      </h2>
+      <p class="text-muted-foreground mt-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</p>
+    </section>
+
+    <section class="mb-8 space-y-4">{Phoenix.HTML.raw(@examples_html)}</section>
+
+    <section class="mb-6">
+      <h3 class="mb-3 text-sm font-semibold">Attributes</h3>
+      {Phoenix.HTML.raw(@attrs_html)}
+    </section>
+
+    <section class="mb-6">
+      <h3 class="mb-3 text-sm font-semibold">Slots</h3>
+      {Phoenix.HTML.raw(@slots_html)}
+    </section>
+
+    {Phoenix.HTML.raw(@function_docs_html)}
+    """
+    |> to_html()
   end
 
   defp sidebar_links(sections, root_prefix, active_entry_id) do
@@ -357,49 +399,86 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp overview_sections_html(sections) do
-    Enum.map_join(sections, "\n", fn section ->
-      entries = Enum.map_join(section.entries, "\n", &overview_entry_html/1)
+    assigns = %{sections: sections}
 
-      """
-      <section id=\"#{section.id}\" class=\"mb-12\">
-        <h3 class=\"mb-4 text-xl font-semibold\">#{section.title}</h3>
-        <div class=\"grid gap-4 md:grid-cols-2\">#{entries}</div>
+    ~H"""
+    <%= for section <- @sections do %>
+      <section id={section.id} class="mb-12">
+        <h3 class="mb-4 text-xl font-semibold">{section.title}</h3>
+        <div class="grid gap-4 md:grid-cols-2">
+          <%= for entry <- section.entries do %>
+            {Phoenix.HTML.raw(overview_entry_html(entry))}
+          <% end %>
+        </div>
       </section>
-      """
-    end)
+    <% end %>
+    """
+    |> to_html()
   end
 
   defp overview_entry_html(entry) do
-    escaped_docs = inline_code_html(entry.docs)
-    escaped_template = escape(entry.template_heex)
+    assigns = %{
+      entry: entry,
+      docs_html: inline_code_html(entry.docs),
+      template_html: escape(entry.template_heex),
+      attrs_count: length(entry.attributes),
+      slots_count: length(entry.slots)
+    }
 
-    """
-    <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"flex h-full flex-col rounded-xl border bg-card text-card-foreground shadow-sm\">
-      <header class=\"border-border/70 border-b px-4 py-3\">
-        <div class=\"flex flex-wrap items-start justify-between gap-2\">
-          <h4 class=\"font-medium\">
-            <a href=\"./#{entry.docs_path}\" class=\"hover:underline underline-offset-4\">
-              <code>#{entry.module_name}.#{entry.title}</code>
+    ~H"""
+    <article
+      id={@entry.id}
+      data-component-card
+      data-component-name={@entry.title}
+      class="flex h-full flex-col rounded-xl border bg-card text-card-foreground shadow-sm"
+    >
+      <header class="border-border/70 border-b px-4 py-3">
+        <div class="flex flex-wrap items-start justify-between gap-2">
+          <h4 class="font-medium">
+            <a href={"./#{@entry.docs_path}"} class="hover:underline underline-offset-4">
+              <code>{@entry.module_name}.{@entry.title}</code>
             </a>
           </h4>
-          <div class=\"flex items-center gap-1\">
-            <button type=\"button\" data-copy-template=\"#{entry.id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
-            <a href=\"./#{entry.docs_path}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Open docs</a>
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              data-copy-template={@entry.id}
+              class="inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent"
+            >
+              Copy HEEx
+            </button>
+            <a
+              href={"./#{@entry.docs_path}"}
+              class="inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent"
+            >
+              Open docs
+            </a>
           </div>
         </div>
-        <p class=\"text-muted-foreground mt-2 text-sm\">#{escaped_docs}</p>
+        <p class="text-muted-foreground mt-2 text-sm">{Phoenix.HTML.raw(@docs_html)}</p>
       </header>
 
-      <div class=\"bg-background border-border/70 flex min-h-[7rem] flex-1 items-center justify-center p-4\">
-        <div class=\"flex w-full justify-center\">#{entry.preview_html}</div>
+      <div class="bg-background border-border/70 flex min-h-[7rem] flex-1 items-center justify-center p-4">
+        <div class="flex w-full justify-center">{Phoenix.HTML.raw(@entry.preview_html)}</div>
       </div>
-      <pre class=\"max-h-56 overflow-auto bg-muted/30 p-4 text-xs border-border/70 border-b border-t\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
-      <div class=\"p-4 flex flex-wrap items-center justify-between gap-2 text-xs\">
-        <span class=\"text-muted-foreground\">attrs: <span class=\"font-medium text-foreground\">#{length(entry.attributes)}</span> · slots: <span class=\"font-medium text-foreground\">#{length(entry.slots)}</span></span>
-        <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-muted-foreground hover:text-foreground underline underline-offset-4\">shadcn reference ↗</a>
+      <pre class="max-h-56 overflow-auto border-t border-b border-border/70 bg-muted/30 p-4 text-xs"><code id={"code-#{@entry.id}"}><%= Phoenix.HTML.raw(@template_html) %></code></pre>
+      <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
+        <span class="text-muted-foreground">
+          attrs: <span class="font-medium text-foreground">{@attrs_count}</span>
+          · slots: <span class="font-medium text-foreground">{@slots_count}</span>
+        </span>
+        <a
+          href={@entry.shadcn_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted-foreground hover:text-foreground underline underline-offset-4"
+        >
+          shadcn reference ↗
+        </a>
       </div>
     </article>
     """
+    |> to_html()
   end
 
   defp component_examples_html(entry) do
@@ -676,6 +755,12 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     module
     |> apply(function, [assigns])
+    |> Safe.to_iodata()
+    |> IO.iodata_to_binary()
+  end
+
+  defp to_html(rendered) do
+    rendered
     |> Safe.to_iodata()
     |> IO.iodata_to_binary()
   end
