@@ -25,10 +25,20 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   alias CinderUI.Components.Feedback
   alias CinderUI.Components.Forms
+  alias CinderUI.Components.Actions
+  alias CinderUI.Components.Navigation
   alias CinderUI.Docs.Catalog
   alias CinderUI.Icons
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
+
+  @overview_preview_start_aligned_ids MapSet.new([
+                                        "forms-field",
+                                        "forms-input-group",
+                                        "layout-resizable",
+                                        "data-display-table",
+                                        "navigation-tabs"
+                                      ])
 
   @impl true
   def run(argv) do
@@ -153,7 +163,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
               @apply min-h-screen;
             }
           }
-              
         </style>
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
@@ -227,20 +236,24 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     ~H"""
     <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-      <a
+      <Actions.button
+        as="a"
         href={"../index.html##{@back_section_id}"}
-        class="inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent"
+        variant={:outline}
+        size={:xs}
       >
         ← Back to index
-      </a>
-      <a
+      </Actions.button>
+      <Actions.button
+        as="a"
         href={@entry.shadcn_url}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent"
+        variant={:outline}
+        size={:xs}
       >
         Original shadcn/ui docs ↗
-      </a>
+      </Actions.button>
     </div>
 
     <section class="mb-6">
@@ -269,123 +282,158 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp sidebar_links(sections, root_prefix, active_entry_id) do
-    index_href = "#{root_prefix}/index.html"
-    overview_active? = is_nil(active_entry_id)
+    assigns = %{
+      sections: sections,
+      root_prefix: root_prefix,
+      active_entry_id: active_entry_id,
+      index_href: "#{root_prefix}/index.html",
+      overview_active?: is_nil(active_entry_id)
+    }
 
-    section_blocks =
-      Enum.map_join(sections, "\n", fn section ->
-        entries =
-          Enum.map_join(
-            section.entries,
-            "\n",
-            &sidebar_entry_html(&1, root_prefix, active_entry_id)
-          )
-
-        """
-        <div>
-          <a href=\"#{index_href}##{section.id}\" class=\"sidebar-section-link text-sm font-semibold\">#{section.title}</a>
-          <ul class=\"mt-2 space-y-1\">#{entries}</ul>
-        </div>
-        """
-      end)
-
-    """
+    ~H"""
     <div>
-      <a href=\"#{index_href}\" class=\"#{sidebar_link_class(overview_active?)}\"#{current_page_attr(overview_active?)}>Overview</a>
+      <a
+        href={@index_href}
+        class={sidebar_link_class(@overview_active?)}
+        aria-current={if @overview_active?, do: "page", else: nil}
+      >
+        Overview
+      </a>
     </div>
-    #{section_blocks}
+
+    <%= for section <- @sections do %>
+      <div>
+        <a href={"#{@index_href}##{section.id}"} class="sidebar-section-link text-sm font-semibold">
+          {section.title}
+        </a>
+        <ul class="mt-2 space-y-1">
+          <li :for={entry <- section.entries}>
+            <a
+              class={sidebar_link_class(entry.id == @active_entry_id)}
+              href={"#{@root_prefix}/#{entry.docs_path}"}
+              aria-current={if entry.id == @active_entry_id, do: "page", else: nil}
+            >
+              {entry.title}
+            </a>
+          </li>
+        </ul>
+      </div>
+    <% end %>
     """
+    |> to_html()
   end
-
-  defp sidebar_entry_html(entry, root_prefix, active_entry_id) do
-    active? = entry.id == active_entry_id
-    active_class = sidebar_link_class(active?)
-
-    """
-    <li>
-      <a class=\"#{active_class}\" href=\"#{root_prefix}/#{entry.docs_path}\"#{current_page_attr(active?)}>#{entry.title}</a>
-    </li>
-    """
-  end
-
-  defp current_page_attr(true), do: ~s( aria-current="page")
-  defp current_page_attr(false), do: ""
 
   defp header_links_html(home_url, github_url, hex_package_url) do
-    links =
-      [
-        if(is_binary(home_url) and home_url != "",
-          do:
-            ~s(<a href="#{escape(home_url)}" class="inline-flex items-center rounded-md border px-2 py-1 hover:bg-accent">Home</a>)
-        ),
-        if(is_binary(github_url) and github_url != "",
-          do:
-            ~s(<a href="#{escape(github_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-md border px-2 py-1 hover:bg-accent">GitHub</a>)
-        ),
-        if(is_binary(hex_package_url) and hex_package_url != "",
-          do:
-            ~s(<a href="#{escape(hex_package_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-md border px-2 py-1 hover:bg-accent">Hex package</a>)
-        )
-      ]
-      |> Enum.reject(&is_nil/1)
+    assigns = %{
+      home_url: home_url,
+      github_url: github_url,
+      hex_package_url: hex_package_url
+    }
 
-    if links == [] do
-      ""
-    else
-      ~s(<div class="mt-3 flex flex-wrap gap-1 text-xs">#{Enum.join(links, "")}</div>)
-    end
+    ~H"""
+    <div
+      :if={
+        (is_binary(@home_url) and @home_url != "") or
+          (is_binary(@github_url) and @github_url != "") or
+          (is_binary(@hex_package_url) and @hex_package_url != "")
+      }
+      class="mt-3 flex flex-wrap gap-1 text-xs"
+    >
+      <Actions.button
+        :if={is_binary(@home_url) and @home_url != ""}
+        as="a"
+        href={@home_url}
+        variant={:outline}
+        size={:xs}
+      >
+        Home
+      </Actions.button>
+      <Actions.button
+        :if={is_binary(@github_url) and @github_url != ""}
+        as="a"
+        href={@github_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant={:outline}
+        size={:xs}
+      >
+        GitHub
+      </Actions.button>
+      <Actions.button
+        :if={is_binary(@hex_package_url) and @hex_package_url != ""}
+        as="a"
+        href={@hex_package_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant={:outline}
+        size={:xs}
+      >
+        Hex package
+      </Actions.button>
+    </div>
+    """
+    |> to_html()
   end
 
   defp theme_controls_html do
-    color_select =
-      render_component(Forms, :select, %{
-        name: "theme-color",
-        value: "neutral",
-        option: select_options(["zinc", "slate", "stone", "gray", "neutral"]),
-        class: "h-8 text-xs",
-        rest: %{"id" => "theme-color", "aria-label" => "Theme color"}
-      })
+    assigns = %{
+      color_options: select_options(["gray", "neutral", "slate", "stone", "zinc"]),
+      radius_options:
+        select_entries([
+          {"maia", "Compact (6px / 0.375rem)"},
+          {"mira", "Small (8px / 0.5rem)"},
+          {"nova", "Default (12px / 0.75rem)"},
+          {"lyra", "Large (14px / 0.875rem)"},
+          {"vega", "XL (16px / 1rem)"}
+        ])
+    }
 
-    radius_select =
-      render_component(Forms, :select, %{
-        name: "theme-radius",
-        value: "nova",
-        option:
-          select_entries([
-            {"maia", "Compact (6px / 0.375rem)"},
-            {"mira", "Small (8px / 0.5rem)"},
-            {"nova", "Default (12px / 0.75rem)"},
-            {"lyra", "Large (14px / 0.875rem)"},
-            {"vega", "XL (16px / 1rem)"}
-          ]),
-        class: "h-8 text-xs",
-        rest: %{"id" => "theme-radius", "aria-label" => "Theme radius"}
-      })
+    ~H"""
+    <section class="mb-6 rounded-lg border p-3">
+      <h2 class="text-sm font-semibold">Theme</h2>
 
-    """
-    <section class=\"mb-6 rounded-lg border p-3\">
-      <h2 class=\"text-sm font-semibold\">Theme</h2>
-
-      <div class=\"mt-3\">
-        <p class=\"mb-2 text-xs font-medium text-muted-foreground\">Mode</p>
-        <div class=\"grid grid-cols-3 gap-1\">
-          <button type=\"button\" data-theme-mode=\"light\" class=\"theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs\">Light</button>
-          <button type=\"button\" data-theme-mode=\"dark\" class=\"theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs\">Dark</button>
-          <button type=\"button\" data-theme-mode=\"auto\" class=\"theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs\">Auto</button>
-        </div>
+      <div class="mt-3">
+        <p class="mb-2 text-xs font-medium text-muted-foreground">Mode</p>
+        <Navigation.tabs value="auto" class="w-full gap-0 [&_[data-slot=tabs-list]]:w-full">
+          <:trigger value="light" data_theme_mode="light" class="theme-mode-btn">Light</:trigger>
+          <:trigger value="dark" data_theme_mode="dark" class="theme-mode-btn">Dark</:trigger>
+          <:trigger value="auto" data_theme_mode="auto" class="theme-mode-btn">Auto</:trigger>
+        </Navigation.tabs>
       </div>
 
-      <div class=\"mt-3\">
-        <label for=\"theme-color\" class=\"mb-2 block text-xs font-medium text-muted-foreground\">Color</label>
-        #{color_select}
+      <div class="mt-3">
+        <label for="theme-color" class="mb-1 block text-xs font-medium text-muted-foreground">
+          Base color
+        </label>
+        <p class="mb-2 text-[11px] text-muted-foreground">
+          Matches shadcn <code>tailwind.baseColor</code>.
+        </p>
+        <Forms.select
+          name="theme-color"
+          value="neutral"
+          id="theme-color"
+          aria-label="Theme color"
+        >
+          <:option :for={option <- @color_options} value={option.value} label={option.label} />
+        </Forms.select>
       </div>
 
-      <div class=\"mt-3\">
-        <label for=\"theme-radius\" class=\"mb-2 block text-xs font-medium text-muted-foreground\">Radius</label>
-        #{radius_select}
+      <div class="mt-3">
+        <label for="theme-radius" class="mb-2 block text-xs font-medium text-muted-foreground">
+          Radius
+        </label>
+        <Forms.select
+          name="theme-radius"
+          value="nova"
+          id="theme-radius"
+          aria-label="Theme radius"
+        >
+          <:option :for={option <- @radius_options} value={option.value} label={option.label} />
+        </Forms.select>
       </div>
     </section>
     """
+    |> to_html()
   end
 
   defp select_options(options) do
@@ -417,12 +465,15 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp overview_entry_html(entry) do
+    preview_align = overview_preview_alignment(entry.id)
+
     assigns = %{
       entry: entry,
       docs_html: inline_code_html(entry.docs),
       template_html: escape(entry.template_heex),
       attrs_count: length(entry.attributes),
-      slots_count: length(entry.slots)
+      slots_count: length(entry.slots),
+      preview_align: preview_align
     }
 
     ~H"""
@@ -440,26 +491,37 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             </a>
           </h4>
           <div class="flex items-center gap-1">
-            <button
-              type="button"
+            <Actions.button
               data-copy-template={@entry.id}
-              class="inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent"
+              type="button"
+              variant={:outline}
+              size={:xs}
             >
               Copy HEEx
-            </button>
-            <a
+            </Actions.button>
+            <Actions.button
+              as="a"
               href={"./#{@entry.docs_path}"}
-              class="inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent"
+              variant={:outline}
+              size={:xs}
             >
               Open docs
-            </a>
+            </Actions.button>
           </div>
         </div>
         <p class="text-muted-foreground mt-2 text-sm">{Phoenix.HTML.raw(@docs_html)}</p>
       </header>
 
-      <div class="bg-background border-border/70 flex min-h-[7rem] flex-1 items-center justify-center p-4">
-        <div class="flex w-full justify-center">{Phoenix.HTML.raw(@entry.preview_html)}</div>
+      <div
+        class={[
+          "bg-background border-border/70 flex min-h-[7rem] flex-1 p-4",
+          @preview_align == :center && "items-center justify-center",
+        ]}
+        data-preview-align={@preview_align}
+      >
+        <div class={["w-full", @preview_align == :center && "flex justify-center"]}>
+          {Phoenix.HTML.raw(@entry.preview_html)}
+        </div>
       </div>
       <pre class="max-h-56 overflow-auto border-t border-b border-border/70 bg-muted/30 p-4 text-xs"><code id={"code-#{@entry.id}"}><%= Phoenix.HTML.raw(@template_html) %></code></pre>
       <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
@@ -481,52 +543,49 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     |> to_html()
   end
 
+  defp overview_preview_alignment(entry_id) do
+    if MapSet.member?(@overview_preview_start_aligned_ids, entry_id), do: :start, else: :center
+  end
+
   defp component_examples_html(entry) do
-    total = length(entry.examples)
-    copy_icon_html = render_component(Icons, :icon, %{name: "copy", class: "size-3.5"})
+    assigns = %{
+      entry: entry,
+      total: length(entry.examples)
+    }
 
-    entry.examples
-    |> Enum.with_index(1)
-    |> Enum.map_join("\n", fn {example, index} ->
-      copy_id = "#{entry.id}-#{example.id}"
-      escaped_template = escape(example.template_heex)
-      heading = example_heading(example.title, index, total)
-
-      description =
-        case example.description do
-          value when is_binary(value) and value != "" ->
-            ~s(<p class="text-muted-foreground mt-1 text-xs">#{escape(value)}</p>)
-
-          _ ->
-            ""
-        end
-
-      """
-      <section class=\"mb-10\">
+    ~H"""
+    <%= for {example, index} <- Enum.with_index(@entry.examples, 1) do %>
+      <section class="mb-10">
         <header>
-          <h3 class=\"text-sm font-semibold\">#{escape(heading)}</h3>
-          #{description}
+          <h3 class="text-sm font-semibold">{example_heading(example.title, index, @total)}</h3>
+          <p
+            :if={is_binary(example.description) and example.description != ""}
+            class="text-muted-foreground mt-1 text-xs"
+          >
+            {example.description}
+          </p>
         </header>
 
-        <div data-slot=\"component-preview\" class=\"mt-4 overflow-hidden rounded-xl border\">
-          <div data-slot=\"preview\" class=\"p-4 sm:p-6\">
-            #{example.preview_html}
-          </div>
+        <div data-slot="component-preview" class="mt-4 overflow-hidden rounded-xl border">
+          <div data-slot="preview" class="p-4 sm:p-6">{Phoenix.HTML.raw(example.preview_html)}</div>
 
-          <div data-slot=\"code\" class=\"relative border-t bg-muted/20\">
+          <div data-slot="code" class="relative border-t bg-muted/20">
             <button
-              type=\"button\"
-              data-copy-template=\"#{copy_id}\"
-              aria-label=\"Copy HEEx\"
-              title=\"Copy HEEx\"
-              class=\"absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground\"
-            >#{copy_icon_html}</button>
-            <pre class=\"max-h-96 overflow-auto bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
+              type="button"
+              data-copy-template={"#{@entry.id}-#{example.id}"}
+              aria-label="Copy HEEx"
+              title="Copy HEEx"
+              class="absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground"
+            >
+              <Icons.icon name="copy" class="size-3.5" />
+            </button>
+            <pre class="max-h-96 overflow-auto bg-muted/30 p-4 text-xs"><code id={"code-#{@entry.id}-#{example.id}"}>{example.template_heex}</code></pre>
           </div>
         </div>
       </section>
-      """
-    end)
+    <% end %>
+    """
+    |> to_html()
   end
 
   defp example_heading("Default", 1, 1), do: "Example"
@@ -552,14 +611,15 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     if residual == "" do
       ""
     else
-      """
-      <section class=\"mb-6\">
-        <h3 class=\"mb-3 text-sm font-semibold\">Function Docs</h3>
-        <div class=\"space-y-3 text-sm\">
-          #{docs_full_html(residual)}
-        </div>
+      assigns = %{docs_html: docs_full_html(residual)}
+
+      ~H"""
+      <section class="mb-6">
+        <h3 class="mb-3 text-sm font-semibold">Function Docs</h3>
+        <div class="space-y-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
       </section>
       """
+      |> to_html()
     end
   end
 
@@ -615,100 +675,113 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp attributes_table_html([]) do
-    "<p class=\"text-sm text-muted-foreground\">No attributes declared.</p>"
+    assigns = %{}
+
+    ~H"""
+    <p class="text-sm text-muted-foreground">No attributes declared.</p>
+    """
+    |> to_html()
   end
 
   defp attributes_table_html(attrs) do
-    rows =
-      Enum.map_join(attrs, "\n", fn attr ->
-        values =
-          if attr.values == [] do
-            "—"
-          else
-            Enum.map_join(attr.values, ", ", &"<code>#{escape(inspect(&1))}</code>")
-          end
+    assigns = %{attrs: attrs}
 
-        includes =
-          if attr.includes == [] do
-            "—"
-          else
-            Enum.map_join(attr.includes, ", ", &"<code>#{escape(&1)}</code>")
-          end
-
-        default =
-          if is_nil(attr.default) do
-            "—"
-          else
-            "<code>#{escape(inspect(attr.default))}</code>"
-          end
-
-        name =
-          "<code>#{attr.name}</code>" <>
-            if(attr.required, do: required_badge_html("ml-2"), else: "")
-
-        """
-        <tr class=\"border-border/60 border-t align-top\">
-          <td class=\"px-3 py-2\">#{name}</td>
-          <td class=\"px-3 py-2\"><code>#{escape(attr.type)}</code></td>
-          <td class=\"px-3 py-2\">#{default}</td>
-          <td class=\"px-3 py-2\">#{values}</td>
-          <td class=\"px-3 py-2\">#{includes}</td>
-        </tr>
-        """
-      end)
-
-    """
-    <div class=\"overflow-auto rounded-md border\">
-      <table class=\"w-full min-w-[680px] text-left text-xs\">
-        <thead class=\"bg-muted/40\">
+    ~H"""
+    <div class="overflow-auto rounded-md border">
+      <table class="w-full min-w-[680px] text-left text-xs">
+        <thead class="bg-muted/40">
           <tr>
-            <th class=\"px-3 py-2 font-medium\">Name</th>
-            <th class=\"px-3 py-2 font-medium\">Type</th>
-            <th class=\"px-3 py-2 font-medium\">Default</th>
-            <th class=\"px-3 py-2 font-medium\">Values</th>
-            <th class=\"px-3 py-2 font-medium\">Global Includes</th>
+            <th class="px-3 py-2 font-medium">Name</th>
+            <th class="px-3 py-2 font-medium">Type</th>
+            <th class="px-3 py-2 font-medium">Default</th>
+            <th class="px-3 py-2 font-medium">Values</th>
+            <th class="px-3 py-2 font-medium">Global Includes</th>
           </tr>
         </thead>
-        <tbody>#{rows}</tbody>
+        <tbody>
+          <tr :for={attr <- @attrs} class="border-border/60 border-t align-top">
+            <td class="px-3 py-2">
+              <code>{attr.name}</code>
+              <%= if attr.required do %>
+                {Phoenix.HTML.raw(required_badge_html("ml-2"))}
+              <% end %>
+            </td>
+            <td class="px-3 py-2"><code>{attr.type}</code></td>
+            <td class="px-3 py-2">
+              <%= if is_nil(attr.default) do %>
+                —
+              <% else %>
+                <code>{inspect(attr.default)}</code>
+              <% end %>
+            </td>
+            <td class="px-3 py-2">
+              <%= if attr.values == [] do %>
+                —
+              <% else %>
+                <%= for {value, idx} <- Enum.with_index(attr.values) do %>
+                  <%= if idx > 0 do %>
+                    ,
+                  <% end %>
+                  <code>{inspect(value)}</code>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="px-3 py-2">
+              <%= if attr.includes == [] do %>
+                —
+              <% else %>
+                <%= for {include, idx} <- Enum.with_index(attr.includes) do %>
+                  <%= if idx > 0 do %>
+                    ,
+                  <% end %>
+                  <code>{include}</code>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
     """
+    |> to_html()
   end
 
   defp slots_table_html([]) do
-    "<p class=\"text-sm text-muted-foreground\">No slots declared.</p>"
+    assigns = %{}
+
+    ~H"""
+    <p class="text-sm text-muted-foreground">No slots declared.</p>
+    """
+    |> to_html()
   end
 
   defp slots_table_html(slots) do
-    rows =
-      Enum.map_join(slots, "\n", fn slot ->
-        name =
-          "<code>#{slot.name}</code>" <>
-            if(slot.required, do: required_badge_html("ml-2"), else: "")
+    assigns = %{slots: slots}
 
-        slot_attrs = slot_attrs_summary(slot.attrs)
-
-        """
-        <tr class=\"border-border/60 border-t align-top\">
-          <td class=\"px-3 py-2\">#{name}</td>
-          <td class=\"px-3 py-2\">#{slot_attrs}</td>
-        </tr>
-        """
-      end)
-
-    """
-    <div class=\"overflow-auto rounded-md border\">
-      <table class=\"w-full min-w-[560px] text-left text-xs\">
-        <thead class=\"bg-muted/40\">
+    ~H"""
+    <div class="overflow-auto rounded-md border">
+      <table class="w-full min-w-[560px] text-left text-xs">
+        <thead class="bg-muted/40">
           <tr>
-            <th class=\"px-3 py-2 font-medium\">Slot</th>
-            <th class=\"px-3 py-2 font-medium\">Slot Attributes</th>
+            <th class="px-3 py-2 font-medium">Slot</th>
+            <th class="px-3 py-2 font-medium">Slot Attributes</th>
           </tr>
         </thead>
-        <tbody>#{rows}</tbody>
+        <tbody>
+          <tr :for={slot <- @slots} class="border-border/60 border-t align-top">
+            <td class="px-3 py-2">
+              <code>{slot.name}</code>
+              <%= if slot.required do %>
+                {Phoenix.HTML.raw(required_badge_html("ml-2"))}
+              <% end %>
+            </td>
+            <td class="px-3 py-2">{Phoenix.HTML.raw(slot_attrs_summary(slot.attrs))}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
     """
+    |> to_html()
   end
 
   defp section_id_for_entry(sections, entry_id) do
@@ -737,26 +810,14 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp required_badge_html(extra_class) do
-    render_component(Feedback, :badge, %{
-      variant: :destructive,
-      class: "align-middle #{extra_class}",
-      inner_block: [
-        %{
-          inner_block: fn _, _ -> HTML.raw("Required") end
-        }
-      ]
-    })
-  end
+    assigns = %{extra_class: extra_class}
 
-  defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
-
-  defp render_component(module, function, assigns) do
-    assigns = Map.put_new(assigns, :__changed__, %{})
-
-    module
-    |> apply(function, [assigns])
-    |> Safe.to_iodata()
-    |> IO.iodata_to_binary()
+    ~H"""
+    <Feedback.badge variant={:destructive} class={"align-middle #{@extra_class}"}>
+      Required
+    </Feedback.badge>
+    """
+    |> to_html()
   end
 
   defp to_html(rendered) do
@@ -764,6 +825,8 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     |> Safe.to_iodata()
     |> IO.iodata_to_binary()
   end
+
+  defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 
   defp site_js, do: docs_asset!("site.js")
   defp site_css, do: docs_asset!("site.css")

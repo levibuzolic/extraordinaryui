@@ -48,6 +48,10 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert index =~ "theme-radius"
     assert index =~ "data-slot=\"native-select-wrapper\""
     assert index =~ "data-slot=\"native-select\""
+    assert index =~ ~s(id="actions-button")
+    assert index =~ ~s(id="forms-field")
+    assert index =~ ~s(data-preview-align="center")
+    assert index =~ ~s(data-preview-align="start")
     assert index =~ ~s(href="./index.html")
     assert index =~ ~s(aria-current="page")
     assert index =~ "sidebar-link"

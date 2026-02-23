@@ -145,6 +145,8 @@ defmodule CinderUI.Docs.CatalogTest do
     assert icon_entry
     assert icon_entry.template_heex =~ "<.icon"
     assert icon_entry.preview_html =~ "<svg"
+    assert icon_entry.docs_full =~ "https://lucide.dev/icons"
+    assert icon_entry.docs_full =~ "https://hex.pm/packages/lucide_icons"
   end
 
   defp find_entry(entries, module, function) do

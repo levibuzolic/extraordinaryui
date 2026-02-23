@@ -364,9 +364,11 @@ defmodule CinderUI.Components.Navigation do
 
   slot :trigger, required: true do
     attr :value, :string, required: true
+    attr :class, :string
+    attr :data_theme_mode, :string
   end
 
-  slot :content, required: true do
+  slot :content do
     attr :value, :string, required: true
   end
 
@@ -393,14 +395,16 @@ defmodule CinderUI.Components.Navigation do
           :for={trigger <- @trigger}
           data-slot="tabs-trigger"
           data-state={if(trigger.value == @value, do: "active", else: "inactive")}
+          data-theme-mode={trigger[:data_theme_mode]}
           type="button"
           class={
             classes([
               "text-foreground/60 hover:text-foreground relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50",
-              @variant == :default && trigger.value == @value &&
-                "bg-background text-foreground shadow-sm",
-              @variant == :line && trigger.value == @value &&
-                "text-foreground after:absolute after:inset-x-0 after:bottom-[-5px] after:h-0.5 after:bg-foreground"
+              @variant == :default &&
+                "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+              @variant == :line &&
+                "data-[state=active]:text-foreground data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:bottom-[-5px] data-[state=active]:after:h-0.5 data-[state=active]:after:bg-foreground",
+              trigger[:class]
             ])
           }
         >
@@ -408,14 +412,16 @@ defmodule CinderUI.Components.Navigation do
         </button>
       </div>
 
-      <div
-        :for={content <- @content}
-        data-slot="tabs-content"
-        data-state={if(content.value == @value, do: "active", else: "inactive")}
-        class={classes(["flex-1 outline-none", content.value != @value && "hidden"])}
-      >
-        {render_slot(content)}
-      </div>
+      <%= if @content != [] do %>
+        <div
+          :for={content <- @content}
+          data-slot="tabs-content"
+          data-state={if(content.value == @value, do: "active", else: "inactive")}
+          class={classes(["flex-1 outline-none", content.value != @value && "hidden"])}
+        >
+          {render_slot(content)}
+        </div>
+      <% end %>
     </div>
     """
   end

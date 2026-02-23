@@ -30,6 +30,11 @@ defmodule CinderUI.Icons do
   ## Example
 
       <.icon name="chevron-down" class="size-4 text-muted-foreground" aria-hidden="true" />
+
+  ## References
+
+  - [Full Lucide icon directory](https://lucide.dev/icons)
+  - [lucide_icons package](https://hex.pm/packages/lucide_icons)
   """
   attr :name, :string, required: true
   attr :class, :string, default: nil
