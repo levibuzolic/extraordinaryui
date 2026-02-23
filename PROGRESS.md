@@ -38,7 +38,7 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 
 - [ ] Publish Hex package and HexDocs for `cinder_ui`.
 - [ ] Implement `Context Menu` or formally document it as out-of-scope.
-- [ ] Deepen scaffold/progressive parity for `Calendar`, `Chart`, `Resizable`, `Sidebar`, and `Sonner`.
+- [ ] Deepen scaffold/progressive parity for `Calendar`, `Chart`, `Sidebar`, and `Sonner`.
 - [ ] Expand browser tests for keyboard/focus accessibility behavior in progressive overlay/menu components.
 - [ ] Daisy gap phase 2: evaluate/implement `steps`, `timeline`, and toast orchestration hooks after validating phase 1 adoption feedback.
 
@@ -318,6 +318,14 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 - Added env-aware compile paths in `mix.exs` so internal tooling compiles in `:dev`/`:test` while remaining excluded from packaged runtime code.
 - Simplified Hex package file list back to `lib` now that internal tooling is outside the shipped source tree.
 
+### Milestone 25: Progressive resizable behavior + optional persistence
+
+- Upgraded `Layout.resizable/1` from static scaffold to progressive behavior via `EuiResizable` hook wiring.
+- Added drag handles between panels with orientation-aware cursor/keyboard controls.
+- Added optional `storage_key` attribute to persist panel size percentages in `localStorage`.
+- Added `with_handle` and per-panel `min_size` API support for shadcn-style default/vertical/handle examples.
+- Updated docs/examples/tests and component coverage matrix to reflect the new progressive status.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -361,3 +369,4 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 - `(working tree)` - add lightweight HEEx syntax highlighting to docs/site and implement daisy-gap phase 1 primitives (`menu`, `toast`).
 - `(working tree)` - tighten Hex package files to runtime API + installer task only, and document docs/site build tasks as repo-only.
 - `(working tree)` - move docs/site build internals under `dev/lib` and simplify Hex package file list to `lib`.
+- `(working tree)` - add `EuiResizable` progressive hook with optional `storage_key` persistence and update `Layout.resizable/1` docs/examples/tests.
