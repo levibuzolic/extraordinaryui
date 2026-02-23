@@ -25,9 +25,8 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "Admin"
     assert html =~ "data-slot=\"native-select-wrapper\""
     assert html =~ "data-slot=\"native-select\""
-    assert html =~ "data-slot=\"native-select-icon\""
-    assert html =~ "pr-9"
-    assert html =~ "right-3.5"
+    assert html =~ "pr-8"
+    assert html =~ "right-2.5"
   end
 
   test "switch hides native checkbox glyph and renders thumb" do

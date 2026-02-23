@@ -40,7 +40,6 @@ defmodule CinderUI.Docs.Catalog do
     input_otp: "input-otp",
     item: "command",
     menu: "navigation-menu",
-    native_select: "select",
     toast: "sonner",
     sonner_toaster: "sonner"
   }
@@ -1134,8 +1133,6 @@ defmodule CinderUI.Docs.Catalog do
     do: %{name: "code[]", values: ["1", "2", "", "", "", ""]}
 
   defp sample_assigns(Forms, :label), do: %{for: "docs-input", inner_block: slot("Email")}
-
-  defp sample_assigns(Forms, :native_select), do: sample_assigns(Forms, :select)
 
   defp sample_assigns(Forms, :radio_group) do
     %{

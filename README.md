@@ -186,7 +186,6 @@ Legend:
 | Label | ✅ Full | Server-rendered | - |
 | Menubar | ⚡ Progressive | Server + hooks | Hook layer handles interactive menu behavior |
 | Menu | ✅ Full | Server-rendered | daisyUI-inspired navigation list primitive |
-| Native Select | ✅ Full | Server-rendered | Native HTML select with shadcn-style classes |
 | Navigation Menu | ✅ Full | Server-rendered | - |
 | Pagination | ✅ Full | Server-rendered | - |
 | Popover | ⚡ Progressive | Server + hooks | Hook layer handles open/close behavior |

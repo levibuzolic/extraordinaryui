@@ -143,7 +143,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - Added `Copy HEEx` actions to overview cards on the root static docs page so snippets can be copied without opening per-component pages.
 - Added always-visible HEEx snippet code boxes to overview cards (no expand/collapse toggle required) while retaining quick copy actions.
 - Fixed duplicate disclosure arrows in previewed collapsible/accordion components by scoping docs-shell summary pseudo-arrows away from component `summary[data-slot]` elements.
-- Aligned `Forms.select/1` + `native_select/1` markup/classes with current shadcn v4 native-select pattern (`appearance-none`, `pr-9`, wrapper, and right-aligned chevron icon spacing).
+- Aligned `Forms.select/1` markup/classes with current shadcn v4 native-select pattern (`appearance-none`, `pr-9`, wrapper, and right-aligned chevron icon spacing).
 - Fixed `Forms.switch/1` to fully suppress native checkbox glyph rendering (`appearance-none`) and use dynamic `checked`/`peer-checked` state classes for track/thumb behavior.
 - Added support for multiple generated examples per component in detailed docs pages.
 - Added support for multiple inline-doc examples by extracting fenced and indented HEEx snippets from function `@doc` text.
@@ -245,7 +245,7 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 
 - Aligned `Forms.input_group/1` with shadcn grouped-control behavior (single shell border, flattened child borders/shadows, unified focus ring).
 - Updated `input_group` docs examples to match the refined structure (`outline` action button).
-- Replaced static docs sidebar theme `<select>` markup with library-native `Forms.native_select/1` rendering so dropdown controls match package styles/classes.
+- Replaced static docs sidebar theme `<select>` markup with library-native `Forms.select/1` rendering so dropdown controls match package styles/classes.
 - Added lightweight syntax highlighting for HEEx code snippets in both static docs and marketing site outputs (no additional runtime dependency).
 - Completed a daisyUI/Phoenix gap pass against `phcurado/daisy_ui_components` and identified high-value additions.
 - Executed phase 1 additions:

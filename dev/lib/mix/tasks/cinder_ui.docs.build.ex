@@ -119,7 +119,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url) do
     examples_html = component_examples_html(entry)
-    inline_doc_examples_html = inline_doc_examples_html(entry)
 
     content = """
     <div class=\"mb-6 flex flex-wrap items-center justify-between gap-3\">
@@ -159,11 +158,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <h3 class=\"text-sm font-semibold\">Function Docs</h3>
       </header>
       <div class=\"space-y-3 p-5 text-sm\">
-        #{docs_full_html(entry.docs_full)}
+        #{docs_full_html(docs_without_examples(entry.docs_full))}
       </div>
     </section>
-
-    #{inline_doc_examples_html}
     """
 
     page_shell(
@@ -311,20 +308,20 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp theme_controls_html do
     color_select =
-      render_component(Forms, :native_select, %{
+      render_component(Forms, :select, %{
         name: "theme-color",
         value: "neutral",
-        option: native_select_options(["zinc", "slate", "stone", "gray", "neutral"]),
+        option: select_options(["zinc", "slate", "stone", "gray", "neutral"]),
         class: "h-8 text-xs",
         rest: %{"id" => "theme-color", "aria-label" => "Theme color"}
       })
 
     radius_select =
-      render_component(Forms, :native_select, %{
+      render_component(Forms, :select, %{
         name: "theme-radius",
         value: "nova",
         option:
-          native_select_entries([
+          select_entries([
             {"maia", "Compact (6px / 0.375rem)"},
             {"mira", "Small (8px / 0.5rem)"},
             {"nova", "Default (12px / 0.75rem)"},
@@ -361,13 +358,13 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     """
   end
 
-  defp native_select_options(options) do
+  defp select_options(options) do
     Enum.map(options, fn option ->
       %{value: option, label: option |> String.replace("_", " ") |> String.capitalize()}
     end)
   end
 
-  defp native_select_entries(options) do
+  defp select_entries(options) do
     Enum.map(options, fn {value, label} -> %{value: value, label: label} end)
   end
 
@@ -466,39 +463,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   defp example_heading("Default", 1, 1), do: "Example"
   defp example_heading(title, _index, _total), do: title
 
-  defp inline_doc_examples_html(%{inline_doc_examples: []}), do: ""
-
-  defp inline_doc_examples_html(entry) do
-    blocks =
-      entry.inline_doc_examples
-      |> Enum.map_join("\n", fn example ->
-        copy_id = "#{entry.id}-#{example.id}"
-        escaped_template = escape(example.template_heex)
-
-        """
-        <article class=\"rounded-lg border bg-muted/20 p-4\">
-          <div class=\"flex items-center justify-between gap-2\">
-            <h4 class=\"text-sm font-semibold\">#{escape(example.title)}</h4>
-            <button type=\"button\" data-copy-template=\"#{copy_id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
-          </div>
-          <pre class=\"mt-2 max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
-        </article>
-        """
-      end)
-
-    """
-    <section class=\"mt-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
-      <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Inline Docs Examples</h3>
-      </header>
-      <div class=\"space-y-3 p-5\">
-        <p class=\"text-muted-foreground text-sm\">Rendered from fenced code blocks in the component's inline <code class="inline-code">@doc</code>.</p>
-        #{blocks}
-      </div>
-    </section>
-    """
-  end
-
   defp docs_full_html(doc) do
     case Earmark.as_html(doc, compact_output: true) do
       {:ok, html, _messages} ->
@@ -511,6 +475,12 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     _ ->
       escaped_doc = escape(doc)
       "<article class=\"docs-markdown\"><p>#{escaped_doc}</p></article>"
+  end
+
+  defp docs_without_examples(doc) do
+    doc
+    |> String.replace(~r/(?:^|\n)##+\s+Examples?\b[\s\S]*?(?=\n##+\s|\z)/m, "\n")
+    |> String.trim()
   end
 
   defp sanitize_docs_html(html) do

@@ -11,7 +11,6 @@ defmodule CinderUI.Components.Forms do
   - `checkbox/1`
   - `switch/1`
   - `select/1`
-  - `native_select/1`
   - `radio_group/1`
   - `slider/1`
   - `input_group/1`
@@ -321,15 +320,14 @@ defmodule CinderUI.Components.Forms do
           {option.label}
         </option>
       </select>
-      <CinderUI.Icons.icon name="chevron-down" class="text-muted-foreground pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 select-none" aria-hidden="true" />
+      <CinderUI.Icons.icon
+        name="chevron-down"
+        class="text-muted-foreground pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 select-none"
+        aria-hidden="true"
+      />
     </div>
     """
   end
-
-  @doc """
-  Alias for `select/1` mirroring shadcn's `native-select` naming.
-  """
-  def native_select(assigns), do: select(assigns)
 
   @doc """
   Renders a radio group with native radio inputs.
