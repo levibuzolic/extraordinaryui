@@ -382,7 +382,7 @@ defmodule CinderUI.Docs.Catalog do
       |> Enum.map(fn {example, index} ->
         %{
           id: normalize_example_id(example.id, index),
-          title: example.title || default_example_title(index),
+          title: doc_example_title(example.title, function, index),
           description: nil,
           preview_html: render_heex_example(module, function, example.template_heex),
           template_heex: example.template_heex
@@ -421,6 +421,24 @@ defmodule CinderUI.Docs.Catalog do
       "" -> "example-#{index}"
       value -> value
     end
+  end
+
+  defp doc_example_title(nil, function, index),
+    do: "#{humanize_function(function)} example #{index}"
+
+  defp doc_example_title(title, function, index) do
+    if String.starts_with?(title, "Inline docs example") do
+      "#{humanize_function(function)} example #{index}"
+    else
+      title
+    end
+  end
+
+  defp humanize_function(function) do
+    function
+    |> Atom.to_string()
+    |> String.replace("_", " ")
+    |> String.capitalize()
   end
 
   defp render_heex_example(module, function, code) when is_binary(code) do

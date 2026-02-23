@@ -292,6 +292,14 @@ All validation checks currently pass (last run: February 23, 2026, including dem
   - `Forms.input/1`: `accept`, `readonly`, and related input attrs
   - `Forms.textarea/1`: `disabled`, `readonly`, and related textarea attrs
   - `DataDisplay.table_cell/1`: `colspan`, `rowspan`
+
+### Milestone 26: Extracted docs-build JS/CSS into assets
+
+- Moved embedded static docs frontend assets out of `dev/lib/mix/tasks/cinder_ui.docs.build.ex`:
+  - `dev/assets/docs/site.js`
+  - `dev/assets/docs/site.css`
+- Updated docs build task to load these assets via `docs_asset!/1` instead of inline heredocs.
+- Preserved detailed example panel structure updates and kept `Usage (HEEx)` section labeling in generated component pages.
   - `sandbox/demo_app`
 - Updated contributor docs (`CONTRIBUTING.md`) local setup guidance to use `./bin/bootstrap`.
 

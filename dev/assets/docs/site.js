@@ -1,0 +1,447 @@
+(() => {
+  const qs = (root, selector) => Array.from(root.querySelectorAll(selector))
+  const toggleVisibility = (el, visible) => {
+    if (!el) return
+    el.classList.toggle("hidden", !visible)
+    el.dataset.state = visible ? "open" : "closed"
+  }
+  const themeStorage = {
+    mode: "eui:theme:mode",
+    color: "eui:theme:color",
+    radius: "eui:theme:radius",
+  }
+  const themePresets = {
+    zinc: {
+      light: {
+        foreground: "oklch(0.141 0.005 285.823)",
+        card: "oklch(1 0 0)",
+        "card-foreground": "oklch(0.141 0.005 285.823)",
+        popover: "oklch(1 0 0)",
+        "popover-foreground": "oklch(0.141 0.005 285.823)",
+        primary: "oklch(0.21 0.006 285.885)",
+        "primary-foreground": "oklch(0.985 0 0)",
+        secondary: "oklch(0.967 0.001 286.375)",
+        "secondary-foreground": "oklch(0.21 0.006 285.885)",
+        muted: "oklch(0.967 0.001 286.375)",
+        "muted-foreground": "oklch(0.552 0.016 285.938)",
+        accent: "oklch(0.967 0.001 286.375)",
+        "accent-foreground": "oklch(0.21 0.006 285.885)",
+        border: "oklch(0.92 0.004 286.32)",
+        input: "oklch(0.92 0.004 286.32)",
+        ring: "oklch(0.705 0.015 286.067)",
+      },
+      dark: {
+        background: "oklch(0.141 0.005 285.823)",
+        foreground: "oklch(0.985 0 0)",
+        card: "oklch(0.21 0.006 285.885)",
+        "card-foreground": "oklch(0.985 0 0)",
+        popover: "oklch(0.21 0.006 285.885)",
+        "popover-foreground": "oklch(0.985 0 0)",
+        primary: "oklch(0.92 0.004 286.32)",
+        "primary-foreground": "oklch(0.21 0.006 285.885)",
+        secondary: "oklch(0.274 0.006 286.033)",
+        "secondary-foreground": "oklch(0.985 0 0)",
+        muted: "oklch(0.274 0.006 286.033)",
+        "muted-foreground": "oklch(0.705 0.015 286.067)",
+        accent: "oklch(0.274 0.006 286.033)",
+        "accent-foreground": "oklch(0.985 0 0)",
+        border: "oklch(1 0 0 / 10%)",
+        input: "oklch(1 0 0 / 15%)",
+        ring: "oklch(0.552 0.016 285.938)",
+      },
+    },
+    slate: {
+      light: {
+        foreground: "oklch(0.129 0.042 264.695)",
+        card: "oklch(1 0 0)",
+        "card-foreground": "oklch(0.129 0.042 264.695)",
+        popover: "oklch(1 0 0)",
+        "popover-foreground": "oklch(0.129 0.042 264.695)",
+        primary: "oklch(0.208 0.042 265.755)",
+        "primary-foreground": "oklch(0.984 0.003 247.858)",
+        secondary: "oklch(0.968 0.007 247.896)",
+        "secondary-foreground": "oklch(0.208 0.042 265.755)",
+        muted: "oklch(0.968 0.007 247.896)",
+        "muted-foreground": "oklch(0.554 0.046 257.417)",
+        accent: "oklch(0.968 0.007 247.896)",
+        "accent-foreground": "oklch(0.208 0.042 265.755)",
+        border: "oklch(0.929 0.013 255.508)",
+        input: "oklch(0.929 0.013 255.508)",
+        ring: "oklch(0.704 0.04 256.788)",
+      },
+      dark: {
+        background: "oklch(0.129 0.042 264.695)",
+        foreground: "oklch(0.984 0.003 247.858)",
+        card: "oklch(0.208 0.042 265.755)",
+        "card-foreground": "oklch(0.984 0.003 247.858)",
+        popover: "oklch(0.208 0.042 265.755)",
+        "popover-foreground": "oklch(0.984 0.003 247.858)",
+        primary: "oklch(0.929 0.013 255.508)",
+        "primary-foreground": "oklch(0.208 0.042 265.755)",
+        secondary: "oklch(0.279 0.041 260.031)",
+        "secondary-foreground": "oklch(0.984 0.003 247.858)",
+        muted: "oklch(0.279 0.041 260.031)",
+        "muted-foreground": "oklch(0.704 0.04 256.788)",
+        accent: "oklch(0.279 0.041 260.031)",
+        "accent-foreground": "oklch(0.984 0.003 247.858)",
+        border: "oklch(1 0 0 / 10%)",
+        input: "oklch(1 0 0 / 15%)",
+        ring: "oklch(0.551 0.027 264.364)",
+      },
+    },
+    stone: {
+      light: {
+        foreground: "oklch(0.147 0.004 49.25)",
+        card: "oklch(1 0 0)",
+        "card-foreground": "oklch(0.147 0.004 49.25)",
+        popover: "oklch(1 0 0)",
+        "popover-foreground": "oklch(0.147 0.004 49.25)",
+        primary: "oklch(0.216 0.006 56.043)",
+        "primary-foreground": "oklch(0.985 0.001 106.423)",
+        secondary: "oklch(0.97 0.001 106.424)",
+        "secondary-foreground": "oklch(0.216 0.006 56.043)",
+        muted: "oklch(0.97 0.001 106.424)",
+        "muted-foreground": "oklch(0.553 0.013 58.071)",
+        accent: "oklch(0.97 0.001 106.424)",
+        "accent-foreground": "oklch(0.216 0.006 56.043)",
+        border: "oklch(0.923 0.003 48.717)",
+        input: "oklch(0.923 0.003 48.717)",
+        ring: "oklch(0.709 0.01 56.259)",
+      },
+      dark: {
+        background: "oklch(0.147 0.004 49.25)",
+        foreground: "oklch(0.985 0.001 106.423)",
+        card: "oklch(0.216 0.006 56.043)",
+        "card-foreground": "oklch(0.985 0.001 106.423)",
+        popover: "oklch(0.216 0.006 56.043)",
+        "popover-foreground": "oklch(0.985 0.001 106.423)",
+        primary: "oklch(0.923 0.003 48.717)",
+        "primary-foreground": "oklch(0.216 0.006 56.043)",
+        secondary: "oklch(0.268 0.007 34.298)",
+        "secondary-foreground": "oklch(0.985 0.001 106.423)",
+        muted: "oklch(0.268 0.007 34.298)",
+        "muted-foreground": "oklch(0.709 0.01 56.259)",
+        accent: "oklch(0.268 0.007 34.298)",
+        "accent-foreground": "oklch(0.985 0.001 106.423)",
+        border: "oklch(1 0 0 / 10%)",
+        input: "oklch(1 0 0 / 15%)",
+        ring: "oklch(0.553 0.013 58.071)",
+      },
+    },
+    gray: {
+      light: {
+        foreground: "oklch(0.13 0.028 261.692)",
+        card: "oklch(1 0 0)",
+        "card-foreground": "oklch(0.13 0.028 261.692)",
+        popover: "oklch(1 0 0)",
+        "popover-foreground": "oklch(0.13 0.028 261.692)",
+        primary: "oklch(0.21 0.034 264.665)",
+        "primary-foreground": "oklch(0.985 0.002 247.839)",
+        secondary: "oklch(0.967 0.003 264.542)",
+        "secondary-foreground": "oklch(0.21 0.034 264.665)",
+        muted: "oklch(0.967 0.003 264.542)",
+        "muted-foreground": "oklch(0.551 0.027 264.364)",
+        accent: "oklch(0.967 0.003 264.542)",
+        "accent-foreground": "oklch(0.21 0.034 264.665)",
+        border: "oklch(0.928 0.006 264.531)",
+        input: "oklch(0.928 0.006 264.531)",
+        ring: "oklch(0.707 0.022 261.325)",
+      },
+      dark: {
+        background: "oklch(0.13 0.028 261.692)",
+        foreground: "oklch(0.985 0.002 247.839)",
+        card: "oklch(0.21 0.034 264.665)",
+        "card-foreground": "oklch(0.985 0.002 247.839)",
+        popover: "oklch(0.21 0.034 264.665)",
+        "popover-foreground": "oklch(0.985 0.002 247.839)",
+        primary: "oklch(0.928 0.006 264.531)",
+        "primary-foreground": "oklch(0.21 0.034 264.665)",
+        secondary: "oklch(0.278 0.033 256.848)",
+        "secondary-foreground": "oklch(0.985 0.002 247.839)",
+        muted: "oklch(0.278 0.033 256.848)",
+        "muted-foreground": "oklch(0.707 0.022 261.325)",
+        accent: "oklch(0.278 0.033 256.848)",
+        "accent-foreground": "oklch(0.985 0.002 247.839)",
+        border: "oklch(1 0 0 / 10%)",
+        input: "oklch(1 0 0 / 15%)",
+        ring: "oklch(0.551 0.027 264.364)",
+      },
+    },
+    neutral: {
+      light: {
+        foreground: "oklch(0.145 0 0)",
+        card: "oklch(1 0 0)",
+        "card-foreground": "oklch(0.145 0 0)",
+        popover: "oklch(1 0 0)",
+        "popover-foreground": "oklch(0.145 0 0)",
+        primary: "oklch(0.205 0 0)",
+        "primary-foreground": "oklch(0.985 0 0)",
+        secondary: "oklch(0.97 0 0)",
+        "secondary-foreground": "oklch(0.205 0 0)",
+        muted: "oklch(0.97 0 0)",
+        "muted-foreground": "oklch(0.556 0 0)",
+        accent: "oklch(0.97 0 0)",
+        "accent-foreground": "oklch(0.205 0 0)",
+        border: "oklch(0.922 0 0)",
+        input: "oklch(0.922 0 0)",
+        ring: "oklch(0.708 0 0)",
+      },
+      dark: {
+        background: "oklch(0.145 0 0)",
+        foreground: "oklch(0.985 0 0)",
+        card: "oklch(0.205 0 0)",
+        "card-foreground": "oklch(0.985 0 0)",
+        popover: "oklch(0.205 0 0)",
+        "popover-foreground": "oklch(0.985 0 0)",
+        primary: "oklch(0.922 0 0)",
+        "primary-foreground": "oklch(0.205 0 0)",
+        secondary: "oklch(0.269 0 0)",
+        "secondary-foreground": "oklch(0.985 0 0)",
+        muted: "oklch(0.269 0 0)",
+        "muted-foreground": "oklch(0.708 0 0)",
+        accent: "oklch(0.269 0 0)",
+        "accent-foreground": "oklch(0.985 0 0)",
+        border: "oklch(1 0 0 / 10%)",
+        input: "oklch(1 0 0 / 15%)",
+        ring: "oklch(0.556 0 0)",
+      },
+    },
+  }
+  const radiusPresets = {
+    maia: "0.375rem",
+    mira: "0.5rem",
+    nova: "0.75rem",
+    lyra: "0.875rem",
+    vega: "1rem",
+  }
+  const themedTokenKeys = Array.from(
+    new Set(
+      Object.values(themePresets).flatMap((palette) =>
+        Object.values(palette).flatMap((modeTokens) => Object.keys(modeTokens))
+      )
+    )
+  )
+  const media = window.matchMedia("(prefers-color-scheme: dark)")
+  const root = document.documentElement
+  const modeButtons = qs(document, "[data-theme-mode]")
+  const colorSelect = document.getElementById("theme-color")
+  const radiusSelect = document.getElementById("theme-radius")
+
+  const readSetting = (key, fallback) => localStorage.getItem(key) || fallback
+  const writeSetting = (key, value) => localStorage.setItem(key, value)
+  const resolveMode = (mode) => (mode === "auto" ? (media.matches ? "dark" : "light") : mode)
+
+  const applyPalette = (color, resolvedMode) => {
+    const palette = themePresets[color] || themePresets.neutral
+    const tokens = palette[resolvedMode]
+    themedTokenKeys.forEach((token) => {
+      root.style.removeProperty(`--${token}`)
+    })
+    Object.entries(tokens).forEach(([token, value]) => {
+      root.style.setProperty(`--${token}`, value)
+    })
+  }
+
+  const syncThemeControls = (mode, color, radius) => {
+    modeButtons.forEach((button) => {
+      const active = button.dataset.themeMode === mode
+      button.dataset.active = active ? "true" : "false"
+      button.setAttribute("aria-pressed", active ? "true" : "false")
+    })
+
+    if (colorSelect) colorSelect.value = color
+    if (radiusSelect) radiusSelect.value = radius
+  }
+
+  const applyTheme = () => {
+    const mode = readSetting(themeStorage.mode, "auto")
+    const color = readSetting(themeStorage.color, "neutral")
+    const radius = readSetting(themeStorage.radius, "nova")
+    const resolvedMode = resolveMode(mode)
+    root.classList.toggle("dark", resolvedMode === "dark")
+    applyPalette(color, resolvedMode)
+    root.style.setProperty("--radius", radiusPresets[radius] || radiusPresets.nova)
+    syncThemeControls(mode, color, radius)
+  }
+
+  modeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      writeSetting(themeStorage.mode, button.dataset.themeMode || "auto")
+      applyTheme()
+    })
+  })
+
+  colorSelect?.addEventListener("change", () => {
+    writeSetting(themeStorage.color, colorSelect.value)
+    applyTheme()
+  })
+
+  radiusSelect?.addEventListener("change", () => {
+    writeSetting(themeStorage.radius, radiusSelect.value)
+    applyTheme()
+  })
+
+  if (typeof media.addEventListener === "function") {
+    media.addEventListener("change", () => {
+      if (readSetting(themeStorage.mode, "auto") === "auto") applyTheme()
+    })
+  }
+
+  applyTheme()
+
+  const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))
+  copyButtons.forEach((button) => {
+    button.addEventListener("click", async () => {
+      const id = button.getAttribute("data-copy-template")
+      const code = document.getElementById(`code-${id}`)
+      if (!code) return
+
+      const text = code.textContent || ""
+      try {
+        await navigator.clipboard.writeText(text)
+        const original = button.textContent
+        button.textContent = "✓"
+        setTimeout(() => {
+          button.textContent = original
+        }, 1200)
+      } catch (_error) {
+        // no-op
+      }
+    })
+  })
+
+  // Dialogs (includes alert dialogs)
+  qs(document, "[data-slot='dialog']").forEach((root) => {
+    const overlay = root.querySelector("[data-dialog-overlay]")
+    const content = root.querySelector("[data-dialog-content]")
+
+    const sync = (open) => {
+      root.dataset.state = open ? "open" : "closed"
+      toggleVisibility(overlay, open)
+      toggleVisibility(content, open)
+    }
+
+    root.addEventListener("click", (event) => {
+      if (event.target.closest("[data-dialog-trigger]")) sync(true)
+      if (event.target.closest("[data-dialog-close]") || event.target.closest("[data-dialog-overlay]")) sync(false)
+    })
+
+    sync(root.dataset.state === "open")
+  })
+
+  // Drawers / sheets
+  qs(document, "[data-slot='drawer']").forEach((root) => {
+    const overlay = root.querySelector("[data-drawer-overlay]")
+    const content = root.querySelector("[data-drawer-content]")
+
+    const sync = (open) => {
+      root.dataset.state = open ? "open" : "closed"
+      toggleVisibility(overlay, open)
+      toggleVisibility(content, open)
+    }
+
+    root.addEventListener("click", (event) => {
+      if (event.target.closest("[data-drawer-trigger]")) sync(true)
+      if (event.target.closest("[data-drawer-overlay]")) sync(false)
+    })
+
+    sync(root.dataset.state === "open")
+  })
+
+  // Popovers
+  qs(document, "[data-slot='popover']").forEach((root) => {
+    const trigger = root.querySelector("[data-popover-trigger]")
+    const content = root.querySelector("[data-popover-content]")
+    let open = false
+
+    trigger?.addEventListener("click", (event) => {
+      event.preventDefault()
+      open = !open
+      toggleVisibility(content, open)
+    })
+
+    document.addEventListener("click", (event) => {
+      if (!root.contains(event.target)) {
+        open = false
+        toggleVisibility(content, false)
+      }
+    })
+  })
+
+  // Dropdown menus
+  qs(document, "[data-slot='dropdown-menu']").forEach((root) => {
+    const trigger = root.querySelector("[data-dropdown-trigger]")
+    const content = root.querySelector("[data-dropdown-content]")
+    let open = false
+
+    trigger?.addEventListener("click", (event) => {
+      event.preventDefault()
+      open = !open
+      toggleVisibility(content, open)
+    })
+
+    document.addEventListener("click", (event) => {
+      if (!root.contains(event.target)) {
+        open = false
+        toggleVisibility(content, false)
+      }
+    })
+  })
+
+  // Combobox previews
+  qs(document, "[data-slot='combobox']").forEach((root) => {
+    const input = root.querySelector("[data-combobox-input]")
+    const content = root.querySelector("[data-combobox-content]")
+    const items = qs(root, "[data-slot='combobox-item']")
+
+    input?.addEventListener("focus", () => toggleVisibility(content, true))
+    input?.addEventListener("input", () => {
+      const value = (input.value || "").toLowerCase()
+      items.forEach((item) => {
+        const text = (item.textContent || "").toLowerCase()
+        item.classList.toggle("hidden", !text.includes(value))
+      })
+      toggleVisibility(content, true)
+    })
+
+    items.forEach((item) => {
+      item.addEventListener("click", () => {
+        input.value = item.getAttribute("data-value") || (item.textContent || "").trim()
+        toggleVisibility(content, false)
+      })
+    })
+
+    document.addEventListener("click", (event) => {
+      if (!root.contains(event.target)) {
+        toggleVisibility(content, false)
+      }
+    })
+  })
+
+  // Carousel previews
+  qs(document, "[data-slot='carousel']").forEach((root) => {
+    const track = root.querySelector("[data-carousel-track]")
+    const items = qs(root, "[data-slot='carousel-item']")
+    const prev = root.querySelector("[data-carousel-prev]")
+    const next = root.querySelector("[data-carousel-next]")
+    let index = 0
+
+    const sync = () => {
+      if (!track || items.length === 0) return
+      track.style.transform = `translateX(-${index * 100}%)`
+      track.style.transition = "transform 240ms ease"
+    }
+
+    prev?.addEventListener("click", () => {
+      index = index === 0 ? items.length - 1 : index - 1
+      sync()
+    })
+
+    next?.addEventListener("click", () => {
+      index = index === items.length - 1 ? 0 : index + 1
+      sync()
+    })
+
+    sync()
+  })
+})()

@@ -53,7 +53,10 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert index =~ "sidebar-link"
 
     assert component_page =~ "Original shadcn/ui docs"
-    assert component_page =~ "Usage (HEEx)"
+    refute component_page =~ "Usage (HEEx)"
+    assert component_page =~ ~s(data-slot="component-preview")
+    assert component_page =~ ~s(data-slot="preview")
+    assert component_page =~ ~s(data-slot="code")
 
     assert component_page =~ "Attributes"
     assert component_page =~ "Slots"
@@ -69,11 +72,11 @@ defmodule CinderUI.Docs.BuildTaskTest do
     refute component_page =~ "Inline Docs Examples"
     refute component_page =~ "## Attributes"
 
-    assert card_page =~ "Inline docs example 1"
+    assert card_page =~ "Card example 1"
     assert card_page =~ "Project status"
     assert card_page =~ "Team invite"
     assert card_page =~ "&lt;.card_header&gt;"
-    assert card_page =~ "Usage (HEEx)"
+    refute card_page =~ "Usage (HEEx)"
 
     assert resizable_page =~ "<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>"
     assert resizable_page =~ "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>"
