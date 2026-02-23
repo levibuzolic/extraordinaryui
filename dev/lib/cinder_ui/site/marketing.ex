@@ -75,7 +75,6 @@ defmodule CinderUI.Site.Marketing do
       install_html: install_html(version),
       theme_tokens_html: theme_tokens_html(),
       features_html: features_html(shadcn_url),
-      links_html: links_html(github_url, hexdocs_url, shadcn_url),
       theme_toggle_script: theme_toggle_script()
     ]
 
@@ -545,49 +544,6 @@ defmodule CinderUI.Site.Marketing do
         </Layout.card_description>
       </Layout.card_content>
     </Layout.card>
-    """
-    |> to_html()
-  end
-
-  defp links_html(github_url, hexdocs_url, shadcn_url) do
-    assigns = %{github_url: github_url, hexdocs_url: hexdocs_url, shadcn_url: shadcn_url}
-
-    ~H"""
-    <section id="links" class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">Project links</h2>
-      <div class="flex flex-wrap gap-2">
-        <Actions.button
-          as="a"
-          variant={:outline}
-          href={@github_url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub repository
-        </Actions.button>
-        <Actions.button
-          as="a"
-          variant={:outline}
-          href={@hexdocs_url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          HexDocs
-        </Actions.button>
-        <Actions.button as="a" href="./docs/index.html">
-          Component reference
-        </Actions.button>
-        <Actions.button
-          as="a"
-          variant={:ghost}
-          href={@shadcn_url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          shadcn/ui docs
-        </Actions.button>
-      </div>
-    </section>
     """
     |> to_html()
   end

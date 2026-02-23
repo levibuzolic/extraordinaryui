@@ -36,14 +36,13 @@
         <%= install_html %>
         <%= theme_tokens_html %>
         <%= features_html %>
-        <%= links_html %>
       </main>
 
-      <footer class="mt-10 rounded-xl border bg-card p-4 text-sm text-muted-foreground shadow-sm">
+      <footer class="my-10 text-sm text-muted-foreground">
         <p>
-          Cinder UI references
-          <a href="<%= shadcn_url %>" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
-          patterns and exposes shadcn-style CSS tokens you can override in your app stylesheet.
+          Cinder UI is an independent project based on the design and API patterns of
+          <a href="<%= shadcn_url %>" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>, built for Elixir, Phoenix, and LiveView by
+          <a href="https://levibuzolic.com" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">Levi Buzolic</a>.
         </p>
       </footer>
     </div>
