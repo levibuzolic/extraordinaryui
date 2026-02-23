@@ -1,8 +1,8 @@
 defmodule CinderUI.MixProject do
   use Mix.Project
 
-  @source_url "https://github.com/levi/cinder-ui"
-  @version "0.1.0"
+  @source_url "https://github.com/levibuzolic/cinder-ui"
+  @version "0.0.1"
 
   def project do
     [
@@ -78,25 +78,21 @@ defmodule CinderUI.MixProject do
   end
 
   defp description do
-    "Shadcn-inspired Tailwind component library for Phoenix applications with installer tooling and Storybook previews."
+    "Shadcn UI Tailwind component library for Phoenix applications."
   end
 
   defp package do
     [
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url},
-      maintainers: ["Levi"],
+      maintainers: ["Levi Buzolic"],
       files: [
         "lib",
         "priv",
         "assets",
         "mix.exs",
         "README.md",
-        "CONTRIBUTING.md",
-        "THIRD_PARTY_NOTICES.md",
-        "CHANGELOG.md",
-        "LICENSE",
-        "PROGRESS.md"
+        "LICENSE"
       ]
     ]
   end
@@ -108,13 +104,6 @@ defmodule CinderUI.MixProject do
   defp docs do
     [
       main: "readme",
-      extras: [
-        "README.md",
-        "CONTRIBUTING.md",
-        "THIRD_PARTY_NOTICES.md",
-        "PROGRESS.md",
-        "CHANGELOG.md"
-      ],
       groups_for_modules: [
         Core: [CinderUI, CinderUI.Classes, CinderUI.Hooks, CinderUI.Icons],
         Components: [

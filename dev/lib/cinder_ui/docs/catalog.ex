@@ -633,7 +633,7 @@ defmodule CinderUI.Docs.Catalog do
     badge_html =
       render_component(Feedback, :badge, %{variant: :secondary, inner_block: slot("Active")})
 
-    title_html = render_component(Layout, :card_title, %{inner_block: slot("Levi Noah")})
+    title_html = render_component(Layout, :card_title, %{inner_block: slot("Philip J. Fry")})
 
     description_html =
       render_component(Layout, :card_description, %{inner_block: slot("Senior Engineer · Sydney")})
@@ -655,7 +655,7 @@ defmodule CinderUI.Docs.Catalog do
           slot(
             title_html <> "\n" <> description_html <> "\n" <> action_html,
             """
-            <.card_title>Levi Noah</.card_title>
+            <.card_title>Philip J. Fry</.card_title>
             <.card_description>Senior Engineer · Sydney</.card_description>
             <.card_action>
               <.badge variant={:secondary}>Active</.badge>
@@ -701,7 +701,7 @@ defmodule CinderUI.Docs.Catalog do
           header_html <> "\n" <> content_html <> "\n" <> footer_html,
           """
           <.card_header>
-            <.card_title>Levi Noah</.card_title>
+            <.card_title>Philip J. Fry</.card_title>
             <.card_description>Senior Engineer · Sydney</.card_description>
             <.card_action>
               <.badge variant={:secondary}>Active</.badge>
@@ -1304,7 +1304,7 @@ defmodule CinderUI.Docs.Catalog do
   end
 
   defp sample_assigns(DataDisplay, :avatar) do
-    %{src: avatar_sample_data_uri(:levi), alt: "Levi Noah"}
+    %{src: avatar_sample_data_uri(:levi), alt: "Philip J. Fry"}
   end
 
   defp sample_assigns(DataDisplay, :avatar_group) do
@@ -1312,7 +1312,7 @@ defmodule CinderUI.Docs.Catalog do
       [
         render_component(DataDisplay, :avatar, %{
           src: avatar_sample_data_uri(:levi),
-          alt: "Levi Noah"
+          alt: "Philip J. Fry"
         }),
         render_component(DataDisplay, :avatar, %{
           src: avatar_sample_data_uri(:ari),
@@ -1331,7 +1331,7 @@ defmodule CinderUI.Docs.Catalog do
         slot(
           preview_html,
           """
-          <.avatar src="#{avatar_sample_data_uri(:levi)}" alt="Levi Noah" />
+          <.avatar src="#{avatar_sample_data_uri(:levi)}" alt="Philip J. Fry" />
           <.avatar src="#{avatar_sample_data_uri(:ari)}" alt="Ari Miles" />
           <.avatar src="#{avatar_sample_data_uri(:noor)}" alt="Noor Hale" />
           <.avatar_group_count>+2</.avatar_group_count>

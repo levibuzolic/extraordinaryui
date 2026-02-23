@@ -21,12 +21,12 @@ defmodule Storybook.Components.DataDisplay do
 
   def variations do
     [
-      %Variation{id: :avatar, attributes: %{alt: "Levi Noah"}},
+      %Variation{id: :avatar, attributes: %{alt: "Philip J. Fry"}},
       %Variation{
         id: :avatar_group,
         template: """
         <.avatar_group>
-          <.avatar alt=\"Levi Noah\" />
+          <.avatar alt=\"Philip J. Fry\" />
           <.avatar alt=\"Marta Lee\" />
           <.avatar_group_count>+2</.avatar_group_count>
         </.avatar_group>

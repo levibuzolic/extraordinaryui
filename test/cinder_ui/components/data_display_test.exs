@@ -7,7 +7,7 @@ defmodule CinderUI.Components.DataDisplayTest do
   alias CinderUI.TestHelpers
 
   test "avatar renders fallback" do
-    html = render_component(&DataDisplay.avatar/1, %{alt: "Levi Noah"})
+    html = render_component(&DataDisplay.avatar/1, %{alt: "Philip J. Fry"})
     assert html =~ "data-slot=\"avatar\""
     assert html =~ "LN"
   end
