@@ -224,36 +224,6 @@ defmodule MyAppWeb.Storybook do
 end
 ```
 
-## Static Docs Export
-
-Generate a fully static docs site (HTML/CSS/JS) without Phoenix running in production:
-
-```bash
-mix cinder_ui.docs.build
-```
-
-Output:
-
-- `dist/docs/index.html`
-- `dist/docs/components/*.html`
-- `dist/docs/assets/site.css`
-- `dist/docs/assets/site.js`
-
-Optional flags:
-
-```bash
-mix cinder_ui.docs.build --output public/docs --clean
-```
-
-The generated site includes:
-
-- overview page plus one page per component
-- interactive static previews for supported components
-- links to the corresponding shadcn/ui docs
-- generated attributes and slots docs from `attr/slot` definitions
-- copyable HEEx usage snippets
-- light/dark/auto + color + radius theme controls (radius presets are labeled with explicit px/rem values)
-
 ## API Docs
 
 Every component module includes in-source docs and usage examples. Generate docs with:
@@ -282,7 +252,7 @@ For third-party license details and links to upstream license texts, see: [`THIR
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for contributor setup, quality gates, testing, release workflow, and docs maintenance.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for contributor setup, quality gates, testing, release workflow, and docs/site build maintenance.
 
 ## License
 

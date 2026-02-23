@@ -35,7 +35,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
-  @template_dir Path.expand("../../../priv/site_templates", __DIR__)
+  @template_dir Path.expand("../../../../priv/site_templates", __DIR__)
 
   @switches [
     output: :string,

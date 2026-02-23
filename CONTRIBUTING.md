@@ -27,12 +27,14 @@ Notes:
 - `./bin/bootstrap` runs `mise trust`, `mise install`, and dependency installation for both the repo root and `sandbox/demo_app`.
 - Root package includes `lucide_icons` as an optional dependency for `CinderUI.Icons.icon/1` and icon-backed component primitives.
 - Sandbox includes `lucide_icons` directly so browser/docs examples always render icon previews.
+- Hex package artifacts intentionally ship only runtime modules and `mix cinder_ui.install`; static docs/site build tasks remain repository-only maintainer tooling.
 
 ## Development Workspaces
 
 - Library: `lib/cinder_ui/**`
-- Static docs/site tasks: `lib/mix/tasks/**`
-- Static docs catalog definitions: `lib/cinder_ui/docs/catalog.ex`
+- Public install task: `lib/mix/tasks/cinder_ui.install.ex`
+- Internal docs/site tasks: `dev/lib/mix/tasks/**`
+- Static docs catalog definitions: `dev/lib/cinder_ui/docs/catalog.ex`
 - Sandbox integration app: `sandbox/demo_app`
 - Browser tests: `sandbox/demo_app/tests/browser/**`
 
@@ -40,7 +42,7 @@ Notes:
 
 1. Implement the component/task change in library code.
 2. Update docs/examples if API or behavior changed.
-3. Update static docs catalog sample(s) in `lib/cinder_ui/docs/catalog.ex`.
+3. Update static docs catalog sample(s) in `dev/lib/cinder_ui/docs/catalog.ex`.
 4. Add or adjust unit/browser tests.
 5. Run quality gates.
 6. Update `PROGRESS.md` milestones/commit log for material changes.
@@ -164,7 +166,7 @@ mix hex.publish docs
 If you are unsure where to implement a change:
 
 - API and behavior: component module in `lib/cinder_ui/components/**`
-- docs examples/static pages: `lib/cinder_ui/docs/catalog.ex` and docs build task
+- docs examples/static pages: `dev/lib/cinder_ui/docs/catalog.ex` and docs build task
 - browser behavior regressions: `sandbox/demo_app/tests/browser/**`
 
 Open a draft PR early for architecture feedback.

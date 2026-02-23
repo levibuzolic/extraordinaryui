@@ -261,6 +261,21 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
   - `sandbox/demo_app`
 - Updated contributor docs (`CONTRIBUTING.md`) local setup guidance to use `./bin/bootstrap`.
 
+### Milestone 23: Hex package API boundary tightening
+
+- Restricted Hex package contents to public runtime library modules and installer task (`mix cinder_ui.install`) only.
+- Excluded repository-only docs/site build tasks (`mix cinder_ui.docs.build`, `mix cinder_ui.site.build`) and static docs catalog internals from published package artifacts.
+- Removed user-facing README instructions that referenced repo-only static docs build commands.
+
+### Milestone 24: Internal tooling source-path split
+
+- Moved repository-only docs/site tooling into `dev/lib/**`:
+  - docs catalog: `dev/lib/cinder_ui/docs/catalog.ex`
+  - static docs task: `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
+  - static site task: `dev/lib/mix/tasks/cinder_ui.site.build.ex`
+- Added env-aware compile paths in `mix.exs` so internal tooling compiles in `:dev`/`:test` while remaining excluded from packaged runtime code.
+- Simplified Hex package file list back to `lib` now that internal tooling is outside the shipped source tree.
+
 ## Commit Log
 
 - `30d2a9c` - bootstrap Mix project, package metadata, and core module entrypoints.
@@ -302,3 +317,5 @@ All validation checks currently pass (last run: February 22, 2026, including Luc
 - `(working tree)` - clarify homepage install docs with separate `mix.exs` and terminal command blocks.
 - `(working tree)` - align input_group and docs theme dropdown controls with library/upstream styles.
 - `(working tree)` - add lightweight HEEx syntax highlighting to docs/site and implement daisy-gap phase 1 primitives (`menu`, `toast`).
+- `(working tree)` - tighten Hex package files to runtime API + installer task only, and document docs/site build tasks as repo-only.
+- `(working tree)` - move docs/site build internals under `dev/lib` and simplify Hex package file list to `lib`.

@@ -9,6 +9,7 @@ defmodule CinderUI.MixProject do
       app: :cinder_ui,
       version: @version,
       elixir: "~> 1.16",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: description(),
@@ -100,6 +101,10 @@ defmodule CinderUI.MixProject do
     ]
   end
 
+  defp elixirc_paths(:dev), do: ["lib", "dev/lib"]
+  defp elixirc_paths(:test), do: ["lib", "dev/lib", "test"]
+  defp elixirc_paths(_), do: ["lib"]
+
   defp docs do
     [
       main: "readme",
@@ -112,7 +117,6 @@ defmodule CinderUI.MixProject do
       ],
       groups_for_modules: [
         Core: [CinderUI, CinderUI.Classes, CinderUI.Hooks, CinderUI.Icons],
-        "Static Docs": [CinderUI.Docs.Catalog, Mix.Tasks.CinderUi.Docs.Build],
         Components: [
           CinderUI.Components,
           CinderUI.Components.Advanced,
@@ -125,11 +129,7 @@ defmodule CinderUI.MixProject do
           CinderUI.Components.Overlay
         ],
         Storybook: [CinderUI.Storybook],
-        "Mix Tasks": [
-          Mix.Tasks.CinderUi.Install,
-          Mix.Tasks.CinderUi.Docs.Build,
-          Mix.Tasks.CinderUi.Site.Build
-        ]
+        "Mix Tasks": [Mix.Tasks.CinderUi.Install]
       ]
     ]
   end
