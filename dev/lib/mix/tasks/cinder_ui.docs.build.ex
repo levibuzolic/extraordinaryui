@@ -172,6 +172,17 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
             {Phoenix.HTML.raw(theme_controls_html())}
 
+            <div class="mb-5">
+              <button
+                type="button"
+                data-open-command-palette
+                class="border-border/70 bg-muted/40 hover:bg-accent hover:text-accent-foreground inline-flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors"
+              >
+                <span>Search components</span>
+                <span class="text-muted-foreground text-xs">⌘K / Ctrl+K</span>
+              </button>
+            </div>
+
             <nav class="space-y-4" aria-label="Component sections">
               {Phoenix.HTML.raw(@sidebar)}
             </nav>

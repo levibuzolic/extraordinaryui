@@ -587,6 +587,175 @@
   })
   window.addEventListener("beforeunload", persistSidebarScroll)
 
+  const initCommandPalette = () => {
+    const navLinks = qs(document, "nav[aria-label='Component sections'] a[href]")
+    const items = []
+    const seen = new Set()
+
+    navLinks.forEach((link) => {
+      const hrefAttr = link.getAttribute("href")
+      if (!hrefAttr || !hrefAttr.includes("components/")) return
+
+      const href = new URL(hrefAttr, window.location.href).toString()
+      if (seen.has(href)) return
+      seen.add(href)
+
+      const sectionLink = link.closest("ul")?.previousElementSibling
+      const moduleName = (sectionLink?.textContent || "").trim()
+      const title = (link.textContent || "").trim()
+      const displayName = moduleName ? `${moduleName}.${title}` : title
+
+      items.push({
+        title,
+        moduleName,
+        displayName,
+        queryText: `${displayName} ${title} ${moduleName}`.toLowerCase(),
+        href,
+      })
+    })
+
+    if (!items.length) return
+
+    const openButtons = qs(document, "[data-open-command-palette]")
+
+    const shell = document.createElement("div")
+    shell.className = "docs-k hidden"
+    shell.innerHTML = `
+      <div class="docs-k-backdrop" data-k-close></div>
+      <div class="docs-k-panel" role="dialog" aria-modal="true" aria-label="Jump to component">
+        <div class="docs-k-input-row">
+          <input type="text" class="docs-k-input" placeholder="Jump to component..." />
+          <kbd class="docs-k-hint">ESC</kbd>
+        </div>
+        <ul class="docs-k-list"></ul>
+      </div>
+    `
+    document.body.appendChild(shell)
+
+    const input = shell.querySelector(".docs-k-input")
+    const list = shell.querySelector(".docs-k-list")
+    let filtered = items.slice()
+    let activeIndex = 0
+
+    const close = () => {
+      shell.classList.add("hidden")
+      document.body.style.removeProperty("overflow")
+    }
+
+    const open = () => {
+      shell.classList.remove("hidden")
+      document.body.style.overflow = "hidden"
+      input.value = ""
+      activeIndex = 0
+      render()
+      requestAnimationFrame(() => input.focus())
+    }
+
+    openButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        open()
+      })
+    })
+
+    const navigate = (item) => {
+      if (!item) return
+      window.location.assign(item.href)
+    }
+
+    const render = () => {
+      const query = (input.value || "").trim().toLowerCase()
+      filtered = query
+        ? items.filter((item) => item.queryText.includes(query))
+        : items.slice()
+
+      const visibleCount = Math.min(filtered.length, 24)
+      if (activeIndex >= visibleCount) activeIndex = 0
+
+      if (!filtered.length) {
+        list.innerHTML = `<li class="docs-k-empty">No components found.</li>`
+        return
+      }
+
+      list.innerHTML = filtered
+        .slice(0, 24)
+        .map((item, index) => {
+          const active = index === activeIndex ? "true" : "false"
+          const label = escapeHtml(item.displayName)
+          const meta = item.moduleName ? escapeHtml(item.moduleName) : "Component"
+          return `<li><button type="button" class="docs-k-item" data-index="${index}" data-active="${active}"><span class="docs-k-item-label">${label}</span><span class="docs-k-item-meta">${meta}</span></button></li>`
+        })
+        .join("")
+
+      const activeButton = list.querySelector(`.docs-k-item[data-index="${activeIndex}"]`)
+      activeButton?.scrollIntoView({ block: "nearest" })
+    }
+
+    shell.addEventListener("click", (event) => {
+      if (event.target.closest("[data-k-close]")) {
+        close()
+        return
+      }
+
+      const item = event.target.closest(".docs-k-item")
+      if (!item) return
+      const index = Number.parseInt(item.dataset.index || "0", 10)
+      navigate(filtered[index])
+    })
+
+    input.addEventListener("input", () => {
+      activeIndex = 0
+      render()
+    })
+
+    input.addEventListener("keydown", (event) => {
+      const visibleCount = Math.min(filtered.length, 24)
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault()
+        if (!visibleCount) return
+        activeIndex = (activeIndex + 1) % visibleCount
+        render()
+        return
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault()
+        if (!visibleCount) return
+        activeIndex = (activeIndex - 1 + visibleCount) % visibleCount
+        render()
+        return
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault()
+        navigate(filtered[activeIndex])
+        return
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault()
+        close()
+      }
+    })
+
+    document.addEventListener("keydown", (event) => {
+      const wantsPalette = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"
+      if (wantsPalette) {
+        event.preventDefault()
+        if (shell.classList.contains("hidden")) open()
+        else close()
+        return
+      }
+
+      if (event.key === "Escape" && !shell.classList.contains("hidden")) {
+        event.preventDefault()
+        close()
+      }
+    })
+  }
+
+  initCommandPalette()
+
   const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))
   copyButtons.forEach((button) => {
     button.addEventListener("click", async () => {

@@ -194,3 +194,119 @@ details[open] > summary:not([data-slot])::after {
 .docs-markdown blockquote h4 {
   margin-top: 0;
 }
+
+.docs-k {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh 1rem 1rem;
+}
+
+.docs-k.hidden {
+  display: none;
+}
+
+.docs-k-backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, black 22%, transparent);
+  backdrop-filter: blur(1.5px);
+}
+
+.docs-k-panel {
+  position: relative;
+  width: min(42rem, 100%);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow:
+    0 16px 40px color-mix(in oklab, black 30%, transparent),
+    0 4px 12px color-mix(in oklab, black 22%, transparent);
+  overflow: hidden;
+}
+
+.docs-k-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+}
+
+.docs-k-input {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+  color: var(--foreground);
+  font-size: 0.9rem;
+  line-height: 1.25rem;
+  padding: 0.5rem 0.625rem;
+}
+
+.docs-k-input:focus {
+  outline: none;
+  border-color: color-mix(in oklab, var(--ring) 40%, var(--border));
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 28%, transparent);
+}
+
+.docs-k-hint {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.35rem;
+  color: var(--muted-foreground);
+  background: color-mix(in oklab, var(--muted) 35%, transparent);
+}
+
+.docs-k-list {
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  max-height: min(60vh, 28rem);
+  overflow: auto;
+}
+
+.docs-k-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--foreground);
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.86rem;
+  line-height: 1.2rem;
+  cursor: pointer;
+}
+
+.docs-k-item-label {
+  color: inherit;
+  font-weight: 500;
+}
+
+.docs-k-item-meta {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.docs-k-item:hover,
+.docs-k-item[data-active="true"] {
+  background: color-mix(in oklab, var(--accent) 80%, transparent);
+  color: var(--accent-foreground);
+}
+
+.docs-k-empty {
+  padding: 0.65rem 0.7rem;
+  color: var(--muted-foreground);
+  font-size: 0.83rem;
+}
