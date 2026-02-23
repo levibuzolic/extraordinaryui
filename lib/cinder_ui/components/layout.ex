@@ -362,15 +362,15 @@ defmodule CinderUI.Components.Layout do
   end
 
   @doc """
-  Basic resizable split layout container.
+  Resizable split layout container with optional client-side persistence.
 
-  This is a CSS structure helper. Persisting drag-based sizes requires optional
-  JavaScript.
+  Uses the optional `EuiResizable` LiveView hook to support drag handles.
+  Provide `storage_key` to persist panel percentages in `localStorage`.
 
   ## Example
 
-  ```heex title="Horizontal split panels" align="full"
-  <.resizable direction={:horizontal}>
+  ```heex title="Default" align="full"
+  <.resizable>
     <:panel size={35}>
       <div class="rounded-md bg-muted p-2 text-xs">Panel A</div>
     </:panel>
@@ -379,30 +379,111 @@ defmodule CinderUI.Components.Layout do
     </:panel>
   </.resizable>
   ```
+
+  ```heex title="Vertical" align="full"
+  <.resizable direction={:vertical} class="h-[240px]">
+    <:panel size={45}>
+      <div class="h-full rounded-md bg-muted p-2 text-xs">Top panel</div>
+    </:panel>
+    <:panel size={55}>
+      <div class="h-full rounded-md bg-muted/60 p-2 text-xs">Bottom panel</div>
+    </:panel>
+  </.resizable>
+  ```
+
+  ```heex title="Handle + persisted sizes" align="full"
+  <.resizable with_handle storage_key="docs-layout-main">
+    <:panel size={30} min_size={20}>
+      <div class="rounded-md bg-muted p-2 text-xs">Explorer</div>
+    </:panel>
+    <:panel size={70} min_size={30}>
+      <div class="rounded-md bg-muted/60 p-2 text-xs">Editor</div>
+    </:panel>
+  </.resizable>
+  ```
   """
   attr :direction, :atom, default: :horizontal, values: [:horizontal, :vertical]
+  attr :with_handle, :boolean, default: false
+  attr :storage_key, :string, default: nil
+  attr :id, :string, default: nil
   attr :class, :string, default: nil
 
   slot :panel, required: true do
     attr :size, :integer
+    attr :min_size, :integer
+    attr :class, :string
   end
 
   def resizable(assigns) do
-    layout_class = if(assigns.direction == :horizontal, do: "flex-row", else: "flex-col")
-
     assigns =
-      assign(assigns, :classes, ["flex min-h-[200px] w-full", layout_class, assigns.class])
+      assigns
+      |> assign(:classes, [
+        "flex min-h-[200px] w-full data-[direction=vertical]:flex-col data-[direction=horizontal]:flex-row",
+        assigns.class
+      ])
+      |> assign_new(:id, fn -> "cinder-ui-resizable-#{System.unique_integer([:positive])}" end)
+      |> assign(:panel_count, length(assigns.panel))
 
     ~H"""
-    <div data-slot="resizable" data-direction={@direction} class={classes(@classes)}>
-      <div
-        :for={panel <- @panel}
-        data-slot="resizable-panel"
-        style={if(panel[:size], do: "flex-basis: #{panel[:size]}%;", else: nil)}
-        class="min-w-0"
-      >
-        {render_slot(panel)}
-      </div>
+    <div
+      id={@id}
+      data-slot="resizable"
+      data-direction={@direction}
+      data-storage-key={@storage_key}
+      class={classes(@classes)}
+      phx-hook="EuiResizable"
+    >
+      <%= for {panel, index} <- Enum.with_index(@panel) do %>
+        <div
+          data-slot="resizable-panel"
+          data-size={panel[:size]}
+          data-min-size={panel[:min_size]}
+          style={if(panel[:size], do: "flex: 0 0 #{panel[:size]}%;", else: nil)}
+          class={classes(["relative min-h-0 min-w-0 shrink-0", panel[:class]])}
+        >
+          {render_slot(panel)}
+        </div>
+        <div
+          :if={index < @panel_count - 1}
+          data-slot="resizable-handle"
+          data-with-handle={@with_handle}
+          role="separator"
+          tabindex="0"
+          aria-orientation={@direction}
+          class={
+            classes([
+              "bg-border relative shrink-0 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+              if(@direction == :horizontal,
+                do: "w-px cursor-col-resize",
+                else: "h-px cursor-row-resize"
+              )
+            ])
+          }
+        >
+          <span
+            :if={@with_handle}
+            aria-hidden="true"
+            class={
+              classes([
+                "bg-border rounded-sm border border-border/60 p-1 shadow-xs",
+                if(@direction == :horizontal,
+                  do:
+                    "bg-background absolute top-1/2 left-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center justify-center",
+                  else:
+                    "bg-background absolute top-1/2 left-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+                )
+              ])
+            }
+          >
+            <span class={
+              classes([
+                "bg-muted-foreground/80 block rounded-full",
+                if(@direction == :horizontal, do: "h-6 w-px", else: "h-px w-6")
+              ])
+            } />
+          </span>
+        </div>
+      <% end %>
     </div>
     """
   end

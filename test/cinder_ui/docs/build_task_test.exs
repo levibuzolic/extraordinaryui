@@ -86,6 +86,12 @@ defmodule CinderUI.Docs.BuildTaskTest do
 
     assert resizable_page =~ "<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>"
     assert resizable_page =~ "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>"
+    assert resizable_page =~ "Top panel"
+    assert resizable_page =~ "Bottom panel"
+    assert resizable_page =~ "Explorer"
+    assert resizable_page =~ "Editor"
+    assert resizable_page =~ "data-slot=\"resizable-handle\""
+    assert resizable_page =~ "data-storage-key=\"docs-layout-main\""
     assert scroll_area_page =~ ~s(data-slot="preview")
     assert scroll_area_page =~ ~s(data-preview-align="full")
 

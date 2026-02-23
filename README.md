@@ -191,7 +191,7 @@ Legend:
 | Popover | ⚡ Progressive | Server + hooks | Hook layer handles open/close behavior |
 | Progress | ✅ Full | Server-rendered | - |
 | Radio Group | ✅ Full | Server-rendered | - |
-| Resizable | 🧱 Scaffold | Static shell | Drag/resize behavior needs additional JS |
+| Resizable | ⚡ Progressive | Server + hooks | `EuiResizable` hook enables drag resize; optional `storage_key` persists panel sizes |
 | Scroll Area | ✅ Full | Server-rendered | - |
 | Select | ✅ Full | Server-rendered | Implemented as native select style variant |
 | Separator | ✅ Full | Server-rendered | - |
