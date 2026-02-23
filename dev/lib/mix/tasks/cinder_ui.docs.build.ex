@@ -126,31 +126,24 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       <a href=\"#{entry.shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"inline-flex items-center rounded-md border px-3 py-1.5 text-xs hover:bg-accent\">Original shadcn/ui docs ↗</a>
     </div>
 
-    <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
-      <header class=\"border-border/70 border-b px-5 py-4\">
-        <p class=\"text-muted-foreground text-xs\">#{entry.module_name}</p>
-        <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}</code></h2>
-        <p class=\"text-muted-foreground mt-3 text-sm\">#{inline_code_html(entry.docs)}</p>
-      </header>
-      <div class=\"space-y-4 p-5\">#{examples_html}</div>
+    <section class=\"mb-6\">
+      <p class=\"text-muted-foreground text-xs\">#{entry.module_name}</p>
+      <h2 class=\"mt-1 text-2xl font-semibold tracking-tight\"><code>#{entry.module_name}.#{entry.title}</code></h2>
+      <p class=\"text-muted-foreground mt-3 text-sm\">#{inline_code_html(entry.docs)}</p>
     </section>
 
-    <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
-      <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Attributes</h3>
-      </header>
-      <div class=\"p-5\">
-        #{attributes_table_html(entry.attributes)}
-      </div>
+    <section class=\"mb-8 space-y-4\">
+      #{examples_html}
     </section>
 
-    <section class=\"mb-6 rounded-xl border bg-card text-card-foreground shadow-sm\">
-      <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Slots</h3>
-      </header>
-      <div class=\"p-5\">
-        #{slots_table_html(entry.slots)}
-      </div>
+    <section class=\"mb-6\">
+      <h3 class=\"mb-3 text-sm font-semibold\">Attributes</h3>
+      #{attributes_table_html(entry.attributes)}
+    </section>
+
+    <section class=\"mb-6\">
+      <h3 class=\"mb-3 text-sm font-semibold\">Slots</h3>
+      #{slots_table_html(entry.slots)}
     </section>
 
     #{function_docs_panel_html(entry.docs_full, entry.docs)}
@@ -483,11 +476,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       ""
     else
       """
-      <section class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
-        <header class=\"border-border/70 border-b px-5 py-3\">
-          <h3 class=\"text-sm font-semibold\">Function Docs</h3>
-        </header>
-        <div class=\"space-y-3 p-5 text-sm\">
+      <section class=\"mb-6\">
+        <h3 class=\"mb-3 text-sm font-semibold\">Function Docs</h3>
+        <div class=\"space-y-3 text-sm\">
           #{docs_full_html(residual)}
         </div>
       </section>

@@ -1211,7 +1211,15 @@ defmodule CinderUI.Docs.Catalog do
   defp sample_assigns(Layout, :scroll_area),
     do: %{
       class: "h-20 rounded-md border",
-      inner_block: slot(String.duplicate("Scrollable content ", 12))
+      inner_block:
+        slot(
+          Enum.map_join(1..8, "", fn index ->
+            ~s(<div class="py-1 text-sm">Scrollable content #{index}</div>)
+          end),
+          Enum.map_join(1..8, "\n", fn index ->
+            ~s(<div class="py-1 text-sm">Scrollable content #{index}</div>)
+          end)
+        )
     }
 
   defp sample_assigns(Layout, :separator), do: %{orientation: :horizontal}
