@@ -68,12 +68,9 @@ defmodule CinderUI.Site.Marketing do
     assigns = %{docs_path: docs_path}
 
     ~H"""
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="flex items-center gap-2">
       <Navigation.navigation_menu>
         <:item href={@docs_path} active={true}>Component docs</:item>
-        <:item href="#examples" active={false}>Examples</:item>
-        <:item href="#install" active={false}>Install</:item>
-        <:item href="#links" active={false}>Links</:item>
       </Navigation.navigation_menu>
 
       <Navigation.tabs
