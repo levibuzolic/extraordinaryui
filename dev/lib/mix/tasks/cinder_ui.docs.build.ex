@@ -363,7 +363,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       """
       <section id=\"#{section.id}\" class=\"mb-12\">
         <h3 class=\"mb-4 text-xl font-semibold\">#{section.title}</h3>
-        <div class=\"grid gap-4 xl:grid-cols-2 2xl:grid-cols-3\">#{entries}</div>
+        <div class=\"grid gap-4 md:grid-cols-2\">#{entries}</div>
       </section>
       """
     end)
@@ -374,7 +374,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     escaped_template = escape(entry.template_heex)
 
     """
-    <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
+    <article id=\"#{entry.id}\" data-component-card data-component-name=\"#{entry.title}\" class=\"flex h-full flex-col rounded-xl border bg-card text-card-foreground shadow-sm\">
       <header class=\"border-border/70 border-b px-4 py-3\">
         <div class=\"flex flex-wrap items-start justify-between gap-2\">
           <h4 class=\"font-medium\">
@@ -390,8 +390,8 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <p class=\"text-muted-foreground mt-2 text-sm\">#{escaped_docs}</p>
       </header>
 
-      <div class=\"bg-background p-4 border-border/70\">
-        #{entry.preview_html}
+      <div class=\"bg-background border-border/70 flex min-h-[7rem] flex-1 items-center justify-center p-4\">
+        <div class=\"flex w-full justify-center\">#{entry.preview_html}</div>
       </div>
       <pre class=\"max-h-56 overflow-auto bg-muted/30 p-4 text-xs border-border/70 border-b border-t\"><code id=\"code-#{entry.id}\">#{escaped_template}</code></pre>
       <div class=\"p-4 flex flex-wrap items-center justify-between gap-2 text-xs\">

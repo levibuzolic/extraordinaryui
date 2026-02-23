@@ -41,7 +41,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
              "<a href=\"./components/actions-button.html\" class=\"hover:underline underline-offset-4\">"
 
     assert index =~ "data-copy-template="
-    assert index =~ "Phoenix template (HEEx)"
+    refute index =~ "Phoenix template (HEEx)"
     assert index =~ ~s(id="code-actions-button")
     assert index =~ "data-theme-mode"
     assert index =~ "theme-color"

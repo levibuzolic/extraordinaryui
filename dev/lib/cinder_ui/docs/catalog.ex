@@ -1207,7 +1207,7 @@ defmodule CinderUI.Docs.Catalog do
     search_input_html = render_component(Forms, :input, %{value: "search"})
 
     go_button_html =
-      render_component(Actions, :button, %{variant: :outline, inner_block: slot("Go")})
+      render_component(Actions, :button, %{variant: :ghost, size: :xs, inner_block: slot("Go")})
 
     %{
       inner_block:
@@ -1215,7 +1215,7 @@ defmodule CinderUI.Docs.Catalog do
           search_input_html <> "\n" <> go_button_html,
           """
           <.input value="search" />
-          <.button variant={:outline}>Go</.button>
+          <.button variant={:ghost} size={:xs}>Go</.button>
           """
         )
     }
