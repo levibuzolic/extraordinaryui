@@ -430,6 +430,7 @@ defmodule CinderUI.Docs.Catalog do
 
   defp sanitize_template_heex_for_display(template_heex) when is_binary(template_heex) do
     template_heex
+    |> String.trim()
     |> String.replace(~r/"data:[^"]*"/u, "\"example.png\"")
     |> String.replace(~r/'data:[^']*'/u, "'example.png'")
   end

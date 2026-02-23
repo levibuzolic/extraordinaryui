@@ -382,16 +382,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     ~H"""
     <section class="mb-6 rounded-lg border p-3">
-      <h2 class="text-sm font-semibold">Theme</h2>
-
-      <div class="mt-3">
-        <p class="mb-2 text-xs font-medium text-muted-foreground">Mode</p>
-        <Navigation.tabs value="auto" class="w-full gap-0 [&_[data-slot=tabs-list]]:w-full">
-          <:trigger value="light" data_theme_mode="light" class="theme-mode-btn">Light</:trigger>
-          <:trigger value="dark" data_theme_mode="dark" class="theme-mode-btn">Dark</:trigger>
-          <:trigger value="auto" data_theme_mode="auto" class="theme-mode-btn">Auto</:trigger>
-        </Navigation.tabs>
-      </div>
+      <Navigation.tabs value="auto" class="w-full gap-0 [&_[data-slot=tabs-list]]:w-full">
+        <:trigger value="light" data_theme_mode="light" class="theme-mode-btn">Light</:trigger>
+        <:trigger value="dark" data_theme_mode="dark" class="theme-mode-btn">Dark</:trigger>
+        <:trigger value="auto" data_theme_mode="auto" class="theme-mode-btn">Auto</:trigger>
+      </Navigation.tabs>
 
       <div class="mt-3">
         <label for="theme-color" class="mb-1 block text-xs font-medium text-muted-foreground">
@@ -514,7 +509,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           title="Copy HEEx"
           class="absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground"
         >
-          <Icons.icon name="copy" class="size-3.5" />
+          <Icons.icon name="copy" class="size-4" />
         </button>
         <pre class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs">
           <code id={"code-#{@entry.id}"} class="block min-w-max whitespace-pre"><%= Phoenix.HTML.raw(@template_html) %></code>
@@ -580,14 +575,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
               title="Copy HEEx"
               class="absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground"
             >
-              <Icons.icon name="copy" class="size-3.5" />
+              <Icons.icon name="copy" class="size-4" />
             </button>
-            <pre class="min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs">
-              <code
-                id={"code-#{@entry.id}-#{example.id}"}
-                class="block min-w-max whitespace-pre"
-              >{example.template_heex}</code>
-            </pre>
+            <pre class="m-0 min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs leading-4"><code id={"code-#{@entry.id}-#{example.id}"} class="block min-w-max whitespace-pre">{example.template_heex}</code></pre>
           </div>
         </div>
       </section>
@@ -633,7 +623,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
       ~H"""
       <section class="mb-6">
-        <h3 class="mb-3 text-sm font-semibold">Function Docs</h3>
         <div class="space-y-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
       </section>
       """
