@@ -14,11 +14,11 @@ Concise contributor guide for `cinder_ui`.
 ## Architecture
 
 - Library code: `lib/cinder_ui/**`
-- Install/docs/site tasks:
-  - `lib/mix/tasks/cinder_ui.install.ex`
-  - `lib/mix/tasks/cinder_ui.docs.build.ex`
-  - `lib/mix/tasks/cinder_ui.site.build.ex`
-- Static docs catalog source: `lib/cinder_ui/docs/catalog.ex`
+- Public install task: `lib/mix/tasks/cinder_ui.install.ex`
+- Internal docs/site tasks:
+  - `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
+  - `dev/lib/mix/tasks/cinder_ui.site.build.ex`
+- Static docs catalog source: `dev/lib/cinder_ui/docs/catalog.ex`
 - Sandbox app: `sandbox/demo_app`
 
 ## Core Commands

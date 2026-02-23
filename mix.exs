@@ -9,6 +9,7 @@ defmodule CinderUI.MixProject do
       app: :cinder_ui,
       version: @version,
       elixir: "~> 1.16",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: description(),
@@ -86,13 +87,7 @@ defmodule CinderUI.MixProject do
       links: %{"GitHub" => @source_url},
       maintainers: ["Levi"],
       files: [
-        "lib/cinder_ui.ex",
-        "lib/cinder_ui/classes.ex",
-        "lib/cinder_ui/components",
-        "lib/cinder_ui/hooks.ex",
-        "lib/cinder_ui/icons.ex",
-        "lib/cinder_ui/storybook.ex",
-        "lib/mix/tasks/cinder_ui.install.ex",
+        "lib",
         "priv",
         "assets",
         "mix.exs",
@@ -105,6 +100,10 @@ defmodule CinderUI.MixProject do
       ]
     ]
   end
+
+  defp elixirc_paths(:dev), do: ["lib", "dev/lib"]
+  defp elixirc_paths(:test), do: ["lib", "dev/lib", "test"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp docs do
     [
