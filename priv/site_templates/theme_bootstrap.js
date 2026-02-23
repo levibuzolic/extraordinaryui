@@ -1,6 +1,6 @@
 (() => {
   try {
-    const mode = localStorage.getItem("eui:theme:mode") || "auto";
+    const mode = localStorage.getItem("cui:theme:mode") || "auto";
     const resolvedMode = mode === "auto"
       ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : mode;

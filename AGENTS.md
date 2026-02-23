@@ -4,7 +4,7 @@ Concise contributor guide for `cinder_ui`.
 
 ## Scope
 
-- This repo is a Phoenix component library inspired by shadcn/ui.
+- This repo is a Phoenix component library built on components ported from shadcn/ui.
 - Primary outputs:
   - Hex package (`cinder_ui`)
   - Unified static docs/site output (`dist/site`)
@@ -44,11 +44,7 @@ Concise contributor guide for `cinder_ui`.
 - Keep docs split by audience:
   - `README.md` is user-facing installation/usage guidance.
   - `CONTRIBUTING.md` is contributor workflow and project maintenance guidance.
-- Update both `README.md`/`CONTRIBUTING.md` (as applicable) and `PROGRESS.md` for any material feature/workflow change.
-- `PROGRESS.md` must include:
-  - current validated command set
-  - remaining work/incomplete items
-  - milestone and commit-log updates
+- Update both `README.md`/`CONTRIBUTING.md` (as applicable).
 - Public component changes should include in-module docs and examples.
 
 ## Release Flow

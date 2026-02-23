@@ -17,9 +17,9 @@
         .replace(/'/g, "&#39;"))
   const highlightCodeBlocks = shared.highlightCodeBlocks || (() => {})
   const themeStorage = {
-    mode: "eui:theme:mode",
-    color: "eui:theme:color",
-    radius: "eui:theme:radius",
+    mode: "cui:theme:mode",
+    color: "cui:theme:color",
+    radius: "cui:theme:radius",
   }
   const themePresets = {
     zinc: {
@@ -238,7 +238,7 @@
   const modeButtons = qs(document, "[data-theme-mode]")
   const colorSelect = document.getElementById("theme-color")
   const radiusSelect = document.getElementById("theme-radius")
-  const sidebarScrollStorageKey = "eui:docs:sidebar-scroll-top"
+  const sidebarScrollStorageKey = "cui:docs:sidebar-scroll-top"
 
   const restoreSidebarScroll = () => {
     if (!sidebar) return

@@ -3,9 +3,9 @@ import { expect, test } from "@playwright/test"
 test.describe("visual regression", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem("eui:theme:mode", "light")
-      localStorage.setItem("eui:theme:color", "neutral")
-      localStorage.setItem("eui:theme:radius", "nova")
+      localStorage.setItem("cui:theme:mode", "light")
+      localStorage.setItem("cui:theme:color", "neutral")
+      localStorage.setItem("cui:theme:radius", "nova")
     })
 
     await page.setViewportSize({ width: 1600, height: 1200 })

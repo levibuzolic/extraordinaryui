@@ -1,5 +1,5 @@
 (() => {
-  const storageKey = "eui:theme:mode";
+  const storageKey = "cui:theme:mode";
   const root = document.documentElement;
   const buttons = Array.from(document.querySelectorAll("[data-theme-mode]"));
   const media = window.matchMedia("(prefers-color-scheme: dark)");

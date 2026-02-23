@@ -45,7 +45,6 @@ Notes:
 3. Update static docs catalog sample(s) in `dev/lib/cinder_ui/docs/catalog.ex`.
 4. Add or adjust unit/browser tests.
 5. Run quality gates.
-6. Update `PROGRESS.md` milestones/commit log for material changes.
 
 ## Quality Gates
 
@@ -98,7 +97,6 @@ npx playwright test tests/browser/visual.spec.ts --update-snapshots
 
 - `README.md`: only user-facing install/usage/docs guidance.
 - `CONTRIBUTING.md`: maintainer and contributor workflow.
-- `PROGRESS.md`: keep plan, completed milestones, remaining work, and commit log current.
 - Module/function docs: use markdown, include realistic examples, and include multiple named fenced HEEx examples where useful.
 
 Example inline docs pattern:
@@ -121,7 +119,6 @@ Example inline docs pattern:
 - [ ] Unit tests updated/passing.
 - [ ] Browser tests updated/passing (if UI/interaction changed).
 - [ ] Static docs/site build successfully.
-- [ ] `PROGRESS.md` updated for material milestones.
 - [ ] Snapshots updated only for intentional visual changes.
 
 ## Commit Style
