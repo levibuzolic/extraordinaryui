@@ -27,6 +27,7 @@ Notes:
 - `./bin/bootstrap` runs `mise trust`, `mise install`, and dependency installation for both the repo root and `sandbox/demo_app`.
 - Root package includes `lucide_icons` as an optional dependency for `CinderUI.Icons.icon/1` and icon-backed component primitives.
 - Sandbox includes `lucide_icons` directly so browser/docs examples always render icon previews.
+- Hex package artifacts intentionally ship only runtime modules and `mix cinder_ui.install`; static docs/site build tasks remain repository-only maintainer tooling.
 
 ## Development Workspaces
 

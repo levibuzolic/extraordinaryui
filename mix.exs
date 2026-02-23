@@ -86,7 +86,13 @@ defmodule CinderUI.MixProject do
       links: %{"GitHub" => @source_url},
       maintainers: ["Levi"],
       files: [
-        "lib",
+        "lib/cinder_ui.ex",
+        "lib/cinder_ui/classes.ex",
+        "lib/cinder_ui/components",
+        "lib/cinder_ui/hooks.ex",
+        "lib/cinder_ui/icons.ex",
+        "lib/cinder_ui/storybook.ex",
+        "lib/mix/tasks/cinder_ui.install.ex",
         "priv",
         "assets",
         "mix.exs",
@@ -112,7 +118,6 @@ defmodule CinderUI.MixProject do
       ],
       groups_for_modules: [
         Core: [CinderUI, CinderUI.Classes, CinderUI.Hooks, CinderUI.Icons],
-        "Static Docs": [CinderUI.Docs.Catalog, Mix.Tasks.CinderUi.Docs.Build],
         Components: [
           CinderUI.Components,
           CinderUI.Components.Advanced,
@@ -125,11 +130,7 @@ defmodule CinderUI.MixProject do
           CinderUI.Components.Overlay
         ],
         Storybook: [CinderUI.Storybook],
-        "Mix Tasks": [
-          Mix.Tasks.CinderUi.Install,
-          Mix.Tasks.CinderUi.Docs.Build,
-          Mix.Tasks.CinderUi.Site.Build
-        ]
+        "Mix Tasks": [Mix.Tasks.CinderUi.Install]
       ]
     ]
   end
