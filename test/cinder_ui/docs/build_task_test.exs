@@ -60,10 +60,8 @@ defmodule CinderUI.Docs.BuildTaskTest do
 
     assert component_page =~ "https://ui.shadcn.com/docs/components/button"
     assert component_page =~ "<code>variant</code>"
-    assert component_page =~ "class=\"inline\">variant</code>"
-    assert component_page =~ "docs-markdown"
-    assert component_page =~ "<h2>Attributes</h2>"
-    assert component_page =~ "<ul>"
+    refute component_page =~ "Function Docs"
+    refute component_page =~ "docs-markdown"
     assert component_page =~ ~s(href="../components/actions-button.html")
     assert component_page =~ ~s(aria-current="page")
     assert component_page =~ "Primary CTA"

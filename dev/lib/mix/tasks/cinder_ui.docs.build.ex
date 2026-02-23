@@ -153,14 +153,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       </div>
     </section>
 
-    <section class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
-      <header class=\"border-border/70 border-b px-5 py-3\">
-        <h3 class=\"text-sm font-semibold\">Function Docs</h3>
-      </header>
-      <div class=\"space-y-3 p-5 text-sm\">
-        #{docs_full_html(docs_without_examples(entry.docs_full))}
-      </div>
-    </section>
+    #{function_docs_panel_html(entry.docs_full, entry.docs)}
     """
 
     page_shell(
@@ -449,11 +442,17 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         </div>
 
         <div class=\"mt-4\">
-          <div class=\"flex items-center justify-between gap-2\">
-            <h4 class=\"text-sm font-semibold\">Usage (HEEx)</h4>
-            <button type=\"button\" data-copy-template=\"#{copy_id}\" class=\"inline-flex h-7 items-center rounded-md border px-2 text-xs hover:bg-accent\">Copy HEEx</button>
+          <h4 class=\"text-sm font-semibold\">Usage (HEEx)</h4>
+          <div class=\"mt-2 relative\">
+            <button
+              type=\"button\"
+              data-copy-template=\"#{copy_id}\"
+              aria-label=\"Copy HEEx\"
+              title=\"Copy HEEx\"
+              class=\"absolute top-2 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground\"
+            >⧉</button>
+            <pre class=\"max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
           </div>
-          <pre class=\"mt-2 max-h-96 overflow-auto rounded-md border bg-muted/30 p-4 text-xs\"><code id=\"code-#{copy_id}\">#{escaped_template}</code></pre>
         </div>
       </article>
       """
@@ -477,10 +476,44 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       "<article class=\"docs-markdown\"><p>#{escaped_doc}</p></article>"
   end
 
-  defp docs_without_examples(doc) do
+  defp function_docs_panel_html(docs_full, summary) do
+    residual = docs_residual(docs_full, summary)
+
+    if residual == "" do
+      ""
+    else
+      """
+      <section class=\"rounded-xl border bg-card text-card-foreground shadow-sm\">
+        <header class=\"border-border/70 border-b px-5 py-3\">
+          <h3 class=\"text-sm font-semibold\">Function Docs</h3>
+        </header>
+        <div class=\"space-y-3 p-5 text-sm\">
+          #{docs_full_html(residual)}
+        </div>
+      </section>
+      """
+    end
+  end
+
+  defp docs_residual(doc, summary) do
     doc
-    |> String.replace(~r/(?:^|\n)##+\s+Examples?\b[\s\S]*?(?=\n##+\s|\z)/m, "\n")
     |> String.trim()
+    |> maybe_strip_leading_summary(summary)
+    |> strip_markdown_sections(~w(example examples attribute attributes slot slots usage))
+    |> String.trim()
+  end
+
+  defp maybe_strip_leading_summary(doc, summary) when is_binary(summary) and summary != "" do
+    String.replace(doc, ~r/\A#{Regex.escape(summary)}\s*\n*/u, "")
+  end
+
+  defp maybe_strip_leading_summary(doc, _summary), do: doc
+
+  defp strip_markdown_sections(doc, headings) do
+    Enum.reduce(headings, doc, fn heading, acc ->
+      pattern = ~r/(?:^|\n)##+\s+#{heading}\b[\s\S]*?(?=\n##+\s|\z)/mi
+      String.replace(acc, pattern, "\n")
+    end)
   end
 
   defp sanitize_docs_html(html) do
@@ -943,7 +976,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           try {
             await navigator.clipboard.writeText(text)
             const original = button.textContent
-            button.textContent = "Copied"
+            button.textContent = "✓"
             setTimeout(() => {
               button.textContent = original
             }, 1200)

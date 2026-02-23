@@ -175,7 +175,6 @@ defmodule CinderUI.Docs.Catalog do
     |> component_spec(function)
     |> Map.get(:attrs, [])
     |> Enum.map(&normalize_attribute/1)
-    |> Enum.sort_by(& &1.name)
   end
 
   defp component_slots(module, function) do
@@ -183,14 +182,13 @@ defmodule CinderUI.Docs.Catalog do
     |> component_spec(function)
     |> Map.get(:slots, [])
     |> Enum.map(&normalize_slot/1)
-    |> Enum.sort_by(& &1.name)
   end
 
   defp normalize_slot(slot) do
     %{
       name: Atom.to_string(slot.name),
       required: slot.required,
-      attrs: slot.attrs |> Enum.map(&normalize_attribute/1) |> Enum.sort_by(& &1.name)
+      attrs: slot.attrs |> Enum.map(&normalize_attribute/1)
     }
   end
 
