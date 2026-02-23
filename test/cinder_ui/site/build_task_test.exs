@@ -32,7 +32,8 @@ defmodule CinderUI.Site.BuildTaskTest do
     assert index =~ "Add dependencies to <code>mix.exs</code>"
     assert index =~ "Install and run setup commands in your terminal"
 
-    assert index =~ "{:lucide_icons, &quot;~&gt; 2.0&quot;} # optional, recommended for &lt;.icon /&gt;"
+    assert index =~
+             "{:lucide_icons, &quot;~&gt; 2.0&quot;} # optional, recommended for &lt;.icon /&gt;"
 
     assert index =~ "mix cinder_ui.install --skip-existing"
     assert index =~ "Drop-in for existing Phoenix + LiveView projects."
@@ -53,6 +54,10 @@ defmodule CinderUI.Site.BuildTaskTest do
 
     docs_index = File.read!(Path.join(@output, "docs/index.html"))
     assert docs_index =~ "Component Library"
+    assert docs_index =~ "href=\"../index.html\""
+    assert docs_index =~ "GitHub"
+    assert docs_index =~ "Hex package"
+    assert docs_index =~ "https://hex.pm/packages/cinder_ui"
 
     site_css = File.read!(Path.join(@output, "assets/site.css"))
     assert site_css =~ ".code-highlight .tok-tag"

@@ -10,6 +10,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     * `--output` - output directory (default: `dist/docs`)
     * `--clean` - remove output directory before generating
+    * `--home-url` - optional link target for a parent site home page
+    * `--github-url` - repository URL shown in docs header
+    * `--hex-package-url` - Hex package URL shown in docs header
 
   ## Examples
 
@@ -31,6 +34,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         strict: [
           output: :string,
           clean: :boolean,
+          home_url: :string,
+          github_url: :string,
+          hex_package_url: :string,
           help: :boolean
         ]
       )
@@ -40,6 +46,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     else
       output_dir = Path.expand(opts[:output] || "dist/docs", File.cwd!())
       clean? = opts[:clean] || false
+      project = Mix.Project.config()
+      home_url = opts[:home_url]
+      github_url = opts[:github_url] || to_string(project[:source_url] || "")
+      hex_package_url = opts[:hex_package_url] || "https://hex.pm/packages/cinder_ui"
 
       if clean? and File.dir?(output_dir), do: File.rm_rf!(output_dir)
 
@@ -50,12 +60,19 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       sections = Catalog.sections()
       entries = Enum.flat_map(sections, & &1.entries)
 
-      File.write!(Path.join(output_dir, "index.html"), overview_page_html(sections, theme_css))
+      File.write!(
+        Path.join(output_dir, "index.html"),
+        overview_page_html(sections, theme_css, home_url, github_url, hex_package_url)
+      )
 
       Enum.each(entries, fn entry ->
         output_path = Path.join(output_dir, entry.docs_path)
         File.mkdir_p!(Path.dirname(output_path))
-        File.write!(output_path, component_page_html(entry, sections, theme_css))
+
+        File.write!(
+          output_path,
+          component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url)
+        )
       end)
 
       File.write!(Path.join(assets_dir, "site.js"), site_js())
@@ -74,7 +91,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
   end
 
-  defp overview_page_html(sections, theme_css) do
+  defp overview_page_html(sections, theme_css, home_url, github_url, hex_package_url) do
     content = """
     <section class=\"mb-8\">
       <h2 class=\"text-2xl font-semibold tracking-tight\">Component Library</h2>
@@ -93,11 +110,14 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       body_content: content,
       theme_css: theme_css,
       asset_prefix: ".",
-      sidebar: sidebar_links(sections, ".", nil)
+      sidebar: sidebar_links(sections, ".", nil),
+      home_url: home_url,
+      github_url: github_url,
+      hex_package_url: hex_package_url
     )
   end
 
-  defp component_page_html(entry, sections, theme_css) do
+  defp component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url) do
     examples_html = component_examples_html(entry)
     inline_doc_examples_html = inline_doc_examples_html(entry)
 
@@ -152,7 +172,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       body_content: content,
       theme_css: theme_css,
       asset_prefix: "..",
-      sidebar: sidebar_links(sections, "..", entry.id)
+      sidebar: sidebar_links(sections, "..", entry.id),
+      home_url: home_url,
+      github_url: github_url,
+      hex_package_url: hex_package_url
     )
   end
 
@@ -163,6 +186,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     theme_css = opts[:theme_css]
     asset_prefix = opts[:asset_prefix]
     sidebar = opts[:sidebar]
+    home_url = opts[:home_url]
+    github_url = opts[:github_url]
+    hex_package_url = opts[:hex_package_url]
 
     """
     <!doctype html>
@@ -190,6 +216,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             <div class=\"mb-6\">
               <h1 class=\"text-xl font-semibold\">Cinder UI</h1>
               <p class=\"text-muted-foreground mt-1 text-sm\">Static component docs</p>
+              #{header_links_html(home_url, github_url, hex_package_url)}
             </div>
 
             #{theme_controls_html()}
@@ -256,6 +283,31 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp current_page_attr(true), do: ~s( aria-current="page")
   defp current_page_attr(false), do: ""
+
+  defp header_links_html(home_url, github_url, hex_package_url) do
+    links =
+      [
+        if(is_binary(home_url) and home_url != "",
+          do:
+            ~s(<a href="#{escape(home_url)}" class="inline-flex items-center rounded-md border px-2 py-1 hover:bg-accent">Home</a>)
+        ),
+        if(is_binary(github_url) and github_url != "",
+          do:
+            ~s(<a href="#{escape(github_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-md border px-2 py-1 hover:bg-accent">GitHub</a>)
+        ),
+        if(is_binary(hex_package_url) and hex_package_url != "",
+          do:
+            ~s(<a href="#{escape(hex_package_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-md border px-2 py-1 hover:bg-accent">Hex package</a>)
+        )
+      ]
+      |> Enum.reject(&is_nil/1)
+
+    if links == [] do
+      ""
+    else
+      ~s(<div class="mt-3 flex flex-wrap gap-1 text-xs">#{Enum.join(links, "")}</div>)
+    end
+  end
 
   defp theme_controls_html do
     color_select =
@@ -621,39 +673,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     """
     (() => {
       const qs = (root, selector) => Array.from(root.querySelectorAll(selector))
-      const escapeHtml = (value) =>
-        value
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
       const toggleVisibility = (el, visible) => {
         if (!el) return
         el.classList.toggle("hidden", !visible)
         el.dataset.state = visible ? "open" : "closed"
-      }
-      const highlightHeex = (source) => {
-        let html = escapeHtml(source)
-        html = html.replace(/(&lt;!--[\\s\\S]*?--&gt;)/g, '<span class="tok-comment">$1</span>')
-        html = html.replace(/([:@A-Za-z0-9_-]+)(=)/g, '<span class="tok-attr">$1</span>$2')
-        html = html.replace(/(&lt;\\/?)([:A-Za-z0-9_.-]+)/g, '$1<span class="tok-tag">$2</span>')
-        html = html.replace(/(&quot;[^&]*?&quot;)/g, '<span class="tok-string">$1</span>')
-        html = html.replace(/(\\{[^\\n]*?\\})/g, '<span class="tok-expr">$1</span>')
-        html = html.replace(/\\b(true|false|nil|do|end)\\b/g, '<span class="tok-keyword">$1</span>')
-        return html
-      }
-      const highlightCodeBlocks = () => {
-        qs(document, "pre code").forEach((block) => {
-          if (block.dataset.highlighted === "true") return
-          const source = block.textContent || ""
-          if (source.trim() === "") return
-
-          const isHeexLike =
-            source.includes("<.") || source.includes("</.") || source.includes("<:")
-
-          block.innerHTML = isHeexLike ? highlightHeex(source) : escapeHtml(source)
-          block.classList.add("code-highlight")
-          block.dataset.highlighted = "true"
-        })
       }
       const themeStorage = {
         mode: "eui:theme:mode",
@@ -938,7 +961,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       }
 
       applyTheme()
-      highlightCodeBlocks()
 
       const copyButtons = Array.from(document.querySelectorAll("[data-copy-template]"))
       copyButtons.forEach((button) => {
@@ -1236,35 +1258,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       font-size: 0.95em;
     }
 
-    .code-highlight {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      line-height: 1.5;
-    }
-
-    .code-highlight .tok-tag {
-      color: color-mix(in oklab, var(--primary) 75%, var(--foreground));
-    }
-
-    .code-highlight .tok-attr {
-      color: color-mix(in oklab, var(--chart-2) 75%, var(--foreground));
-    }
-
-    .code-highlight .tok-string {
-      color: color-mix(in oklab, var(--chart-4) 85%, var(--foreground));
-    }
-
-    .code-highlight .tok-expr {
-      color: color-mix(in oklab, var(--chart-5) 85%, var(--foreground));
-    }
-
-    .code-highlight .tok-keyword {
-      color: color-mix(in oklab, var(--chart-1) 80%, var(--foreground));
-    }
-
-    .code-highlight .tok-comment {
-      color: var(--muted-foreground);
-      font-style: italic;
-    }
     """
   end
 

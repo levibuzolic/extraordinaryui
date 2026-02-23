@@ -1198,14 +1198,16 @@ defmodule CinderUI.Docs.Catalog do
         %{
           size: 35,
           inner_block: fn _, _ ->
-            "<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>"
-          end
+            HTML.raw("<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>")
+          end,
+          template: "<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>"
         },
         %{
           size: 65,
           inner_block: fn _, _ ->
-            "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>"
-          end
+            HTML.raw("<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>")
+          end,
+          template: "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>"
         }
       ]
     }
@@ -1732,8 +1734,16 @@ defmodule CinderUI.Docs.Catalog do
     %{
       id: "docs-carousel",
       item: [
-        %{inner_block: fn _, _ -> "<div class=\"h-24 rounded-md bg-muted\"></div>" end},
-        %{inner_block: fn _, _ -> "<div class=\"h-24 rounded-md bg-muted/60\"></div>" end}
+        %{
+          inner_block: fn _, _ -> HTML.raw("<div class=\"h-24 rounded-md bg-muted\"></div>") end,
+          template: "<div class=\"h-24 rounded-md bg-muted\"></div>"
+        },
+        %{
+          inner_block: fn _, _ ->
+            HTML.raw("<div class=\"h-24 rounded-md bg-muted/60\"></div>")
+          end,
+          template: "<div class=\"h-24 rounded-md bg-muted/60\"></div>"
+        }
       ]
     }
   end

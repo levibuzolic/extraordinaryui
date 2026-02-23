@@ -80,7 +80,7 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     File.mkdir_p!(output_dir)
 
     docs_dir = Path.join(output_dir, "docs")
-    build_docs_site!(docs_dir)
+    build_docs_site!(docs_dir, github_url)
 
     assets_dir = Path.join(output_dir, "assets")
     File.mkdir_p!(assets_dir)
@@ -103,9 +103,20 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
 
   defp maybe_clean_output!(_output_dir, false), do: :ok
 
-  defp build_docs_site!(docs_dir) do
+  defp build_docs_site!(docs_dir, github_url) do
     Mix.Task.reenable("cinder_ui.docs.build")
-    Mix.Task.run("cinder_ui.docs.build", ["--output", docs_dir, "--clean"])
+
+    Mix.Task.run("cinder_ui.docs.build", [
+      "--output",
+      docs_dir,
+      "--clean",
+      "--home-url",
+      "../index.html",
+      "--github-url",
+      github_url,
+      "--hex-package-url",
+      "https://hex.pm/packages/cinder_ui"
+    ])
   end
 
   defp theme_css do
