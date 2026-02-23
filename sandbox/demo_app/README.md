@@ -91,12 +91,13 @@ Workflow file:
 
 ```bash
 cd ../..
-mix cinder_ui.docs.build --output dist/docs --clean
+mix cinder_ui.docs.build
 ```
 
 Output:
 
-- `dist/docs/index.html`
-- `dist/docs/components/*.html`
-- `dist/docs/assets/site.css`
-- `dist/docs/assets/site.js`
+- `dist/site/index.html` (marketing home page)
+- `dist/site/docs/index.html` (component docs index)
+- `dist/site/docs/components/*.html`
+- `dist/site/docs/assets/site.css`
+- `dist/site/docs/assets/site.js`

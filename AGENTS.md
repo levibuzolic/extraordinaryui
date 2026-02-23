@@ -7,8 +7,7 @@ Concise contributor guide for `cinder_ui`.
 - This repo is a Phoenix component library inspired by shadcn/ui.
 - Primary outputs:
   - Hex package (`cinder_ui`)
-  - Static component docs (`dist/docs`)
-  - Static developer/marketing site (`dist/site`)
+  - Unified static docs/site output (`dist/site`)
   - Sandbox host app for integration/browser tests (`sandbox/demo_app`)
 
 ## Architecture
@@ -17,7 +16,7 @@ Concise contributor guide for `cinder_ui`.
 - Public install task: `lib/mix/tasks/cinder_ui.install.ex`
 - Internal docs/site tasks:
   - `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
-  - `dev/lib/mix/tasks/cinder_ui.site.build.ex`
+  - `dev/lib/cinder_ui/site/marketing.ex`
 - Static docs catalog source: `dev/lib/cinder_ui/docs/catalog.ex`
 - Sandbox app: `sandbox/demo_app`
 
@@ -27,8 +26,7 @@ Concise contributor guide for `cinder_ui`.
   - `mix quality`
   - `MIX_ENV=test mix coveralls.cobertura --raise`
 - Static outputs:
-  - `mix cinder_ui.docs.build --output dist/docs --clean`
-  - `mix cinder_ui.site.build --output dist/site --clean`
+  - `mix cinder_ui.docs.build`
 - Sandbox checks:
   - `cd sandbox/demo_app && mix format --check-formatted && mix test`
   - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`

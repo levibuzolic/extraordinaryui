@@ -27,8 +27,7 @@
 - `mix quality`
 - `mix credo --strict`
 - `MIX_ENV=test mix coveralls.cobertura --raise`
-- `mix cinder_ui.docs.build --output tmp/ci-docs --clean`
-- `mix cinder_ui.site.build --output tmp/ci-site --clean`
+- `mix cinder_ui.docs.build`
 - `cd sandbox/demo_app && mix format --check-formatted && mix test`
 - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
 
@@ -77,7 +76,7 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 ### Milestone 5: Static docs export
 
 - Added static docs catalog that renders all public component functions.
-- Added `mix cinder_ui.docs.build` to generate deployable `dist/docs` output.
+- Added `mix cinder_ui.docs.build` to generate unified deployable output at `dist/site` (`index.html` marketing + `docs/**` component docs).
 - Added tests for catalog coverage and static build artifacts.
 
 ### Milestone 6: Sandbox host app and Playwright coverage
@@ -123,7 +122,7 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 
 ### Milestone 11: Static developer site + release publishing
 
-- Added `mix cinder_ui.site.build` to generate a static developer/marketing landing page and bundle static component docs under `dist/site/docs`.
+- Added (and later folded into `mix cinder_ui.docs.build`) static developer/marketing landing page generation bundled with component docs under `dist/site/docs`.
 - Added test coverage for site build output and links in `test/cinder_ui/site/build_task_test.exs`.
 - Added CI validation step that builds the static developer site artifact during root quality checks.
 - Added GitHub Pages publish workflow (`.github/workflows/publish-site.yml`) triggered on `release.published` and manual dispatch.
@@ -200,7 +199,7 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 - Renamed project identity from Extraordinary UI to Cinder UI across:
   - app/package identifiers (`:cinder_ui`, `CinderUI`)
   - file paths and module namespaces (`lib/cinder_ui/**`, `test/cinder_ui/**`)
-  - Mix task names (`mix cinder_ui.install`, `mix cinder_ui.docs.build`, `mix cinder_ui.site.build`)
+  - Mix task names (`mix cinder_ui.install`, `mix cinder_ui.docs.build`)
   - installer asset/template filenames (`cinder_ui.css`, `cinder_ui.js`)
   - sandbox dependency integration and docs references.
 - Updated GitHub Actions workflows and contributor commands to use renamed Mix tasks.
@@ -306,7 +305,7 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 ### Milestone 23: Hex package API boundary tightening
 
 - Restricted Hex package contents to public runtime library modules and installer task (`mix cinder_ui.install`) only.
-- Excluded repository-only docs/site build tasks (`mix cinder_ui.docs.build`, `mix cinder_ui.site.build`) and static docs catalog internals from published package artifacts.
+- Excluded repository-only docs build task (`mix cinder_ui.docs.build`) and static docs catalog internals from published package artifacts.
 - Removed user-facing README instructions that referenced repo-only static docs build commands.
 
 ### Milestone 24: Internal tooling source-path split
@@ -314,7 +313,7 @@ All validation checks currently pass (last run: February 23, 2026, including dem
 - Moved repository-only docs/site tooling into `dev/lib/**`:
   - docs catalog: `dev/lib/cinder_ui/docs/catalog.ex`
   - static docs task: `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
-  - static site task: `dev/lib/mix/tasks/cinder_ui.site.build.ex`
+  - marketing renderer: `dev/lib/cinder_ui/site/marketing.ex`
 - Added env-aware compile paths in `mix.exs` so internal tooling compiles in `:dev`/`:test` while remaining excluded from packaged runtime code.
 - Simplified Hex package file list back to `lib` now that internal tooling is outside the shipped source tree.
 

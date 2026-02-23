@@ -19,7 +19,7 @@
   }
 }
     </style>
-    <link rel="stylesheet" href="./assets/site.css" />
+    <link rel="stylesheet" href="<%= site_css_path %>" />
   </head>
   <body class="bg-background text-foreground">
     <div class="site-shell mx-auto max-w-[1200px] px-4 py-6 md:px-6">

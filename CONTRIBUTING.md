@@ -61,8 +61,7 @@ MIX_ENV=test mix coveralls.cobertura --raise
 ### Static exports
 
 ```bash
-mix cinder_ui.docs.build --output tmp/ci-docs --clean
-mix cinder_ui.site.build --output tmp/ci-site --clean
+mix cinder_ui.docs.build
 ```
 
 ### Sandbox unit tests

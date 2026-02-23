@@ -1,29 +1,6 @@
-defmodule Mix.Tasks.CinderUi.Site.Build do
-  @shortdoc "Builds a static developer/marketing site with bundled docs"
-  @moduledoc """
-  Builds a static developer/marketing site for Cinder UI.
+defmodule CinderUI.Site.Marketing do
+  @moduledoc false
 
-  The generated site includes:
-
-  - `index.html` marketing/developer landing page
-  - bundled static component docs under `docs/` (from `mix cinder_ui.docs.build`)
-
-  Output can be deployed to GitHub Pages, Cloudflare Pages, Vercel, Netlify, S3, or any static host.
-
-  ## Options
-
-    * `--output` - output directory (default: `dist/site`)
-    * `--clean` - remove output directory before generating
-    * `--github-url` - repository URL override
-    * `--hexdocs-url` - HexDocs URL override
-
-  ## Examples
-
-      mix cinder_ui.site.build
-      mix cinder_ui.site.build --output public --clean
-  """
-
-  use Mix.Task
   use Phoenix.Component
 
   alias CinderUI.Components.Actions
@@ -38,86 +15,23 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
 
   @template_dir Path.expand("../../../../priv/site_templates", __DIR__)
 
-  @switches [
-    output: :string,
-    clean: :boolean,
-    github_url: :string,
-    hexdocs_url: :string,
-    help: :boolean
-  ]
-
-  @impl true
-  def run(argv) do
-    argv
-    |> parse_opts()
-    |> dispatch()
-  end
-
-  defp parse_opts(argv) do
-    {opts, _, _} = OptionParser.parse(argv, strict: @switches)
-
-    %{
-      output: opts[:output] || "dist/site",
-      clean?: opts[:clean] || false,
-      github_url: opts[:github_url],
-      hexdocs_url: opts[:hexdocs_url],
-      help?: opts[:help] || false
-    }
-  end
-
-  defp dispatch(%{help?: true}), do: Mix.shell().info(@moduledoc)
-
-  defp dispatch(opts), do: build_site!(opts)
-
-  defp build_site!(opts) do
-    output_dir = Path.expand(opts.output, File.cwd!())
+  def write_marketing_index!(output_dir, opts \\ %{}) do
     project = Mix.Project.config()
-    github_url = opts.github_url || to_string(project[:source_url] || "")
-    hexdocs_url = opts.hexdocs_url || "https://hexdocs.pm/cinder_ui"
-    version = to_string(project[:version] || "0.0.0")
-    theme_css = theme_css()
+    github_url = Map.get(opts, :github_url, to_string(project[:source_url] || ""))
+    hexdocs_url = Map.get(opts, :hexdocs_url, "https://hexdocs.pm/cinder_ui")
+    version = Map.get(opts, :version, to_string(project[:version] || "0.0.0"))
+    docs_path = Map.get(opts, :docs_path, "./docs/index.html")
+    site_css_path = Map.get(opts, :site_css_path, "./assets/site.css")
+    theme_css = Map.get(opts, :theme_css, theme_css())
 
-    maybe_clean_output!(output_dir, opts.clean?)
     File.mkdir_p!(output_dir)
-
-    docs_dir = Path.join(output_dir, "docs")
-    build_docs_site!(docs_dir, github_url)
-
-    assets_dir = Path.join(output_dir, "assets")
-    File.mkdir_p!(assets_dir)
 
     File.write!(
       Path.join(output_dir, "index.html"),
-      index_html(version, github_url, hexdocs_url, theme_css)
+      index_html(version, github_url, hexdocs_url, theme_css, docs_path, site_css_path)
     )
 
-    File.write!(Path.join(assets_dir, "site.css"), site_css())
     File.write!(Path.join(output_dir, ".nojekyll"), "")
-
-    Mix.shell().info("generated #{relative(output_dir)}")
-    Mix.shell().info("open #{relative(Path.join(output_dir, "index.html"))} in a browser")
-  end
-
-  defp maybe_clean_output!(output_dir, true) do
-    if File.dir?(output_dir), do: File.rm_rf!(output_dir)
-  end
-
-  defp maybe_clean_output!(_output_dir, false), do: :ok
-
-  defp build_docs_site!(docs_dir, github_url) do
-    Mix.Task.reenable("cinder_ui.docs.build")
-
-    Mix.Task.run("cinder_ui.docs.build", [
-      "--output",
-      docs_dir,
-      "--clean",
-      "--home-url",
-      "../index.html",
-      "--github-url",
-      github_url,
-      "--hex-package-url",
-      "https://hex.pm/packages/cinder_ui"
-    ])
   end
 
   defp theme_css do
@@ -127,13 +41,14 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
   end
 
-  defp index_html(version, github_url, hexdocs_url, theme_css) do
+  defp index_html(version, github_url, hexdocs_url, theme_css, docs_path, site_css_path) do
     shadcn_url = "https://ui.shadcn.com/docs"
 
     assigns = [
       theme_bootstrap_script: theme_bootstrap_script(),
       theme_css: theme_css,
-      header_controls_html: header_controls_html(),
+      site_css_path: site_css_path,
+      header_controls_html: header_controls_html(docs_path),
       shadcn_url: shadcn_url,
       hero_html: hero_html(version, shadcn_url),
       component_examples_html: component_examples_html(shadcn_url),
@@ -149,8 +64,11 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     |> EEx.eval_string(assigns)
   end
 
-  defp header_controls_html do
-    assigns = %{header_nav_html: header_nav_html(), theme_toggle_html: theme_toggle_html()}
+  defp header_controls_html(docs_path) do
+    assigns = %{
+      header_nav_html: header_nav_html(docs_path),
+      theme_toggle_html: theme_toggle_html()
+    }
 
     ~H"""
     <div class="flex flex-wrap items-center gap-2">
@@ -161,10 +79,10 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     |> to_html()
   end
 
-  defp header_nav_html do
+  defp header_nav_html(docs_path) do
     render_component(Navigation, :navigation_menu, %{
       item: [
-        nav_item("Component docs", "./docs/index.html", true),
+        nav_item("Component docs", docs_path, true),
         nav_item("Examples", "#examples", false),
         nav_item("Install", "#install", false),
         nav_item("Links", "#links", false)
@@ -770,10 +688,6 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
     ]
   end
 
-  defp site_css do
-    template!("site.css")
-  end
-
   defp theme_bootstrap_script do
     assigns = %{script: template!("theme_bootstrap.js")}
 
@@ -797,8 +711,6 @@ defmodule Mix.Tasks.CinderUi.Site.Build do
   end
 
   defp template!(name), do: File.read!(Path.join(@template_dir, name))
-
-  defp relative(path), do: Path.relative_to(path, File.cwd!())
 
   defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 

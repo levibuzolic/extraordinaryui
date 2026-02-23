@@ -1,23 +1,19 @@
 defmodule Mix.Tasks.CinderUi.Docs.Build do
-  @shortdoc "Builds a static Cinder UI docs site"
+  @shortdoc "Builds the unified static Cinder UI site (marketing + docs)"
   @moduledoc """
-  Builds a static HTML/CSS/JS docs site for Cinder UI components.
+  Builds a unified static Cinder UI site.
+
+  The generated output includes:
+
+  - `index.html` marketing/developer landing page
+  - static component docs under `docs/`
 
   Output can be deployed to any static host (GitHub Pages, Netlify, S3, etc)
   without running Phoenix/Elixir on the server.
 
-  ## Options
-
-    * `--output` - output directory (default: `dist/docs`)
-    * `--clean` - remove output directory before generating
-    * `--home-url` - optional link target for a parent site home page
-    * `--github-url` - repository URL shown in docs header
-    * `--hex-package-url` - Hex package URL shown in docs header
-
   ## Examples
 
       mix cinder_ui.docs.build
-      mix cinder_ui.docs.build --output public/docs --clean
   """
 
   use Mix.Task
@@ -28,65 +24,63 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   alias CinderUI.Components.Actions
   alias CinderUI.Components.Navigation
   alias CinderUI.Docs.Catalog
+  alias CinderUI.Site.Marketing
   alias CinderUI.Icons
   alias Phoenix.HTML
   alias Phoenix.HTML.Safe
 
   @impl true
   def run(argv) do
-    {opts, _, _} =
-      OptionParser.parse(argv,
-        strict: [
-          output: :string,
-          clean: :boolean,
-          home_url: :string,
-          github_url: :string,
-          hex_package_url: :string,
-          help: :boolean
-        ]
-      )
+    if argv != [] do
+      Mix.raise("`mix cinder_ui.docs.build` does not accept flags or options.")
+    end
 
-    if opts[:help] do
-      Mix.shell().info(@moduledoc)
-    else
-      output_dir = Path.expand(opts[:output] || "dist/docs", File.cwd!())
-      clean? = opts[:clean] || false
-      project = Mix.Project.config()
-      home_url = opts[:home_url]
-      github_url = opts[:github_url] || to_string(project[:source_url] || "")
-      hex_package_url = opts[:hex_package_url] || "https://hex.pm/packages/cinder_ui"
+    output_dir = Path.expand("dist/site", File.cwd!())
+    project = Mix.Project.config()
+    github_url = to_string(project[:source_url] || "")
+    hex_package_url = "https://hex.pm/packages/cinder_ui"
+    hexdocs_url = "https://hexdocs.pm/cinder_ui"
+    docs_output_dir = Path.join(output_dir, "docs")
+    home_url = "../index.html"
 
-      if clean? and File.dir?(output_dir), do: File.rm_rf!(output_dir)
+    if File.dir?(output_dir), do: File.rm_rf!(output_dir)
 
-      assets_dir = Path.join(output_dir, "assets")
-      File.mkdir_p!(assets_dir)
+    assets_dir = Path.join(docs_output_dir, "assets")
+    File.mkdir_p!(assets_dir)
 
-      theme_css = theme_css()
-      sections = Catalog.sections()
-      entries = Enum.flat_map(sections, & &1.entries)
+    theme_css = theme_css()
+    sections = Catalog.sections()
+    entries = Enum.flat_map(sections, & &1.entries)
+
+    File.write!(
+      Path.join(docs_output_dir, "index.html"),
+      overview_page_html(sections, theme_css, home_url, github_url, hex_package_url)
+    )
+
+    Enum.each(entries, fn entry ->
+      output_path = Path.join(docs_output_dir, entry.docs_path)
+      File.mkdir_p!(Path.dirname(output_path))
 
       File.write!(
-        Path.join(output_dir, "index.html"),
-        overview_page_html(sections, theme_css, home_url, github_url, hex_package_url)
+        output_path,
+        component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url)
       )
+    end)
 
-      Enum.each(entries, fn entry ->
-        output_path = Path.join(output_dir, entry.docs_path)
-        File.mkdir_p!(Path.dirname(output_path))
+    File.write!(Path.join(assets_dir, "site.js"), site_js())
+    File.write!(Path.join(assets_dir, "site.css"), site_css())
 
-        File.write!(
-          output_path,
-          component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url)
-        )
-      end)
+    Marketing.write_marketing_index!(output_dir, %{
+      github_url: github_url,
+      hexdocs_url: hexdocs_url,
+      docs_path: "./docs/index.html",
+      site_css_path: "./docs/assets/site.css"
+    })
 
-      File.write!(Path.join(assets_dir, "site.js"), site_js())
-      File.write!(Path.join(assets_dir, "site.css"), site_css())
-
-      Mix.shell().info("generated #{relative(output_dir)}")
-      Mix.shell().info("entries: #{Catalog.entry_count()}")
-      Mix.shell().info("open #{relative(Path.join(output_dir, "index.html"))} in a browser")
-    end
+    Mix.shell().info("generated #{relative(output_dir)}")
+    Mix.shell().info("entries: #{Catalog.entry_count()}")
+    Mix.shell().info("open #{relative(Path.join(output_dir, "index.html"))} in a browser")
+    Mix.shell().info("open #{relative(Path.join(docs_output_dir, "index.html"))} for docs index")
   end
 
   defp theme_css do

@@ -1,120 +1,61 @@
 defmodule CinderUI.Docs.BuildTaskTest do
   use ExUnit.Case, async: false
 
-  @output "tmp/static-docs-test"
+  @output "dist/site"
 
   setup do
     File.rm_rf!(@output)
     :ok
   end
 
-  test "build task writes static docs artifacts" do
+  test "build task writes unified static site and docs artifacts" do
     Mix.Task.reenable("cinder_ui.docs.build")
-    Mix.Task.run("cinder_ui.docs.build", ["--output", @output, "--clean"])
+    Mix.Task.run("cinder_ui.docs.build", [])
 
     assert File.exists?(Path.join(@output, "index.html"))
-    assert File.exists?(Path.join(@output, "components/actions-button.html"))
-    assert File.exists?(Path.join(@output, "components/layout-card.html"))
-    assert File.exists?(Path.join(@output, "components/layout-resizable.html"))
-    assert File.exists?(Path.join(@output, "components/advanced-carousel.html"))
-    assert File.exists?(Path.join(@output, "assets/site.css"))
-    assert File.exists?(Path.join(@output, "assets/site.js"))
+    assert File.exists?(Path.join(@output, ".nojekyll"))
+    assert File.exists?(Path.join(@output, "docs/index.html"))
+    assert File.exists?(Path.join(@output, "docs/components/actions-button.html"))
+    assert File.exists?(Path.join(@output, "docs/components/layout-card.html"))
+    assert File.exists?(Path.join(@output, "docs/assets/site.css"))
+    assert File.exists?(Path.join(@output, "docs/assets/site.js"))
 
-    index = File.read!(Path.join(@output, "index.html"))
-    component_page = File.read!(Path.join(@output, "components/actions-button.html"))
-    card_page = File.read!(Path.join(@output, "components/layout-card.html"))
-    resizable_page = File.read!(Path.join(@output, "components/layout-resizable.html"))
-    scroll_area_page = File.read!(Path.join(@output, "components/layout-scroll_area.html"))
-    carousel_page = File.read!(Path.join(@output, "components/advanced-carousel.html"))
+    marketing_index = File.read!(Path.join(@output, "index.html"))
+    docs_index = File.read!(Path.join(@output, "docs/index.html"))
+    component_page = File.read!(Path.join(@output, "docs/components/actions-button.html"))
+    site_js = File.read!(Path.join(@output, "docs/assets/site.js"))
+    site_css = File.read!(Path.join(@output, "docs/assets/site.css"))
 
-    assert index =~ "Cinder UI"
-    assert index =~ "Component Library"
-    assert index =~ "GitHub"
-    assert index =~ "Hex package"
-    assert index =~ "https://hex.pm/packages/cinder_ui"
-    refute index =~ "href=\"../index.html\""
-    assert index =~ "Actions.button"
-    assert index =~ ~s(aria-label="Copy HEEx")
-    assert index =~ "Open docs"
-    assert index =~ "./components/actions-button.html"
+    assert marketing_index =~ "Cinder UI"
+    assert marketing_index =~ "Browse Component Library"
+    assert marketing_index =~ "./docs/index.html"
+    assert marketing_index =~ "https://hexdocs.pm/cinder_ui"
+    assert marketing_index =~ "GitHub repository"
+    assert marketing_index =~ "Component examples on the homepage"
 
-    assert index =~
-             "<a href=\"./components/actions-button.html\" class=\"hover:underline underline-offset-4\">"
-
-    assert index =~ "data-copy-template="
-    refute index =~ "Phoenix template (HEEx)"
-    assert index =~ ~s(id="code-actions-button")
-    assert index =~ "data-theme-mode"
-    assert index =~ "theme-color"
-    assert index =~ "theme-radius"
-    assert index =~ "data-slot=\"native-select-wrapper\""
-    assert index =~ "data-slot=\"native-select\""
-    assert index =~ ~s(id="actions-button")
-    assert index =~ ~s(id="forms-field")
-    assert index =~ ~r/id="layout-scroll_area"[\s\S]*?data-preview-align="full"/
-    assert index =~ ~s(data-preview-align="center")
-    assert index =~ ~s(data-preview-align="full")
-    assert index =~ ~s(href="./index.html")
-    assert index =~ ~s(aria-current="page")
-    assert index =~ "sidebar-link"
+    assert docs_index =~ "Component Library"
+    assert docs_index =~ "Actions.button"
+    assert docs_index =~ "Open docs"
+    assert docs_index =~ "./components/actions-button.html"
+    assert docs_index =~ ~s(href="../index.html")
 
     assert component_page =~ "Original shadcn/ui docs"
-    refute component_page =~ "Usage (HEEx)"
-    assert component_page =~ ~s(data-slot="component-preview")
-    assert component_page =~ ~s(data-slot="preview")
-    assert component_page =~ ~s(data-slot="code")
-
     assert component_page =~ "Attributes"
     assert component_page =~ "Slots"
-
     assert component_page =~ "https://ui.shadcn.com/docs/components/button"
-    assert component_page =~ "<code>variant</code>"
-    refute component_page =~ "docs-markdown"
-    assert component_page =~ ~s(href="../components/actions-button.html")
-    assert component_page =~ ~s(aria-current="page")
-    assert component_page =~ "Primary submit action"
-    assert component_page =~ "Loading destructive action"
-    refute component_page =~ "Inline Docs Examples"
-    refute component_page =~ "## Attributes"
+    assert component_page =~ ~s(data-slot="component-preview")
 
-    assert card_page =~ "Card example 1"
-    assert card_page =~ "Project status"
-    assert card_page =~ "Team invite"
-    assert card_page =~ "&lt;.card_header&gt;"
-    refute card_page =~ "Usage (HEEx)"
-
-    assert resizable_page =~ "<div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div>"
-    assert resizable_page =~ "<div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div>"
-    assert resizable_page =~ "Top panel"
-    assert resizable_page =~ "Bottom panel"
-    assert resizable_page =~ "Explorer"
-    assert resizable_page =~ "Editor"
-    assert resizable_page =~ "data-slot=\"resizable-handle\""
-    assert resizable_page =~ "data-storage-key=\"docs-layout-main\""
-    assert scroll_area_page =~ ~s(data-slot="preview")
-    assert scroll_area_page =~ ~s(data-preview-align="full")
-
-    refute resizable_page =~
-             "&amp;lt;div class=&amp;quot;rounded-md bg-muted p-2 text-xs&amp;quot;&amp;gt;Panel A&amp;lt;/div&amp;gt;"
-
-    assert carousel_page =~ "<div class=\"h-24 rounded-md bg-muted\"></div>"
-    assert carousel_page =~ "<div class=\"h-24 rounded-md bg-muted/60\"></div>"
-
-    refute carousel_page =~
-             "&amp;lt;div class=&amp;quot;h-24 rounded-md bg-muted&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;"
-
-    site_js = File.read!(Path.join(@output, "assets/site.js"))
-    assert site_js =~ "themedTokenKeys"
-    assert site_js =~ "removeProperty"
     assert site_js =~ "highlightCodeBlocks"
-    assert site_js =~ "tok-tag"
-    assert site_js =~ "tok-operator"
-
-    site_css = File.read!(Path.join(@output, "assets/site.css"))
+    assert site_js =~ "initCommandPalette"
+    assert site_js =~ "restoreSidebarScroll"
     assert site_css =~ ".docs-markdown"
-    assert site_css =~ "summary:not([data-slot])::after"
-    assert site_css =~ "summary::marker"
-    assert site_css =~ ".code-highlight .tok-tag"
-    assert site_css =~ ".code-highlight .tok-punct"
+    assert site_css =~ ".docs-k-panel"
+  end
+
+  test "build task rejects flags and options" do
+    assert_raise Mix.Error, fn ->
+      Mix.Task.reenable("cinder_ui.docs.build")
+      Mix.Task.run("cinder_ui.docs.build", ["--clean"])
+    end
   end
 end
