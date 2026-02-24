@@ -844,21 +844,8 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   end
 
   defp docs_speculation_rules_html do
-    """
-    <script type="application/speculationrules">
-    {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "selector_matches": "a[href$='.html']"
-          },
-          "eagerness": "moderate"
-        }
-      ]
-    }
-    </script>
-    """
+    template!("docs_speculation_rules.html.eex")
+    |> EEx.eval_string([])
   end
 
   defp docs_asset!(name) do
@@ -868,6 +855,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp site_asset!(name) do
     Path.join([File.cwd!(), "dev", "assets", "site", name])
+    |> File.read!()
+  end
+
+  defp template!(name) do
+    Path.join([File.cwd!(), "priv", "site_templates", name])
     |> File.read!()
   end
 

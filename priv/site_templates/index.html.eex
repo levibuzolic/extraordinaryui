@@ -11,7 +11,19 @@
     <%= theme_bootstrap_script %>
     <link rel="stylesheet" href="<%= theme_css_path %>" />
     <link rel="stylesheet" href="<%= site_css_path %>" />
-    <%= speculation_rules_script %>
+    <script type="application/speculationrules">
+      {
+        "prefetch": [
+          {
+            "source": "document",
+            "where": {
+              "href_matches": "/docs/*"
+            },
+            "eagerness": "eager"
+          }
+        ]
+      }
+    </script>
   </head>
   <body class="bg-background text-foreground">
     <header class="border-b bg-card/80">

@@ -1,0 +1,13 @@
+<script type="application/speculationrules">
+  {
+    "prefetch": [
+      {
+        "source": "document",
+        "where": {
+          "href_matches": "/docs/*"
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
+</script>

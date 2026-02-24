@@ -60,7 +60,6 @@ defmodule CinderUI.Site.Marketing do
       theme_bootstrap_script: theme_bootstrap_script(),
       theme_css_path: theme_css_path,
       site_css_path: site_css_path,
-      speculation_rules_script: speculation_rules_script(docs_path),
       shared_script: shared_script(),
       header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
@@ -75,22 +74,6 @@ defmodule CinderUI.Site.Marketing do
     "index.html.eex"
     |> template!()
     |> EEx.eval_string(assigns)
-  end
-
-  defp speculation_rules_script(docs_path) do
-    docs_path = docs_path |> to_string() |> escape_json_string()
-
-    """
-    <script type="application/speculationrules">
-    {"prefetch":[{"source":"list","eagerness":"eager","urls":["#{docs_path}"]}]}
-    </script>
-    """
-  end
-
-  defp escape_json_string(value) do
-    value
-    |> String.replace("\\", "\\\\")
-    |> String.replace("\"", "\\\"")
   end
 
   defp header_controls_html(docs_path, github_url, hex_url, hexdocs_url) do
