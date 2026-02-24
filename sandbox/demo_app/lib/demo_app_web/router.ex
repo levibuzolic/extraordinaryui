@@ -26,7 +26,8 @@ defmodule DemoAppWeb.Router do
     pipe_through :site_browser
 
     get "/", ComponentController, :index
-    get "/components", ComponentController, :components
+    get "/components", ComponentController, :components_redirect
+    get "/components/*path", ComponentController, :components
     post "/__docs/rebuild", ComponentController, :rebuild
     get "/*path", ComponentController, :site
   end

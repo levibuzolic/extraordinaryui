@@ -199,8 +199,8 @@ Legend:
 | Sidebar | 🧱 Scaffold | Static shell | Complex interactions require host-side logic |
 | Skeleton | ✅ Full | Server-rendered | - |
 | Slider | ✅ Full | Server-rendered | Native range input style |
-| Sonner | 🧱 Scaffold | Static shell | Mount point API; toast engine not bundled |
-| Toast | ✅ Full | Server-rendered | Presentational toast container/items for app-level notifications |
+| Sonner | 🚧 Not Yet | N/A | Not implemented; toast support planned for future release |
+| Toast | 🚧 Not Yet | N/A | Not implemented; flash/toast API is intentionally deferred |
 | Spinner | ✅ Full | Server-rendered | - |
 | Switch | ✅ Full | Server-rendered | - |
 | Table | ✅ Full | Server-rendered | - |

@@ -6,7 +6,7 @@ defmodule Storybook.Components.Advanced do
   def imports,
     do: [
       {CinderUI.Components.Advanced,
-       [item: 1, combobox: 1, calendar: 1, carousel: 1, chart: 1, sidebar: 1, sonner_toaster: 1]}
+       [item: 1, combobox: 1, calendar: 1, carousel: 1, chart: 1, sidebar: 1]}
     ]
 
   def variations do
@@ -37,7 +37,7 @@ defmodule Storybook.Components.Advanced do
         """
       },
       %Variation{
-        id: :carousel_chart_sidebar_toaster,
+        id: :carousel_chart_sidebar,
         template: """
         <div class=\"grid gap-6\">
           <.carousel id=\"demo-carousel\">
@@ -59,8 +59,6 @@ defmodule Storybook.Components.Advanced do
               <div class=\"rounded bg-muted p-4\">Main content area</div>
             </:inset>
           </.sidebar>
-
-          <.sonner_toaster position=\"bottom-right\" />
         </div>
         """
       }

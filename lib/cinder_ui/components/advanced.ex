@@ -10,7 +10,6 @@ defmodule CinderUI.Components.Advanced do
   - `carousel/1`
   - `chart/1`
   - `sidebar/1`
-  - `sonner_toaster/1`
   - `item/1`
 
   These components intentionally favor no-JS defaults and expose hooks/classes so
@@ -292,33 +291,4 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  doc("""
-  Toaster mount point for Sonner-compatible notifications.
-
-  Hook your preferred toast package to this node.
-  """)
-
-  attr :position, :string, default: "bottom-right"
-  attr :class, :string, default: nil
-
-  def sonner_toaster(assigns) do
-    assigns =
-      assign(assigns, :classes, [
-        "pointer-events-none fixed z-[100] flex flex-col gap-2",
-        position_class(assigns.position),
-        assigns.class
-      ])
-
-    ~H"""
-    <div data-slot="sonner" data-position={@position} class={classes(@classes)} />
-    """
-  end
-
-  defp position_class("top-left"), do: "top-4 left-4"
-  defp position_class("top-center"), do: "top-4 left-1/2 -translate-x-1/2"
-  defp position_class("top-right"), do: "top-4 right-4"
-  defp position_class("bottom-left"), do: "bottom-4 left-4"
-  defp position_class("bottom-center"), do: "bottom-4 left-1/2 -translate-x-1/2"
-  defp position_class("bottom-right"), do: "bottom-4 right-4"
-  defp position_class(_), do: "bottom-4 right-4"
 end

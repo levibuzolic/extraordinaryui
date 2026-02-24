@@ -17,9 +17,4 @@ defmodule CinderUI.Components.AdvancedTest do
     assert html =~ "Main"
   end
 
-  test "sonner_toaster renders with position" do
-    html = render_component(&Advanced.sonner_toaster/1, %{position: "top-right"})
-    assert html =~ "data-slot=\"sonner\""
-    assert html =~ "top-4"
-  end
 end
