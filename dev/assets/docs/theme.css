@@ -1,0 +1,12 @@
+@import "../../../assets/css/cinder_ui.css";
+
+@source "../../../lib";
+@source "../../../dev/lib";
+@source "../../../priv/site_templates";
+@source "./site.js";
+
+@layer base {
+  body {
+    @apply min-h-screen;
+  }
+}

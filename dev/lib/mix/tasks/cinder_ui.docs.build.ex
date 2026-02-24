@@ -47,14 +47,14 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
     assets_dir = Path.join(docs_output_dir, "assets")
     File.mkdir_p!(assets_dir)
+    build_theme_css!(assets_dir)
 
-    theme_css = theme_css()
     sections = Catalog.sections()
     entries = Enum.flat_map(sections, & &1.entries)
 
     File.write!(
       Path.join(docs_output_dir, "index.html"),
-      overview_page_html(sections, theme_css, home_url, github_url, hex_package_url)
+      overview_page_html(sections, home_url, github_url, hex_package_url)
     )
 
     Enum.each(entries, fn entry ->
@@ -63,7 +63,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
       File.write!(
         output_path,
-        component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url)
+        component_page_html(entry, sections, home_url, github_url, hex_package_url)
       )
     end)
 
@@ -76,6 +76,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       hexdocs_url: hexdocs_url,
       component_count: length(entries),
       docs_path: "./docs/index.html",
+      theme_css_path: "./docs/assets/theme.css",
       site_css_path: "./docs/assets/site.css"
     })
 
@@ -85,19 +86,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     Mix.shell().info("open #{relative(Path.join(docs_output_dir, "index.html"))} for docs index")
   end
 
-  defp theme_css do
-    "assets/css/cinder_ui.css"
-    |> File.read!()
-    |> String.replace(~r/^@import\s+"tailwindcss";\n?/m, "")
-    |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
-  end
-
-  defp overview_page_html(sections, theme_css, home_url, github_url, hex_package_url) do
+  defp overview_page_html(sections, home_url, github_url, hex_package_url) do
     page_shell(
       title: "Cinder UI Docs",
       description: "Static component docs for Cinder UI",
       body_content: overview_body_html(sections),
-      theme_css: theme_css,
       asset_prefix: ".",
       sidebar: sidebar_links(sections, ".", nil),
       home_url: home_url,
@@ -106,12 +99,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     )
   end
 
-  defp component_page_html(entry, sections, theme_css, home_url, github_url, hex_package_url) do
+  defp component_page_html(entry, sections, home_url, github_url, hex_package_url) do
     page_shell(
       title: "#{entry.module_name}.#{entry.title} · Cinder UI",
       description: entry.docs,
       body_content: component_body_html(entry, sections),
-      theme_css: theme_css,
       asset_prefix: "..",
       sidebar: sidebar_links(sections, "..", entry.id),
       home_url: home_url,
@@ -125,7 +117,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       title: opts[:title],
       description: opts[:description],
       body_content: opts[:body_content],
-      theme_css: opts[:theme_css],
       asset_prefix: opts[:asset_prefix],
       sidebar: opts[:sidebar],
       home_url: opts[:home_url],
@@ -141,17 +132,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{@title}</title>
         <meta name="description" content={@description} />
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4">
-        </script>
-        <style type="text/tailwindcss">
-          <%= Phoenix.HTML.raw(@theme_css) %>
-
-          @layer base {
-            body {
-              @apply min-h-screen;
-            }
-          }
-        </style>
+        <link rel="stylesheet" href={"#{@asset_prefix}/assets/theme.css"} />
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
       <body class="bg-background text-foreground">
@@ -193,6 +174,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
         <script src={"#{@asset_prefix}/assets/site.js"}>
         </script>
+        {Phoenix.HTML.raw(docs_speculation_rules_html())}
       </body>
     </html>
     """
@@ -809,6 +791,74 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp site_css do
     site_asset!("site.css")
+  end
+
+  defp build_theme_css!(assets_dir) do
+    docs_assets_dir = Path.join([File.cwd!(), "dev", "assets", "docs"])
+    ensure_npm_available!()
+    ensure_docs_tailwind_deps!(docs_assets_dir)
+
+    output_path = Path.join(assets_dir, "theme.css")
+    node_modules_path = Path.join(docs_assets_dir, "node_modules")
+
+    run_cmd!("npm", ["exec", "--", "tailwindcss", "--input=theme.css", "--output=#{output_path}"],
+      cd: docs_assets_dir,
+      env: [{"NODE_PATH", node_modules_path}]
+    )
+  end
+
+  defp ensure_npm_available! do
+    cond do
+      is_nil(System.find_executable("node")) ->
+        Mix.raise("node is required to build docs CSS. Please install/activate Node.js.")
+
+      is_nil(System.find_executable("npm")) ->
+        Mix.raise("npm is required to build docs CSS. Please install/activate npm.")
+
+      true ->
+        :ok
+    end
+  end
+
+  defp ensure_docs_tailwind_deps!(docs_assets_dir) do
+    node_modules_dir = Path.join(docs_assets_dir, "node_modules")
+
+    if File.dir?(node_modules_dir) do
+      :ok
+    else
+      Mix.shell().info("installing docs CSS dependencies (dev/assets/docs)")
+
+      run_cmd!("npm", ["install", "--no-audit", "--no-fund"], cd: docs_assets_dir)
+    end
+  end
+
+  defp run_cmd!(command, args, opts) do
+    {output, status} = System.cmd(command, args, Keyword.put(opts, :stderr_to_stdout, true))
+
+    if status != 0 do
+      Mix.raise("""
+      command failed: #{command} #{Enum.join(args, " ")}
+      #{output}
+      """)
+    end
+  end
+
+  defp docs_speculation_rules_html do
+    """
+    <script type="application/speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "selector_matches": "a[href$='.html']"
+          },
+          "eagerness": "moderate"
+        }
+      ]
+    }
+    </script>
+    """
   end
 
   defp docs_asset!(name) do

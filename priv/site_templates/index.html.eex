@@ -9,17 +9,9 @@
       content="Phoenix + LiveView component library with shadcn-inspired patterns, typed HEEx APIs, and installer tooling for existing apps."
     />
     <%= theme_bootstrap_script %>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-<%= theme_css %>
-
-@layer base {
-  body {
-    @apply min-h-screen;
-  }
-}
-    </style>
+    <link rel="stylesheet" href="<%= theme_css_path %>" />
     <link rel="stylesheet" href="<%= site_css_path %>" />
+    <%= speculation_rules_script %>
   </head>
   <body class="bg-background text-foreground">
     <header class="border-b bg-card/80">

@@ -8,6 +8,7 @@
 /.idea/
 /.vscode/
 /assets/node_modules/
+/dev/assets/docs/node_modules
 /assets/.npm/
 /tmp/
 /dist/

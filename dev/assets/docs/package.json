@@ -1,0 +1,10 @@
+{
+  "name": "cinder-ui-docs-assets",
+  "private": true,
+  "version": "0.0.1",
+  "devDependencies": {
+    "@tailwindcss/cli": "4.1.12",
+    "tailwindcss": "4.1.12",
+    "tailwindcss-animate": "1.0.7"
+  }
+}

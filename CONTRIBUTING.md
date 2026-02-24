@@ -63,6 +63,8 @@ MIX_ENV=test mix coveralls.cobertura --raise
 mix cinder_ui.docs.build
 ```
 
+Note: docs CSS is compiled with Tailwind CLI from `dev/assets/docs/package.json`. The build task auto-installs those npm dependencies on first run.
+
 ### Sandbox unit tests
 
 ```bash

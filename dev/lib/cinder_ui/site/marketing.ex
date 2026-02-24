@@ -22,8 +22,8 @@ defmodule CinderUI.Site.Marketing do
     version = Map.get(opts, :version, to_string(project[:version] || "0.0.0"))
     component_count = Map.get(opts, :component_count, 0)
     docs_path = Map.get(opts, :docs_path, "./docs/index.html")
+    theme_css_path = Map.get(opts, :theme_css_path, "./docs/assets/theme.css")
     site_css_path = Map.get(opts, :site_css_path, "./assets/site.css")
-    theme_css = Map.get(opts, :theme_css, theme_css())
 
     File.mkdir_p!(output_dir)
 
@@ -35,7 +35,7 @@ defmodule CinderUI.Site.Marketing do
         github_url,
         hex_url,
         hexdocs_url,
-        theme_css,
+        theme_css_path,
         docs_path,
         site_css_path
       )
@@ -44,20 +44,13 @@ defmodule CinderUI.Site.Marketing do
     File.write!(Path.join(output_dir, ".nojekyll"), "")
   end
 
-  defp theme_css do
-    "assets/css/cinder_ui.css"
-    |> File.read!()
-    |> String.replace(~r/^@import\s+"tailwindcss";\n?/m, "")
-    |> String.replace(~r/^@plugin\s+"tailwindcss-animate";\n?/m, "")
-  end
-
   defp index_html(
          version,
          component_count,
          github_url,
          hex_url,
          hexdocs_url,
-         theme_css,
+         theme_css_path,
          docs_path,
          site_css_path
        ) do
@@ -65,8 +58,9 @@ defmodule CinderUI.Site.Marketing do
 
     assigns = [
       theme_bootstrap_script: theme_bootstrap_script(),
-      theme_css: theme_css,
+      theme_css_path: theme_css_path,
       site_css_path: site_css_path,
+      speculation_rules_script: speculation_rules_script(docs_path),
       shared_script: shared_script(),
       header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
@@ -81,6 +75,22 @@ defmodule CinderUI.Site.Marketing do
     "index.html.eex"
     |> template!()
     |> EEx.eval_string(assigns)
+  end
+
+  defp speculation_rules_script(docs_path) do
+    docs_path = docs_path |> to_string() |> escape_json_string()
+
+    """
+    <script type="application/speculationrules">
+    {"prefetch":[{"source":"list","eagerness":"eager","urls":["#{docs_path}"]}]}
+    </script>
+    """
+  end
+
+  defp escape_json_string(value) do
+    value
+    |> String.replace("\\", "\\\\")
+    |> String.replace("\"", "\\\"")
   end
 
   defp header_controls_html(docs_path, github_url, hex_url, hexdocs_url) do
