@@ -605,7 +605,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     |> String.trim()
     |> maybe_strip_leading_summary(summary)
     |> strip_markdown_sections(
-      ~w(example examples attribute attributes slot slots usage variant variants)
+      ~w(example examples attribute attributes slot slots usage variant variants screenshot screenshots)
     )
     |> String.trim()
   end

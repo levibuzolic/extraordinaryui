@@ -17,8 +17,9 @@ defmodule CinderUI.Components.Layout do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
-  @doc """
+  doc("""
   Card container.
 
   ## Examples
@@ -61,7 +62,8 @@ defmodule CinderUI.Components.Layout do
         </.card_header>
         <.card_content>...</.card_content>
       </.card>
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -77,7 +79,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Card header section.
 
   ## Example
@@ -96,7 +98,8 @@ defmodule CinderUI.Components.Layout do
     </.card_content>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -112,7 +115,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Card title text.
 
   ## Examples
@@ -136,7 +139,8 @@ defmodule CinderUI.Components.Layout do
     </.card_header>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -148,7 +152,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Card description text.
 
   ## Examples
@@ -172,7 +176,8 @@ defmodule CinderUI.Components.Layout do
     </.card_header>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -184,7 +189,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Right-aligned card action region for buttons/chips.
 
   ## Example
@@ -200,7 +205,8 @@ defmodule CinderUI.Components.Layout do
     </.card_header>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -216,7 +222,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Card content section.
 
   ## Example
@@ -236,7 +242,8 @@ defmodule CinderUI.Components.Layout do
     </.card_content>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -248,7 +255,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Card footer section.
 
   ## Example
@@ -265,7 +272,8 @@ defmodule CinderUI.Components.Layout do
     </.card_footer>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -278,9 +286,10 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Horizontal or vertical separator.
-  """
+  """)
+
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :decorative, :boolean, default: true
   attr :class, :string, default: nil
@@ -310,7 +319,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Animated skeleton placeholder.
 
   ## Examples
@@ -342,7 +351,8 @@ defmodule CinderUI.Components.Layout do
     </.card_content>
   </.card>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
 
   def skeleton(assigns) do
@@ -353,7 +363,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Maintains a fixed aspect ratio for content.
 
   ## Example
@@ -361,7 +371,8 @@ defmodule CinderUI.Components.Layout do
       <.aspect_ratio ratio="16 / 9">
         <img src="https://picsum.photos/id/191/800/800" class="h-full w-full object-cover" />
       </.aspect_ratio>
-  """
+  """)
+
   attr :ratio, :string, default: "16 / 9"
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -376,9 +387,10 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Keyboard key badge.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -394,9 +406,10 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Groups multiple `kbd/1` entries.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -408,7 +421,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Overflow container that mirrors shadcn `scroll-area` structure.
 
   ## Example
@@ -424,7 +437,8 @@ defmodule CinderUI.Components.Layout do
     </div>
   </.scroll_area>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   attr :viewport_class, :string, default: nil
   slot :inner_block, required: true
@@ -447,7 +461,7 @@ defmodule CinderUI.Components.Layout do
     """
   end
 
-  @doc """
+  doc("""
   Resizable split layout container with optional client-side persistence.
 
   > #### In Progress
@@ -492,7 +506,8 @@ defmodule CinderUI.Components.Layout do
     </:panel>
   </.resizable>
   ```
-  """
+  """)
+
   attr :direction, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :with_handle, :boolean, default: false
   attr :storage_key, :string, default: nil

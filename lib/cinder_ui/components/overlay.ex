@@ -21,8 +21,9 @@ defmodule CinderUI.Components.Overlay do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
-  @doc """
+  doc("""
   Modal dialog with trigger/content slots.
 
   Set `open` from LiveView assigns for server-controlled state, or rely on the
@@ -80,7 +81,8 @@ defmodule CinderUI.Components.Overlay do
     <p class="text-sm">Current plan: Pro</p>
   </.dialog>
   ```
-  """
+  """)
+
   attr :id, :string, required: true
   attr :open, :boolean, default: false
   attr :class, :string, default: nil
@@ -161,11 +163,12 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Destructive-style dialog variant used for irreversible confirmation actions.
 
   It delegates to `dialog/1` and applies destructive emphasis classes.
-  """
+  """)
+
   attr :id, :string, required: true
   attr :open, :boolean, default: false
   attr :class, :string, default: nil
@@ -195,11 +198,12 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Drawer panel component.
 
   `side` controls placement: `:top`, `:right`, `:bottom`, or `:left`.
-  """
+  """)
+
   attr :id, :string, required: true
   attr :open, :boolean, default: false
   attr :side, :atom, default: :right, values: [:top, :right, :bottom, :left]
@@ -270,18 +274,20 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Sheet alias for drawer behavior.
 
   This mirrors shadcn's `sheet` semantic naming.
-  """
+  """)
+
   def sheet(assigns), do: drawer(assigns)
 
-  @doc """
+  doc("""
   Popover with trigger and content slots.
 
   Uses optional `EuiPopover` hook for click toggling.
-  """
+  """)
+
   attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
@@ -308,9 +314,10 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Tooltip helper with hover/focus behavior.
-  """
+  """)
+
   attr :text, :string, required: true
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
@@ -333,9 +340,10 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Hover card with trigger and content slots.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :trigger, required: true
   slot :content, required: true
@@ -356,11 +364,12 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Dropdown menu structure.
 
   Menu open/close behavior is provided by the optional `EuiDropdownMenu` hook.
-  """
+  """)
+
   attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
@@ -419,11 +428,12 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  @doc """
+  doc("""
   Menubar scaffold with dropdown-like triggers.
 
   This is a simplified semantic wrapper for desktop command menus.
-  """
+  """)
+
   attr :class, :string, default: nil
 
   slot :menu, required: true do

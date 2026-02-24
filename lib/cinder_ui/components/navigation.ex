@@ -14,10 +14,12 @@ defmodule CinderUI.Components.Navigation do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
-  @doc """
+  doc("""
   Breadcrumb nav wrapper.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -31,9 +33,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Breadcrumb list (`ol`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -49,9 +52,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Breadcrumb item (`li`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -63,9 +67,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Breadcrumb link.
-  """
+  """)
+
   attr :href, :string, required: true
   attr :class, :string, default: nil
   attr :rest, :global
@@ -82,9 +87,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Breadcrumb current page item.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -104,9 +110,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Breadcrumb separator item.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block
 
@@ -129,9 +136,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Breadcrumb ellipsis element.
-  """
+  """)
+
   attr :class, :string, default: nil
 
   def breadcrumb_ellipsis(assigns) do
@@ -150,9 +158,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Pagination nav wrapper.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -166,9 +175,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Pagination list wrapper (`ul`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -180,9 +190,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Pagination item (`li`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -194,9 +205,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Pagination link with active state.
-  """
+  """)
+
   attr :href, :string, default: nil
   attr :active, :boolean, default: false
   attr :size, :atom, default: :icon, values: [:default, :sm, :lg, :icon]
@@ -243,9 +255,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Previous-page shortcut link.
-  """
+  """)
+
   attr :href, :string, default: nil
   attr :class, :string, default: nil
 
@@ -265,9 +278,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Next-page shortcut link.
-  """
+  """)
+
   attr :href, :string, default: nil
   attr :class, :string, default: nil
 
@@ -287,9 +301,10 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Pagination ellipsis marker.
-  """
+  """)
+
   attr :class, :string, default: nil
 
   def pagination_ellipsis(assigns) do
@@ -303,7 +318,7 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Tab container with trigger and content slots.
 
   State is controlled through the `value` assign.
@@ -356,7 +371,8 @@ defmodule CinderUI.Components.Navigation do
     <:content value="api">API key management</:content>
   </.tabs>
   ```
-  """
+  """)
+
   attr :value, :string, required: true
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :variant, :atom, default: :default, values: [:default, :line]
@@ -426,11 +442,12 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Generic application menu list inspired by daisyUI's menu primitive.
 
   Supports vertical and horizontal layouts with active/disabled item states.
-  """
+  """)
+
   attr :orientation, :atom, default: :vertical, values: [:vertical, :horizontal]
   attr :class, :string, default: nil
 
@@ -481,11 +498,12 @@ defmodule CinderUI.Components.Navigation do
     """
   end
 
-  @doc """
+  doc("""
   Navigation menu scaffold.
 
   This is a semantic wrapper for custom menu items.
-  """
+  """)
+
   attr :class, :string, default: nil
 
   slot :item, required: true do

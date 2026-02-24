@@ -18,6 +18,7 @@ defmodule CinderUI.Components.Actions do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
   @button_variants %{
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -42,7 +43,7 @@ defmodule CinderUI.Components.Actions do
     icon_lg: "size-10"
   }
 
-  @doc """
+  doc("""
   Renders a shadcn-style button.
 
   ## Attributes
@@ -75,7 +76,8 @@ defmodule CinderUI.Components.Actions do
   ```heex title="Loading destructive action"
   <.button variant={:destructive} loading={true}>Deleting...</.button>
   ```
-  """
+  """)
+
   attr :as, :string, default: "button"
 
   attr :variant, :atom,
@@ -120,7 +122,7 @@ defmodule CinderUI.Components.Actions do
     """
   end
 
-  @doc """
+  doc("""
   Renders a horizontal or vertical button group.
 
   ## Examples
@@ -153,7 +155,8 @@ defmodule CinderUI.Components.Actions do
         <.button size={:sm}>Next</.button>
       </.button_group>
   ```
-  """
+  """)
+
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -186,7 +189,7 @@ defmodule CinderUI.Components.Actions do
     lg: "h-10 px-2.5 min-w-10"
   }
 
-  @doc """
+  doc("""
   Renders a shadcn-style toggle button.
 
   ## Examples
@@ -213,7 +216,8 @@ defmodule CinderUI.Components.Actions do
   ```heex title="Disabled toggle"
   <.toggle disabled>Disabled</.toggle>
   ```
-  """
+  """)
+
   attr :pressed, :boolean, default: false
   attr :variant, :atom, default: :default, values: [:default, :outline]
   attr :size, :atom, default: :default, values: [:default, :sm, :lg]
@@ -248,7 +252,7 @@ defmodule CinderUI.Components.Actions do
     """
   end
 
-  @doc """
+  doc("""
   Groups toggles in either single-select or multi-select mode.
 
   This component provides structure and classes only. State management should be
@@ -279,7 +283,8 @@ defmodule CinderUI.Components.Actions do
     <.toggle>Gamma</.toggle>
   </.toggle_group>
   ```
-  """
+  """)
+
   attr :type, :atom, default: :single, values: [:single, :multiple]
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :class, :string, default: nil

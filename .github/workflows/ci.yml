@@ -144,6 +144,29 @@ jobs:
       - name: Run sandbox unit tests
         run: mix test
 
+  sandbox_typecheck:
+    name: Sandbox TypeScript Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sandbox/demo_app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: sandbox/demo_app/package-lock.json
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npm run typecheck
+
   sandbox_browser:
     name: Sandbox Browser Tests (Playwright)
     runs-on: ubuntu-latest

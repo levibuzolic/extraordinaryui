@@ -14,8 +14,9 @@ defmodule CinderUI.Components.DataDisplay do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
-  @doc """
+  doc("""
   Renders a circular avatar with optional image and fallback.
 
   ## Examples
@@ -41,7 +42,8 @@ defmodule CinderUI.Components.DataDisplay do
     <:badge />
   </.avatar>
   ```
-  """
+  """)
+
   attr :src, :string, default: nil
   attr :alt, :string, default: ""
   attr :fallback, :string, default: nil
@@ -109,7 +111,7 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Groups avatars with overlap.
 
   ## Examples
@@ -130,7 +132,8 @@ defmodule CinderUI.Components.DataDisplay do
     <.avatar alt="Sam Patel" />
   </.avatar_group>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -148,9 +151,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Counter item for avatar groups (e.g. `+3`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -166,7 +170,7 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table wrapper with overflow container.
 
   ## Examples
@@ -196,67 +200,49 @@ defmodule CinderUI.Components.DataDisplay do
   </.table>
   ```
 
-      <.table>
-        <.table_caption>Active deployments across environments.</.table_caption>
-        <.table_header>
-          <.table_row>
-            <.table_head>Service</.table_head>
-            <.table_head>Status</.table_head>
-            <.table_head class="text-right">Latency</.table_head>
-          </.table_row>
-        </.table_header>
-        <.table_body>
-          <.table_row>
-            <.table_cell>API</.table_cell>
-            <.table_cell>Healthy</.table_cell>
-            <.table_cell class="text-right">82ms</.table_cell>
-          </.table_row>
-          <.table_row>
-            <.table_cell>Worker</.table_cell>
-            <.table_cell>Degraded</.table_cell>
-            <.table_cell class="text-right">164ms</.table_cell>
-          </.table_row>
-        </.table_body>
-      </.table>
-
-      <.table>
-        <.table_header>
-          <.table_row>
-            <.table_head>Invoice</.table_head>
-            <.table_head>State</.table_head>
-            <.table_head class="text-right">Amount</.table_head>
-          </.table_row>
-        </.table_header>
-        <.table_body>
-          <.table_row>
-            <.table_cell>INV-001</.table_cell>
-            <.table_cell>Paid</.table_cell>
-            <.table_cell class="text-right">$120.00</.table_cell>
-          </.table_row>
-          <.table_row state="selected">
-            <.table_cell>INV-002</.table_cell>
-            <.table_cell>Pending</.table_cell>
-            <.table_cell class="text-right">$48.00</.table_cell>
-          </.table_row>
-        </.table_body>
-        <.table_footer>
-          <.table_row>
-            <.table_cell class="font-medium" colspan="2">Total</.table_cell>
-            <.table_cell class="text-right font-medium">$168.00</.table_cell>
-          </.table_row>
-        </.table_footer>
-      </.table>
+  ```heex title="Invoice summary table" align="full"
+  <.table>
+    <.table_header>
+      <.table_row>
+        <.table_head>Invoice</.table_head>
+        <.table_head>State</.table_head>
+        <.table_head class="text-right">Amount</.table_head>
+      </.table_row>
+    </.table_header>
+    <.table_body>
+      <.table_row>
+        <.table_cell>INV-001</.table_cell>
+        <.table_cell>Paid</.table_cell>
+        <.table_cell class="text-right">$120.00</.table_cell>
+      </.table_row>
+      <.table_row state="selected">
+        <.table_cell>INV-002</.table_cell>
+        <.table_cell>Pending</.table_cell>
+        <.table_cell class="text-right">$48.00</.table_cell>
+      </.table_row>
+    </.table_body>
+    <.table_footer>
+      <.table_row>
+        <.table_cell class="font-medium" colspan="2">Total</.table_cell>
+        <.table_cell class="text-right font-medium">$168.00</.table_cell>
+      </.table_row>
+    </.table_footer>
+  </.table>
+  ```
 
   ## Minimal
 
-      <.table>
-        <.table_header>
-          <.table_row>
-            <.table_head>Name</.table_head>
-          </.table_row>
-        </.table_header>
-      </.table>
-  """
+  ```heex title="Minimal table"
+  <.table>
+    <.table_header>
+      <.table_row>
+        <.table_head>Name</.table_head>
+      </.table_row>
+    </.table_header>
+  </.table>
+  ```
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -272,9 +258,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table header (`thead`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -286,9 +273,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table body (`tbody`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -300,9 +288,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table footer (`tfoot`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -318,9 +307,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table row (`tr`).
-  """
+  """)
+
   attr :class, :string, default: nil
   attr :state, :string, default: nil
   slot :inner_block, required: true
@@ -339,9 +329,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table heading cell (`th`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -357,9 +348,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table data cell (`td`).
-  """
+  """)
+
   attr :class, :string, default: nil
   attr :rest, :global, include: ~w(colspan rowspan)
   slot :inner_block, required: true
@@ -376,9 +368,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Table caption (`caption`).
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -390,11 +383,12 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Accordion with multiple items.
 
   Uses `<details>` for no-JS progressive enhancement.
-  """
+  """)
+
   attr :class, :string, default: nil
 
   slot :item, required: true do
@@ -430,11 +424,12 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Generic collapsible section with trigger/content slots.
 
   Uses `<details>` for accessibility and no-JS behavior.
-  """
+  """)
+
   attr :open, :boolean, default: false
   attr :class, :string, default: nil
   slot :trigger, required: true
@@ -459,9 +454,10 @@ defmodule CinderUI.Components.DataDisplay do
     """
   end
 
-  @doc """
+  doc("""
   Monospaced code block wrapper.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 

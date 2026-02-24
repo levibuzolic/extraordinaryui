@@ -8,67 +8,57 @@
     </div>
 
     <section class="mb-6 rounded-lg border p-3">
-      <h2 class="text-sm font-semibold">Theme</h2>
+      <% color_options =
+        Enum.map(["gray", "neutral", "slate", "stone", "zinc"], fn option ->
+          %{value: option, label: option |> String.replace("_", " ") |> String.capitalize()}
+        end)
+
+      radius_options =
+        Enum.map(
+          [
+            {"maia", "Compact (6px / 0.375rem)"},
+            {"mira", "Small (8px / 0.5rem)"},
+            {"nova", "Default (12px / 0.75rem)"},
+            {"lyra", "Large (14px / 0.875rem)"},
+            {"vega", "XL (16px / 1rem)"}
+          ],
+          fn {value, label} -> %{value: value, label: label} end
+        ) %>
+      <Navigation.tabs value="auto" class="w-full gap-0 [&_[data-slot=tabs-list]]:w-full">
+        <:trigger value="light" data_theme_mode="light" class="theme-mode-btn">Light</:trigger>
+        <:trigger value="dark" data_theme_mode="dark" class="theme-mode-btn">Dark</:trigger>
+        <:trigger value="auto" data_theme_mode="auto" class="theme-mode-btn">Auto</:trigger>
+      </Navigation.tabs>
 
       <div class="mt-3">
-        <p class="mb-2 text-xs font-medium text-muted-foreground">Mode</p>
-        <div class="grid grid-cols-3 gap-1">
-          <button
-            type="button"
-            data-theme-mode="light"
-            class="theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs"
-          >
-            Light
-          </button>
-          <button
-            type="button"
-            data-theme-mode="dark"
-            class="theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs"
-          >
-            Dark
-          </button>
-          <button
-            type="button"
-            data-theme-mode="auto"
-            class="theme-mode-btn inline-flex h-8 items-center justify-center rounded-md border px-2 text-xs"
-          >
-            Auto
-          </button>
-        </div>
-      </div>
-
-      <div class="mt-3">
-        <label for="theme-color" class="mb-2 block text-xs font-medium text-muted-foreground">
-          Color
+        <label for="theme-color" class="mb-1 block text-xs font-medium text-muted-foreground">
+          Base color
         </label>
-        <select
+        <p class="mb-2 text-[11px] text-muted-foreground">
+          Matches shadcn <code>tailwind.baseColor</code>.
+        </p>
+        <Forms.select
+          name="theme-color"
+          value="neutral"
           id="theme-color"
-          data-testid="theme-color"
-          class="border-input bg-background h-8 w-full rounded-md border px-2 text-xs"
+          aria-label="Theme color"
         >
-          <option value="zinc">Zinc</option>
-          <option value="slate">Slate</option>
-          <option value="stone">Stone</option>
-          <option value="gray">Gray</option>
-          <option value="neutral">Neutral</option>
-        </select>
+          <:option :for={option <- color_options} value={option.value} label={option.label} />
+        </Forms.select>
       </div>
 
       <div class="mt-3">
         <label for="theme-radius" class="mb-2 block text-xs font-medium text-muted-foreground">
           Radius
         </label>
-        <select
+        <Forms.select
+          name="theme-radius"
+          value="nova"
           id="theme-radius"
-          data-testid="theme-radius"
-          class="border-input bg-background h-8 w-full rounded-md border px-2 text-xs"
+          aria-label="Theme radius"
         >
-          <option value="maia">Compact (6px / 0.375rem)</option>
-          <option value="mira">Small (8px / 0.5rem)</option>
-          <option value="nova">Default (12px / 0.75rem)</option>
-          <option value="lyra">Large (14px / 0.875rem)</option>
-          <option value="vega">XL (16px / 1rem)</option>
-        </select>
+          <:option :for={option <- radius_options} value={option.value} label={option.label} />
+        </Forms.select>
       </div>
     </section>
 

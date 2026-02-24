@@ -68,6 +68,10 @@ defmodule CinderUI.MixProject do
   defp aliases do
     [
       "test.all": ["test"],
+      "docs.with_screenshots": [
+        "cmd --cd sandbox/demo_app npx playwright test tests/browser/visual.spec.ts",
+        "docs"
+      ],
       quality: [
         "format --check-formatted",
         "compile --warnings-as-errors",
@@ -90,6 +94,7 @@ defmodule CinderUI.MixProject do
         "lib",
         "priv",
         "assets",
+        "doc/screenshots",
         "mix.exs",
         "README.md",
         "LICENSE"
@@ -99,7 +104,7 @@ defmodule CinderUI.MixProject do
 
   defp elixirc_paths(:dev), do: ["lib", "dev/lib"]
   defp elixirc_paths(:test), do: ["lib", "dev/lib", "test"]
-  defp elixirc_paths(_), do: ["lib", "dev/lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp docs do
     [

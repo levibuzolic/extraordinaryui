@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "test:browser": "playwright test",
     "test:browser:headed": "playwright test --headed",
     "test:browser:ui": "playwright test --ui",
@@ -11,6 +12,7 @@
     "test:browser:visual:update": "playwright test tests/browser/visual.spec.ts --update-snapshots"
   },
   "devDependencies": {
+    "@types/node": "^24.4.0",
     "@playwright/test": "^1.54.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.9.2"

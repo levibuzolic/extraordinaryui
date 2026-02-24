@@ -35,6 +35,24 @@ defmodule DemoApp.MixProject do
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
+  # Creates deps/cinder_ui as a symlink to the local path dep so Tailwind's
+  # @source "../../deps/cinder_ui" directive (added by mix cinder_ui.install)
+  # works the same way it would for a real hex consumer.
+  defp link_cinder_ui_dep(_args) do
+    File.mkdir_p!("deps")
+
+    case File.ln_s("../../..", "deps/cinder_ui") do
+      :ok ->
+        Mix.shell().info("Created deps/cinder_ui symlink for local development")
+
+      {:error, :eexist} ->
+        :ok
+
+      {:error, reason} ->
+        Mix.shell().error("Could not create deps/cinder_ui symlink: #{inspect(reason)}")
+    end
+  end
+
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
@@ -66,7 +84,7 @@ defmodule DemoApp.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "assets.setup", "assets.build"],
+      setup: ["deps.get", &link_cinder_ui_dep/1, "assets.setup", "assets.build"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["compile", "tailwind demo_app", "esbuild demo_app"],
       "assets.deploy": [

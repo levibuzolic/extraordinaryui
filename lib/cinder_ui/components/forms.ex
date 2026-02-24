@@ -20,8 +20,9 @@ defmodule CinderUI.Components.Forms do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
-  @doc """
+  doc("""
   Renders a form label.
 
   ## Examples
@@ -32,7 +33,8 @@ defmodule CinderUI.Components.Forms do
         Project name
         <span class="text-destructive">*</span>
       </.label>
-  """
+  """)
+
   attr :for, :string, default: nil
   attr :class, :string, default: nil
   attr :rest, :global
@@ -52,7 +54,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Field wrapper for label, control, description, and errors.
 
   ## Examples
@@ -73,7 +75,8 @@ defmodule CinderUI.Components.Forms do
     <:error>Please use your company domain.</:error>
   </.field>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :label
   slot :description
@@ -97,7 +100,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders an input with shadcn classes.
 
   ## Examples
@@ -107,7 +110,8 @@ defmodule CinderUI.Components.Forms do
       <.input id="username" name="username" value="levi" />
 
       <.input id="avatar" name="avatar" type="file" accept="image/*" />
-  """
+  """)
+
   attr :id, :string, default: nil
   attr :type, :string, default: "text"
   attr :name, :string, default: nil
@@ -141,7 +145,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders a textarea with shadcn classes.
 
   ## Examples
@@ -156,7 +160,8 @@ defmodule CinderUI.Components.Forms do
       />
 
       <.textarea id="support_message" name="support_message" disabled value="Request submitted." />
-  """
+  """)
+
   attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: nil
@@ -185,7 +190,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders a checkbox control with optional inline label content.
 
   ## Examples
@@ -195,7 +200,8 @@ defmodule CinderUI.Components.Forms do
       <.checkbox id="product_updates" name="product_updates" checked={true}>
         Notify me about product updates
       </.checkbox>
-  """
+  """)
+
   attr :id, :string, required: true
   attr :name, :string, default: nil
   attr :value, :string, default: "true"
@@ -232,7 +238,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders a switch control with optional label content.
 
   ## Examples
@@ -244,7 +250,8 @@ defmodule CinderUI.Components.Forms do
       </.switch>
 
       <.switch id="notifications" disabled={true}>Push notifications</.switch>
-  """
+  """)
+
   attr :id, :string, required: true
   attr :name, :string, default: nil
   attr :value, :string, default: "true"
@@ -323,7 +330,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders a native `<select>` element with shadcn styles.
 
   ## Examples
@@ -342,7 +349,8 @@ defmodule CinderUI.Components.Forms do
         <:option value="levi" label="Levi" />
         <:option value="sam" label="Sam" />
       </.select>
-  """
+  """)
+
   attr :name, :string, default: nil
   attr :value, :string, default: nil
   attr :placeholder, :string, default: "Choose an option"
@@ -381,7 +389,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders a radio group with native radio inputs.
 
   ## Examples
@@ -395,7 +403,8 @@ defmodule CinderUI.Components.Forms do
         <:option value="monthly" label="Monthly billing" />
         <:option value="yearly" label="Yearly billing (save 20%)" />
       </.radio_group>
-  """
+  """)
+
   attr :name, :string, default: nil
   attr :value, :string, default: nil
   attr :class, :string, default: nil
@@ -427,7 +436,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders a slider using native range input(s).
 
   Use `min`, `max`, and `step` for scalar values. For range sliders, render two
@@ -438,7 +447,8 @@ defmodule CinderUI.Components.Forms do
       <.slider id="volume" name="volume" value={45} min={0} max={100} step={1} />
 
       <.slider id="cpu_limit" name="cpu_limit" value={2} min={1} max={8} step={1} />
-  """
+  """)
+
   attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :integer, default: 0
@@ -471,7 +481,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Wraps an input and sibling controls (buttons/icons) in a single inline group.
 
   ## Examples
@@ -496,7 +506,8 @@ defmodule CinderUI.Components.Forms do
     <.button variant={:outline} size={:sm}>Copy</.button>
   </.input_group>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -520,7 +531,7 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
-  @doc """
+  doc("""
   Renders an OTP-style segmented input layout.
 
   This component renders one input per position and can be wired using standard
@@ -535,7 +546,8 @@ defmodule CinderUI.Components.Forms do
         length={8}
         values={["1", "2", "3", "", "", "", "", ""]}
       />
-  """
+  """)
+
   attr :name, :string, default: "code[]"
   attr :length, :integer, default: 6
   attr :values, :list, default: []

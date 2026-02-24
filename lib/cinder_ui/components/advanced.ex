@@ -20,12 +20,14 @@ defmodule CinderUI.Components.Advanced do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
-  @doc """
+  doc("""
   Command palette layout.
 
   This renders the shell of a command palette (`input + list + items`).
-  """
+  """)
+
   attr :class, :string, default: nil
   attr :placeholder, :string, default: "Type a command..."
 
@@ -71,9 +73,10 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Command/list item.
-  """
+  """)
+
   attr :class, :string, default: nil
   attr :value, :string, default: nil
   attr :disabled, :boolean, default: false
@@ -101,11 +104,12 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Combobox scaffold using an input and option list.
 
   It is intentionally unopinionated on state and filtering logic.
-  """
+  """)
+
   attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :placeholder, :string, default: "Select an option"
@@ -152,11 +156,12 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Calendar wrapper.
 
   This is a style container for integration with your date picker of choice.
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -168,12 +173,13 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Carousel shell.
 
   Render slides in `:item` slots and wire interactions with a LiveView hook or
   external script.
-  """
+  """)
+
   attr :id, :string, required: true
   attr :class, :string, default: nil
   slot :item, required: true
@@ -215,7 +221,7 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Chart frame component for wrapping chart libraries with shadcn tokens.
 
   ## Example
@@ -227,7 +233,8 @@ defmodule CinderUI.Components.Advanced do
     <div class="h-40 rounded-md bg-muted/60"></div>
   </.chart>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :title
   slot :description
@@ -249,7 +256,7 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Sidebar layout shell.
 
   ## Example
@@ -267,7 +274,8 @@ defmodule CinderUI.Components.Advanced do
     </:inset>
   </.sidebar>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :rail, required: true
   slot :inset, required: true
@@ -284,11 +292,12 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  @doc """
+  doc("""
   Toaster mount point for Sonner-compatible notifications.
 
   Hook your preferred toast package to this node.
-  """
+  """)
+
   attr :position, :string, default: "bottom-right"
   attr :class, :string, default: nil
 

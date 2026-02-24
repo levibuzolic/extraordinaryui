@@ -18,6 +18,7 @@ defmodule CinderUI.Components.Feedback do
   use Phoenix.Component
 
   import CinderUI.Classes
+  import CinderUI.ComponentDocs, only: [doc: 1]
 
   @badge_variants %{
     default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
@@ -30,7 +31,7 @@ defmodule CinderUI.Components.Feedback do
     link: "text-primary underline-offset-4 [a&]:hover:underline"
   }
 
-  @doc """
+  doc("""
   Renders a status badge.
 
   ## Variants
@@ -58,7 +59,8 @@ defmodule CinderUI.Components.Feedback do
     Verified
   </.badge>
   ```
-  """
+  """)
+
   attr :variant, :atom,
     default: :default,
     values: [:default, :secondary, :destructive, :outline, :ghost, :link]
@@ -87,7 +89,7 @@ defmodule CinderUI.Components.Feedback do
       "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90"
   }
 
-  @doc """
+  doc("""
   Renders an alert container.
 
   Compose with `alert_title/1` and `alert_description/1` for canonical structure.
@@ -113,7 +115,8 @@ defmodule CinderUI.Components.Feedback do
     </.alert_description>
   </.alert>
   ```
-  """
+  """)
+
   attr :variant, :atom, default: :default, values: [:default, :destructive]
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -133,7 +136,7 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Alert title element.
 
   ## Example
@@ -147,7 +150,8 @@ defmodule CinderUI.Components.Feedback do
     </.alert_description>
   </.alert>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -163,7 +167,7 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Alert description element.
 
   ## Example
@@ -177,7 +181,8 @@ defmodule CinderUI.Components.Feedback do
     </.alert_description>
   </.alert>
   ```
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
@@ -195,11 +200,12 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Progress bar.
 
   `value` is clamped between `0` and `max`.
-  """
+  """)
+
   attr :value, :integer, default: 0
   attr :max, :integer, default: 100
   attr :class, :string, default: nil
@@ -236,9 +242,10 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Generic loading spinner.
-  """
+  """)
+
   attr :class, :string, default: nil
   attr :rest, :global
 
@@ -257,12 +264,13 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Toast container for stacking notification items.
 
   This is a presentational primitive intended to wrap one or more `toast_item/1`
   children.
-  """
+  """)
+
   attr :position, :atom,
     default: :bottom_right,
     values: [:top_left, :top_center, :top_right, :bottom_left, :bottom_center, :bottom_right]
@@ -295,9 +303,10 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Toast item panel.
-  """
+  """)
+
   attr :variant, :atom, default: :default, values: [:default, :destructive]
   attr :class, :string, default: nil
   slot :inner_block, required: true
@@ -323,7 +332,7 @@ defmodule CinderUI.Components.Feedback do
     """
   end
 
-  @doc """
+  doc("""
   Empty-state block for no-data screens.
 
   ## Example
@@ -332,7 +341,8 @@ defmodule CinderUI.Components.Feedback do
         <:title>No projects</:title>
         <:description>Create your first project to get started.</:description>
       </.empty_state>
-  """
+  """)
+
   attr :class, :string, default: nil
   slot :icon
   slot :title

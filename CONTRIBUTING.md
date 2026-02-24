@@ -63,7 +63,16 @@ MIX_ENV=test mix coveralls.cobertura --raise
 mix cinder_ui.docs.build
 ```
 
+Generate HexDocs with refreshed component screenshots:
+
+```bash
+mix docs.with_screenshots
+```
+
 Note: docs CSS is compiled with Tailwind CLI from `dev/assets/docs/package.json`. The build task auto-installs those npm dependencies on first run.
+
+The sandbox app now serves files from `dist/site` (same output as `mix cinder_ui.docs.build`) so browser/visual tests run against the exact static docs+marketing output.
+Use `POST /__docs/rebuild` in the sandbox app to force a rebuild during local iteration.
 
 ### Sandbox unit tests
 
@@ -87,6 +96,8 @@ Visual suite only:
 cd sandbox/demo_app
 npx playwright test tests/browser/visual.spec.ts
 ```
+
+This suite also exports component screenshots to `doc/screenshots` for HexDocs module docs image references.
 
 Update visual baselines (only when UI change is intentional):
 
