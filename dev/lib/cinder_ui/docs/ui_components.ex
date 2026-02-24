@@ -3,9 +3,32 @@ defmodule CinderUI.Docs.UIComponents do
 
   use Phoenix.Component
 
-  alias CinderUI.Components.{Actions, Forms, Layout, Navigation}
+  alias CinderUI.Components.{Actions, Feedback, Forms, Layout, Navigation}
   alias CinderUI.Icons
   alias Phoenix.HTML
+
+  attr :href, :string, required: true
+  attr :variant, :atom, default: :outline
+  attr :size, :atom, default: :sm
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+
+  def docs_external_link_button(assigns) do
+    ~H"""
+    <Actions.button
+      as="a"
+      href={@href}
+      target="_blank"
+      rel="noopener noreferrer"
+      variant={@variant}
+      size={@size}
+      class={@class}
+    >
+      {render_slot(@inner_block)}
+    </Actions.button>
+    """
+  end
 
   attr :sections, :list, default: []
   attr :mode, :atom, default: :static
@@ -72,28 +95,22 @@ defmodule CinderUI.Docs.UIComponents do
       }
       class="mt-3 flex flex-wrap gap-1 text-xs"
     >
-      <Actions.button
+      <.docs_external_link_button
         :if={is_binary(@github_url) and @github_url != ""}
-        as="a"
         href={@github_url}
-        target="_blank"
-        rel="noopener noreferrer"
         variant={:outline}
         size={:xs}
       >
         GitHub
-      </Actions.button>
-      <Actions.button
+      </.docs_external_link_button>
+      <.docs_external_link_button
         :if={is_binary(@hex_package_url) and @hex_package_url != ""}
-        as="a"
         href={@hex_package_url}
-        target="_blank"
-        rel="noopener noreferrer"
         variant={:outline}
         size={:xs}
       >
         Hex package
-      </Actions.button>
+      </.docs_external_link_button>
     </div>
     """
   end
@@ -234,6 +251,190 @@ defmodule CinderUI.Docs.UIComponents do
   end
 
   attr :entry, :map, required: true
+  attr :sections, :list, required: true
+  attr :mode, :atom, default: :static
+  attr :root_prefix, :string, default: "."
+
+  def docs_component_detail(assigns) do
+    assigns =
+      assigns
+      |> assign(:docs_html, summary_markdown_html(assigns.entry.docs))
+      |> assign(:back_section_id, section_id_for_entry(assigns.sections, assigns.entry.id))
+      |> assign(:residual_docs, docs_residual(assigns.entry.docs_full, assigns.entry.docs))
+
+    ~H"""
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <Actions.button
+        as="a"
+        href={back_to_index_href(@mode, @root_prefix, @back_section_id)}
+        variant={:outline}
+        size={:xs}
+      >
+        ← Back to index
+      </Actions.button>
+      <.docs_external_link_button
+        href={@entry.shadcn_url}
+        variant={:outline}
+        size={:xs}
+      >
+        Original shadcn/ui docs ↗
+      </.docs_external_link_button>
+    </div>
+
+    <section class="mb-6">
+      <p class="text-muted-foreground text-xs">{@entry.module_name}</p>
+      <h2 class="mt-1 text-2xl font-semibold tracking-tight">
+        <code>{@entry.module_name}.{@entry.title}</code>
+      </h2>
+      <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
+    </section>
+
+    <section :if={@residual_docs != ""} class="mb-6">
+      <div class="space-y-3 text-sm docs-markdown">{rendered(summary_markdown_html(@residual_docs))}</div>
+    </section>
+
+    <section class="mb-8 space-y-4">
+      <%= for {example, index} <- Enum.with_index(@entry.examples, 1) do %>
+        <section class="mb-10">
+          <header>
+            <h3 class="text-sm font-semibold">{example_heading(example.title, index, length(@entry.examples))}</h3>
+            <p
+              :if={is_binary(example.description) and example.description != ""}
+              class="text-muted-foreground mt-1 text-xs"
+            >
+              {example.description}
+            </p>
+          </header>
+
+          <div data-slot="component-preview" class="mt-4 overflow-hidden rounded-xl border">
+            <div
+              data-slot="preview"
+              data-preview-align={example.preview_align || :center}
+              class={[
+                "p-4 sm:p-6",
+                (example.preview_align || :center) == :center &&
+                  "flex items-center justify-center"
+              ]}
+            >
+              {rendered(example.preview_html)}
+            </div>
+
+            <div data-slot="code" class="relative min-w-0 border-t bg-muted/20">
+              <Actions.button
+                as="button"
+                variant={:outline}
+                size={:icon_sm}
+                data-copy-template={"#{@entry.id}-#{example.id}"}
+                aria-label="Copy HEEx"
+                title="Copy HEEx"
+                class="absolute top-2.5 right-2 z-10 bg-background/80"
+              >
+                <CinderUI.Icons.icon name="copy" class="size-4" />
+              </Actions.button>
+              <pre class="m-0 min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs leading-4"><code id={"code-#{@entry.id}-#{example.id}"} class="block min-w-max whitespace-pre">{example.template_heex}</code></pre>
+            </div>
+          </div>
+        </section>
+      <% end %>
+    </section>
+
+    <section class="mb-6">
+      <h3 class="mb-3 text-sm font-semibold">Attributes</h3>
+
+      <%= if @entry.attributes == [] do %>
+        <p class="text-sm text-muted-foreground">No attributes declared.</p>
+      <% else %>
+        <div class="overflow-auto rounded-md border">
+          <table class="w-full min-w-[680px] text-left text-xs">
+            <thead class="bg-muted/40">
+              <tr>
+                <th class="px-3 py-2 font-medium">Name</th>
+                <th class="px-3 py-2 font-medium">Type</th>
+                <th class="px-3 py-2 font-medium">Default</th>
+                <th class="px-3 py-2 font-medium">Values</th>
+                <th class="px-3 py-2 font-medium">Global Includes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr :for={attr <- @entry.attributes} class="border-border/60 border-t align-top">
+                <td class="px-3 py-2">
+                  <code>{attr.name}</code>
+                  <.required_badge :if={attr.required} class="ml-2" />
+                </td>
+                <td class="px-3 py-2"><code>{attr.type}</code></td>
+                <td class="px-3 py-2">
+                  <%= if is_nil(attr.default) do %>
+                    —
+                  <% else %>
+                    <code>{inspect(attr.default)}</code>
+                  <% end %>
+                </td>
+                <td class="px-3 py-2">
+                  <%= if attr.values == [] do %>
+                    —
+                  <% else %>
+                    <%= for {value, idx} <- Enum.with_index(attr.values) do %>
+                      <%= if idx > 0 do %>, <% end %><code>{inspect(value)}</code>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td class="px-3 py-2">
+                  <%= if attr.includes == [] do %>
+                    —
+                  <% else %>
+                    <%= for {include, idx} <- Enum.with_index(attr.includes) do %>
+                      <%= if idx > 0 do %>, <% end %><code>{include}</code>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="mb-6">
+      <h3 class="mb-3 text-sm font-semibold">Slots</h3>
+
+      <%= if @entry.slots == [] do %>
+        <p class="text-sm text-muted-foreground">No slots declared.</p>
+      <% else %>
+        <div class="overflow-auto rounded-md border">
+          <table class="w-full min-w-[560px] text-left text-xs">
+            <thead class="bg-muted/40">
+              <tr>
+                <th class="px-3 py-2 font-medium">Slot</th>
+                <th class="px-3 py-2 font-medium">Slot Attributes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr :for={slot <- @entry.slots} class="border-border/60 border-t align-top">
+                <td class="px-3 py-2">
+                  <code>{slot.name}</code>
+                  <.required_badge :if={slot.required} class="ml-2" />
+                </td>
+                <td class="px-3 py-2">
+                  <%= if slot.attrs == [] do %>
+                    —
+                  <% else %>
+                    <div :for={attr <- slot.attrs} class="leading-5">
+                      <code>{attr.name}</code>
+                      <span class="text-muted-foreground">({attr.type})</span>
+                      <.required_badge :if={attr.required} class="ml-1" />
+                    </div>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </section>
+    """
+  end
+
+  attr :entry, :map, required: true
   attr :mode, :atom, default: :static
   attr :root_prefix, :string, default: "."
 
@@ -339,16 +540,59 @@ defmodule CinderUI.Docs.UIComponents do
   end
 
   defp overview_href(:static, root_prefix), do: "#{root_prefix}/index.html"
-  defp overview_href(:live, _root_prefix), do: "#"
+  defp overview_href(:live, _root_prefix), do: "/docs"
 
   defp section_href(:static, root_prefix, section_id), do: "#{root_prefix}/index.html##{section_id}"
-  defp section_href(:live, _root_prefix, section_id), do: "##{section_id}"
+  defp section_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
 
   defp entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{entry.docs_path}"
-  defp entry_href(:live, _root_prefix, entry), do: "##{entry.id}"
+  defp entry_href(:live, _root_prefix, entry), do: "/docs/#{entry.id}/"
 
   defp overview_entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{entry.docs_path}"
-  defp overview_entry_href(:live, _root_prefix, entry), do: "##{entry.id}"
+  defp overview_entry_href(:live, _root_prefix, entry), do: "/docs/#{entry.id}/"
+
+  defp back_to_index_href(:static, root_prefix, section_id), do: "#{root_prefix}/index.html##{section_id}"
+  defp back_to_index_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
+
+  attr :class, :string, default: nil
+
+  defp required_badge(assigns) do
+    ~H"""
+    <Feedback.badge variant={:destructive} class={"align-middle #{@class}"}>Required</Feedback.badge>
+    """
+  end
+
+  defp section_id_for_entry(sections, entry_id) do
+    Enum.find_value(sections, "actions", fn section ->
+      if Enum.any?(section.entries, &(&1.id == entry_id)), do: section.id
+    end)
+  end
+
+  defp example_heading("Default", 1, 1), do: "Example"
+  defp example_heading(title, _index, _total), do: title
+
+  defp docs_residual(doc, summary) do
+    doc
+    |> String.trim()
+    |> maybe_strip_leading_summary(summary)
+    |> strip_markdown_sections(
+      ~w(example examples attribute attributes slot slots usage variant variants screenshot screenshots)
+    )
+    |> String.trim()
+  end
+
+  defp maybe_strip_leading_summary(doc, summary) when is_binary(summary) and summary != "" do
+    String.replace(doc, ~r/\A#{Regex.escape(summary)}\s*\n*/u, "")
+  end
+
+  defp maybe_strip_leading_summary(doc, _summary), do: doc
+
+  defp strip_markdown_sections(doc, headings) do
+    Enum.reduce(headings, doc, fn heading, acc ->
+      pattern = ~r/(?:^|\n)##+\s+#{heading}\b[\s\S]*?(?=\n##+\s|\z)/mi
+      String.replace(acc, pattern, "\n")
+    end)
+  end
 
   defp sidebar_link_class(active?) do
     base = "sidebar-link block rounded-md px-2 py-1.5 text-sm transition-colors"

@@ -7,41 +7,78 @@
     <.live_title default="DemoApp" suffix=" · Phoenix Framework">
       {assigns[:page_title]}
     </.live_title>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
-    </script>
     <script>
       (() => {
         const media = window.matchMedia("(prefers-color-scheme: dark)");
         const root = document.documentElement;
+        const cinderThemeKey = "cui:theme:mode";
+        const legacyThemeKey = "phx:theme";
 
-        const applyTheme = (theme) => {
-          if (theme === "system") {
-            localStorage.removeItem("phx:theme");
-            root.classList.toggle("dark", media.matches);
+        const readMode = () => {
+          const cinderMode = localStorage.getItem(cinderThemeKey);
+
+          if (["light", "dark", "auto"].includes(cinderMode)) {
+            return cinderMode;
+          }
+
+          const legacyMode = localStorage.getItem(legacyThemeKey);
+
+          if (["light", "dark"].includes(legacyMode)) {
+            return legacyMode;
+          }
+
+          return "auto";
+        };
+
+        const syncLegacy = (mode) => {
+          if (mode === "auto") {
+            localStorage.removeItem(legacyThemeKey);
           } else {
-            localStorage.setItem("phx:theme", theme);
-            root.classList.toggle("dark", theme === "dark");
+            localStorage.setItem(legacyThemeKey, mode);
           }
         };
 
-        applyTheme(localStorage.getItem("phx:theme") || "system");
+        const applyMode = (mode) => {
+          const resolvedMode = mode === "auto" ? (media.matches ? "dark" : "light") : mode;
+
+          root.classList.toggle("dark", resolvedMode === "dark");
+          root.dataset.themeMode = mode;
+        };
+
+        const applyStoredMode = () => {
+          const mode = readMode();
+          applyMode(mode);
+          syncLegacy(mode);
+        };
+
+        applyStoredMode();
 
         if (typeof media.addEventListener === "function") {
           media.addEventListener("change", () => {
-            if (!localStorage.getItem("phx:theme")) applyTheme("system");
+            if (readMode() === "auto") applyMode("auto");
           });
         }
 
         window.addEventListener("storage", (event) => {
-          if (event.key === "phx:theme") applyTheme(event.newValue || "system");
+          if (event.key === cinderThemeKey || event.key === legacyThemeKey) {
+            applyStoredMode();
+          }
         });
 
         window.addEventListener("phx:set-theme", (event) => {
-          applyTheme(event.target.dataset.phxTheme || "system");
+          const legacyMode = event.target.dataset.phxTheme || "system";
+          const mode = legacyMode === "system" ? "auto" : legacyMode;
+
+          localStorage.setItem(cinderThemeKey, mode);
+          applyStoredMode();
         });
       })();
     </script>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <link rel="stylesheet" href={~p"/docs/assets/site.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
+    </script>
+    <script defer src={~p"/docs/assets/site.js"}></script>
   </head>
   <body>
     {@inner_content}

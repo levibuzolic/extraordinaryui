@@ -1,15 +1,42 @@
 defmodule DemoAppWeb.ComponentController do
   use DemoAppWeb, :controller
 
-  alias CinderUI.Docs.Catalog
+  alias CinderUI.Site.Marketing
   alias DemoApp.SiteRuntime
 
   def index(conn, _params) do
-    render_catalog(conn)
+    component_count = SiteRuntime.catalog_component_count()
+
+    html =
+      Marketing.render_marketing_html(%{
+        component_count: component_count,
+        docs_path: "/docs/",
+        theme_css_path: "/docs/assets/theme.css",
+        site_css_path: "/docs/assets/site.css"
+      })
+
+    conn
+    |> put_resp_content_type("text/html")
+    |> send_resp(200, html)
   end
 
   def docs(conn, _params) do
     render_catalog(conn)
+  end
+
+  def component(conn, %{"id" => id}) do
+    sections = SiteRuntime.catalog_sections()
+
+    case find_entry(sections, id) do
+      nil ->
+        send_resp(conn, 404, "Not found")
+
+      entry ->
+        render(conn, :component,
+          sections: sections,
+          entry: entry
+        )
+    end
   end
 
   def docs_asset(conn, %{"path" => path}) do
@@ -39,12 +66,18 @@ defmodule DemoAppWeb.ComponentController do
   end
 
   defp render_catalog(conn) do
-    sections = Catalog.sections()
-    component_count = sections |> Enum.flat_map(& &1.entries) |> length()
+    sections = SiteRuntime.catalog_sections()
+    component_count = SiteRuntime.catalog_component_count()
 
     render(conn, :index,
       sections: sections,
       component_count: component_count
     )
+  end
+
+  defp find_entry(sections, id) do
+    Enum.find_value(sections, fn section ->
+      Enum.find(section.entries, &(&1.id == id))
+    end)
   end
 end

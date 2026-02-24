@@ -338,15 +338,13 @@
   window.addEventListener("beforeunload", persistSidebarScroll)
 
   const initCommandPalette = () => {
-    const navLinks = qs(document, "nav[aria-label='Component sections'] a[href]")
+    const navLinks = qs(document, "nav[aria-label='Component sections'] ul li a[href]")
     const items = []
     const seen = new Set()
 
     navLinks.forEach((link) => {
       const hrefAttr = link.getAttribute("href")
-      const isComponentPageLink = hrefAttr?.includes("components/")
-      const isLiveEntryLink = hrefAttr?.startsWith("#") && link.classList.contains("sidebar-link")
-      if (!hrefAttr || (!isComponentPageLink && !isLiveEntryLink)) return
+      if (!hrefAttr) return
 
       const href = new URL(hrefAttr, window.location.href).toString()
       if (seen.has(href)) return

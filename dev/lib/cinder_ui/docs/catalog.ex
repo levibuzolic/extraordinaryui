@@ -129,7 +129,7 @@ defmodule CinderUI.Docs.Catalog do
       source_line: component_line(module, function),
       shadcn_slug: slug,
       shadcn_url: shadcn_url(slug),
-      docs_path: "components/#{id}.html"
+      docs_path: "#{id}/index.html"
     }
   end
 
@@ -1868,10 +1868,21 @@ defmodule CinderUI.Docs.Catalog do
         )
     }
 
-  defp sample_assigns(Advanced, :calendar),
-    do: %{
-      inner_block: slot("<div class=\"text-sm text-muted-foreground\">Calendar container</div>")
+  defp sample_assigns(Advanced, :calendar) do
+    not_ready_html =
+      render_component(Feedback, :badge, %{variant: :secondary, inner_block: slot("Not ready yet")})
+
+    %{
+      inner_block:
+        slot(
+          "<div class=\"space-y-2\">#{not_ready_html}<p class=\"text-sm text-muted-foreground\">Calendar is not ready yet.</p></div>",
+          """
+          <.badge variant={:secondary}>Not ready yet</.badge>
+          <p class=\"text-sm text-muted-foreground\">Calendar is not ready yet.</p>
+          """
+        )
     }
+  end
 
   defp sample_assigns(Advanced, :carousel) do
     %{

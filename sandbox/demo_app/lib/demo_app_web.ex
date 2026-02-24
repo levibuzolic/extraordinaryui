@@ -92,8 +92,8 @@ defmodule DemoAppWeb do
       import DemoAppWeb.CoreComponents
 
       # Common modules used in templates
-      alias Phoenix.LiveView.JS
       alias DemoAppWeb.Layouts
+      alias Phoenix.LiveView.JS
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
@@ -110,7 +110,6 @@ defmodule DemoAppWeb do
   end
 
   @doc """
-  When used, dispatch to the appropriate controller/live_view/etc.
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])

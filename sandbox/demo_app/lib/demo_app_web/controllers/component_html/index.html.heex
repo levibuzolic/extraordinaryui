@@ -1,7 +1,4 @@
-<DocsUI.docs_layout sections={@sections} mode={:live} show_overview={false}>
-    <DocsUI.docs_overview_intro component_count={@component_count} show_count={true} />
-    <DocsUI.docs_overview_sections sections={@sections} mode={:live} />
-</DocsUI.docs_layout>
-
-<link rel="stylesheet" href={~p"/docs/assets/site.css"} />
-<script src={~p"/docs/assets/site.js"}></script>
+<Docs.docs_layout sections={@sections} mode={:live} show_overview={false}>
+    <Docs.docs_overview_intro component_count={@component_count} show_count={true} />
+    <Docs.docs_overview_sections sections={@sections} mode={:live} />
+</Docs.docs_layout>

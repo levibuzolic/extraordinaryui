@@ -32,6 +32,7 @@ Then open:
 ```bash
 cd sandbox/demo_app
 mix format --check-formatted
+mix credo --strict
 mix test
 ```
 

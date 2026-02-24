@@ -9,9 +9,11 @@ defmodule CinderUI.Site.Marketing do
   alias CinderUI.Components.Forms
   alias CinderUI.Components.Layout
   alias CinderUI.Components.Navigation
+  alias CinderUI.Docs.UIComponents, as: Docs
   alias CinderUI.Icons
   alias Phoenix.HTML.Safe
 
+  @repo_root Path.expand("../../../../", __DIR__)
   @template_dir Path.expand("../../../../priv/site_templates", __DIR__)
 
   def write_marketing_index!(output_dir, opts \\ %{}) do
@@ -21,7 +23,7 @@ defmodule CinderUI.Site.Marketing do
     hexdocs_url = Map.get(opts, :hexdocs_url, "https://hexdocs.pm/cinder_ui")
     version = Map.get(opts, :version, to_string(project[:version] || "0.0.0"))
     component_count = Map.get(opts, :component_count, 0)
-    docs_path = Map.get(opts, :docs_path, "./docs/index.html")
+    docs_path = Map.get(opts, :docs_path, "./docs/")
     theme_css_path = Map.get(opts, :theme_css_path, "./docs/assets/theme.css")
     site_css_path = Map.get(opts, :site_css_path, "./assets/site.css")
 
@@ -44,6 +46,29 @@ defmodule CinderUI.Site.Marketing do
     File.write!(Path.join(output_dir, ".nojekyll"), "")
   end
 
+  def render_marketing_html(opts \\ %{}) do
+    project = Mix.Project.config()
+    github_url = Map.get(opts, :github_url, to_string(project[:source_url] || ""))
+    hex_url = Map.get(opts, :hex_url, "https://hex.pm/packages/cinder_ui")
+    hexdocs_url = Map.get(opts, :hexdocs_url, "https://hexdocs.pm/cinder_ui")
+    version = Map.get(opts, :version, to_string(project[:version] || "0.0.0"))
+    component_count = Map.get(opts, :component_count, 0)
+    docs_path = Map.get(opts, :docs_path, "./docs/")
+    theme_css_path = Map.get(opts, :theme_css_path, "./docs/assets/theme.css")
+    site_css_path = Map.get(opts, :site_css_path, "./assets/site.css")
+
+    index_html(
+      version,
+      component_count,
+      github_url,
+      hex_url,
+      hexdocs_url,
+      theme_css_path,
+      docs_path,
+      site_css_path
+    )
+  end
+
   defp index_html(
          version,
          component_count,
@@ -63,7 +88,7 @@ defmodule CinderUI.Site.Marketing do
       shared_script: shared_script(),
       header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
-      hero_html: hero_html(version, component_count, shadcn_url),
+      hero_html: hero_html(version, component_count, shadcn_url, docs_path),
       component_examples_html: component_examples_html(shadcn_url),
       install_html: install_html(version),
       theme_tokens_html: theme_tokens_html(),
@@ -86,39 +111,30 @@ defmodule CinderUI.Site.Marketing do
 
     ~H"""
     <div class="flex flex-wrap items-center gap-2 md:justify-end">
-      <Actions.button
+      <Docs.docs_external_link_button
         :if={is_binary(@github_url) and @github_url != ""}
-        as="a"
         href={@github_url}
-        target="_blank"
-        rel="noopener noreferrer"
         variant={:outline}
         size={:sm}
       >
         GitHub
-      </Actions.button>
-      <Actions.button
+      </Docs.docs_external_link_button>
+      <Docs.docs_external_link_button
         :if={is_binary(@hex_url) and @hex_url != ""}
-        as="a"
         href={@hex_url}
-        target="_blank"
-        rel="noopener noreferrer"
         variant={:outline}
         size={:sm}
       >
         Hex
-      </Actions.button>
-      <Actions.button
+      </Docs.docs_external_link_button>
+      <Docs.docs_external_link_button
         :if={is_binary(@hexdocs_url) and @hexdocs_url != ""}
-        as="a"
         href={@hexdocs_url}
-        target="_blank"
-        rel="noopener noreferrer"
         variant={:outline}
         size={:sm}
       >
         HexDocs
-      </Actions.button>
+      </Docs.docs_external_link_button>
 
       <Navigation.tabs
         value="auto"
@@ -133,8 +149,13 @@ defmodule CinderUI.Site.Marketing do
     |> to_html()
   end
 
-  defp hero_html(version, component_count, shadcn_url) do
-    assigns = %{version: version, component_count: component_count, shadcn_url: shadcn_url}
+  defp hero_html(version, component_count, shadcn_url, docs_path) do
+    assigns = %{
+      version: version,
+      component_count: component_count,
+      shadcn_url: shadcn_url,
+      docs_path: docs_path
+    }
 
     ~H"""
     <section>
@@ -165,7 +186,7 @@ defmodule CinderUI.Site.Marketing do
             conventions while fitting Phoenix conventions.
           </p>
           <div class="flex flex-wrap gap-2">
-            <Actions.button as="a" href="./docs/index.html">
+            <Actions.button as="a" href={@docs_path}>
               Browse Component Library
             </Actions.button>
             <Actions.button as="a" variant={:outline} href="#install">
@@ -196,21 +217,26 @@ defmodule CinderUI.Site.Marketing do
 
   defp component_examples_html(shadcn_url) do
     assigns = %{
-      shadcn_url: shadcn_url,
-      button_group_example_card: button_group_example_card(shadcn_url),
-      form_example_card: form_example_card(shadcn_url),
-      alert_example_card: alert_example_card(shadcn_url),
-      tabs_example_card: tabs_example_card(shadcn_url)
+      cards: [
+        button_group_example_card(shadcn_url),
+        form_example_card(shadcn_url),
+        alert_example_card(shadcn_url),
+        tabs_example_card(shadcn_url)
+      ]
     }
 
     ~H"""
     <section id="examples" class="space-y-4">
       <h2 class="text-2xl font-semibold tracking-tight">Component examples</h2>
       <div class="grid gap-4 md:grid-cols-2">
-        {Phoenix.HTML.raw(@button_group_example_card)}
-        {Phoenix.HTML.raw(@form_example_card)}
-        {Phoenix.HTML.raw(@alert_example_card)}
-        {Phoenix.HTML.raw(@tabs_example_card)}
+        <.marketing_example_card
+          :for={card <- @cards}
+          title={card.title}
+          description={card.description}
+          preview_html={card.preview_html}
+          snippet={card.snippet}
+          shadcn_component_url={card.shadcn_component_url}
+        />
       </div>
     </section>
     """
@@ -235,13 +261,13 @@ defmodule CinderUI.Site.Marketing do
     </.button_group>
     """
 
-    example_card(
-      "Actions.button_group",
-      "Grouped primary + secondary actions.",
-      preview,
-      snippet,
-      "#{shadcn_url}/components/button"
-    )
+    %{
+      title: "Actions.button_group",
+      description: "Grouped primary + secondary actions.",
+      preview_html: preview,
+      snippet: snippet,
+      shadcn_component_url: "#{shadcn_url}/components/button"
+    }
   end
 
   defp form_example_card(shadcn_url) do
@@ -269,13 +295,13 @@ defmodule CinderUI.Site.Marketing do
     </.field>
     """
 
-    example_card(
-      "Forms.field",
-      "Label + input + helper text using the shared token model.",
-      preview,
-      snippet,
-      "#{shadcn_url}/components/form"
-    )
+    %{
+      title: "Forms.field",
+      description: "Label + input + helper text using the shared token model.",
+      preview_html: preview,
+      snippet: snippet,
+      shadcn_component_url: "#{shadcn_url}/components/form"
+    }
   end
 
   defp alert_example_card(shadcn_url) do
@@ -300,13 +326,13 @@ defmodule CinderUI.Site.Marketing do
     </.alert>
     """
 
-    example_card(
-      "Feedback.alert",
-      "Status messaging aligned with upstream alert patterns.",
-      preview,
-      snippet,
-      "#{shadcn_url}/components/alert"
-    )
+    %{
+      title: "Feedback.alert",
+      description: "Status messaging aligned with upstream alert patterns.",
+      preview_html: preview,
+      snippet: snippet,
+      shadcn_component_url: "#{shadcn_url}/components/alert"
+    }
   end
 
   defp tabs_example_card(shadcn_url) do
@@ -331,24 +357,22 @@ defmodule CinderUI.Site.Marketing do
     </.tabs>
     """
 
-    example_card(
-      "Navigation.tabs",
-      "Tab primitives with server-driven active state.",
-      preview,
-      snippet,
-      "#{shadcn_url}/components/tabs"
-    )
+    %{
+      title: "Navigation.tabs",
+      description: "Tab primitives with server-driven active state.",
+      preview_html: preview,
+      snippet: snippet,
+      shadcn_component_url: "#{shadcn_url}/components/tabs"
+    }
   end
 
-  defp example_card(title, description, preview_html, snippet, shadcn_component_url) do
-    assigns = %{
-      title: title,
-      description: description,
-      preview_html: preview_html,
-      snippet: snippet,
-      shadcn_component_url: shadcn_component_url
-    }
+  attr :title, :string, required: true
+  attr :description, :string, required: true
+  attr :preview_html, :string, required: true
+  attr :snippet, :string, required: true
+  attr :shadcn_component_url, :string, required: true
 
+  defp marketing_example_card(assigns) do
     ~H"""
     <Layout.card>
       <Layout.card_header>
@@ -357,7 +381,7 @@ defmodule CinderUI.Site.Marketing do
       </Layout.card_header>
       <Layout.card_content>
         <div class="rounded-lg border bg-background p-4">
-          {Phoenix.HTML.raw(@preview_html)}
+          {rendered(@preview_html)}
         </div>
         <div class="mt-3">
           <DataDisplay.code_block>{@snippet}</DataDisplay.code_block>
@@ -365,7 +389,6 @@ defmodule CinderUI.Site.Marketing do
       </Layout.card_content>
     </Layout.card>
     """
-    |> to_html()
   end
 
   defp install_html(version) do
@@ -468,46 +491,47 @@ defmodule CinderUI.Site.Marketing do
 
   defp features_html(shadcn_url) do
     assigns = %{
-      shadcn_url: shadcn_url,
-      feature_1:
-        feature_card(
-          "Phoenix-native API",
-          "Typed HEEx function components with predictable attrs/slots and composable primitives."
-        ),
-      feature_2:
-        feature_card(
-          "Fast app integration",
-          "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects."
-        ),
-      feature_3:
-        feature_card(
-          "shadcn-aligned styles",
-          "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics."
-        ),
-      feature_4:
-        feature_card(
-          "Production confidence",
-          "Unit, browser, and visual regression coverage keeps components stable as your app evolves."
-        )
+      features: [
+        %{
+          title: "Phoenix-native API",
+          body_html: "Typed HEEx function components with predictable attrs/slots and composable primitives."
+        },
+        %{
+          title: "Fast app integration",
+          body_html:
+            "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects."
+        },
+        %{
+          title: "shadcn-aligned styles",
+          body_html:
+            "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics."
+        },
+        %{
+          title: "Production confidence",
+          body_html: "Unit, browser, and visual regression coverage keeps components stable as your app evolves."
+        }
+      ]
     }
 
     ~H"""
     <section class="space-y-3">
       <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
       <div class="grid gap-4 md:grid-cols-2">
-        {Phoenix.HTML.raw(@feature_1)}
-        {Phoenix.HTML.raw(@feature_2)}
-        {Phoenix.HTML.raw(@feature_3)}
-        {Phoenix.HTML.raw(@feature_4)}
+        <.marketing_feature_card
+          :for={feature <- @features}
+          title={feature.title}
+          body_html={feature.body_html}
+        />
       </div>
     </section>
     """
     |> to_html()
   end
 
-  defp feature_card(title, body_html) do
-    assigns = %{title: title, body_html: body_html}
+  attr :title, :string, required: true
+  attr :body_html, :string, required: true
 
+  defp marketing_feature_card(assigns) do
     ~H"""
     <Layout.card>
       <Layout.card_header>
@@ -515,12 +539,11 @@ defmodule CinderUI.Site.Marketing do
       </Layout.card_header>
       <Layout.card_content>
         <Layout.card_description>
-          {Phoenix.HTML.raw(@body_html)}
+          {rendered(@body_html)}
         </Layout.card_description>
       </Layout.card_content>
     </Layout.card>
     """
-    |> to_html()
   end
 
   defp theme_bootstrap_script do
@@ -538,11 +561,13 @@ defmodule CinderUI.Site.Marketing do
   defp template!(name), do: File.read!(Path.join(@template_dir, name))
 
   defp shared_asset!(name),
-    do: File.read!(Path.join([File.cwd!(), "dev", "assets", "site", name]))
+    do: File.read!(Path.join([@repo_root, "dev", "assets", "site", name]))
 
   defp to_html(rendered) do
     rendered
     |> Safe.to_iodata()
     |> IO.iodata_to_binary()
   end
+
+  defp rendered(html) when is_binary(html), do: Phoenix.HTML.raw(html)
 end

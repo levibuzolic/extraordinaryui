@@ -141,6 +141,9 @@ jobs:
       - name: Check formatting
         run: mix format --check-formatted
 
+      - name: Run sandbox Credo (strict)
+        run: mix credo --strict
+
       - name: Run sandbox unit tests
         run: mix test
 

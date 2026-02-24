@@ -28,6 +28,7 @@ defmodule DemoAppWeb.Router do
     get "/", ComponentController, :index
     get "/docs/assets/*path", ComponentController, :docs_asset
     get "/docs", ComponentController, :docs
+    get "/docs/:id", ComponentController, :component
     post "/__docs/rebuild", ComponentController, :rebuild
   end
 

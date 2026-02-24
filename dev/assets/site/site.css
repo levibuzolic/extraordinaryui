@@ -15,6 +15,11 @@ pre[data-slot="code-block"], [data-slot="code-block"] {
   word-break: break-word;
 }
 
+pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  line-height: inherit;
+}
+
 /*
 --------------------------------------------------------------------------------
 MARK: Syntax Highlighting
@@ -22,8 +27,8 @@ MARK: Syntax Highlighting
 */
 
 .code-highlight {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  line-height: 1.5;
+  font-family: inherit;
+  line-height: inherit;
 }
 
 .code-highlight .tok-tag {
