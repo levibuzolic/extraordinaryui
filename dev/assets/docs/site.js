@@ -344,7 +344,9 @@
 
     navLinks.forEach((link) => {
       const hrefAttr = link.getAttribute("href")
-      if (!hrefAttr || !hrefAttr.includes("components/")) return
+      const isComponentPageLink = hrefAttr?.includes("components/")
+      const isLiveEntryLink = hrefAttr?.startsWith("#") && link.classList.contains("sidebar-link")
+      if (!hrefAttr || (!isComponentPageLink && !isLiveEntryLink)) return
 
       const href = new URL(hrefAttr, window.location.href).toString()
       if (seen.has(href)) return
@@ -386,9 +388,17 @@
     let filtered = items.slice()
     let activeIndex = 0
 
+    const syncOpenButtons = (open) => {
+      openButtons.forEach((button) => {
+        button.dataset.state = open ? "active" : "inactive"
+        button.setAttribute("aria-expanded", open ? "true" : "false")
+      })
+    }
+
     const close = () => {
       shell.classList.add("hidden")
       document.body.style.removeProperty("overflow")
+      syncOpenButtons(false)
     }
 
     const open = () => {
@@ -397,6 +407,7 @@
       input.value = ""
       activeIndex = 0
       render()
+      syncOpenButtons(true)
       requestAnimationFrame(() => input.focus())
     }
 

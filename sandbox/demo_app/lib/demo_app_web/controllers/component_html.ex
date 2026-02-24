@@ -4,7 +4,7 @@ defmodule DemoAppWeb.ComponentHTML do
   """
 
   use DemoAppWeb, :html
-  alias CinderUI.Components.{Forms, Navigation}
+  alias CinderUI.Docs.UIComponents, as: DocsUI
 
   embed_templates "component_html/*"
 end

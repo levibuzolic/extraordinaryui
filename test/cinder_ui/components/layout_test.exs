@@ -29,7 +29,7 @@ defmodule CinderUI.Components.LayoutTest do
         ]
       })
 
-    assert html =~ "phx-hook=\"EuiResizable\""
+    assert html =~ "phx-hook=\"CuiResizable\""
     assert html =~ "data-storage-key=\"layout-main\""
     assert html =~ "data-slot=\"resizable-handle\""
     assert html =~ "data-with-handle"

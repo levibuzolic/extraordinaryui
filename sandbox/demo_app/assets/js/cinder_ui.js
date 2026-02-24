@@ -25,7 +25,7 @@ const normalizePercentages = (values) => {
   return values.map((value) => (value / total) * 100)
 }
 
-const EuiDialog = {
+const CuiDialog = {
   mounted() {
     this.sync(this.el.dataset.state === "open")
 
@@ -52,7 +52,7 @@ const EuiDialog = {
   },
 }
 
-const EuiDrawer = {
+const CuiDrawer = {
   mounted() {
     this.sync(this.el.dataset.state === "open")
 
@@ -79,7 +79,7 @@ const EuiDrawer = {
   },
 }
 
-const EuiPopover = {
+const CuiPopover = {
   mounted() {
     this.open = false
     this.trigger = this.el.querySelector("[data-popover-trigger]")
@@ -107,7 +107,7 @@ const EuiPopover = {
   },
 }
 
-const EuiDropdownMenu = {
+const CuiDropdownMenu = {
   mounted() {
     this.open = false
     this.trigger = this.el.querySelector("[data-dropdown-trigger]")
@@ -135,7 +135,7 @@ const EuiDropdownMenu = {
   },
 }
 
-const EuiCombobox = {
+const CuiCombobox = {
   mounted() {
     this.input = this.el.querySelector("[data-combobox-input]")
     this.content = this.el.querySelector("[data-combobox-content]")
@@ -176,7 +176,7 @@ const EuiCombobox = {
   },
 }
 
-const EuiCarousel = {
+const CuiCarousel = {
   mounted() {
     this.index = 0
     this.track = this.el.querySelector("[data-carousel-track]")
@@ -212,7 +212,7 @@ const EuiCarousel = {
   },
 }
 
-const EuiResizable = {
+const CuiResizable = {
   mounted() {
     this.setup()
   },
@@ -409,11 +409,11 @@ const EuiResizable = {
 }
 
 export const CinderUIHooks = {
-  EuiDialog,
-  EuiDrawer,
-  EuiPopover,
-  EuiDropdownMenu,
-  EuiCombobox,
-  EuiCarousel,
-  EuiResizable,
+  CuiDialog,
+  CuiDrawer,
+  CuiPopover,
+  CuiDropdownMenu,
+  CuiCombobox,
+  CuiCarousel,
+  CuiResizable,
 }

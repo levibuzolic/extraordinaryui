@@ -27,7 +27,7 @@ defmodule CinderUI.Components.Overlay do
   Modal dialog with trigger/content slots.
 
   Set `open` from LiveView assigns for server-controlled state, or rely on the
-  optional `EuiDialog` JS hook for client toggling.
+  optional `CuiDialog` JS hook for client toggling.
 
   ## Examples
 
@@ -113,7 +113,7 @@ defmodule CinderUI.Components.Overlay do
       data-slot="dialog"
       data-state={if(@open, do: "open", else: "closed")}
       class={classes(@root_classes)}
-      phx-hook="EuiDialog"
+      phx-hook="CuiDialog"
     >
       <div data-slot="dialog-trigger" data-dialog-trigger>{render_slot(@trigger)}</div>
 
@@ -242,7 +242,7 @@ defmodule CinderUI.Components.Overlay do
       id={@id}
       data-slot="drawer"
       data-state={if(@open, do: "open", else: "closed")}
-      phx-hook="EuiDrawer"
+      phx-hook="CuiDrawer"
     >
       <div data-slot="drawer-trigger" data-drawer-trigger>{render_slot(@trigger)}</div>
 
@@ -285,7 +285,7 @@ defmodule CinderUI.Components.Overlay do
   doc("""
   Popover with trigger and content slots.
 
-  Uses optional `EuiPopover` hook for click toggling.
+  Uses optional `CuiPopover` hook for click toggling.
   """)
 
   attr :id, :string, required: true
@@ -305,7 +305,7 @@ defmodule CinderUI.Components.Overlay do
       ])
 
     ~H"""
-    <div id={@id} data-slot="popover" class={classes(@classes)} phx-hook="EuiPopover">
+    <div id={@id} data-slot="popover" class={classes(@classes)} phx-hook="CuiPopover">
       <div data-slot="popover-trigger" data-popover-trigger>{render_slot(@trigger)}</div>
       <div data-slot="popover-content" data-popover-content class={classes(@popover_classes)}>
         {render_slot(@content)}
@@ -367,7 +367,7 @@ defmodule CinderUI.Components.Overlay do
   doc("""
   Dropdown menu structure.
 
-  Menu open/close behavior is provided by the optional `EuiDropdownMenu` hook.
+  Menu open/close behavior is provided by the optional `CuiDropdownMenu` hook.
   """)
 
   attr :id, :string, required: true
@@ -390,7 +390,7 @@ defmodule CinderUI.Components.Overlay do
       ])
 
     ~H"""
-    <div id={@id} data-slot="dropdown-menu" class={classes(@classes)} phx-hook="EuiDropdownMenu">
+    <div id={@id} data-slot="dropdown-menu" class={classes(@classes)} phx-hook="CuiDropdownMenu">
       <div data-slot="dropdown-menu-trigger" data-dropdown-trigger>{render_slot(@trigger)}</div>
       <div data-slot="dropdown-menu-content" data-dropdown-content class={classes(@content_classes)}>
         <%= for item <- @item do %>

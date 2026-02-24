@@ -123,7 +123,7 @@ defmodule CinderUI.Components.Advanced do
     assigns = assign(assigns, :classes, ["relative w-full", assigns.class])
 
     ~H"""
-    <div id={@id} data-slot="combobox" class={classes(@classes)} phx-hook="EuiCombobox">
+    <div id={@id} data-slot="combobox" class={classes(@classes)} phx-hook="CuiCombobox">
       <input
         data-slot="combobox-input"
         data-combobox-input
@@ -187,7 +187,7 @@ defmodule CinderUI.Components.Advanced do
     assigns = assign(assigns, :classes, ["relative", assigns.class])
 
     ~H"""
-    <div id={@id} data-slot="carousel" class={classes(@classes)} phx-hook="EuiCarousel">
+    <div id={@id} data-slot="carousel" class={classes(@classes)} phx-hook="CuiCarousel">
       <div data-slot="carousel-content" class="overflow-hidden">
         <div class="flex" data-carousel-track>
           <div

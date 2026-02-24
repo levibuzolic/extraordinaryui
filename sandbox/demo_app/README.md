@@ -5,7 +5,7 @@ This Phoenix app embeds `cinder_ui` as a local path dependency to provide an end
 ## What it provides
 
 - `GET /` - full Cinder UI component catalog preview (default entry)
-- `GET /components` - alias route for the same catalog view
+- `GET /docs` - live alias route for the same component catalog view (dev-server runtime)
 - shadcn-style theme controls on the catalog page:
   - mode (`light`/`dark`/`auto`)
   - palette (`zinc`/`slate`/`stone`/`gray`/`neutral`)
@@ -25,6 +25,7 @@ mix phx.server
 Then open:
 
 - [http://localhost:4000/](http://localhost:4000/)
+- [http://localhost:4000/docs](http://localhost:4000/docs)
 
 ## Run Elixir tests
 

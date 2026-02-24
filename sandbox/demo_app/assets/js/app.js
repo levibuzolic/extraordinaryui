@@ -37,10 +37,10 @@ const mountStandaloneResizable = () => {
   const hasLiveViewRoot = document.querySelector("[data-phx-main], [data-phx-session]")
   if (hasLiveViewRoot) return
 
-  const Hook = CinderUIHooks.EuiResizable
+  const Hook = CinderUIHooks.CuiResizable
   if (!Hook || typeof Hook.mounted !== "function") return
 
-  document.querySelectorAll("[phx-hook='EuiResizable']").forEach((el) => {
+  document.querySelectorAll("[phx-hook='CuiResizable']").forEach((el) => {
     if (el.dataset.cinderResizableMounted === "true") return
 
     const instance = Object.assign({el}, Hook)

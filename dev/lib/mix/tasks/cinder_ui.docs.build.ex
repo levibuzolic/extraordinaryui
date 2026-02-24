@@ -20,10 +20,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   use Phoenix.Component
 
   alias CinderUI.Components.Feedback
-  alias CinderUI.Components.Forms
   alias CinderUI.Components.Actions
-  alias CinderUI.Components.Navigation
   alias CinderUI.Docs.Catalog
+  alias CinderUI.Docs.UIComponents
   alias CinderUI.Site.Marketing
   alias CinderUI.Icons
   alias Phoenix.HTML
@@ -92,7 +91,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       description: "Static component docs for Cinder UI",
       body_content: overview_body_html(sections),
       asset_prefix: ".",
-      sidebar: sidebar_links(sections, ".", nil),
+      sections: sections,
+      root_prefix: ".",
+      active_entry_id: nil,
+      show_overview: true,
       home_url: home_url,
       github_url: github_url,
       hex_package_url: hex_package_url
@@ -105,7 +107,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       description: entry.docs,
       body_content: component_body_html(entry, sections),
       asset_prefix: "..",
-      sidebar: sidebar_links(sections, "..", entry.id),
+      sections: sections,
+      root_prefix: "..",
+      active_entry_id: entry.id,
+      show_overview: true,
       home_url: home_url,
       github_url: github_url,
       hex_package_url: hex_package_url
@@ -118,7 +123,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       description: opts[:description],
       body_content: opts[:body_content],
       asset_prefix: opts[:asset_prefix],
-      sidebar: opts[:sidebar],
+      sections: opts[:sections],
+      root_prefix: opts[:root_prefix],
+      active_entry_id: opts[:active_entry_id],
+      show_overview: opts[:show_overview],
       home_url: opts[:home_url],
       github_url: opts[:github_url],
       hex_package_url: opts[:hex_package_url]
@@ -136,45 +144,22 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
       <body class="bg-background text-foreground">
-        <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <aside
-            data-docs-sidebar
-            class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6"
-          >
-            <div class="mb-6">
-              <h1 class="text-xl font-semibold">
-                <a href={@home_url}>Cinder UI</a>
-              </h1>
-              <p class="text-muted-foreground mt-1 text-sm">Static component docs</p>
-              {Phoenix.HTML.raw(header_links_html(@home_url, @github_url, @hex_package_url))}
-            </div>
-
-            {Phoenix.HTML.raw(theme_controls_html())}
-
-            <div class="mb-5">
-              <button
-                type="button"
-                data-open-command-palette
-                class="border-border/70 bg-muted/40 hover:bg-accent hover:text-accent-foreground inline-flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors"
-              >
-                <span>Search components</span>
-                <span class="text-muted-foreground text-xs">⌘K / Ctrl+K</span>
-              </button>
-            </div>
-
-            <nav class="space-y-4" aria-label="Component sections">
-              {Phoenix.HTML.raw(@sidebar)}
-            </nav>
-          </aside>
-
-          <main class="min-w-0 px-5 py-6 lg:px-8">
-            {Phoenix.HTML.raw(@body_content)}
-          </main>
-        </div>
+        <UIComponents.docs_layout
+          sections={@sections}
+          mode={:static}
+          root_prefix={@root_prefix}
+          active_entry_id={@active_entry_id}
+          show_overview={@show_overview}
+          home_url={@home_url}
+          github_url={@github_url}
+          hex_package_url={@hex_package_url}
+        >
+          {rendered(@body_content)}
+        </UIComponents.docs_layout>
 
         <script src={"#{@asset_prefix}/assets/site.js"}>
         </script>
-        {Phoenix.HTML.raw(docs_speculation_rules_html())}
+        {rendered(docs_speculation_rules_html())}
       </body>
     </html>
     """
@@ -185,15 +170,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     assigns = %{sections: sections}
 
     ~H"""
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold tracking-tight">Component Library</h2>
-      <p class="text-muted-foreground mt-2 max-w-3xl text-sm">
-        Static docs for Cinder UI components. Open any component for preview, HEEx usage,
-        generated attributes/slots docs, and a link to the original shadcn/ui reference.
-      </p>
-    </section>
+    <UIComponents.docs_overview_intro />
 
-    {Phoenix.HTML.raw(overview_sections_html(@sections))}
+    <UIComponents.docs_overview_sections sections={@sections} mode={:static} root_prefix="." />
     """
     |> to_html()
   end
@@ -243,264 +222,22 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       <h2 class="mt-1 text-2xl font-semibold tracking-tight">
         <code>{@entry.module_name}.{@entry.title}</code>
       </h2>
-      <div class="docs-markdown mt-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
+      <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
     </section>
 
-    {Phoenix.HTML.raw(@function_docs_html)}
+    {rendered(@function_docs_html)}
 
-    <section class="mb-8 space-y-4">{Phoenix.HTML.raw(@examples_html)}</section>
+    <section class="mb-8 space-y-4">{rendered(@examples_html)}</section>
 
     <section class="mb-6">
       <h3 class="mb-3 text-sm font-semibold">Attributes</h3>
-      {Phoenix.HTML.raw(@attrs_html)}
+      {rendered(@attrs_html)}
     </section>
 
     <section class="mb-6">
       <h3 class="mb-3 text-sm font-semibold">Slots</h3>
-      {Phoenix.HTML.raw(@slots_html)}
+      {rendered(@slots_html)}
     </section>
-    """
-    |> to_html()
-  end
-
-  defp sidebar_links(sections, root_prefix, active_entry_id) do
-    assigns = %{
-      sections: sections,
-      root_prefix: root_prefix,
-      active_entry_id: active_entry_id,
-      index_href: "#{root_prefix}/index.html",
-      overview_active?: is_nil(active_entry_id)
-    }
-
-    ~H"""
-    <div>
-      <a
-        href={@index_href}
-        class={sidebar_link_class(@overview_active?)}
-        aria-current={if @overview_active?, do: "page", else: nil}
-      >
-        Overview
-      </a>
-    </div>
-
-    <%= for section <- @sections do %>
-      <div>
-        <a href={"#{@index_href}##{section.id}"} class="sidebar-section-link text-sm font-semibold">
-          {section.title}
-        </a>
-        <ul class="mt-2 space-y-1">
-          <li :for={entry <- section.entries}>
-            <a
-              class={sidebar_link_class(entry.id == @active_entry_id)}
-              href={"#{@root_prefix}/#{entry.docs_path}"}
-              aria-current={if entry.id == @active_entry_id, do: "page", else: nil}
-            >
-              {entry.title}
-            </a>
-          </li>
-        </ul>
-      </div>
-    <% end %>
-    """
-    |> to_html()
-  end
-
-  defp header_links_html(home_url, github_url, hex_package_url) do
-    assigns = %{
-      home_url: home_url,
-      github_url: github_url,
-      hex_package_url: hex_package_url
-    }
-
-    ~H"""
-    <div
-      :if={
-        (is_binary(@github_url) and @github_url != "") or
-          (is_binary(@hex_package_url) and @hex_package_url != "")
-      }
-      class="mt-3 flex flex-wrap gap-1 text-xs"
-    >
-      <Actions.button
-        :if={is_binary(@github_url) and @github_url != ""}
-        as="a"
-        href={@github_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        variant={:outline}
-        size={:xs}
-      >
-        GitHub
-      </Actions.button>
-      <Actions.button
-        :if={is_binary(@hex_package_url) and @hex_package_url != ""}
-        as="a"
-        href={@hex_package_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        variant={:outline}
-        size={:xs}
-      >
-        Hex package
-      </Actions.button>
-    </div>
-    """
-    |> to_html()
-  end
-
-  defp theme_controls_html do
-    assigns = %{
-      color_options: select_options(["gray", "neutral", "slate", "stone", "zinc"]),
-      radius_options:
-        select_entries([
-          {"maia", "Compact (6px / 0.375rem)"},
-          {"mira", "Small (8px / 0.5rem)"},
-          {"nova", "Default (12px / 0.75rem)"},
-          {"lyra", "Large (14px / 0.875rem)"},
-          {"vega", "XL (16px / 1rem)"}
-        ])
-    }
-
-    ~H"""
-    <section class="mb-6 rounded-lg border p-3">
-      <Navigation.tabs value="auto" class="w-full gap-0 [&_[data-slot=tabs-list]]:w-full">
-        <:trigger value="light" data_theme_mode="light" class="theme-mode-btn">Light</:trigger>
-        <:trigger value="dark" data_theme_mode="dark" class="theme-mode-btn">Dark</:trigger>
-        <:trigger value="auto" data_theme_mode="auto" class="theme-mode-btn">Auto</:trigger>
-      </Navigation.tabs>
-
-      <div class="mt-3">
-        <label for="theme-color" class="mb-1 block text-xs font-medium text-muted-foreground">
-          Base color
-        </label>
-        <p class="mb-2 text-[11px] text-muted-foreground">
-          Matches shadcn <code>tailwind.baseColor</code>.
-        </p>
-        <Forms.select
-          name="theme-color"
-          value="neutral"
-          id="theme-color"
-          aria-label="Theme color"
-        >
-          <:option :for={option <- @color_options} value={option.value} label={option.label} />
-        </Forms.select>
-      </div>
-
-      <div class="mt-3">
-        <label for="theme-radius" class="mb-2 block text-xs font-medium text-muted-foreground">
-          Radius
-        </label>
-        <Forms.select
-          name="theme-radius"
-          value="nova"
-          id="theme-radius"
-          aria-label="Theme radius"
-        >
-          <:option :for={option <- @radius_options} value={option.value} label={option.label} />
-        </Forms.select>
-      </div>
-    </section>
-    """
-    |> to_html()
-  end
-
-  defp select_options(options) do
-    Enum.map(options, fn option ->
-      %{value: option, label: option |> String.replace("_", " ") |> String.capitalize()}
-    end)
-  end
-
-  defp select_entries(options) do
-    Enum.map(options, fn {value, label} -> %{value: value, label: label} end)
-  end
-
-  defp overview_sections_html(sections) do
-    assigns = %{sections: sections}
-
-    ~H"""
-    <%= for section <- @sections do %>
-      <section id={section.id} class="mb-12">
-        <h3 class="mb-4 text-xl font-semibold">{section.title}</h3>
-        <div class="grid gap-4 md:grid-cols-2">
-          <%= for entry <- section.entries do %>
-            {Phoenix.HTML.raw(overview_entry_html(entry))}
-          <% end %>
-        </div>
-      </section>
-    <% end %>
-    """
-    |> to_html()
-  end
-
-  defp overview_entry_html(entry) do
-    assigns = %{
-      entry: entry,
-      docs_html: summary_markdown_html(entry.docs),
-      template_html: escape(entry.template_heex),
-      attrs_count: length(entry.attributes),
-      slots_count: length(entry.slots),
-      examples_count: length(entry.examples),
-      preview_align: entry.preview_align || :center
-    }
-
-    ~H"""
-    <article
-      id={@entry.id}
-      data-component-card
-      data-component-name={@entry.title}
-      class="flex h-full flex-col rounded-xl border bg-card text-card-foreground shadow-sm"
-    >
-      <header class="border-border/70 border-b px-4 py-3">
-        <div class="flex flex-wrap items-start justify-between gap-2">
-          <h4 class="font-medium">
-            <a href={"./#{@entry.docs_path}"} class="hover:underline underline-offset-4">
-              <code>{@entry.module_name}.{@entry.title}</code>
-            </a>
-          </h4>
-          <div class="flex items-center gap-1">
-            <Actions.button
-              as="a"
-              href={"./#{@entry.docs_path}"}
-              variant={:outline}
-              size={:xs}
-            >
-              Open docs
-            </Actions.button>
-          </div>
-        </div>
-        <div class="docs-markdown mt-2 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
-      </header>
-
-      <div
-        class={[
-          "bg-background border-border/70 flex min-h-[7rem] flex-1 p-4",
-          @preview_align == :center && "items-center justify-center"
-        ]}
-        data-preview-align={@preview_align}
-      >
-        <div class={["w-full", @preview_align == :center && "flex justify-center"]}>
-          {Phoenix.HTML.raw(@entry.preview_html)}
-        </div>
-      </div>
-      <div class="relative min-w-0 border-t border-b border-border/70">
-        <button
-          type="button"
-          data-copy-template={@entry.id}
-          aria-label="Copy HEEx"
-          title="Copy HEEx"
-          class="absolute top-2.5 right-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border bg-background/80 text-xs hover:bg-accent hover:text-accent-foreground"
-        >
-          <Icons.icon name="copy" class="size-4" />
-        </button>
-        <pre class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs"><code id={"code-#{@entry.id}"} class="block min-w-max whitespace-pre"><%= Phoenix.HTML.raw(@template_html) %></code></pre>
-      </div>
-      <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
-        <span class="text-muted-foreground">
-          examples: <span class="font-medium text-foreground">{@examples_count}</span>
-          · attrs: <span class="font-medium text-foreground">{@attrs_count}</span>
-          · slots: <span class="font-medium text-foreground">{@slots_count}</span>
-        </span>
-      </div>
-    </article>
     """
     |> to_html()
   end
@@ -534,7 +271,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
                 "flex items-center justify-center"
             ]}
           >
-            {Phoenix.HTML.raw(example.preview_html)}
+            {rendered(example.preview_html)}
           </div>
 
           <div data-slot="code" class="relative min-w-0 border-t bg-muted/20">
@@ -593,7 +330,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
       ~H"""
       <section class="mb-6">
-        <div class="space-y-3 text-sm">{Phoenix.HTML.raw(@docs_html)}</div>
+        <div class="space-y-3 text-sm">{rendered(@docs_html)}</div>
       </section>
       """
       |> to_html()
@@ -658,7 +395,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             <td class="px-3 py-2">
               <code>{attr.name}</code>
               <%= if attr.required do %>
-                {Phoenix.HTML.raw(required_badge_html("ml-2"))}
+                {rendered(required_badge_html("ml-2"))}
               <% end %>
             </td>
             <td class="px-3 py-2"><code>{attr.type}</code></td>
@@ -727,10 +464,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
             <td class="px-3 py-2">
               <code>{slot.name}</code>
               <%= if slot.required do %>
-                {Phoenix.HTML.raw(required_badge_html("ml-2"))}
+                {rendered(required_badge_html("ml-2"))}
               <% end %>
             </td>
-            <td class="px-3 py-2">{Phoenix.HTML.raw(slot_attrs_summary(slot.attrs))}</td>
+            <td class="px-3 py-2">{rendered(slot_attrs_summary(slot.attrs))}</td>
           </tr>
         </tbody>
       </table>
@@ -743,16 +480,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     Enum.find_value(sections, "actions", fn section ->
       if Enum.any?(section.entries, &(&1.id == entry_id)), do: section.id
     end)
-  end
-
-  defp sidebar_link_class(active?) do
-    base = "sidebar-link block rounded-md px-2 py-1.5 text-sm transition-colors"
-
-    if active? do
-      "#{base} bg-accent text-accent-foreground font-medium"
-    else
-      "#{base} text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-    end
   end
 
   defp slot_attrs_summary([]), do: "—"
@@ -780,6 +507,8 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     |> Safe.to_iodata()
     |> IO.iodata_to_binary()
   end
+
+  defp rendered(html) when is_binary(html), do: Phoenix.HTML.raw(html)
 
   defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 

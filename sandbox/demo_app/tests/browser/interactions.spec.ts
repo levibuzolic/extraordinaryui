@@ -128,4 +128,28 @@ test.describe("interactive previews", () => {
     const radius = await page.locator("html").evaluate((el) => getComputedStyle(el).getPropertyValue("--radius").trim())
     expect(radius).toBe("1rem")
   })
+
+  test("command palette opens from sidebar trigger", async ({ page }) => {
+    await page.goto("/docs")
+
+    const trigger = page.locator("[data-open-command-palette]").first()
+    const shell = page.locator(".docs-k")
+    const input = page.locator(".docs-k-input")
+    const listItems = page.locator(".docs-k-item")
+
+    await trigger.scrollIntoViewIfNeeded()
+    await expect(trigger).toBeVisible()
+
+    await trigger.click()
+
+    await expect(shell).toBeVisible()
+    await expect(shell).not.toHaveClass(/hidden/)
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(input).toBeFocused()
+    await expect(listItems.first()).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(shell).toHaveClass(/hidden/)
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
+  })
 })

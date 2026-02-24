@@ -469,13 +469,13 @@ defmodule CinderUI.Components.Layout do
   > `resizable/1` is in progress and not ready for use. Expect behavioral
   > and API changes in upcoming releases.
 
-  Uses the optional `EuiResizable` LiveView hook to support drag handles.
+  Uses the optional `CuiResizable` LiveView hook to support drag handles.
   Provide `storage_key` to persist panel percentages in `localStorage`.
 
   ## Example
 
   ```heex title="Default" align="full"
-  <.resizable>
+  <.resizable id="resizable-1">
     <:panel size={35}>
       <div class="rounded-md bg-muted p-2 text-xs">Panel A</div>
     </:panel>
@@ -486,7 +486,7 @@ defmodule CinderUI.Components.Layout do
   ```
 
   ```heex title="Vertical" align="full"
-  <.resizable direction={:vertical} class="h-[240px]">
+  <.resizable id="resizable-2" direction={:vertical} class="h-[240px]">
     <:panel size={45}>
       <div class="h-full rounded-md bg-muted p-2 text-xs">Top panel</div>
     </:panel>
@@ -497,7 +497,7 @@ defmodule CinderUI.Components.Layout do
   ```
 
   ```heex title="Handle + persisted sizes" align="full"
-  <.resizable with_handle storage_key="docs-layout-main">
+  <.resizable id="resizable-3" with_handle storage_key="docs-layout-main">
     <:panel size={30} min_size={20}>
       <div class="rounded-md bg-muted p-2 text-xs">Explorer</div>
     </:panel>
@@ -537,7 +537,7 @@ defmodule CinderUI.Components.Layout do
       data-direction={@direction}
       data-storage-key={@storage_key}
       class={classes(@classes)}
-      phx-hook="EuiResizable"
+      phx-hook="CuiResizable"
     >
       <%= for {panel, index} <- Enum.with_index(@panel) do %>
         <div

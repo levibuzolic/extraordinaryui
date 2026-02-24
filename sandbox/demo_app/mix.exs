@@ -32,8 +32,12 @@ defmodule DemoApp.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
+  defp elixirc_paths(:test), do: ["lib", shared_dev_lib_path(), "test/support"]
+  defp elixirc_paths(_), do: ["lib", shared_dev_lib_path()]
+
+  defp shared_dev_lib_path do
+    Path.expand("../../dev/lib", __DIR__)
+  end
 
   # Creates deps/cinder_ui as a symlink to the local path dep so Tailwind's
   # @source "../../deps/cinder_ui" directive (added by mix cinder_ui.install)
