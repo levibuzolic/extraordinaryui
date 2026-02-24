@@ -11,7 +11,7 @@ defmodule CinderUI.Components.Layout do
   - `kbd/1`
   - `kbd_group/1`
   - `scroll_area/1`
-  - `resizable/1` (experimental)
+  - `resizable/1` (in progress, not ready for use)
   """
 
   use Phoenix.Component
@@ -450,10 +450,10 @@ defmodule CinderUI.Components.Layout do
   @doc """
   Resizable split layout container with optional client-side persistence.
 
-  > #### Experimental
+  > #### In Progress
   >
-  > `resizable/1` is not functional yet. Expect behavioral and API changes
-  > in upcoming releases.
+  > `resizable/1` is in progress and not ready for use. Expect behavioral
+  > and API changes in upcoming releases.
 
   Uses the optional `EuiResizable` LiveView hook to support drag handles.
   Provide `storage_key` to persist panel percentages in `localStorage`.

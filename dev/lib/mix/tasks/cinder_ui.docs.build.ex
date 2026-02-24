@@ -333,21 +333,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     ~H"""
     <div
       :if={
-        (is_binary(@home_url) and @home_url != "") or
-          (is_binary(@github_url) and @github_url != "") or
+        (is_binary(@github_url) and @github_url != "") or
           (is_binary(@hex_package_url) and @hex_package_url != "")
       }
       class="mt-3 flex flex-wrap gap-1 text-xs"
     >
-      <Actions.button
-        :if={is_binary(@home_url) and @home_url != ""}
-        as="a"
-        href={@home_url}
-        variant={:outline}
-        size={:xs}
-      >
-        Home
-      </Actions.button>
       <Actions.button
         :if={is_binary(@github_url) and @github_url != ""}
         as="a"
@@ -523,18 +513,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       </div>
       <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
         <span class="text-muted-foreground">
-          attrs: <span class="font-medium text-foreground">{@attrs_count}</span>
+          examples: <span class="font-medium text-foreground">{@examples_count}</span>
+          · attrs: <span class="font-medium text-foreground">{@attrs_count}</span>
           · slots: <span class="font-medium text-foreground">{@slots_count}</span>
-          · examples: <span class="font-medium text-foreground">{@examples_count}</span>
         </span>
-        <a
-          href={@entry.shadcn_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-muted-foreground hover:text-foreground underline underline-offset-4"
-        >
-          shadcn reference ↗
-        </a>
       </div>
     </article>
     """
