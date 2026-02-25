@@ -176,6 +176,7 @@ Legend:
 | Dropdown Menu | ⚡ Progressive | Server + hooks | Hook layer handles menu toggling |
 | Empty | ✅ Full | Server-rendered | - |
 | Field / Form primitives | ✅ Full | Server-rendered | - |
+| Flash (`Feedback.flash/1`, `Feedback.flash_group/1`) | ✅ Full | Server-rendered + LiveView events | API-compatible with Phoenix generated flash components |
 | Hover Card | ✅ Full | Server-rendered | - |
 | Input Group | ✅ Full | Server-rendered | - |
 | Input OTP | ✅ Full | Server-rendered | - |
@@ -200,7 +201,7 @@ Legend:
 | Skeleton | ✅ Full | Server-rendered | - |
 | Slider | ✅ Full | Server-rendered | Native range input style |
 | Sonner | 🚧 Not Yet | N/A | Not implemented; toast support planned for future release |
-| Toast | 🚧 Not Yet | N/A | Not implemented; flash/toast API is intentionally deferred |
+| Toast | 🚧 Not Yet | N/A | Not implemented; toast API is intentionally deferred |
 | Spinner | ✅ Full | Server-rendered | - |
 | Switch | ✅ Full | Server-rendered | - |
 | Table | ✅ Full | Server-rendered | - |
