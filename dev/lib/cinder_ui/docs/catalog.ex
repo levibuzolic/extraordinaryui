@@ -129,7 +129,7 @@ defmodule CinderUI.Docs.Catalog do
       source_line: component_line(module, function),
       shadcn_slug: slug,
       shadcn_url: shadcn_url(slug),
-      docs_path: "#{id}/"
+      docs_path: "#{id}/index.html"
     }
   end
 
