@@ -16,5 +16,4 @@ defmodule CinderUI.Components.AdvancedTest do
     assert html =~ "data-slot=\"command\""
     assert html =~ "Main"
   end
-
 end

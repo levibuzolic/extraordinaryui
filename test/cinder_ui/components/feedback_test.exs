@@ -22,5 +22,4 @@ defmodule CinderUI.Components.FeedbackTest do
     assert html =~ "data-slot=\"progress\""
     assert html =~ "translateX(-50.0%)"
   end
-
 end
