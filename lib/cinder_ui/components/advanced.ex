@@ -290,5 +290,4 @@ defmodule CinderUI.Components.Advanced do
     </div>
     """
   end
-
 end

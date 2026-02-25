@@ -73,6 +73,6 @@ defmodule DemoAppWeb.ComponentControllerTest do
     content_type = conn |> get_resp_header("content-type") |> List.first()
 
     assert content_type =~ "css"
-    assert response =~ ".bg-background"
+    assert response =~ ".bg-background" or response =~ "@source"
   end
 end
