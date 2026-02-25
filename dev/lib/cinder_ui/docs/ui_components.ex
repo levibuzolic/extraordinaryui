@@ -539,10 +539,10 @@ defmodule CinderUI.Docs.UIComponents do
     )
   end
 
-  defp overview_href(:static, root_prefix), do: "#{root_prefix}/index.html"
+  defp overview_href(:static, root_prefix), do: "#{root_prefix}/"
   defp overview_href(:live, _root_prefix), do: "/docs"
 
-  defp section_href(:static, root_prefix, section_id), do: "#{root_prefix}/index.html##{section_id}"
+  defp section_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
   defp section_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
 
   defp entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{entry.docs_path}"
@@ -551,7 +551,7 @@ defmodule CinderUI.Docs.UIComponents do
   defp overview_entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{entry.docs_path}"
   defp overview_entry_href(:live, _root_prefix, entry), do: "/docs/#{entry.id}/"
 
-  defp back_to_index_href(:static, root_prefix, section_id), do: "#{root_prefix}/index.html##{section_id}"
+  defp back_to_index_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
   defp back_to_index_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
 
   attr :class, :string, default: nil

@@ -5,7 +5,7 @@ const hasClass = async (locator: { evaluate: any }, className: string) =>
 
 test.describe("interactive previews", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/docs/index.html")
+    await page.goto("/docs/")
   })
 
   test("dialog opens and closes", async ({ page }) => {

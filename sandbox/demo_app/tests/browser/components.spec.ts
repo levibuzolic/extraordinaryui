@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test"
 
 test.describe("component catalog", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/docs/index.html")
+    await page.goto("/docs/")
   })
 
   test("renders every component card", async ({ page }) => {

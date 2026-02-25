@@ -28,7 +28,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
 
     assert marketing_index =~ "Cinder UI"
     assert marketing_index =~ "Browse Component Library"
-    assert marketing_index =~ "./docs/index.html"
+    assert marketing_index =~ "./docs/"
     assert marketing_index =~ "https://hexdocs.pm/cinder_ui"
     assert marketing_index =~ "GitHub"
     assert marketing_index =~ "Component examples"
@@ -37,7 +37,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert docs_index =~ "Actions.button"
     assert docs_index =~ "Open docs"
     assert docs_index =~ "./components/actions-button.html"
-    assert docs_index =~ ~s(href="../index.html")
+    assert docs_index =~ ~s(href="../")
 
     assert component_page =~ "Original shadcn/ui docs"
     assert component_page =~ "Attributes"

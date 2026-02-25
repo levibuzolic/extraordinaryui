@@ -17,7 +17,7 @@ test.describe("visual regression", () => {
       localStorage.setItem("cui:theme:radius", "nova")
     })
 
-    await page.goto("/docs/index.html")
+    await page.goto("/docs/")
 
     // Normalize typography/motion to improve screenshot consistency across runs.
     await page.addStyleTag({

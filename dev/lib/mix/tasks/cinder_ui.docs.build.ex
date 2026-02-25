@@ -36,7 +36,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     hex_package_url = "https://hex.pm/packages/cinder_ui"
     hexdocs_url = "https://hexdocs.pm/cinder_ui"
     docs_output_dir = Path.join(output_dir, "docs")
-    home_url = "../index.html"
+    home_url = "../"
 
     if File.dir?(output_dir), do: File.rm_rf!(output_dir)
 

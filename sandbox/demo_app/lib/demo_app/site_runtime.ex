@@ -21,9 +21,7 @@ defmodule DemoApp.SiteRuntime do
   end
 
   def ensure_site_built! do
-    index_path = Path.join(@site_dir, "index.html")
-
-    unless File.exists?(index_path) do
+    unless File.exists?(Path.join(@site_dir, "index.html")) do
       rebuild_site!()
     end
 
@@ -101,12 +99,14 @@ defmodule DemoApp.SiteRuntime do
   end
 
   def resolve_docs_asset_path(path_segments) when is_list(path_segments) do
-    with relative when is_binary(relative) <- relative_path(path_segments) do
-      relative
-      |> docs_asset_lookup_dirs()
-      |> resolve_in_dirs(relative)
-    else
-      _ -> nil
+    case relative_path(path_segments) do
+      relative when is_binary(relative) ->
+        relative
+        |> docs_asset_lookup_dirs()
+        |> resolve_in_dirs(relative)
+
+      _ ->
+        nil
     end
   end
 
