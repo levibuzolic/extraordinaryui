@@ -31,9 +31,4 @@ defmodule DemoAppWeb.Router do
     get "/docs/:id", ComponentController, :component
     post "/__docs/rebuild", ComponentController, :rebuild
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", DemoAppWeb do
-  #   pipe_through :api
-  # end
 end

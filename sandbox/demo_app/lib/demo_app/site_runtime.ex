@@ -9,6 +9,7 @@ defmodule DemoApp.SiteRuntime do
   @built_docs_assets_dir Path.expand("../../../../dist/site/docs/assets", __DIR__)
   @docs_assets_dir Path.expand("../../../../dev/assets/docs", __DIR__)
   @site_assets_dir Path.expand("../../../../dev/assets/site", __DIR__)
+  @sandbox_app_css_path Path.expand("../../priv/static/assets/css/app.css", __DIR__)
   @catalog_sections_key {__MODULE__, :catalog_sections}
   @catalog_count_key {__MODULE__, :catalog_count}
 
@@ -18,6 +19,16 @@ defmodule DemoApp.SiteRuntime do
     [Path.join(@site_assets_dir, "shared.js"), Path.join(@docs_assets_dir, "site.js")]
     |> Enum.map_join(";\n\n", &File.read!/1)
     |> Kernel.<>(";\n")
+  end
+
+  def docs_theme_css_path do
+    candidates = [
+      Path.join(@built_docs_assets_dir, "theme.css"),
+      @sandbox_app_css_path,
+      Path.join(@docs_assets_dir, "theme.css")
+    ]
+
+    Enum.find(candidates, &File.regular?/1)
   end
 
   def ensure_site_built! do

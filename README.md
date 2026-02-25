@@ -209,20 +209,6 @@ Legend:
 | Toggle / Toggle Group | ✅ Full | Server-rendered | - |
 | Tooltip | ✅ Full | Server-rendered | - |
 
-## Storybook Preview
-
-This project ships story files in `/storybook` and a helper module:
-
-```elixir
-defmodule MyAppWeb.Storybook do
-  use PhoenixStorybook,
-    otp_app: :my_app,
-    content_path: CinderUI.Storybook.content_path(),
-    css_path: "/assets/app.css",
-    js_path: "/assets/app.js"
-end
-```
-
 ## API Docs
 
 Every component module includes in-source docs and usage examples. Generate docs with:

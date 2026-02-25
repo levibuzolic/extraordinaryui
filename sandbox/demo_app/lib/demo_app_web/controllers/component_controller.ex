@@ -40,20 +40,33 @@ defmodule DemoAppWeb.ComponentController do
   end
 
   def docs_asset(conn, %{"path" => path}) do
-    if path == ["site.js"] do
-      conn
-      |> put_resp_content_type("application/javascript")
-      |> send_resp(200, SiteRuntime.docs_site_js())
-    else
-      case SiteRuntime.resolve_docs_asset_path(path) do
-        nil ->
-          send_resp(conn, 404, "Not found")
+    cond do
+      path == ["site.js"] ->
+        conn
+        |> put_resp_content_type("application/javascript")
+        |> send_resp(200, SiteRuntime.docs_site_js())
 
-        absolute_path ->
-          conn
-          |> put_resp_content_type(MIME.from_path(absolute_path))
-          |> send_file(200, absolute_path)
-      end
+      path == ["theme.css"] ->
+        case SiteRuntime.docs_theme_css_path() do
+          nil ->
+            send_resp(conn, 404, "Not found")
+
+          absolute_path ->
+            conn
+            |> put_resp_content_type("text/css")
+            |> send_file(200, absolute_path)
+        end
+
+      true ->
+        case SiteRuntime.resolve_docs_asset_path(path) do
+          nil ->
+            send_resp(conn, 404, "Not found")
+
+          absolute_path ->
+            conn
+            |> put_resp_content_type(MIME.from_path(absolute_path))
+            |> send_file(200, absolute_path)
+        end
     end
   end
 

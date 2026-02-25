@@ -56,7 +56,6 @@ defmodule CinderUI.MixProject do
       {:phoenix_live_view, "~> 1.0"},
       {:earmark, "~> 1.4", runtime: false},
       {:lucide_icons, "~> 2.0", optional: true},
-      {:phoenix_storybook, "~> 0.9.3", optional: true},
       {:jason, "~> 1.4", optional: true},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
@@ -122,7 +121,6 @@ defmodule CinderUI.MixProject do
           CinderUI.Components.Navigation,
           CinderUI.Components.Overlay
         ],
-        Storybook: [CinderUI.Storybook],
         "Mix Tasks": [Mix.Tasks.CinderUi.Install]
       ]
     ]
