@@ -23,3 +23,5 @@
 
 /* Only required because we're using a local version of CinderUI */
 @source "../../../lib/cinder_ui";
+@source "../../../dev/lib/cinder_ui";
+@source "../../../priv/site_templates";
