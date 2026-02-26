@@ -118,12 +118,12 @@ jobs:
             cover/excoveralls.json
             cover/
 
-  sandbox_unit:
-    name: Sandbox Unit Tests
+  demo_unit:
+    name: Demo Unit Tests
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: sandbox/demo_app
+        working-directory: demo
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -138,12 +138,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            sandbox/demo_app/deps
-            sandbox/demo_app/_build
-          key: ${{ runner.os }}-mix-sandbox-unit-${{ hashFiles('sandbox/demo_app/mix.lock', 'mix.lock') }}
+            demo/deps
+            demo/_build
+          key: ${{ runner.os }}-mix-demo-unit-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-sandbox-unit-
-            ${{ runner.os }}-mix-sandbox-
+            ${{ runner.os }}-mix-demo-unit-
+            ${{ runner.os }}-mix-demo-
 
       - name: Install dependencies
         run: mix deps.get
@@ -151,18 +151,18 @@ jobs:
       - name: Check formatting
         run: mix format --check-formatted
 
-      - name: Run sandbox Credo (strict)
+      - name: Run demo Credo (strict)
         run: mix credo --strict
 
-      - name: Run sandbox unit tests
+      - name: Run demo unit tests
         run: mix test
 
-  sandbox_typecheck:
-    name: Sandbox TypeScript Check
+  demo_typecheck:
+    name: Demo TypeScript Check
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: sandbox/demo_app
+        working-directory: demo
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -172,7 +172,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: sandbox/demo_app/package-lock.json
+          cache-dependency-path: demo/package-lock.json
 
       - name: Install Node dependencies
         run: npm ci
@@ -180,12 +180,12 @@ jobs:
       - name: TypeScript check
         run: npm run typecheck
 
-  sandbox_browser:
-    name: Sandbox Browser Tests (Playwright)
+  demo_browser:
+    name: Demo Browser Tests (Playwright)
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: sandbox/demo_app
+        working-directory: demo
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -201,24 +201,24 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: sandbox/demo_app/package-lock.json
+          cache-dependency-path: demo/package-lock.json
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
         with:
           path: |
-            sandbox/demo_app/deps
-            sandbox/demo_app/_build
-          key: ${{ runner.os }}-mix-sandbox-browser-${{ hashFiles('sandbox/demo_app/mix.lock', 'mix.lock') }}
+            demo/deps
+            demo/_build
+          key: ${{ runner.os }}-mix-demo-browser-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-sandbox-browser-
-            ${{ runner.os }}-mix-sandbox-
+            ${{ runner.os }}-mix-demo-browser-
+            ${{ runner.os }}-mix-demo-
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('sandbox/demo_app/package-lock.json') }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('demo/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
 
@@ -243,5 +243,5 @@ jobs:
         with:
           name: playwright-artifacts
           path: |
-            sandbox/demo_app/test-results
-            sandbox/demo_app/playwright-report
+            demo/test-results
+            demo/playwright-report

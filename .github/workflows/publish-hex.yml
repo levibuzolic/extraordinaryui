@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: sandbox/demo_app/package-lock.json
+          cache-dependency-path: demo/package-lock.json
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
@@ -51,22 +51,22 @@ jobs:
             ${{ runner.os }}-mix-hex-publish-
             ${{ runner.os }}-mix-
 
-      - name: Cache sandbox Mix dependencies
+      - name: Cache demo Mix dependencies
         uses: actions/cache@v4
         with:
           path: |
-            sandbox/demo_app/deps
-            sandbox/demo_app/_build
-          key: ${{ runner.os }}-mix-sandbox-hex-publish-${{ hashFiles('sandbox/demo_app/mix.lock', 'mix.lock') }}
+            demo/deps
+            demo/_build
+          key: ${{ runner.os }}-mix-demo-hex-publish-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-sandbox-hex-publish-
-            ${{ runner.os }}-mix-sandbox-
+            ${{ runner.os }}-mix-demo-hex-publish-
+            ${{ runner.os }}-mix-demo-
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-hex-publish-${{ hashFiles('sandbox/demo_app/package-lock.json') }}
+          key: ${{ runner.os }}-playwright-hex-publish-${{ hashFiles('demo/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-hex-publish-
             ${{ runner.os }}-playwright-
@@ -74,19 +74,19 @@ jobs:
       - name: Install dependencies
         run: mix deps.get
 
-      - name: Install sandbox dependencies
-        working-directory: sandbox/demo_app
+      - name: Install demo dependencies
+        working-directory: demo
         run: |
           mix deps.get
           npm ci
           mix assets.build
 
       - name: Install Playwright browser
-        working-directory: sandbox/demo_app
+        working-directory: demo
         run: npx playwright install --with-deps chromium
 
       - name: Generate docs screenshots
-        working-directory: sandbox/demo_app
+        working-directory: demo
         run: npx playwright test tests/browser/visual.spec.ts --update-snapshots
 
       - name: Verify Hex API key

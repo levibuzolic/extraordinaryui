@@ -8,7 +8,7 @@ Concise contributor guide for `cinder_ui`.
 - Primary outputs:
   - Hex package (`cinder_ui`)
   - Unified static docs/site output (`dist/site`)
-  - Sandbox host app for integration/browser tests (`sandbox/demo_app`)
+  - Demo host app for integration/browser tests (`demo`)
 
 ## Architecture
 
@@ -18,7 +18,7 @@ Concise contributor guide for `cinder_ui`.
   - `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
   - `dev/lib/cinder_ui/site/marketing.ex`
 - Static docs catalog source: `dev/lib/cinder_ui/docs/catalog.ex`
-- Sandbox app: `sandbox/demo_app`
+- Demo app: `demo`
 
 ## Core Commands
 
@@ -27,15 +27,15 @@ Concise contributor guide for `cinder_ui`.
   - `MIX_ENV=test mix coveralls.cobertura --raise`
 - Static outputs:
   - `mix cinder_ui.docs.build`
-- Sandbox checks:
-  - `cd sandbox/demo_app && mix format --check-formatted && mix test`
-  - `cd sandbox/demo_app && npm ci && mix assets.build && npx playwright test`
+- Demo checks:
+  - `cd demo && mix format --check-formatted && mix test`
+  - `cd demo && npm ci && mix assets.build && npx playwright test`
 
 ## Engineering Standards
 
 - Keep APIs Phoenix-first (HEEx function components, predictable assigns, typed `attr`/`slot` docs).
 - Prefer component composition in docs/snippets; use raw HTML only when no library primitive exists.
-- Keep static docs and sandbox behavior aligned (theme controls, snippets, interactions).
+- Keep static docs and demo behavior aligned (theme controls, snippets, interactions).
 - Avoid machine-specific paths in docs; use repository-relative paths.
 - Update tests whenever component behavior, docs generation, or JS hooks change.
 

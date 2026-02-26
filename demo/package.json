@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:browser": "playwright test",
+    "test:browser:headed": "playwright test --headed",
+    "test:browser:ui": "playwright test --ui",
+    "test:browser:install": "playwright install chromium",
+    "test:browser:visual": "playwright test tests/browser/visual.spec.ts",
+    "test:browser:visual:update": "playwright test tests/browser/visual.spec.ts --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^22.18.6",
+    "typescript": "^5.9.2"
+  }
+}

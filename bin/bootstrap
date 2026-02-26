@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEMO_DIR="${ROOT_DIR}/sandbox/demo_app"
+DEMO_DIR="${ROOT_DIR}/demo"
 
 require_cmd() {
   local cmd="$1"
@@ -69,12 +69,12 @@ require_cmd mise
 
 echo "Bootstrapping repository at ${ROOT_DIR}"
 run_mise_setup "$ROOT_DIR" "root"
-run_mise_setup "$DEMO_DIR" "sandbox/demo_app"
+run_mise_setup "$DEMO_DIR" "demo"
 
 run_mix_deps_get "$ROOT_DIR" "root"
-run_mix_deps_get "$DEMO_DIR" "sandbox/demo_app"
+run_mix_deps_get "$DEMO_DIR" "demo"
 
 run_node_install "$ROOT_DIR" "root"
-run_node_install "$DEMO_DIR" "sandbox/demo_app"
+run_node_install "$DEMO_DIR" "demo"
 
 echo "Bootstrap complete."

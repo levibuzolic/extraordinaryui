@@ -40,6 +40,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: demo/package-lock.json
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
@@ -54,8 +56,13 @@ jobs:
       - name: Install dependencies
         run: mix deps.get
 
-      - name: Build static site
-        run: mix cinder_ui.docs.build
+      - name: Build static site from demo app
+        working-directory: demo
+        run: |
+          mix deps.get
+          npm ci
+          mix assets.build
+          mix site.export
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

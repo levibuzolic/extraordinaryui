@@ -54,7 +54,7 @@ defmodule CinderUI.Docs.CatalogTest do
 
         assert is_list(entry.attributes)
         assert is_list(entry.slots)
-        assert entry.docs_path == "#{entry.id}/"
+        assert entry.docs_path == "#{entry.id}/index.html"
         assert entry.shadcn_url =~ "https://ui.shadcn.com/docs/components"
       end)
     end)

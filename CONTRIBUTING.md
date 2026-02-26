@@ -13,7 +13,7 @@ Thanks for contributing. This guide is for humans first: the goal is to help you
 ## Prerequisites
 
 - Elixir (via `mise` is recommended in this repo)
-- Node.js + npm (for sandbox asset and browser tests)
+- Node.js + npm (for demo asset and browser tests)
 - Chromium for Playwright (`npx playwright install --with-deps chromium`)
 
 ## Local Setup
@@ -24,9 +24,9 @@ Thanks for contributing. This guide is for humans first: the goal is to help you
 
 Notes:
 
-- `./bin/bootstrap` runs `mise trust`, `mise install`, and dependency installation for both the repo root and `sandbox/demo_app`.
+- `./bin/bootstrap` runs `mise trust`, `mise install`, and dependency installation for both the repo root and `demo`.
 - Root package includes `lucide_icons` as an optional dependency for `CinderUI.Icons.icon/1` and icon-backed component primitives.
-- Sandbox includes `lucide_icons` directly so browser/docs examples always render icon previews.
+- Demo includes `lucide_icons` directly so browser/docs examples always render icon previews.
 - Hex package artifacts intentionally ship only runtime modules and `mix cinder_ui.install`; static docs/site build tasks remain repository-only maintainer tooling.
 
 ## Development Workspaces
@@ -35,8 +35,8 @@ Notes:
 - Public install task: `lib/mix/tasks/cinder_ui.install.ex`
 - Internal docs/site tasks: `dev/lib/mix/tasks/**`
 - Static docs catalog definitions: `dev/lib/cinder_ui/docs/catalog.ex`
-- Sandbox integration app: `sandbox/demo_app`
-- Browser tests: `sandbox/demo_app/tests/browser/**`
+- Demo integration app: `demo`
+- Browser tests: `demo/tests/browser/**`
 
 ## Typical Workflow
 
@@ -63,6 +63,13 @@ MIX_ENV=test mix coveralls.cobertura --raise
 mix cinder_ui.docs.build
 ```
 
+From `demo/`, export the live-rendered Phoenix pages to `dist/site` (GitHub Pages artifact):
+
+```bash
+cd demo
+mix site.export
+```
+
 Generate HexDocs with refreshed component screenshots:
 
 ```bash
@@ -71,13 +78,10 @@ mix docs.with_screenshots
 
 Note: docs CSS is compiled with Tailwind CLI from `dev/assets/docs/package.json`. The build task auto-installs those npm dependencies on first run.
 
-The sandbox app now serves files from `dist/site` (same output as `mix cinder_ui.docs.build`) so browser/visual tests run against the exact static docs+marketing output.
-Use `POST /__docs/rebuild` in the sandbox app to force a rebuild during local iteration.
-
-### Sandbox unit tests
+### Demo unit tests
 
 ```bash
-cd sandbox/demo_app
+cd demo
 mix format --check-formatted
 mix test
 ```
@@ -85,7 +89,7 @@ mix test
 ### Browser tests (Playwright)
 
 ```bash
-cd sandbox/demo_app
+cd demo
 mix assets.build
 npx playwright test
 ```
@@ -93,7 +97,7 @@ npx playwright test
 Visual suite only:
 
 ```bash
-cd sandbox/demo_app
+cd demo
 npx playwright test tests/browser/visual.spec.ts
 ```
 
@@ -102,7 +106,7 @@ This suite also exports component screenshots to `doc/screenshots` for HexDocs m
 Update visual baselines (only when UI change is intentional):
 
 ```bash
-cd sandbox/demo_app
+cd demo
 npx playwright test tests/browser/visual.spec.ts --update-snapshots
 ```
 
@@ -176,6 +180,6 @@ If you are unsure where to implement a change:
 
 - API and behavior: component module in `lib/cinder_ui/components/**`
 - docs examples/static pages: `dev/lib/cinder_ui/docs/catalog.ex` and docs build task
-- browser behavior regressions: `sandbox/demo_app/tests/browser/**`
+- browser behavior regressions: `demo/tests/browser/**`
 
 Open a draft PR early for architecture feedback.

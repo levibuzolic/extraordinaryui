@@ -15,14 +15,14 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert File.exists?(Path.join(@output, "index.html"))
     assert File.exists?(Path.join(@output, ".nojekyll"))
     assert File.exists?(Path.join(@output, "docs/index.html"))
-    assert File.exists?(Path.join(@output, "docs/components/actions-button.html"))
-    assert File.exists?(Path.join(@output, "docs/components/layout-card.html"))
+    assert File.exists?(Path.join(@output, "docs/actions-button/index.html"))
+    assert File.exists?(Path.join(@output, "docs/layout-card/index.html"))
     assert File.exists?(Path.join(@output, "docs/assets/site.css"))
     assert File.exists?(Path.join(@output, "docs/assets/site.js"))
 
     marketing_index = File.read!(Path.join(@output, "index.html"))
     docs_index = File.read!(Path.join(@output, "docs/index.html"))
-    component_page = File.read!(Path.join(@output, "docs/components/actions-button.html"))
+    component_page = File.read!(Path.join(@output, "docs/actions-button/index.html"))
     site_js = File.read!(Path.join(@output, "docs/assets/site.js"))
     site_css = File.read!(Path.join(@output, "docs/assets/site.css"))
 
@@ -36,7 +36,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert docs_index =~ "Component Library"
     assert docs_index =~ "Actions.button"
     assert docs_index =~ "Open docs"
-    assert docs_index =~ "./components/actions-button.html"
+    assert docs_index =~ "./actions-button/index.html"
     assert docs_index =~ ~s(href="../")
 
     assert component_page =~ "Original shadcn/ui docs"

@@ -68,7 +68,7 @@ defmodule CinderUI.MixProject do
     [
       "test.all": ["test"],
       "docs.with_screenshots": [
-        "cmd --cd sandbox/demo_app npx playwright test tests/browser/visual.spec.ts",
+        "cmd --cd demo npx playwright test tests/browser/visual.spec.ts",
         "docs"
       ],
       quality: [
