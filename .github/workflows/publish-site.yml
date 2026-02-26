@@ -53,6 +53,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-mix-site-
 
+      - name: Cache demo Mix dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            demo/deps
+            demo/_build
+          key: ${{ runner.os }}-mix-demo-site-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-demo-site-
+            ${{ runner.os }}-mix-demo-
+
       - name: Install dependencies
         run: mix deps.get
 
