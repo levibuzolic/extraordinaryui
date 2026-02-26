@@ -36,7 +36,7 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert docs_index =~ "Component Library"
     assert docs_index =~ "Actions.button"
     assert docs_index =~ "Open docs"
-    assert docs_index =~ "./actions-button/index.html"
+    assert docs_index =~ "./actions-button/"
     assert docs_index =~ ~s(href="../")
 
     assert component_page =~ "Original shadcn/ui docs"

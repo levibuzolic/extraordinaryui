@@ -558,10 +558,12 @@ defmodule CinderUI.Docs.UIComponents do
   defp section_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
   defp section_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
 
-  defp entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{entry.docs_path}"
+  defp entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{pretty_docs_path(entry.docs_path)}"
   defp entry_href(:live, _root_prefix, entry), do: "/docs/#{entry.id}/"
 
-  defp overview_entry_href(:static, root_prefix, entry), do: "#{root_prefix}/#{entry.docs_path}"
+  defp overview_entry_href(:static, root_prefix, entry),
+    do: "#{root_prefix}/#{pretty_docs_path(entry.docs_path)}"
+
   defp overview_entry_href(:live, _root_prefix, entry), do: "/docs/#{entry.id}/"
 
   defp back_to_index_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
@@ -615,6 +617,10 @@ defmodule CinderUI.Docs.UIComponents do
     else
       "#{base} text-muted-foreground hover:bg-accent/50 hover:text-foreground"
     end
+  end
+
+  defp pretty_docs_path(path) do
+    String.replace_suffix(path, "/index.html", "/")
   end
 
   defp rendered(html) when is_binary(html), do: Phoenix.HTML.raw(html)
