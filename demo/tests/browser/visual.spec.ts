@@ -3,6 +3,8 @@ import { mkdir } from "node:fs/promises"
 import { expect, test } from "@playwright/test"
 
 test.describe("visual regression", () => {
+  const fixedPreviewWidthPx = 550
+
   test.use({
     viewport: { width: 1600, height: 1200 },
     deviceScaleFactor: 2,
@@ -37,6 +39,9 @@ test.describe("visual regression", () => {
 
         [data-component-card] [data-preview-align] {
           height: 220px !important;
+          width: ${fixedPreviewWidthPx}px !important;
+          min-width: ${fixedPreviewWidthPx}px !important;
+          max-width: ${fixedPreviewWidthPx}px !important;
           overflow: hidden !important;
         }
       `,
