@@ -12,8 +12,8 @@ concurrency:
 
 env:
   ELIXIR_VERSION: "1.19.5"
-  OTP_VERSION: "28.0"
-  NODE_VERSION: "22"
+  OTP_VERSION: "28.3.2"
+  NODE_VERSION: "25"
 
 jobs:
   root_quality:
