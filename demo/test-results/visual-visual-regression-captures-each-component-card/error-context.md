@@ -1,0 +1,2173 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Cinder UI" [level=1] [ref=e5]:
+        - link "Cinder UI" [ref=e6] [cursor=pointer]:
+          - /url: /
+      - paragraph [ref=e7]: Static component docs
+    - generic [ref=e8]:
+      - generic [ref=e10]:
+        - button "Light" [pressed] [ref=e11]
+        - button "Dark" [ref=e12]
+        - button "Auto" [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Base color
+        - paragraph [ref=e16]:
+          - text: Matches shadcn
+          - code [ref=e17]: tailwind.baseColor
+          - text: .
+        - generic [ref=e18]:
+          - combobox "Theme color" [ref=e19]:
+            - option "Gray"
+            - option "Neutral" [selected]
+            - option "Slate"
+            - option "Stone"
+            - option "Zinc"
+          - img
+      - generic [ref=e20]:
+        - generic [ref=e21]: Radius
+        - generic [ref=e22]:
+          - combobox "Theme radius" [ref=e23]:
+            - option "Compact (6px / 0.375rem)"
+            - option "Small (8px / 0.5rem)"
+            - option "Default (12px / 0.75rem)" [selected]
+            - option "Large (14px / 0.875rem)"
+            - option "XL (16px / 1rem)"
+          - img
+    - button "Search components ⌘K / Ctrl+K" [ref=e25]:
+      - generic [ref=e26]: Search components
+      - generic [ref=e27]: ⌘K / Ctrl+K
+    - navigation "Component sections" [ref=e28]:
+      - link "Overview" [ref=e30] [cursor=pointer]:
+        - /url: /docs
+      - generic [ref=e31]:
+        - link "Actions" [ref=e32] [cursor=pointer]:
+          - /url: /docs/#actions
+        - list [ref=e33]:
+          - listitem [ref=e34]:
+            - link "button" [ref=e35] [cursor=pointer]:
+              - /url: /docs/actions-button/
+          - listitem [ref=e36]:
+            - link "button_group" [ref=e37] [cursor=pointer]:
+              - /url: /docs/actions-button_group/
+          - listitem [ref=e38]:
+            - link "toggle" [ref=e39] [cursor=pointer]:
+              - /url: /docs/actions-toggle/
+          - listitem [ref=e40]:
+            - link "toggle_group" [ref=e41] [cursor=pointer]:
+              - /url: /docs/actions-toggle_group/
+      - generic [ref=e42]:
+        - link "Forms" [ref=e43] [cursor=pointer]:
+          - /url: /docs/#forms
+        - list [ref=e44]:
+          - listitem [ref=e45]:
+            - link "checkbox" [ref=e46] [cursor=pointer]:
+              - /url: /docs/forms-checkbox/
+          - listitem [ref=e47]:
+            - link "field" [ref=e48] [cursor=pointer]:
+              - /url: /docs/forms-field/
+          - listitem [ref=e49]:
+            - link "input" [ref=e50] [cursor=pointer]:
+              - /url: /docs/forms-input/
+          - listitem [ref=e51]:
+            - link "input_group" [ref=e52] [cursor=pointer]:
+              - /url: /docs/forms-input_group/
+          - listitem [ref=e53]:
+            - link "input_otp" [ref=e54] [cursor=pointer]:
+              - /url: /docs/forms-input_otp/
+          - listitem [ref=e55]:
+            - link "label" [ref=e56] [cursor=pointer]:
+              - /url: /docs/forms-label/
+          - listitem [ref=e57]:
+            - link "radio_group" [ref=e58] [cursor=pointer]:
+              - /url: /docs/forms-radio_group/
+          - listitem [ref=e59]:
+            - link "select" [ref=e60] [cursor=pointer]:
+              - /url: /docs/forms-select/
+          - listitem [ref=e61]:
+            - link "slider" [ref=e62] [cursor=pointer]:
+              - /url: /docs/forms-slider/
+          - listitem [ref=e63]:
+            - link "switch" [ref=e64] [cursor=pointer]:
+              - /url: /docs/forms-switch/
+          - listitem [ref=e65]:
+            - link "textarea" [ref=e66] [cursor=pointer]:
+              - /url: /docs/forms-textarea/
+      - generic [ref=e67]:
+        - link "Layout" [ref=e68] [cursor=pointer]:
+          - /url: /docs/#layout
+        - list [ref=e69]:
+          - listitem [ref=e70]:
+            - link "aspect_ratio" [ref=e71] [cursor=pointer]:
+              - /url: /docs/layout-aspect_ratio/
+          - listitem [ref=e72]:
+            - link "card" [ref=e73] [cursor=pointer]:
+              - /url: /docs/layout-card/
+          - listitem [ref=e74]:
+            - link "card_action" [ref=e75] [cursor=pointer]:
+              - /url: /docs/layout-card_action/
+          - listitem [ref=e76]:
+            - link "card_content" [ref=e77] [cursor=pointer]:
+              - /url: /docs/layout-card_content/
+          - listitem [ref=e78]:
+            - link "card_description" [ref=e79] [cursor=pointer]:
+              - /url: /docs/layout-card_description/
+          - listitem [ref=e80]:
+            - link "card_footer" [ref=e81] [cursor=pointer]:
+              - /url: /docs/layout-card_footer/
+          - listitem [ref=e82]:
+            - link "card_header" [ref=e83] [cursor=pointer]:
+              - /url: /docs/layout-card_header/
+          - listitem [ref=e84]:
+            - link "card_title" [ref=e85] [cursor=pointer]:
+              - /url: /docs/layout-card_title/
+          - listitem [ref=e86]:
+            - link "kbd" [ref=e87] [cursor=pointer]:
+              - /url: /docs/layout-kbd/
+          - listitem [ref=e88]:
+            - link "kbd_group" [ref=e89] [cursor=pointer]:
+              - /url: /docs/layout-kbd_group/
+          - listitem [ref=e90]:
+            - link "resizable" [ref=e91] [cursor=pointer]:
+              - /url: /docs/layout-resizable/
+          - listitem [ref=e92]:
+            - link "scroll_area" [ref=e93] [cursor=pointer]:
+              - /url: /docs/layout-scroll_area/
+          - listitem [ref=e94]:
+            - link "separator" [ref=e95] [cursor=pointer]:
+              - /url: /docs/layout-separator/
+          - listitem [ref=e96]:
+            - link "skeleton" [ref=e97] [cursor=pointer]:
+              - /url: /docs/layout-skeleton/
+      - generic [ref=e98]:
+        - link "Icons" [ref=e99] [cursor=pointer]:
+          - /url: /docs/#icons
+        - list [ref=e100]:
+          - listitem [ref=e101]:
+            - link "icon" [ref=e102] [cursor=pointer]:
+              - /url: /docs/icons-icon/
+      - generic [ref=e103]:
+        - link "Feedback" [ref=e104] [cursor=pointer]:
+          - /url: /docs/#feedback
+        - list [ref=e105]:
+          - listitem [ref=e106]:
+            - link "alert" [ref=e107] [cursor=pointer]:
+              - /url: /docs/feedback-alert/
+          - listitem [ref=e108]:
+            - link "alert_description" [ref=e109] [cursor=pointer]:
+              - /url: /docs/feedback-alert_description/
+          - listitem [ref=e110]:
+            - link "alert_title" [ref=e111] [cursor=pointer]:
+              - /url: /docs/feedback-alert_title/
+          - listitem [ref=e112]:
+            - link "badge" [ref=e113] [cursor=pointer]:
+              - /url: /docs/feedback-badge/
+          - listitem [ref=e114]:
+            - link "empty_state" [ref=e115] [cursor=pointer]:
+              - /url: /docs/feedback-empty_state/
+          - listitem [ref=e116]:
+            - link "progress" [ref=e117] [cursor=pointer]:
+              - /url: /docs/feedback-progress/
+          - listitem [ref=e118]:
+            - link "spinner" [ref=e119] [cursor=pointer]:
+              - /url: /docs/feedback-spinner/
+      - generic [ref=e120]:
+        - link "Data Display" [ref=e121] [cursor=pointer]:
+          - /url: /docs/#data-display
+        - list [ref=e122]:
+          - listitem [ref=e123]:
+            - link "accordion" [ref=e124] [cursor=pointer]:
+              - /url: /docs/data-display-accordion/
+          - listitem [ref=e125]:
+            - link "avatar" [ref=e126] [cursor=pointer]:
+              - /url: /docs/data-display-avatar/
+          - listitem [ref=e127]:
+            - link "avatar_group" [ref=e128] [cursor=pointer]:
+              - /url: /docs/data-display-avatar_group/
+          - listitem [ref=e129]:
+            - link "avatar_group_count" [ref=e130] [cursor=pointer]:
+              - /url: /docs/data-display-avatar_group_count/
+          - listitem [ref=e131]:
+            - link "code_block" [ref=e132] [cursor=pointer]:
+              - /url: /docs/data-display-code_block/
+          - listitem [ref=e133]:
+            - link "collapsible" [ref=e134] [cursor=pointer]:
+              - /url: /docs/data-display-collapsible/
+          - listitem [ref=e135]:
+            - link "table" [ref=e136] [cursor=pointer]:
+              - /url: /docs/data-display-table/
+          - listitem [ref=e137]:
+            - link "table_body" [ref=e138] [cursor=pointer]:
+              - /url: /docs/data-display-table_body/
+          - listitem [ref=e139]:
+            - link "table_caption" [ref=e140] [cursor=pointer]:
+              - /url: /docs/data-display-table_caption/
+          - listitem [ref=e141]:
+            - link "table_cell" [ref=e142] [cursor=pointer]:
+              - /url: /docs/data-display-table_cell/
+          - listitem [ref=e143]:
+            - link "table_footer" [ref=e144] [cursor=pointer]:
+              - /url: /docs/data-display-table_footer/
+          - listitem [ref=e145]:
+            - link "table_head" [ref=e146] [cursor=pointer]:
+              - /url: /docs/data-display-table_head/
+          - listitem [ref=e147]:
+            - link "table_header" [ref=e148] [cursor=pointer]:
+              - /url: /docs/data-display-table_header/
+          - listitem [ref=e149]:
+            - link "table_row" [ref=e150] [cursor=pointer]:
+              - /url: /docs/data-display-table_row/
+      - generic [ref=e151]:
+        - link "Navigation" [ref=e152] [cursor=pointer]:
+          - /url: /docs/#navigation
+        - list [ref=e153]:
+          - listitem [ref=e154]:
+            - link "breadcrumb" [ref=e155] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb/
+          - listitem [ref=e156]:
+            - link "breadcrumb_ellipsis" [ref=e157] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb_ellipsis/
+          - listitem [ref=e158]:
+            - link "breadcrumb_item" [ref=e159] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb_item/
+          - listitem [ref=e160]:
+            - link "breadcrumb_link" [ref=e161] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb_link/
+          - listitem [ref=e162]:
+            - link "breadcrumb_list" [ref=e163] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb_list/
+          - listitem [ref=e164]:
+            - link "breadcrumb_page" [ref=e165] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb_page/
+          - listitem [ref=e166]:
+            - link "breadcrumb_separator" [ref=e167] [cursor=pointer]:
+              - /url: /docs/navigation-breadcrumb_separator/
+          - listitem [ref=e168]:
+            - link "menu" [ref=e169] [cursor=pointer]:
+              - /url: /docs/navigation-menu/
+          - listitem [ref=e170]:
+            - link "navigation_menu" [ref=e171] [cursor=pointer]:
+              - /url: /docs/navigation-navigation_menu/
+          - listitem [ref=e172]:
+            - link "pagination" [ref=e173] [cursor=pointer]:
+              - /url: /docs/navigation-pagination/
+          - listitem [ref=e174]:
+            - link "pagination_content" [ref=e175] [cursor=pointer]:
+              - /url: /docs/navigation-pagination_content/
+          - listitem [ref=e176]:
+            - link "pagination_ellipsis" [ref=e177] [cursor=pointer]:
+              - /url: /docs/navigation-pagination_ellipsis/
+          - listitem [ref=e178]:
+            - link "pagination_item" [ref=e179] [cursor=pointer]:
+              - /url: /docs/navigation-pagination_item/
+          - listitem [ref=e180]:
+            - link "pagination_link" [ref=e181] [cursor=pointer]:
+              - /url: /docs/navigation-pagination_link/
+          - listitem [ref=e182]:
+            - link "pagination_next" [ref=e183] [cursor=pointer]:
+              - /url: /docs/navigation-pagination_next/
+          - listitem [ref=e184]:
+            - link "pagination_previous" [ref=e185] [cursor=pointer]:
+              - /url: /docs/navigation-pagination_previous/
+          - listitem [ref=e186]:
+            - link "tabs" [ref=e187] [cursor=pointer]:
+              - /url: /docs/navigation-tabs/
+      - generic [ref=e188]:
+        - link "Overlay" [ref=e189] [cursor=pointer]:
+          - /url: /docs/#overlay
+        - list [ref=e190]:
+          - listitem [ref=e191]:
+            - link "alert_dialog" [ref=e192] [cursor=pointer]:
+              - /url: /docs/overlay-alert_dialog/
+          - listitem [ref=e193]:
+            - link "dialog" [ref=e194] [cursor=pointer]:
+              - /url: /docs/overlay-dialog/
+          - listitem [ref=e195]:
+            - link "drawer" [ref=e196] [cursor=pointer]:
+              - /url: /docs/overlay-drawer/
+          - listitem [ref=e197]:
+            - link "dropdown_menu" [ref=e198] [cursor=pointer]:
+              - /url: /docs/overlay-dropdown_menu/
+          - listitem [ref=e199]:
+            - link "hover_card" [ref=e200] [cursor=pointer]:
+              - /url: /docs/overlay-hover_card/
+          - listitem [ref=e201]:
+            - link "menubar" [ref=e202] [cursor=pointer]:
+              - /url: /docs/overlay-menubar/
+          - listitem [ref=e203]:
+            - link "popover" [ref=e204] [cursor=pointer]:
+              - /url: /docs/overlay-popover/
+          - listitem [ref=e205]:
+            - link "sheet" [ref=e206] [cursor=pointer]:
+              - /url: /docs/overlay-sheet/
+          - listitem [ref=e207]:
+            - link "tooltip" [ref=e208] [cursor=pointer]:
+              - /url: /docs/overlay-tooltip/
+      - generic [ref=e209]:
+        - link "Advanced" [ref=e210] [cursor=pointer]:
+          - /url: /docs/#advanced
+        - list [ref=e211]:
+          - listitem [ref=e212]:
+            - link "calendar" [ref=e213] [cursor=pointer]:
+              - /url: /docs/advanced-calendar/
+          - listitem [ref=e214]:
+            - link "carousel" [ref=e215] [cursor=pointer]:
+              - /url: /docs/advanced-carousel/
+          - listitem [ref=e216]:
+            - link "chart" [ref=e217] [cursor=pointer]:
+              - /url: /docs/advanced-chart/
+          - listitem [ref=e218]:
+            - link "combobox" [ref=e219] [cursor=pointer]:
+              - /url: /docs/advanced-combobox/
+          - listitem [ref=e220]:
+            - link "command" [ref=e221] [cursor=pointer]:
+              - /url: /docs/advanced-command/
+          - listitem [ref=e222]:
+            - link "item" [ref=e223] [cursor=pointer]:
+              - /url: /docs/advanced-item/
+          - listitem [ref=e224]:
+            - link "sidebar" [ref=e225] [cursor=pointer]:
+              - /url: /docs/advanced-sidebar/
+  - main [ref=e226]:
+    - generic [ref=e227]:
+      - heading "Component Library" [level=2] [ref=e228]
+      - paragraph [ref=e229]: Static docs for Cinder UI components. Open any component for preview, HEEx usage, generated attributes/slots docs, and a link to the original shadcn/ui reference.
+      - paragraph [ref=e230]: "Components: 84"
+    - generic [ref=e231]:
+      - heading "Actions" [level=3] [ref=e232]
+      - generic [ref=e233]:
+        - article [ref=e234]:
+          - generic [ref=e235]:
+            - generic [ref=e236]:
+              - generic [ref=e237]:
+                - heading "Actions.button" [level=4] [ref=e238]:
+                  - link "Actions.button" [ref=e239] [cursor=pointer]:
+                    - /url: /docs/actions-button/
+                    - code [ref=e240]: Actions.button
+                - link "Open docs" [ref=e242] [cursor=pointer]:
+                  - /url: /docs/actions-button/
+              - paragraph [ref=e244]: Renders a shadcn-style button.
+            - button "Save changes" [ref=e247]
+            - generic [ref=e248]:
+              - button "Copy HEEx" [ref=e249]:
+                - img
+              - code [ref=e251]: <.button type="submit">Save changes</.button>
+            - generic [ref=e253]: "examples: 5 · attrs: 6 · slots: 1"
+        - article [ref=e254]:
+          - generic [ref=e255]:
+            - generic [ref=e256]:
+              - generic [ref=e257]:
+                - heading "Actions.button_group" [level=4] [ref=e258]:
+                  - link "Actions.button_group" [ref=e259] [cursor=pointer]:
+                    - /url: /docs/actions-button_group/
+                    - code [ref=e260]: Actions.button_group
+                - link "Open docs" [ref=e262] [cursor=pointer]:
+                  - /url: /docs/actions-button_group/
+              - paragraph [ref=e264]: Renders a horizontal or vertical button group.
+            - generic [ref=e267]:
+              - button "Deploy" [ref=e268]
+              - button "Rollback" [ref=e269]
+            - generic [ref=e270]:
+              - button "Copy HEEx" [ref=e271]:
+                - img
+              - code [ref=e273]:
+                - text: <.button_group> <.button>Deploy</.button> <.button variant=
+                - generic [ref=e274]: "{:outline}"
+                - text: ">Rollback</.button> </.button_group>"
+            - generic [ref=e276]: "examples: 4 · attrs: 2 · slots: 1"
+        - article [ref=e277]:
+          - generic [ref=e278]:
+            - generic [ref=e279]:
+              - generic [ref=e280]:
+                - heading "Actions.toggle" [level=4] [ref=e281]:
+                  - link "Actions.toggle" [ref=e282] [cursor=pointer]:
+                    - /url: /docs/actions-toggle/
+                    - code [ref=e283]: Actions.toggle
+                - link "Open docs" [ref=e285] [cursor=pointer]:
+                  - /url: /docs/actions-toggle/
+              - paragraph [ref=e287]: Renders a shadcn-style toggle button.
+            - button "Bold" [ref=e290]
+            - generic [ref=e291]:
+              - button "Copy HEEx" [ref=e292]:
+                - img
+              - code [ref=e294]:
+                - text: <.toggle pressed=
+                - generic [ref=e295]: "{true}"
+                - text: ">Bold</.toggle>"
+            - generic [ref=e297]: "examples: 4 · attrs: 5 · slots: 1"
+        - article [ref=e298]:
+          - generic [ref=e299]:
+            - generic [ref=e300]:
+              - generic [ref=e301]:
+                - heading "Actions.toggle_group" [level=4] [ref=e302]:
+                  - link "Actions.toggle_group" [ref=e303] [cursor=pointer]:
+                    - /url: /docs/actions-toggle_group/
+                    - code [ref=e304]: Actions.toggle_group
+                - link "Open docs" [ref=e306] [cursor=pointer]:
+                  - /url: /docs/actions-toggle_group/
+              - paragraph [ref=e308]: Groups toggles in either single-select or multi-select mode.
+            - group [ref=e311]:
+              - button "Left" [ref=e312]
+              - button "Center" [ref=e313]
+              - button "Right" [ref=e314]
+            - generic [ref=e315]:
+              - button "Copy HEEx" [ref=e316]:
+                - img
+              - code [ref=e318]:
+                - text: <.toggle_group type=
+                - generic [ref=e319]: "{:single}"
+                - text: "> <.toggle pressed="
+                - generic [ref=e320]: "{@value == \"left\"}"
+                - text: ">Left</.toggle> <.toggle pressed="
+                - generic [ref=e321]: "{@value == \"center\"}"
+                - text: ">Center</.toggle> <.toggle pressed="
+                - generic [ref=e322]: "{@value == \"right\"}"
+                - text: ">Right</.toggle> </.toggle_group>"
+            - generic [ref=e324]: "examples: 3 · attrs: 3 · slots: 1"
+    - generic [ref=e325]:
+      - heading "Forms" [level=3] [ref=e326]
+      - generic [ref=e327]:
+        - article [ref=e328]:
+          - generic [ref=e329]:
+            - generic [ref=e330]:
+              - generic [ref=e331]:
+                - heading "Forms.checkbox" [level=4] [ref=e332]:
+                  - link "Forms.checkbox" [ref=e333] [cursor=pointer]:
+                    - /url: /docs/forms-checkbox/
+                    - code [ref=e334]: Forms.checkbox
+                - link "Open docs" [ref=e336] [cursor=pointer]:
+                  - /url: /docs/forms-checkbox/
+              - paragraph [ref=e338]: Renders a checkbox control with optional inline label content.
+            - generic [ref=e341]:
+              - checkbox "Accept terms" [ref=e342]
+              - generic [ref=e343]: Accept terms
+            - generic [ref=e344]:
+              - button "Copy HEEx" [ref=e345]:
+                - img
+              - code [ref=e347]: <.checkbox id="terms" name="terms">Accept terms</.checkbox>
+            - generic [ref=e349]: "examples: 2 · attrs: 7 · slots: 1"
+        - article [ref=e350]:
+          - generic [ref=e351]:
+            - generic [ref=e352]:
+              - generic [ref=e353]:
+                - heading "Forms.field" [level=4] [ref=e354]:
+                  - link "Forms.field" [ref=e355] [cursor=pointer]:
+                    - /url: /docs/forms-field/
+                    - code [ref=e356]: Forms.field
+                - link "Open docs" [ref=e358] [cursor=pointer]:
+                  - /url: /docs/forms-field/
+              - paragraph [ref=e360]: Field wrapper for label, control, description, and errors.
+            - generic [ref=e363]:
+              - generic [ref=e364]: Name
+              - textbox "Name" [ref=e365]
+              - paragraph [ref=e366]: Shown in your profile.
+            - generic [ref=e367]:
+              - button "Copy HEEx" [ref=e368]:
+                - img
+              - code [ref=e370]: <.field> <:label><.label for="name">Name</.label></:label> <.input id="name" name="name" /> <:description>Shown in your profile.</:description> </.field>
+            - generic [ref=e372]: "examples: 2 · attrs: 1 · slots: 4"
+        - article [ref=e373]:
+          - generic [ref=e374]:
+            - generic [ref=e375]:
+              - generic [ref=e376]:
+                - heading "Forms.input" [level=4] [ref=e377]:
+                  - link "Forms.input" [ref=e378] [cursor=pointer]:
+                    - /url: /docs/forms-input/
+                    - code [ref=e379]: Forms.input
+                - link "Open docs" [ref=e381] [cursor=pointer]:
+                  - /url: /docs/forms-input/
+              - paragraph [ref=e383]: Renders an input with shadcn classes.
+            - textbox "Email" [ref=e386]:
+              - /placeholder: name@example.com
+            - generic [ref=e387]:
+              - button "Copy HEEx" [ref=e388]:
+                - img
+              - code [ref=e390]: <.input id="email" type="email" placeholder="name@example.com" />
+            - generic [ref=e392]: "examples: 3 · attrs: 7 · slots: 0"
+        - article [ref=e393]:
+          - generic [ref=e394]:
+            - generic [ref=e395]:
+              - generic [ref=e396]:
+                - heading "Forms.input_group" [level=4] [ref=e397]:
+                  - link "Forms.input_group" [ref=e398] [cursor=pointer]:
+                    - /url: /docs/forms-input_group/
+                    - code [ref=e399]: Forms.input_group
+                - link "Open docs" [ref=e401] [cursor=pointer]:
+                  - /url: /docs/forms-input_group/
+              - paragraph [ref=e403]: Wraps an input and sibling controls (buttons/icons) in a single inline group.
+            - generic [ref=e406]:
+              - textbox "Search" [ref=e407]
+              - button "Go" [ref=e408]
+            - generic [ref=e409]:
+              - button "Copy HEEx" [ref=e410]:
+                - img
+              - code [ref=e412]:
+                - text: <.input_group> <.input placeholder="Search" /> <.button variant=
+                - generic [ref=e413]: "{:ghost}"
+                - text: size=
+                - generic [ref=e414]: "{:xs}"
+                - text: ">Go</.button> </.input_group>"
+            - generic [ref=e416]: "examples: 3 · attrs: 1 · slots: 1"
+        - article [ref=e417]:
+          - generic [ref=e418]:
+            - generic [ref=e419]:
+              - generic [ref=e420]:
+                - heading "Forms.input_otp" [level=4] [ref=e421]:
+                  - link "Forms.input_otp" [ref=e422] [cursor=pointer]:
+                    - /url: /docs/forms-input_otp/
+                    - code [ref=e423]: Forms.input_otp
+                - link "Open docs" [ref=e425] [cursor=pointer]:
+                  - /url: /docs/forms-input_otp/
+              - paragraph [ref=e427]: Renders an OTP-style segmented input layout.
+            - generic [ref=e430]:
+              - textbox [ref=e431]
+              - textbox [ref=e432]
+              - textbox [ref=e433]
+              - textbox [ref=e434]
+              - textbox [ref=e435]
+              - textbox [ref=e436]
+            - generic [ref=e437]:
+              - button "Copy HEEx" [ref=e438]:
+                - img
+              - code [ref=e440]:
+                - text: <.input_otp name="verification_code[]" length=
+                - generic [ref=e441]: "{6}"
+                - text: />
+            - generic [ref=e443]: "examples: 2 · attrs: 6 · slots: 0"
+        - article [ref=e444]:
+          - generic [ref=e445]:
+            - generic [ref=e446]:
+              - generic [ref=e447]:
+                - heading "Forms.label" [level=4] [ref=e448]:
+                  - link "Forms.label" [ref=e449] [cursor=pointer]:
+                    - /url: /docs/forms-label/
+                    - code [ref=e450]: Forms.label
+                - link "Open docs" [ref=e452] [cursor=pointer]:
+                  - /url: /docs/forms-label/
+              - paragraph [ref=e454]: Renders a form label.
+            - generic [ref=e457]: Email
+            - generic [ref=e458]:
+              - button "Copy HEEx" [ref=e459]:
+                - img
+              - code [ref=e461]: <.label for="email">Email</.label>
+            - generic [ref=e463]: "examples: 2 · attrs: 3 · slots: 1"
+        - article [ref=e464]:
+          - generic [ref=e465]:
+            - generic [ref=e466]:
+              - generic [ref=e467]:
+                - heading "Forms.radio_group" [level=4] [ref=e468]:
+                  - link "Forms.radio_group" [ref=e469] [cursor=pointer]:
+                    - /url: /docs/forms-radio_group/
+                    - code [ref=e470]: Forms.radio_group
+                - link "Open docs" [ref=e472] [cursor=pointer]:
+                  - /url: /docs/forms-radio_group/
+              - paragraph [ref=e474]: Renders a radio group with native radio inputs.
+            - radiogroup [ref=e477]:
+              - generic [ref=e478]:
+                - radio "Free" [ref=e479]
+                - generic [ref=e480]: Free
+              - generic [ref=e481]:
+                - radio "Pro" [checked] [ref=e482]
+                - generic [ref=e483]: Pro
+            - generic [ref=e484]:
+              - button "Copy HEEx" [ref=e485]:
+                - img
+              - code [ref=e487]: <.radio_group name="plan" value="pro"> <:option value="free" label="Free" /> <:option value="pro" label="Pro" /> </.radio_group>
+            - generic [ref=e489]: "examples: 2 · attrs: 4 · slots: 1"
+        - article [ref=e490]:
+          - generic [ref=e491]:
+            - generic [ref=e492]:
+              - generic [ref=e493]:
+                - heading "Forms.select" [level=4] [ref=e494]:
+                  - link "Forms.select" [ref=e495] [cursor=pointer]:
+                    - /url: /docs/forms-select/
+                    - code [ref=e496]: Forms.select
+                - link "Open docs" [ref=e498] [cursor=pointer]:
+                  - /url: /docs/forms-select/
+              - paragraph [ref=e500]:
+                - text: Renders a native
+                - code [ref=e501]: <select>
+                - text: element with shadcn styles.
+            - generic [ref=e504]:
+              - combobox [ref=e505]:
+                - option "UTC" [selected]
+              - img
+            - generic [ref=e506]:
+              - button "Copy HEEx" [ref=e507]:
+                - img
+              - code [ref=e509]: <.select name="timezone" value="utc"> <:option value="utc" label="UTC" /> </.select>
+            - generic [ref=e511]: "examples: 3 · attrs: 5 · slots: 1"
+        - article [ref=e512]:
+          - generic [ref=e513]:
+            - generic [ref=e514]:
+              - generic [ref=e515]:
+                - heading "Forms.slider" [level=4] [ref=e516]:
+                  - link "Forms.slider" [ref=e517] [cursor=pointer]:
+                    - /url: /docs/forms-slider/
+                    - code [ref=e518]: Forms.slider
+                - link "Open docs" [ref=e520] [cursor=pointer]:
+                  - /url: /docs/forms-slider/
+              - paragraph [ref=e522]: Renders a slider using native range input(s).
+            - slider [ref=e525] [cursor=pointer]: "45"
+            - generic [ref=e526]:
+              - button "Copy HEEx" [ref=e527]:
+                - img
+              - code [ref=e529]:
+                - text: <.slider id="volume" name="volume" value=
+                - generic [ref=e530]: "{45}"
+                - text: min=
+                - generic [ref=e531]: "{0}"
+                - text: max=
+                - generic [ref=e532]: "{100}"
+                - text: step=
+                - generic [ref=e533]: "{1}"
+                - text: />
+            - generic [ref=e535]: "examples: 2 · attrs: 8 · slots: 0"
+        - article [ref=e536]:
+          - generic [ref=e537]:
+            - generic [ref=e538]:
+              - generic [ref=e539]:
+                - heading "Forms.switch" [level=4] [ref=e540]:
+                  - link "Forms.switch" [ref=e541] [cursor=pointer]:
+                    - /url: /docs/forms-switch/
+                    - code [ref=e542]: Forms.switch
+                - link "Open docs" [ref=e544] [cursor=pointer]:
+                  - /url: /docs/forms-switch/
+              - paragraph [ref=e546]: Renders a switch control with optional label content.
+            - generic [ref=e549]:
+              - switch "Email updates" [ref=e551]
+              - generic [ref=e552]: Email updates
+            - generic [ref=e553]:
+              - button "Copy HEEx" [ref=e554]:
+                - img
+              - code [ref=e556]:
+                - text: <.switch id="marketing" checked=
+                - generic [ref=e557]: "{@enabled}"
+                - text: ">Email updates</.switch>"
+            - generic [ref=e559]: "examples: 3 · attrs: 8 · slots: 1"
+        - article [ref=e560]:
+          - generic [ref=e561]:
+            - generic [ref=e562]:
+              - generic [ref=e563]:
+                - heading "Forms.textarea" [level=4] [ref=e564]:
+                  - link "Forms.textarea" [ref=e565] [cursor=pointer]:
+                    - /url: /docs/forms-textarea/
+                    - code [ref=e566]: Forms.textarea
+                - link "Open docs" [ref=e568] [cursor=pointer]:
+                  - /url: /docs/forms-textarea/
+              - paragraph [ref=e570]: Renders a textarea with shadcn classes.
+            - textbox [ref=e573]
+            - generic [ref=e574]:
+              - button "Copy HEEx" [ref=e575]:
+                - img
+              - code [ref=e577]:
+                - text: <.textarea id="bio" name="bio" rows=
+                - generic [ref=e578]: "{4}"
+                - text: />
+            - generic [ref=e580]: "examples: 3 · attrs: 7 · slots: 0"
+    - generic [ref=e581]:
+      - heading "Layout" [level=3] [ref=e582]
+      - generic [ref=e583]:
+        - article [ref=e584]:
+          - generic [ref=e585]:
+            - generic [ref=e586]:
+              - generic [ref=e587]:
+                - heading "Layout.aspect_ratio" [level=4] [ref=e588]:
+                  - link "Layout.aspect_ratio" [ref=e589] [cursor=pointer]:
+                    - /url: /docs/layout-aspect_ratio/
+                    - code [ref=e590]: Layout.aspect_ratio
+                - link "Open docs" [ref=e592] [cursor=pointer]:
+                  - /url: /docs/layout-aspect_ratio/
+              - paragraph [ref=e594]: Maintains a fixed aspect ratio for content.
+            - img [ref=e599]
+            - generic [ref=e600]:
+              - button "Copy HEEx" [ref=e601]:
+                - img
+              - code [ref=e603]: <.aspect_ratio ratio="16 / 9"> <img src="https://picsum.photos/id/191/800/800" class="h-full w-full object-cover" /> </.aspect_ratio>
+            - generic [ref=e605]: "examples: 1 · attrs: 2 · slots: 1"
+        - article [ref=e606]:
+          - generic [ref=e607]:
+            - generic [ref=e608]:
+              - generic [ref=e609]:
+                - heading "Layout.card" [level=4] [ref=e610]:
+                  - link "Layout.card" [ref=e611] [cursor=pointer]:
+                    - /url: /docs/layout-card/
+                    - code [ref=e612]: Layout.card
+                - link "Open docs" [ref=e614] [cursor=pointer]:
+                  - /url: /docs/layout-card/
+              - paragraph [ref=e616]: Card container.
+            - generic [ref=e619]:
+              - generic [ref=e620]:
+                - generic [ref=e621]: Project status
+                - generic [ref=e622]: Active deployments across environments.
+              - paragraph [ref=e624]: Production healthy, staging pending one migration.
+            - generic [ref=e625]:
+              - button "Copy HEEx" [ref=e626]:
+                - img
+              - code [ref=e628]: <.card> <.card_header> <.card_title>Project status</.card_title> <.card_description>Active deployments across environments.</.card_description> </.card_header> <.card_content> <p class="text-sm">Production healthy, staging pending one migration.</p> </.card_content> </.card>
+            - generic [ref=e630]: "examples: 3 · attrs: 1 · slots: 1"
+        - article [ref=e631]:
+          - generic [ref=e632]:
+            - generic [ref=e633]:
+              - generic [ref=e634]:
+                - heading "Layout.card_action" [level=4] [ref=e635]:
+                  - link "Layout.card_action" [ref=e636] [cursor=pointer]:
+                    - /url: /docs/layout-card_action/
+                    - code [ref=e637]: Layout.card_action
+                - link "Open docs" [ref=e639] [cursor=pointer]:
+                  - /url: /docs/layout-card_action/
+              - paragraph [ref=e641]: Right-aligned card action region for buttons/chips.
+            - generic [ref=e645]:
+              - generic [ref=e646]: Project details
+              - button "Edit" [ref=e648]
+              - generic [ref=e649]: Manage metadata and ownership.
+            - generic [ref=e650]:
+              - button "Copy HEEx" [ref=e651]:
+                - img
+              - code [ref=e653]:
+                - text: <.card class="max-w-sm"> <.card_header> <.card_title>Project details</.card_title> <.card_action> <.button size=
+                - generic [ref=e654]: "{:sm}"
+                - text: variant=
+                - generic [ref=e655]: "{:ghost}"
+                - text: ">Edit</.button> </.card_action> <.card_description>Manage metadata and ownership.</.card_description> </.card_header> </.card>"
+            - generic [ref=e657]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e658]:
+          - generic [ref=e659]:
+            - generic [ref=e660]:
+              - generic [ref=e661]:
+                - heading "Layout.card_content" [level=4] [ref=e662]:
+                  - link "Layout.card_content" [ref=e663] [cursor=pointer]:
+                    - /url: /docs/layout-card_content/
+                    - code [ref=e664]: Layout.card_content
+                - link "Open docs" [ref=e666] [cursor=pointer]:
+                  - /url: /docs/layout-card_content/
+              - paragraph [ref=e668]: Card content section.
+            - generic [ref=e671]:
+              - generic [ref=e672]:
+                - generic [ref=e673]: API key
+                - generic [ref=e674]: Use this key for network requests.
+              - generic [ref=e675]:
+                - paragraph [ref=e676]: Your API key was generated successfully.
+                - generic [ref=e677]:
+                  - textbox [ref=e678]: ck_live_************************
+                  - button "Copy" [ref=e679]
+            - generic [ref=e680]:
+              - button "Copy HEEx" [ref=e681]:
+                - img
+              - code [ref=e683]:
+                - text: <.card class="max-w-md"> <.card_header> <.card_title>API key</.card_title> <.card_description>Use this key for network requests.</.card_description> </.card_header> <.card_content class="space-y-3"> <p class="text-sm">Your API key was generated successfully.</p> <.input_group> <.input value="ck_live_************************" readonly /> <.button variant=
+                - generic [ref=e684]: "{:outline}"
+                - text: size=
+                - generic [ref=e685]: "{:sm}"
+                - text: ">Copy</.button> </.input_group> </.card_content> </.card>"
+            - generic [ref=e687]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e688]:
+          - generic [ref=e689]:
+            - generic [ref=e690]:
+              - generic [ref=e691]:
+                - heading "Layout.card_description" [level=4] [ref=e692]:
+                  - link "Layout.card_description" [ref=e693] [cursor=pointer]:
+                    - /url: /docs/layout-card_description/
+                    - code [ref=e694]: Layout.card_description
+                - link "Open docs" [ref=e696] [cursor=pointer]:
+                  - /url: /docs/layout-card_description/
+              - paragraph [ref=e698]: Card description text.
+            - generic [ref=e702]:
+              - generic [ref=e703]: Billing setup
+              - generic [ref=e704]: Connect your billing details to unlock premium features.
+            - generic [ref=e705]:
+              - button "Copy HEEx" [ref=e706]:
+                - img
+              - code [ref=e708]: <.card class="max-w-sm"> <.card_header> <.card_title>Billing setup</.card_title> <.card_description> Connect your billing details to unlock premium features. </.card_description> </.card_header> </.card>
+            - generic [ref=e710]: "examples: 2 · attrs: 1 · slots: 1"
+        - article [ref=e711]:
+          - generic [ref=e712]:
+            - generic [ref=e713]:
+              - generic [ref=e714]:
+                - heading "Layout.card_footer" [level=4] [ref=e715]:
+                  - link "Layout.card_footer" [ref=e716] [cursor=pointer]:
+                    - /url: /docs/layout-card_footer/
+                    - code [ref=e717]: Layout.card_footer
+                - link "Open docs" [ref=e719] [cursor=pointer]:
+                  - /url: /docs/layout-card_footer/
+              - paragraph [ref=e721]: Card footer section.
+            - generic [ref=e724]:
+              - generic [ref=e725]:
+                - generic [ref=e726]: Notification settings
+                - generic [ref=e727]: Choose how you want to be notified.
+              - generic [ref=e728]:
+                - button "Cancel" [ref=e729]
+                - button "Save" [ref=e730]
+            - generic [ref=e731]:
+              - button "Copy HEEx" [ref=e732]:
+                - img
+              - code [ref=e734]:
+                - text: <.card class="max-w-sm"> <.card_header> <.card_title>Notification settings</.card_title> <.card_description>Choose how you want to be notified.</.card_description> </.card_header> <.card_footer class="justify-end gap-2 border-t"> <.button variant=
+                - generic [ref=e735]: "{:outline}"
+                - text: ">Cancel</.button> <.button>Save</.button> </.card_footer> </.card>"
+            - generic [ref=e737]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e738]:
+          - generic [ref=e739]:
+            - generic [ref=e740]:
+              - generic [ref=e741]:
+                - heading "Layout.card_header" [level=4] [ref=e742]:
+                  - link "Layout.card_header" [ref=e743] [cursor=pointer]:
+                    - /url: /docs/layout-card_header/
+                    - code [ref=e744]: Layout.card_header
+                - link "Open docs" [ref=e746] [cursor=pointer]:
+                  - /url: /docs/layout-card_header/
+              - paragraph [ref=e748]: Card header section.
+            - generic [ref=e751]:
+              - generic [ref=e752]:
+                - generic [ref=e753]: Billing
+                - button "Manage" [ref=e755]
+                - generic [ref=e756]: Usage and invoices for this workspace.
+              - paragraph [ref=e758]: "Current cycle usage: 72%."
+            - generic [ref=e759]:
+              - button "Copy HEEx" [ref=e760]:
+                - img
+              - code [ref=e762]:
+                - text: <.card class="max-w-md"> <.card_header class="border-b"> <.card_title>Billing</.card_title> <.card_action> <.button size=
+                - generic [ref=e763]: "{:sm}"
+                - text: variant=
+                - generic [ref=e764]: "{:outline}"
+                - text: ">Manage</.button> </.card_action> <.card_description>Usage and invoices for this workspace.</.card_description> </.card_header> <.card_content> <p class=\"text-sm\">Current cycle usage: 72%.</p> </.card_content> </.card>"
+            - generic [ref=e766]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e767]:
+          - generic [ref=e768]:
+            - generic [ref=e769]:
+              - generic [ref=e770]:
+                - heading "Layout.card_title" [level=4] [ref=e771]:
+                  - link "Layout.card_title" [ref=e772] [cursor=pointer]:
+                    - /url: /docs/layout-card_title/
+                    - code [ref=e773]: Layout.card_title
+                - link "Open docs" [ref=e775] [cursor=pointer]:
+                  - /url: /docs/layout-card_title/
+              - paragraph [ref=e777]: Card title text.
+            - generic [ref=e780]:
+              - generic [ref=e782]: Payment method
+              - paragraph [ref=e784]: Visa ending in 4242.
+            - generic [ref=e785]:
+              - button "Copy HEEx" [ref=e786]:
+                - img
+              - code [ref=e788]: <.card class="max-w-sm"> <.card_header> <.card_title>Payment method</.card_title> </.card_header> <.card_content> <p class="text-sm">Visa ending in 4242.</p> </.card_content> </.card>
+            - generic [ref=e790]: "examples: 2 · attrs: 1 · slots: 1"
+        - article [ref=e791]:
+          - generic [ref=e792]:
+            - generic [ref=e793]:
+              - generic [ref=e794]:
+                - heading "Layout.kbd" [level=4] [ref=e795]:
+                  - link "Layout.kbd" [ref=e796] [cursor=pointer]:
+                    - /url: /docs/layout-kbd/
+                    - code [ref=e797]: Layout.kbd
+                - link "Open docs" [ref=e799] [cursor=pointer]:
+                  - /url: /docs/layout-kbd/
+              - paragraph [ref=e801]: Keyboard key badge.
+            - generic [ref=e803]:
+              - generic: ⌘K
+            - generic [ref=e804]:
+              - button "Copy HEEx" [ref=e805]:
+                - img
+              - code [ref=e807]: <.kbd> ⌘K </.kbd>
+            - generic [ref=e809]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e810]:
+          - generic [ref=e811]:
+            - generic [ref=e812]:
+              - generic [ref=e813]:
+                - heading "Layout.kbd_group" [level=4] [ref=e814]:
+                  - link "Layout.kbd_group" [ref=e815] [cursor=pointer]:
+                    - /url: /docs/layout-kbd_group/
+                    - code [ref=e816]: Layout.kbd_group
+                - link "Open docs" [ref=e818] [cursor=pointer]:
+                  - /url: /docs/layout-kbd_group/
+              - paragraph [ref=e820]:
+                - text: Groups multiple
+                - code [ref=e821]: kbd/1
+                - text: entries.
+            - generic [ref=e824]:
+              - generic [ref=e825]: ⌘
+              - generic [ref=e826]: K
+            - generic [ref=e827]:
+              - button "Copy HEEx" [ref=e828]:
+                - img
+              - code [ref=e830]: <.kbd_group> <span>⌘</span><span>K</span> </.kbd_group>
+            - generic [ref=e832]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e833]:
+          - generic [ref=e834]:
+            - generic [ref=e835]:
+              - generic [ref=e836]:
+                - heading "Layout.resizable" [level=4] [ref=e837]:
+                  - link "Layout.resizable" [ref=e838] [cursor=pointer]:
+                    - /url: /docs/layout-resizable/
+                    - code [ref=e839]: Layout.resizable
+                - link "Open docs" [ref=e841] [cursor=pointer]:
+                  - /url: /docs/layout-resizable/
+              - paragraph [ref=e843]: Resizable split layout container with optional client-side persistence.
+            - generic [ref=e846]:
+              - generic [ref=e848]: Panel A
+              - separator [ref=e849]
+              - generic [ref=e852]: Panel B
+            - generic [ref=e853]:
+              - button "Copy HEEx" [ref=e854]:
+                - img
+              - code [ref=e856]:
+                - text: <.resizable id="resizable-1"> <:panel size=
+                - generic [ref=e857]: "{35}"
+                - text: "> <div class=\"rounded-md bg-muted p-2 text-xs\">Panel A</div> </:panel> <:panel size="
+                - generic [ref=e858]: "{65}"
+                - text: "> <div class=\"rounded-md bg-muted/60 p-2 text-xs\">Panel B</div> </:panel> </.resizable>"
+            - generic [ref=e860]: "examples: 3 · attrs: 5 · slots: 1"
+        - article [ref=e861]:
+          - generic [ref=e862]:
+            - generic [ref=e863]:
+              - generic [ref=e864]:
+                - heading "Layout.scroll_area" [level=4] [ref=e865]:
+                  - link "Layout.scroll_area" [ref=e866] [cursor=pointer]:
+                    - /url: /docs/layout-scroll_area/
+                    - code [ref=e867]: Layout.scroll_area
+                - link "Open docs" [ref=e869] [cursor=pointer]:
+                  - /url: /docs/layout-scroll_area/
+              - paragraph [ref=e871]:
+                - text: Overflow container that mirrors shadcn
+                - code [ref=e872]: scroll-area
+                - text: structure.
+            - generic [ref=e877]:
+              - generic [ref=e878]: Scrollable content
+              - generic [ref=e879]: Scrollable content
+              - generic [ref=e880]: Scrollable content
+              - generic [ref=e881]: Scrollable content
+              - generic [ref=e882]: Scrollable content
+            - generic [ref=e883]:
+              - button "Copy HEEx" [ref=e884]:
+                - img
+              - code [ref=e886]: <.scroll_area class="h-24 rounded-md border"> <div class="space-y-2 text-sm p-4"> <div>Scrollable content</div> <div>Scrollable content</div> <div>Scrollable content</div> <div>Scrollable content</div> <div>Scrollable content</div> </div> </.scroll_area>
+            - generic [ref=e888]: "examples: 1 · attrs: 2 · slots: 1"
+        - article [ref=e889]:
+          - generic [ref=e890]:
+            - generic [ref=e891]:
+              - generic [ref=e892]:
+                - heading "Layout.separator" [level=4] [ref=e893]:
+                  - link "Layout.separator" [ref=e894] [cursor=pointer]:
+                    - /url: /docs/layout-separator/
+                    - code [ref=e895]: Layout.separator
+                - link "Open docs" [ref=e897] [cursor=pointer]:
+                  - /url: /docs/layout-separator/
+              - paragraph [ref=e899]: Horizontal or vertical separator.
+            - generic [ref=e902]:
+              - button "Copy HEEx" [ref=e903]:
+                - img
+              - code [ref=e905]:
+                - text: <.separator orientation=
+                - generic [ref=e906]: "{:horizontal}"
+                - text: />
+            - generic [ref=e908]: "examples: 1 · attrs: 3 · slots: 0"
+        - article [ref=e909]:
+          - generic [ref=e910]:
+            - generic [ref=e911]:
+              - generic [ref=e912]:
+                - heading "Layout.skeleton" [level=4] [ref=e913]:
+                  - link "Layout.skeleton" [ref=e914] [cursor=pointer]:
+                    - /url: /docs/layout-skeleton/
+                    - code [ref=e915]: Layout.skeleton
+                - link "Open docs" [ref=e917] [cursor=pointer]:
+                  - /url: /docs/layout-skeleton/
+              - paragraph [ref=e919]: Animated skeleton placeholder.
+            - generic [ref=e923]:
+              - button "Copy HEEx" [ref=e924]:
+                - img
+              - code [ref=e926]: <.skeleton class="h-4 w-[220px]" />
+            - generic [ref=e928]: "examples: 3 · attrs: 1 · slots: 0"
+    - generic [ref=e929]:
+      - heading "Icons" [level=3] [ref=e930]
+      - article [ref=e932]:
+        - generic [ref=e933]:
+          - generic [ref=e934]:
+            - generic [ref=e935]:
+              - heading "Icons.icon" [level=4] [ref=e936]:
+                - link "Icons.icon" [ref=e937] [cursor=pointer]:
+                  - /url: /docs/icons-icon/
+                  - code [ref=e938]: Icons.icon
+              - link "Open docs" [ref=e940] [cursor=pointer]:
+                - /url: /docs/icons-icon/
+            - paragraph [ref=e942]: Renders a Lucide icon by name.
+          - img [ref=e945]
+          - generic [ref=e947]:
+            - button "Copy HEEx" [ref=e948]:
+              - img
+            - code [ref=e950]: <.icon name="chevron-down" class="size-4 text-muted-foreground" aria-hidden="true" />
+          - generic [ref=e952]: "examples: 1 · attrs: 3 · slots: 0"
+    - generic [ref=e953]:
+      - heading "Feedback" [level=3] [ref=e954]
+      - generic [ref=e955]:
+        - article [ref=e956]:
+          - generic [ref=e957]:
+            - generic [ref=e958]:
+              - generic [ref=e959]:
+                - heading "Feedback.alert" [level=4] [ref=e960]:
+                  - link "Feedback.alert" [ref=e961] [cursor=pointer]:
+                    - /url: /docs/feedback-alert/
+                    - code [ref=e962]: Feedback.alert
+                - link "Open docs" [ref=e964] [cursor=pointer]:
+                  - /url: /docs/feedback-alert/
+              - paragraph [ref=e966]: Renders an alert container.
+            - alert [ref=e969]:
+              - img [ref=e970]
+              - generic [ref=e972]: Heads up!
+              - generic [ref=e973]: You can add components to your app using the install task.
+            - generic [ref=e974]:
+              - button "Copy HEEx" [ref=e975]:
+                - img
+              - code [ref=e977]: <.alert> <.icon name="circle-alert" /> <.alert_title>Heads up!</.alert_title> <.alert_description> You can add components to your app using the install task. </.alert_description> </.alert>
+            - generic [ref=e979]: "examples: 2 · attrs: 2 · slots: 1"
+        - article [ref=e980]:
+          - generic [ref=e981]:
+            - generic [ref=e982]:
+              - generic [ref=e983]:
+                - heading "Feedback.alert_description" [level=4] [ref=e984]:
+                  - link "Feedback.alert_description" [ref=e985] [cursor=pointer]:
+                    - /url: /docs/feedback-alert_description/
+                    - code [ref=e986]: Feedback.alert_description
+                - link "Open docs" [ref=e988] [cursor=pointer]:
+                  - /url: /docs/feedback-alert_description/
+              - paragraph [ref=e990]: Alert description element.
+            - alert [ref=e993]:
+              - img [ref=e994]
+              - generic [ref=e996]: Build failed
+              - generic [ref=e997]: Your tests failed during CI. Review the logs and re-run.
+            - generic [ref=e998]:
+              - button "Copy HEEx" [ref=e999]:
+                - img
+              - code [ref=e1001]:
+                - text: <.alert variant=
+                - generic [ref=e1002]: "{:destructive}"
+                - text: "> <.icon name=\"triangle-alert\" /> <.alert_title>Build failed</.alert_title> <.alert_description> Your tests failed during CI. Review the logs and re-run. </.alert_description> </.alert>"
+            - generic [ref=e1004]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1005]:
+          - generic [ref=e1006]:
+            - generic [ref=e1007]:
+              - generic [ref=e1008]:
+                - heading "Feedback.alert_title" [level=4] [ref=e1009]:
+                  - link "Feedback.alert_title" [ref=e1010] [cursor=pointer]:
+                    - /url: /docs/feedback-alert_title/
+                    - code [ref=e1011]: Feedback.alert_title
+                - link "Open docs" [ref=e1013] [cursor=pointer]:
+                  - /url: /docs/feedback-alert_title/
+              - paragraph [ref=e1015]: Alert title element.
+            - alert [ref=e1018]:
+              - img [ref=e1019]
+              - generic [ref=e1021]: Heads up!
+              - generic [ref=e1022]: This action requires admin access.
+            - generic [ref=e1023]:
+              - button "Copy HEEx" [ref=e1024]:
+                - img
+              - code [ref=e1026]: <.alert> <.icon name="circle-alert" /> <.alert_title>Heads up!</.alert_title> <.alert_description> This action requires admin access. </.alert_description> </.alert>
+            - generic [ref=e1028]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1029]:
+          - generic [ref=e1030]:
+            - generic [ref=e1031]:
+              - generic [ref=e1032]:
+                - heading "Feedback.badge" [level=4] [ref=e1033]:
+                  - link "Feedback.badge" [ref=e1034] [cursor=pointer]:
+                    - /url: /docs/feedback-badge/
+                    - code [ref=e1035]: Feedback.badge
+                - link "Open docs" [ref=e1037] [cursor=pointer]:
+                  - /url: /docs/feedback-badge/
+              - paragraph [ref=e1039]: Renders a status badge.
+            - generic [ref=e1042]: New
+            - generic [ref=e1043]:
+              - button "Copy HEEx" [ref=e1044]:
+                - img
+              - code [ref=e1046]: <.badge>New</.badge>
+            - generic [ref=e1048]: "examples: 3 · attrs: 2 · slots: 1"
+        - article [ref=e1049]:
+          - generic [ref=e1050]:
+            - generic [ref=e1051]:
+              - generic [ref=e1052]:
+                - heading "Feedback.empty_state" [level=4] [ref=e1053]:
+                  - link "Feedback.empty_state" [ref=e1054] [cursor=pointer]:
+                    - /url: /docs/feedback-empty_state/
+                    - code [ref=e1055]: Feedback.empty_state
+                - link "Open docs" [ref=e1057] [cursor=pointer]:
+                  - /url: /docs/feedback-empty_state/
+              - paragraph [ref=e1059]: Empty-state block for no-data screens.
+            - generic [ref=e1062]:
+              - heading "No projects" [level=3] [ref=e1063]
+              - paragraph [ref=e1064]: Create your first project to get started.
+            - generic [ref=e1065]:
+              - button "Copy HEEx" [ref=e1066]:
+                - img
+              - code [ref=e1068]: <.empty_state> <:title>No projects</:title> <:description>Create your first project to get started.</:description> </.empty_state>
+            - generic [ref=e1070]: "examples: 1 · attrs: 1 · slots: 4"
+        - article [ref=e1071]:
+          - generic [ref=e1072]:
+            - generic [ref=e1073]:
+              - generic [ref=e1074]:
+                - heading "Feedback.progress" [level=4] [ref=e1075]:
+                  - link "Feedback.progress" [ref=e1076] [cursor=pointer]:
+                    - /url: /docs/feedback-progress/
+                    - code [ref=e1077]: Feedback.progress
+                - link "Open docs" [ref=e1079] [cursor=pointer]:
+                  - /url: /docs/feedback-progress/
+              - paragraph [ref=e1081]: Progress bar.
+            - progressbar [ref=e1084]
+            - generic [ref=e1086]:
+              - button "Copy HEEx" [ref=e1087]:
+                - img
+              - code [ref=e1089]:
+                - text: <.progress value=
+                - generic [ref=e1090]: "{72}"
+                - text: />
+            - generic [ref=e1092]: "examples: 1 · attrs: 3 · slots: 0"
+        - article [ref=e1093]:
+          - generic [ref=e1094]:
+            - generic [ref=e1095]:
+              - generic [ref=e1096]:
+                - heading "Feedback.spinner" [level=4] [ref=e1097]:
+                  - link "Feedback.spinner" [ref=e1098] [cursor=pointer]:
+                    - /url: /docs/feedback-spinner/
+                    - code [ref=e1099]: Feedback.spinner
+                - link "Open docs" [ref=e1101] [cursor=pointer]:
+                  - /url: /docs/feedback-spinner/
+              - paragraph [ref=e1103]: Generic loading spinner.
+            - img [ref=e1106]
+            - generic [ref=e1108]:
+              - button "Copy HEEx" [ref=e1109]:
+                - img
+              - code [ref=e1111]: <.spinner />
+            - generic [ref=e1113]: "examples: 1 · attrs: 2 · slots: 0"
+    - generic [ref=e1114]:
+      - heading "Data Display" [level=3] [ref=e1115]
+      - generic [ref=e1116]:
+        - article [ref=e1117]:
+          - generic [ref=e1118]:
+            - generic [ref=e1119]:
+              - generic [ref=e1120]:
+                - heading "DataDisplay.accordion" [level=4] [ref=e1121]:
+                  - link "DataDisplay.accordion" [ref=e1122] [cursor=pointer]:
+                    - /url: /docs/data-display-accordion/
+                    - code [ref=e1123]: DataDisplay.accordion
+                - link "Open docs" [ref=e1125] [cursor=pointer]:
+                  - /url: /docs/data-display-accordion/
+              - paragraph [ref=e1127]: Accordion with multiple items.
+            - generic [ref=e1130]:
+              - group [ref=e1131]:
+                - generic "What is this? ⌄" [ref=e1132] [cursor=pointer]:
+                  - text: What is this?
+                  - generic: ⌄
+                - generic [ref=e1134]: A static preview.
+              - group [ref=e1135]:
+                - generic "Is it interactive? ⌄" [ref=e1136] [cursor=pointer]:
+                  - text: Is it interactive?
+                  - generic: ⌄
+            - generic [ref=e1137]:
+              - button "Copy HEEx" [ref=e1138]:
+                - img
+              - code [ref=e1140]:
+                - text: <.accordion> <:item open=
+                - generic [ref=e1141]: "{true}"
+                - text: title="What is this?"> A static preview. </:item> <:item title="Is it interactive?"> Some components are progressively enhanced. </:item> </.accordion>
+            - generic [ref=e1143]: "examples: 2 · attrs: 1 · slots: 1"
+        - article [ref=e1144]:
+          - generic [ref=e1145]:
+            - generic [ref=e1146]:
+              - generic [ref=e1147]:
+                - heading "DataDisplay.avatar" [level=4] [ref=e1148]:
+                  - link "DataDisplay.avatar" [ref=e1149] [cursor=pointer]:
+                    - /url: /docs/data-display-avatar/
+                    - code [ref=e1150]: DataDisplay.avatar
+                - link "Open docs" [ref=e1152] [cursor=pointer]:
+                  - /url: /docs/data-display-avatar/
+              - paragraph [ref=e1154]: Renders a circular avatar with optional image and fallback.
+            - img "Levi" [ref=e1158]
+            - generic [ref=e1159]:
+              - button "Copy HEEx" [ref=e1160]:
+                - img
+              - code [ref=e1162]: <.avatar src="example.png" alt="Levi" fallback="LV" />
+            - generic [ref=e1164]: "examples: 4 · attrs: 5 · slots: 1"
+        - article [ref=e1165]:
+          - generic [ref=e1166]:
+            - generic [ref=e1167]:
+              - generic [ref=e1168]:
+                - heading "DataDisplay.avatar_group" [level=4] [ref=e1169]:
+                  - link "DataDisplay.avatar_group" [ref=e1170] [cursor=pointer]:
+                    - /url: /docs/data-display-avatar_group/
+                    - code [ref=e1171]: DataDisplay.avatar_group
+                - link "Open docs" [ref=e1173] [cursor=pointer]:
+                  - /url: /docs/data-display-avatar_group/
+              - paragraph [ref=e1175]: Groups avatars with overlap.
+            - generic [ref=e1178]:
+              - img "Levi" [ref=e1180]
+              - img "Mira" [ref=e1182]
+              - img "Shadcn" [ref=e1184]
+              - generic [ref=e1185]: "+2"
+            - generic [ref=e1186]:
+              - button "Copy HEEx" [ref=e1187]:
+                - img
+              - code [ref=e1189]: <.avatar_group> <.avatar src="example.png" alt="Levi" /> <.avatar src="example.png" alt="Mira" /> <.avatar src="example.png" alt="Shadcn" /> <.avatar_group_count>+2</.avatar_group_count> </.avatar_group>
+            - generic [ref=e1191]: "examples: 2 · attrs: 1 · slots: 1"
+        - article [ref=e1192]:
+          - generic [ref=e1193]:
+            - generic [ref=e1194]:
+              - generic [ref=e1195]:
+                - heading "DataDisplay.avatar_group_count" [level=4] [ref=e1196]:
+                  - link "DataDisplay.avatar_group_count" [ref=e1197] [cursor=pointer]:
+                    - /url: /docs/data-display-avatar_group_count/
+                    - code [ref=e1198]: DataDisplay.avatar_group_count
+                - link "Open docs" [ref=e1200] [cursor=pointer]:
+                  - /url: /docs/data-display-avatar_group_count/
+              - paragraph [ref=e1202]:
+                - text: Counter item for avatar groups (e.g.
+                - code [ref=e1203]: "+3"
+                - text: ).
+            - generic [ref=e1206]: "+3"
+            - generic [ref=e1207]:
+              - button "Copy HEEx" [ref=e1208]:
+                - img
+              - code [ref=e1210]: <.avatar_group_count> +3 </.avatar_group_count>
+            - generic [ref=e1212]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1213]:
+          - generic [ref=e1214]:
+            - generic [ref=e1215]:
+              - generic [ref=e1216]:
+                - heading "DataDisplay.code_block" [level=4] [ref=e1217]:
+                  - link "DataDisplay.code_block" [ref=e1218] [cursor=pointer]:
+                    - /url: /docs/data-display-code_block/
+                    - code [ref=e1219]: DataDisplay.code_block
+                - link "Open docs" [ref=e1221] [cursor=pointer]:
+                  - /url: /docs/data-display-code_block/
+              - paragraph [ref=e1223]: Monospaced code block wrapper.
+            - code [ref=e1227]: mix cinder_ui.docs.build
+            - generic [ref=e1228]:
+              - button "Copy HEEx" [ref=e1229]:
+                - img
+              - code [ref=e1231]: <.code_block> mix cinder_ui.docs.build </.code_block>
+            - generic [ref=e1233]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1234]:
+          - generic [ref=e1235]:
+            - generic [ref=e1236]:
+              - generic [ref=e1237]:
+                - heading "DataDisplay.collapsible" [level=4] [ref=e1238]:
+                  - link "DataDisplay.collapsible" [ref=e1239] [cursor=pointer]:
+                    - /url: /docs/data-display-collapsible/
+                    - code [ref=e1240]: DataDisplay.collapsible
+                - link "Open docs" [ref=e1242] [cursor=pointer]:
+                  - /url: /docs/data-display-collapsible/
+              - paragraph [ref=e1244]: Generic collapsible section with trigger/content slots.
+            - group [ref=e1247]:
+              - generic "Toggle details ⌄" [ref=e1248] [cursor=pointer]:
+                - text: Toggle details
+                - generic [ref=e1249]: ⌄
+              - generic [ref=e1250]: Expanded content
+            - generic [ref=e1251]:
+              - button "Copy HEEx" [ref=e1252]:
+                - img
+              - code [ref=e1254]:
+                - text: <.collapsible open=
+                - generic [ref=e1255]: "{true}"
+                - text: "> <:trigger> Toggle details </:trigger> Expanded content </.collapsible>"
+            - generic [ref=e1257]: "examples: 1 · attrs: 2 · slots: 2"
+        - article [ref=e1258]:
+          - generic [ref=e1259]:
+            - generic [ref=e1260]:
+              - generic [ref=e1261]:
+                - heading "DataDisplay.table" [level=4] [ref=e1262]:
+                  - link "DataDisplay.table" [ref=e1263] [cursor=pointer]:
+                    - /url: /docs/data-display-table/
+                    - code [ref=e1264]: DataDisplay.table
+                - link "Open docs" [ref=e1266] [cursor=pointer]:
+                  - /url: /docs/data-display-table/
+              - paragraph [ref=e1268]: Table wrapper with overflow container.
+            - table "Active deployments across environments." [ref=e1272]:
+              - caption [ref=e1273]: Active deployments across environments.
+              - rowgroup [ref=e1274]:
+                - row "Service Status Latency" [ref=e1275]:
+                  - columnheader "Service" [ref=e1276]
+                  - columnheader "Status" [ref=e1277]
+                  - columnheader "Latency" [ref=e1278]
+              - rowgroup [ref=e1279]:
+                - row "API Healthy 82ms" [ref=e1280]:
+                  - cell "API" [ref=e1281]
+                  - cell "Healthy" [ref=e1282]
+                  - cell "82ms" [ref=e1283]
+                - row "Worker Degraded 164ms" [ref=e1284]:
+                  - cell "Worker" [ref=e1285]
+                  - cell "Degraded" [ref=e1286]
+                  - cell "164ms" [ref=e1287]
+            - generic [ref=e1288]:
+              - button "Copy HEEx" [ref=e1289]:
+                - img
+              - code [ref=e1291]: <.table> <.table_caption>Active deployments across environments.</.table_caption> <.table_header> <.table_row> <.table_head>Service</.table_head> <.table_head>Status</.table_head> <.table_head class="text-right">Latency</.table_head> </.table_row> </.table_header> <.table_body> <.table_row> <.table_cell>API</.table_cell> <.table_cell>Healthy</.table_cell> <.table_cell class="text-right">82ms</.table_cell> </.table_row> <.table_row> <.table_cell>Worker</.table_cell> <.table_cell>Degraded</.table_cell> <.table_cell class="text-right">164ms</.table_cell> </.table_row> </.table_body> </.table>
+            - generic [ref=e1293]: "examples: 3 · attrs: 1 · slots: 1"
+        - article [ref=e1294]:
+          - generic [ref=e1295]:
+            - generic [ref=e1296]:
+              - generic [ref=e1297]:
+                - heading "DataDisplay.table_body" [level=4] [ref=e1298]:
+                  - link "DataDisplay.table_body" [ref=e1299] [cursor=pointer]:
+                    - /url: /docs/data-display-table_body/
+                    - code [ref=e1300]: DataDisplay.table_body
+                - link "Open docs" [ref=e1302] [cursor=pointer]:
+                  - /url: /docs/data-display-table_body/
+              - paragraph [ref=e1304]:
+                - text: Table body (
+                - code [ref=e1305]: tbody
+                - text: ).
+            - generic [ref=e1307]: Cell
+            - generic [ref=e1308]:
+              - button "Copy HEEx" [ref=e1309]:
+                - img
+              - code [ref=e1311]: <.table_body> <.table_row> <.table_cell>Cell</.table_cell> </.table_row> </.table_body>
+            - generic [ref=e1313]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1314]:
+          - generic [ref=e1315]:
+            - generic [ref=e1316]:
+              - generic [ref=e1317]:
+                - heading "DataDisplay.table_caption" [level=4] [ref=e1318]:
+                  - link "DataDisplay.table_caption" [ref=e1319] [cursor=pointer]:
+                    - /url: /docs/data-display-table_caption/
+                    - code [ref=e1320]: DataDisplay.table_caption
+                - link "Open docs" [ref=e1322] [cursor=pointer]:
+                  - /url: /docs/data-display-table_caption/
+              - paragraph [ref=e1324]:
+                - text: Table caption (
+                - code [ref=e1325]: caption
+                - text: ).
+            - generic [ref=e1327]: Table caption
+            - generic [ref=e1328]:
+              - button "Copy HEEx" [ref=e1329]:
+                - img
+              - code [ref=e1331]: <.table_caption> Table caption </.table_caption>
+            - generic [ref=e1333]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1334]:
+          - generic [ref=e1335]:
+            - generic [ref=e1336]:
+              - generic [ref=e1337]:
+                - heading "DataDisplay.table_cell" [level=4] [ref=e1338]:
+                  - link "DataDisplay.table_cell" [ref=e1339] [cursor=pointer]:
+                    - /url: /docs/data-display-table_cell/
+                    - code [ref=e1340]: DataDisplay.table_cell
+                - link "Open docs" [ref=e1342] [cursor=pointer]:
+                  - /url: /docs/data-display-table_cell/
+              - paragraph [ref=e1344]:
+                - text: Table data cell (
+                - code [ref=e1345]: td
+                - text: ).
+            - generic [ref=e1347]: Cell
+            - generic [ref=e1348]:
+              - button "Copy HEEx" [ref=e1349]:
+                - img
+              - code [ref=e1351]: <.table_cell> Cell </.table_cell>
+            - generic [ref=e1353]: "examples: 1 · attrs: 2 · slots: 1"
+        - article [ref=e1354]:
+          - generic [ref=e1355]:
+            - generic [ref=e1356]:
+              - generic [ref=e1357]:
+                - heading "DataDisplay.table_footer" [level=4] [ref=e1358]:
+                  - link "DataDisplay.table_footer" [ref=e1359] [cursor=pointer]:
+                    - /url: /docs/data-display-table_footer/
+                    - code [ref=e1360]: DataDisplay.table_footer
+                - link "Open docs" [ref=e1362] [cursor=pointer]:
+                  - /url: /docs/data-display-table_footer/
+              - paragraph [ref=e1364]:
+                - text: Table footer (
+                - code [ref=e1365]: tfoot
+                - text: ).
+            - generic [ref=e1367]: Footer
+            - generic [ref=e1368]:
+              - button "Copy HEEx" [ref=e1369]:
+                - img
+              - code [ref=e1371]: <.table_footer> <.table_row> <.table_cell>Footer</.table_cell> </.table_row> </.table_footer>
+            - generic [ref=e1373]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1374]:
+          - generic [ref=e1375]:
+            - generic [ref=e1376]:
+              - generic [ref=e1377]:
+                - heading "DataDisplay.table_head" [level=4] [ref=e1378]:
+                  - link "DataDisplay.table_head" [ref=e1379] [cursor=pointer]:
+                    - /url: /docs/data-display-table_head/
+                    - code [ref=e1380]: DataDisplay.table_head
+                - link "Open docs" [ref=e1382] [cursor=pointer]:
+                  - /url: /docs/data-display-table_head/
+              - paragraph [ref=e1384]:
+                - text: Table heading cell (
+                - code [ref=e1385]: th
+                - text: ).
+            - generic [ref=e1387]: Head
+            - generic [ref=e1388]:
+              - button "Copy HEEx" [ref=e1389]:
+                - img
+              - code [ref=e1391]: <.table_head> Head </.table_head>
+            - generic [ref=e1393]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1394]:
+          - generic [ref=e1395]:
+            - generic [ref=e1396]:
+              - generic [ref=e1397]:
+                - heading "DataDisplay.table_header" [level=4] [ref=e1398]:
+                  - link "DataDisplay.table_header" [ref=e1399] [cursor=pointer]:
+                    - /url: /docs/data-display-table_header/
+                    - code [ref=e1400]: DataDisplay.table_header
+                - link "Open docs" [ref=e1402] [cursor=pointer]:
+                  - /url: /docs/data-display-table_header/
+              - paragraph [ref=e1404]:
+                - text: Table header (
+                - code [ref=e1405]: thead
+                - text: ).
+            - generic [ref=e1407]: Head
+            - generic [ref=e1408]:
+              - button "Copy HEEx" [ref=e1409]:
+                - img
+              - code [ref=e1411]: <.table_header> <.table_row> <.table_head>Head</.table_head> </.table_row> </.table_header>
+            - generic [ref=e1413]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1414]:
+          - generic [ref=e1415]:
+            - generic [ref=e1416]:
+              - generic [ref=e1417]:
+                - heading "DataDisplay.table_row" [level=4] [ref=e1418]:
+                  - link "DataDisplay.table_row" [ref=e1419] [cursor=pointer]:
+                    - /url: /docs/data-display-table_row/
+                    - code [ref=e1420]: DataDisplay.table_row
+                - link "Open docs" [ref=e1422] [cursor=pointer]:
+                  - /url: /docs/data-display-table_row/
+              - paragraph [ref=e1424]:
+                - text: Table row (
+                - code [ref=e1425]: tr
+                - text: ).
+            - generic [ref=e1427]: Row
+            - generic [ref=e1428]:
+              - button "Copy HEEx" [ref=e1429]:
+                - img
+              - code [ref=e1431]: <.table_row> <.table_cell>Row</.table_cell> </.table_row>
+            - generic [ref=e1433]: "examples: 1 · attrs: 2 · slots: 1"
+    - generic [ref=e1434]:
+      - heading "Navigation" [level=3] [ref=e1435]
+      - generic [ref=e1436]:
+        - article [ref=e1437]:
+          - generic [ref=e1438]:
+            - generic [ref=e1439]:
+              - generic [ref=e1440]:
+                - heading "Navigation.breadcrumb" [level=4] [ref=e1441]:
+                  - link "Navigation.breadcrumb" [ref=e1442] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb/
+                    - code [ref=e1443]: Navigation.breadcrumb
+                - link "Open docs" [ref=e1445] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb/
+              - paragraph [ref=e1447]: Breadcrumb nav wrapper.
+            - navigation "breadcrumb" [ref=e1450]:
+              - list [ref=e1451]:
+                - listitem [ref=e1452]:
+                  - link "Home" [ref=e1453] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1454]: /
+                - listitem [ref=e1455]: Docs
+            - generic [ref=e1456]:
+              - button "Copy HEEx" [ref=e1457]:
+                - img
+              - code [ref=e1459]: <.breadcrumb> <.breadcrumb_list> <.breadcrumb_item> <.breadcrumb_link href="#">Home</.breadcrumb_link> </.breadcrumb_item> <.breadcrumb_separator>/</.breadcrumb_separator> <.breadcrumb_item> <.breadcrumb_page>Docs</.breadcrumb_page> </.breadcrumb_item> </.breadcrumb_list> </.breadcrumb>
+            - generic [ref=e1461]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1462]:
+          - generic [ref=e1463]:
+            - generic [ref=e1464]:
+              - generic [ref=e1465]:
+                - heading "Navigation.breadcrumb_ellipsis" [level=4] [ref=e1466]:
+                  - link "Navigation.breadcrumb_ellipsis" [ref=e1467] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb_ellipsis/
+                    - code [ref=e1468]: Navigation.breadcrumb_ellipsis
+                - link "Open docs" [ref=e1470] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb_ellipsis/
+              - paragraph [ref=e1472]: Breadcrumb ellipsis element.
+            - generic [ref=e1475]: …
+            - generic [ref=e1476]:
+              - button "Copy HEEx" [ref=e1477]:
+                - img
+              - code [ref=e1479]: <.breadcrumb_ellipsis />
+            - generic [ref=e1481]: "examples: 1 · attrs: 1 · slots: 0"
+        - article [ref=e1482]:
+          - generic [ref=e1483]:
+            - generic [ref=e1484]:
+              - generic [ref=e1485]:
+                - heading "Navigation.breadcrumb_item" [level=4] [ref=e1486]:
+                  - link "Navigation.breadcrumb_item" [ref=e1487] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb_item/
+                    - code [ref=e1488]: Navigation.breadcrumb_item
+                - link "Open docs" [ref=e1490] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb_item/
+              - paragraph [ref=e1492]:
+                - text: Breadcrumb item (
+                - code [ref=e1493]: li
+                - text: ).
+            - listitem [ref=e1496]: Item
+            - generic [ref=e1497]:
+              - button "Copy HEEx" [ref=e1498]:
+                - img
+              - code [ref=e1500]: <.breadcrumb_item> Item </.breadcrumb_item>
+            - generic [ref=e1502]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1503]:
+          - generic [ref=e1504]:
+            - generic [ref=e1505]:
+              - generic [ref=e1506]:
+                - heading "Navigation.breadcrumb_link" [level=4] [ref=e1507]:
+                  - link "Navigation.breadcrumb_link" [ref=e1508] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb_link/
+                    - code [ref=e1509]: Navigation.breadcrumb_link
+                - link "Open docs" [ref=e1511] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb_link/
+              - paragraph [ref=e1513]: Breadcrumb link.
+            - link "Home" [ref=e1516] [cursor=pointer]:
+              - /url: "#"
+            - generic [ref=e1517]:
+              - button "Copy HEEx" [ref=e1518]:
+                - img
+              - code [ref=e1520]: <.breadcrumb_link href="#"> Home </.breadcrumb_link>
+            - generic [ref=e1522]: "examples: 1 · attrs: 3 · slots: 1"
+        - article [ref=e1523]:
+          - generic [ref=e1524]:
+            - generic [ref=e1525]:
+              - generic [ref=e1526]:
+                - heading "Navigation.breadcrumb_list" [level=4] [ref=e1527]:
+                  - link "Navigation.breadcrumb_list" [ref=e1528] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb_list/
+                    - code [ref=e1529]: Navigation.breadcrumb_list
+                - link "Open docs" [ref=e1531] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb_list/
+              - paragraph [ref=e1533]:
+                - text: Breadcrumb list (
+                - code [ref=e1534]: ol
+                - text: ).
+            - list [ref=e1537]:
+              - listitem [ref=e1538]: Item
+            - generic [ref=e1539]:
+              - button "Copy HEEx" [ref=e1540]:
+                - img
+              - code [ref=e1542]: <.breadcrumb_list> <.breadcrumb_item>Item</.breadcrumb_item> </.breadcrumb_list>
+            - generic [ref=e1544]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1545]:
+          - generic [ref=e1546]:
+            - generic [ref=e1547]:
+              - generic [ref=e1548]:
+                - heading "Navigation.breadcrumb_page" [level=4] [ref=e1549]:
+                  - link "Navigation.breadcrumb_page" [ref=e1550] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb_page/
+                    - code [ref=e1551]: Navigation.breadcrumb_page
+                - link "Open docs" [ref=e1553] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb_page/
+              - paragraph [ref=e1555]: Breadcrumb current page item.
+            - link "Current" [disabled] [ref=e1558]
+            - generic [ref=e1559]:
+              - button "Copy HEEx" [ref=e1560]:
+                - img
+              - code [ref=e1562]: <.breadcrumb_page> Current </.breadcrumb_page>
+            - generic [ref=e1564]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1565]:
+          - generic [ref=e1566]:
+            - generic [ref=e1567]:
+              - generic [ref=e1568]:
+                - heading "Navigation.breadcrumb_separator" [level=4] [ref=e1569]:
+                  - link "Navigation.breadcrumb_separator" [ref=e1570] [cursor=pointer]:
+                    - /url: /docs/navigation-breadcrumb_separator/
+                    - code [ref=e1571]: Navigation.breadcrumb_separator
+                - link "Open docs" [ref=e1573] [cursor=pointer]:
+                  - /url: /docs/navigation-breadcrumb_separator/
+              - paragraph [ref=e1575]: Breadcrumb separator item.
+            - listitem [ref=e1578]: /
+            - generic [ref=e1579]:
+              - button "Copy HEEx" [ref=e1580]:
+                - img
+              - code [ref=e1582]: <.breadcrumb_separator />
+            - generic [ref=e1584]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1585]:
+          - generic [ref=e1586]:
+            - generic [ref=e1587]:
+              - generic [ref=e1588]:
+                - heading "Navigation.menu" [level=4] [ref=e1589]:
+                  - link "Navigation.menu" [ref=e1590] [cursor=pointer]:
+                    - /url: /docs/navigation-menu/
+                    - code [ref=e1591]: Navigation.menu
+                - link "Open docs" [ref=e1593] [cursor=pointer]:
+                  - /url: /docs/navigation-menu/
+              - paragraph [ref=e1595]: Generic application menu list inspired by daisyUI’s menu primitive.
+            - navigation [ref=e1598]:
+              - list [ref=e1599]:
+                - listitem [ref=e1600]:
+                  - link "Overview" [ref=e1601] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1602]:
+                  - link "Team" [ref=e1603] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1604]:
+                  - link "Billing" [disabled]:
+                    - /url: "#"
+            - generic [ref=e1605]:
+              - button "Copy HEEx" [ref=e1606]:
+                - img
+              - code [ref=e1608]:
+                - text: <.menu> <:item active=
+                - generic [ref=e1609]: "{true}"
+                - text: href="#"> Overview </:item> <:item href="#"> Team </:item> <:item disabled=
+                - generic [ref=e1610]: "{true}"
+                - text: href="#"> Billing </:item> </.menu>
+            - generic [ref=e1612]: "examples: 1 · attrs: 2 · slots: 1"
+        - article [ref=e1613]:
+          - generic [ref=e1614]:
+            - generic [ref=e1615]:
+              - generic [ref=e1616]:
+                - heading "Navigation.navigation_menu" [level=4] [ref=e1617]:
+                  - link "Navigation.navigation_menu" [ref=e1618] [cursor=pointer]:
+                    - /url: /docs/navigation-navigation_menu/
+                    - code [ref=e1619]: Navigation.navigation_menu
+                - link "Open docs" [ref=e1621] [cursor=pointer]:
+                  - /url: /docs/navigation-navigation_menu/
+              - paragraph [ref=e1623]: Navigation menu scaffold.
+            - navigation [ref=e1626]:
+              - link "Overview" [ref=e1627] [cursor=pointer]:
+                - /url: "#"
+              - link "Settings" [ref=e1628] [cursor=pointer]:
+                - /url: "#"
+            - generic [ref=e1629]:
+              - button "Copy HEEx" [ref=e1630]:
+                - img
+              - code [ref=e1632]:
+                - text: <.navigation_menu> <:item active=
+                - generic [ref=e1633]: "{true}"
+                - text: href="#"> Overview </:item> <:item href="#"> Settings </:item> </.navigation_menu>
+            - generic [ref=e1635]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1636]:
+          - generic [ref=e1637]:
+            - generic [ref=e1638]:
+              - generic [ref=e1639]:
+                - heading "Navigation.pagination" [level=4] [ref=e1640]:
+                  - link "Navigation.pagination" [ref=e1641] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination/
+                    - code [ref=e1642]: Navigation.pagination
+                - link "Open docs" [ref=e1644] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination/
+              - paragraph [ref=e1646]: Pagination nav wrapper.
+            - navigation "pagination" [ref=e1649]:
+              - list [ref=e1650]:
+                - listitem [ref=e1651]:
+                  - link "Previous" [ref=e1652] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1653]:
+                  - link "1" [ref=e1654] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1655]:
+                  - link "2" [ref=e1656] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1657]: …
+                - listitem [ref=e1658]:
+                  - link "8" [ref=e1659] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e1660]:
+                  - link "Next" [ref=e1661] [cursor=pointer]:
+                    - /url: "#"
+            - generic [ref=e1662]:
+              - button "Copy HEEx" [ref=e1663]:
+                - img
+              - code [ref=e1665]:
+                - text: <.pagination> <.pagination_content> <.pagination_item> <.pagination_previous href="#" /> </.pagination_item> <.pagination_item> <.pagination_link href="#" size=
+                - generic [ref=e1666]: "{:sm}"
+                - text: ">1</.pagination_link> </.pagination_item> <.pagination_item> <.pagination_link href=\"#\" size="
+                - generic [ref=e1667]: "{:sm}"
+                - text: active=
+                - generic [ref=e1668]: "{true}"
+                - text: ">2</.pagination_link> </.pagination_item> <.pagination_item> <.pagination_ellipsis /> </.pagination_item> <.pagination_item> <.pagination_link href=\"#\" size="
+                - generic [ref=e1669]: "{:sm}"
+                - text: ">8</.pagination_link> </.pagination_item> <.pagination_item> <.pagination_next href=\"#\" /> </.pagination_item> </.pagination_content> </.pagination>"
+            - generic [ref=e1671]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1672]:
+          - generic [ref=e1673]:
+            - generic [ref=e1674]:
+              - generic [ref=e1675]:
+                - heading "Navigation.pagination_content" [level=4] [ref=e1676]:
+                  - link "Navigation.pagination_content" [ref=e1677] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination_content/
+                    - code [ref=e1678]: Navigation.pagination_content
+                - link "Open docs" [ref=e1680] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination_content/
+              - paragraph [ref=e1682]:
+                - text: Pagination list wrapper (
+                - code [ref=e1683]: ul
+                - text: ).
+            - list [ref=e1686]:
+              - listitem [ref=e1687]: Page
+            - generic [ref=e1688]:
+              - button "Copy HEEx" [ref=e1689]:
+                - img
+              - code [ref=e1691]: <.pagination_content> <.pagination_item>Page</.pagination_item> </.pagination_content>
+            - generic [ref=e1693]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1694]:
+          - generic [ref=e1695]:
+            - generic [ref=e1696]:
+              - generic [ref=e1697]:
+                - heading "Navigation.pagination_ellipsis" [level=4] [ref=e1698]:
+                  - link "Navigation.pagination_ellipsis" [ref=e1699] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination_ellipsis/
+                    - code [ref=e1700]: Navigation.pagination_ellipsis
+                - link "Open docs" [ref=e1702] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination_ellipsis/
+              - paragraph [ref=e1704]: Pagination ellipsis marker.
+            - generic [ref=e1707]:
+              - text: …
+              - generic [ref=e1708]: More pages
+            - generic [ref=e1709]:
+              - button "Copy HEEx" [ref=e1710]:
+                - img
+              - code [ref=e1712]: <.pagination_ellipsis />
+            - generic [ref=e1714]: "examples: 1 · attrs: 1 · slots: 0"
+        - article [ref=e1715]:
+          - generic [ref=e1716]:
+            - generic [ref=e1717]:
+              - generic [ref=e1718]:
+                - heading "Navigation.pagination_item" [level=4] [ref=e1719]:
+                  - link "Navigation.pagination_item" [ref=e1720] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination_item/
+                    - code [ref=e1721]: Navigation.pagination_item
+                - link "Open docs" [ref=e1723] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination_item/
+              - paragraph [ref=e1725]:
+                - text: Pagination item (
+                - code [ref=e1726]: li
+                - text: ).
+            - listitem [ref=e1729]: Item
+            - generic [ref=e1730]:
+              - button "Copy HEEx" [ref=e1731]:
+                - img
+              - code [ref=e1733]: <.pagination_item> Item </.pagination_item>
+            - generic [ref=e1735]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1736]:
+          - generic [ref=e1737]:
+            - generic [ref=e1738]:
+              - generic [ref=e1739]:
+                - heading "Navigation.pagination_link" [level=4] [ref=e1740]:
+                  - link "Navigation.pagination_link" [ref=e1741] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination_link/
+                    - code [ref=e1742]: Navigation.pagination_link
+                - link "Open docs" [ref=e1744] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination_link/
+              - paragraph [ref=e1746]: Pagination link with active state.
+            - link "1" [ref=e1749] [cursor=pointer]:
+              - /url: "#"
+            - generic [ref=e1750]:
+              - button "Copy HEEx" [ref=e1751]:
+                - img
+              - code [ref=e1753]:
+                - text: <.pagination_link active=
+                - generic [ref=e1754]: "{true}"
+                - text: href="#"> 1 </.pagination_link>
+            - generic [ref=e1756]: "examples: 1 · attrs: 5 · slots: 1"
+        - article [ref=e1757]:
+          - generic [ref=e1758]:
+            - generic [ref=e1759]:
+              - generic [ref=e1760]:
+                - heading "Navigation.pagination_next" [level=4] [ref=e1761]:
+                  - link "Navigation.pagination_next" [ref=e1762] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination_next/
+                    - code [ref=e1763]: Navigation.pagination_next
+                - link "Open docs" [ref=e1765] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination_next/
+              - paragraph [ref=e1767]: Next-page shortcut link.
+            - link "Go to next page" [ref=e1770] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e1771]: Next
+              - generic [ref=e1772]: →
+            - generic [ref=e1773]:
+              - button "Copy HEEx" [ref=e1774]:
+                - img
+              - code [ref=e1776]: <.pagination_next href="#" />
+            - generic [ref=e1778]: "examples: 1 · attrs: 2 · slots: 0"
+        - article [ref=e1779]:
+          - generic [ref=e1780]:
+            - generic [ref=e1781]:
+              - generic [ref=e1782]:
+                - heading "Navigation.pagination_previous" [level=4] [ref=e1783]:
+                  - link "Navigation.pagination_previous" [ref=e1784] [cursor=pointer]:
+                    - /url: /docs/navigation-pagination_previous/
+                    - code [ref=e1785]: Navigation.pagination_previous
+                - link "Open docs" [ref=e1787] [cursor=pointer]:
+                  - /url: /docs/navigation-pagination_previous/
+              - paragraph [ref=e1789]: Previous-page shortcut link.
+            - link "Go to previous page" [ref=e1792] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e1793]: ←
+              - generic [ref=e1794]: Previous
+            - generic [ref=e1795]:
+              - button "Copy HEEx" [ref=e1796]:
+                - img
+              - code [ref=e1798]: <.pagination_previous href="#" />
+            - generic [ref=e1800]: "examples: 1 · attrs: 2 · slots: 0"
+        - article [ref=e1801]:
+          - generic [ref=e1802]:
+            - generic [ref=e1803]:
+              - generic [ref=e1804]:
+                - heading "Navigation.tabs" [level=4] [ref=e1805]:
+                  - link "Navigation.tabs" [ref=e1806] [cursor=pointer]:
+                    - /url: /docs/navigation-tabs/
+                    - code [ref=e1807]: Navigation.tabs
+                - link "Open docs" [ref=e1809] [cursor=pointer]:
+                  - /url: /docs/navigation-tabs/
+              - paragraph [ref=e1811]: Tab container with trigger and content slots.
+            - generic [ref=e1814]:
+              - generic [ref=e1815]:
+                - button "Account" [ref=e1816]
+                - button "Security" [ref=e1817]
+                - button "Notifications" [ref=e1818]
+              - generic [ref=e1821]:
+                - generic [ref=e1822]: Account
+                - generic [ref=e1823]: Update your profile details.
+            - generic [ref=e1824]:
+              - button "Copy HEEx" [ref=e1825]:
+                - img
+              - code [ref=e1827]: <.tabs value="account"> <:trigger value="account">Account</:trigger> <:trigger value="security">Security</:trigger> <:trigger value="notifications">Notifications</:trigger> <:content value="account"> <.card> <.card_header> <.card_title>Account</.card_title> <.card_description>Update your profile details.</.card_description> </.card_header> </.card> </:content> <:content value="security"> <p class="text-sm">Manage password and two-factor settings.</p> </:content> <:content value="notifications"> <p class="text-sm">Choose how you receive alerts.</p> </:content> </.tabs>
+            - generic [ref=e1829]: "examples: 3 · attrs: 4 · slots: 2"
+    - generic [ref=e1830]:
+      - heading "Overlay" [level=3] [ref=e1831]
+      - generic [ref=e1832]:
+        - article [ref=e1833]:
+          - generic [ref=e1834]:
+            - generic [ref=e1835]:
+              - generic [ref=e1836]:
+                - heading "Overlay.alert_dialog" [level=4] [ref=e1837]:
+                  - link "Overlay.alert_dialog" [ref=e1838] [cursor=pointer]:
+                    - /url: /docs/overlay-alert_dialog/
+                    - code [ref=e1839]: Overlay.alert_dialog
+                - link "Open docs" [ref=e1841] [cursor=pointer]:
+                  - /url: /docs/overlay-alert_dialog/
+              - paragraph [ref=e1843]: Destructive-style dialog variant used for irreversible confirmation actions.
+            - generic [ref=e1847]: Open
+            - generic [ref=e1848]:
+              - button "Copy HEEx" [ref=e1849]:
+                - img
+              - code [ref=e1851]:
+                - text: <.alert_dialog id="docs-alert-dialog" open=
+                - generic [ref=e1852]: "{false}"
+                - text: "> <:description> This action is irreversible. </:description> <:footer> <.button variant="
+                - generic [ref=e1853]: "{:outline}"
+                - text: size=
+                - generic [ref=e1854]: "{:sm}"
+                - text: ">Cancel</.button> </:footer> <:title> Delete project? </:title> <:trigger> Open </:trigger> Dialog body </.alert_dialog>"
+            - generic [ref=e1856]: "examples: 1 · attrs: 3 · slots: 5"
+        - article [ref=e1857]:
+          - generic [ref=e1858]:
+            - generic [ref=e1859]:
+              - generic [ref=e1860]:
+                - heading "Overlay.dialog" [level=4] [ref=e1861]:
+                  - link "Overlay.dialog" [ref=e1862] [cursor=pointer]:
+                    - /url: /docs/overlay-dialog/
+                    - code [ref=e1863]: Overlay.dialog
+                - link "Open docs" [ref=e1865] [cursor=pointer]:
+                  - /url: /docs/overlay-dialog/
+              - paragraph [ref=e1867]: Modal dialog with trigger/content slots.
+            - button "Delete project" [ref=e1872]
+            - generic [ref=e1873]:
+              - button "Copy HEEx" [ref=e1874]:
+                - img
+              - code [ref=e1876]:
+                - text: <.dialog id="delete-project-dialog"> <:trigger> <.button variant=
+                - generic [ref=e1877]: "{:destructive}"
+                - text: ">Delete project</.button> </:trigger> <:title>Delete project?</:title> <:description>This action cannot be undone.</:description> Are you sure you want to permanently remove this project? <:footer> <.button variant="
+                - generic [ref=e1878]: "{:outline}"
+                - text: type="button">Cancel</.button> <.button variant=
+                - generic [ref=e1879]: "{:destructive}"
+                - text: type="button">Delete</.button> </:footer> </.dialog>
+            - generic [ref=e1881]: "examples: 3 · attrs: 4 · slots: 5"
+        - article [ref=e1882]:
+          - generic [ref=e1883]:
+            - generic [ref=e1884]:
+              - generic [ref=e1885]:
+                - heading "Overlay.drawer" [level=4] [ref=e1886]:
+                  - link "Overlay.drawer" [ref=e1887] [cursor=pointer]:
+                    - /url: /docs/overlay-drawer/
+                    - code [ref=e1888]: Overlay.drawer
+                - link "Open docs" [ref=e1890] [cursor=pointer]:
+                  - /url: /docs/overlay-drawer/
+              - paragraph [ref=e1892]: Drawer panel component.
+            - generic [ref=e1896]: Open
+            - generic [ref=e1897]:
+              - button "Copy HEEx" [ref=e1898]:
+                - img
+              - code [ref=e1900]:
+                - text: <.drawer id="docs-drawer" open=
+                - generic [ref=e1901]: "{false}"
+                - text: side=
+                - generic [ref=e1902]: "{:right}"
+                - text: "> <:description> Drawer description </:description> <:footer> <.button variant="
+                - generic [ref=e1903]: "{:outline}"
+                - text: size=
+                - generic [ref=e1904]: "{:sm}"
+                - text: ">Save</.button> </:footer> <:title> Drawer </:title> <:trigger> Open </:trigger> Drawer body </.drawer>"
+            - generic [ref=e1906]: "examples: 1 · attrs: 4 · slots: 5"
+        - article [ref=e1907]:
+          - generic [ref=e1908]:
+            - generic [ref=e1909]:
+              - generic [ref=e1910]:
+                - heading "Overlay.dropdown_menu" [level=4] [ref=e1911]:
+                  - link "Overlay.dropdown_menu" [ref=e1912] [cursor=pointer]:
+                    - /url: /docs/overlay-dropdown_menu/
+                    - code [ref=e1913]: Overlay.dropdown_menu
+                - link "Open docs" [ref=e1915] [cursor=pointer]:
+                  - /url: /docs/overlay-dropdown_menu/
+              - paragraph [ref=e1917]: Dropdown menu structure.
+            - generic [ref=e1921]: Actions
+            - generic [ref=e1922]:
+              - button "Copy HEEx" [ref=e1923]:
+                - img
+              - code [ref=e1925]: <.dropdown_menu id="docs-dropdown"> <:item href="#"> Settings </:item> <:item href="#"> Billing </:item> <:trigger> Actions </:trigger> </.dropdown_menu>
+            - generic [ref=e1927]: "examples: 1 · attrs: 3 · slots: 2"
+        - article [ref=e1928]:
+          - generic [ref=e1929]:
+            - generic [ref=e1930]:
+              - generic [ref=e1931]:
+                - heading "Overlay.hover_card" [level=4] [ref=e1932]:
+                  - link "Overlay.hover_card" [ref=e1933] [cursor=pointer]:
+                    - /url: /docs/overlay-hover_card/
+                    - code [ref=e1934]: Overlay.hover_card
+                - link "Open docs" [ref=e1936] [cursor=pointer]:
+                  - /url: /docs/overlay-hover_card/
+              - paragraph [ref=e1938]: Hover card with trigger and content slots.
+            - generic [ref=e1942]: Hover card
+            - generic [ref=e1943]:
+              - button "Copy HEEx" [ref=e1944]:
+                - img
+              - code [ref=e1946]: <.hover_card> <:content> Hover content </:content> <:trigger> Hover card </:trigger> </.hover_card>
+            - generic [ref=e1948]: "examples: 1 · attrs: 1 · slots: 2"
+        - article [ref=e1949]:
+          - generic [ref=e1950]:
+            - generic [ref=e1951]:
+              - generic [ref=e1952]:
+                - heading "Overlay.menubar" [level=4] [ref=e1953]:
+                  - link "Overlay.menubar" [ref=e1954] [cursor=pointer]:
+                    - /url: /docs/overlay-menubar/
+                    - code [ref=e1955]: Overlay.menubar
+                - link "Open docs" [ref=e1957] [cursor=pointer]:
+                  - /url: /docs/overlay-menubar/
+              - paragraph [ref=e1959]: Menubar scaffold with dropdown-like triggers.
+            - button "File" [ref=e1964]
+            - generic [ref=e1965]:
+              - button "Copy HEEx" [ref=e1966]:
+                - img
+              - code [ref=e1968]:
+                - text: <.menubar> <:menu label="File"> <.button variant=
+                - generic [ref=e1969]: "{:ghost}"
+                - text: size=
+                - generic [ref=e1970]: "{:sm}"
+                - text: class="w-full justify-start">New</.button> </:menu> </.menubar>
+            - generic [ref=e1972]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e1973]:
+          - generic [ref=e1974]:
+            - generic [ref=e1975]:
+              - generic [ref=e1976]:
+                - heading "Overlay.popover" [level=4] [ref=e1977]:
+                  - link "Overlay.popover" [ref=e1978] [cursor=pointer]:
+                    - /url: /docs/overlay-popover/
+                    - code [ref=e1979]: Overlay.popover
+                - link "Open docs" [ref=e1981] [cursor=pointer]:
+                  - /url: /docs/overlay-popover/
+              - paragraph [ref=e1983]: Popover with trigger and content slots.
+            - generic [ref=e1987]: Popover
+            - generic [ref=e1988]:
+              - button "Copy HEEx" [ref=e1989]:
+                - img
+              - code [ref=e1991]: <.popover id="docs-popover"> <:content> Popover content </:content> <:trigger> Popover </:trigger> </.popover>
+            - generic [ref=e1993]: "examples: 1 · attrs: 3 · slots: 2"
+        - article [ref=e1994]:
+          - generic [ref=e1995]:
+            - generic [ref=e1996]:
+              - generic [ref=e1997]:
+                - heading "Overlay.sheet" [level=4] [ref=e1998]:
+                  - link "Overlay.sheet" [ref=e1999] [cursor=pointer]:
+                    - /url: /docs/overlay-sheet/
+                    - code [ref=e2000]: Overlay.sheet
+                - link "Open docs" [ref=e2002] [cursor=pointer]:
+                  - /url: /docs/overlay-sheet/
+              - paragraph [ref=e2004]: Sheet alias for drawer behavior.
+            - generic [ref=e2008]: Open
+            - generic [ref=e2009]:
+              - button "Copy HEEx" [ref=e2010]:
+                - img
+              - code [ref=e2012]:
+                - text: <.sheet id="docs-sheet" open=
+                - generic [ref=e2013]: "{false}"
+                - text: side=
+                - generic [ref=e2014]: "{:right}"
+                - text: "> <:description> Drawer description </:description> <:footer> <.button variant="
+                - generic [ref=e2015]: "{:outline}"
+                - text: size=
+                - generic [ref=e2016]: "{:sm}"
+                - text: ">Save</.button> </:footer> <:title> Drawer </:title> <:trigger> Open </:trigger> Drawer body </.sheet>"
+            - generic [ref=e2018]: "examples: 1 · attrs: 0 · slots: 0"
+        - article [ref=e2019]:
+          - generic [ref=e2020]:
+            - generic [ref=e2021]:
+              - generic [ref=e2022]:
+                - heading "Overlay.tooltip" [level=4] [ref=e2023]:
+                  - link "Overlay.tooltip" [ref=e2024] [cursor=pointer]:
+                    - /url: /docs/overlay-tooltip/
+                    - code [ref=e2025]: Overlay.tooltip
+                - link "Open docs" [ref=e2027] [cursor=pointer]:
+                  - /url: /docs/overlay-tooltip/
+              - paragraph [ref=e2029]: Tooltip helper with hover/focus behavior.
+            - button "Hover me" [ref=e2033]
+            - generic [ref=e2034]:
+              - button "Copy HEEx" [ref=e2035]:
+                - img
+              - code [ref=e2037]:
+                - text: <.tooltip text="Tooltip text"> <.button variant=
+                - generic [ref=e2038]: "{:outline}"
+                - text: size=
+                - generic [ref=e2039]: "{:sm}"
+                - text: ">Hover me</.button> </.tooltip>"
+            - generic [ref=e2041]: "examples: 1 · attrs: 3 · slots: 1"
+    - generic [ref=e2042]:
+      - heading "Advanced" [level=3] [ref=e2043]
+      - generic [ref=e2044]:
+        - article [ref=e2045]:
+          - generic [ref=e2046]:
+            - generic [ref=e2047]:
+              - generic [ref=e2048]:
+                - heading "Advanced.calendar" [level=4] [ref=e2049]:
+                  - link "Advanced.calendar" [ref=e2050] [cursor=pointer]:
+                    - /url: /docs/advanced-calendar/
+                    - code [ref=e2051]: Advanced.calendar
+                - link "Open docs" [ref=e2053] [cursor=pointer]:
+                  - /url: /docs/advanced-calendar/
+              - paragraph [ref=e2055]: Calendar wrapper.
+            - generic [ref=e2059]:
+              - generic [ref=e2060]: Not ready yet
+              - paragraph [ref=e2061]: Calendar is not ready yet.
+            - generic [ref=e2062]:
+              - button "Copy HEEx" [ref=e2063]:
+                - img
+              - code [ref=e2065]:
+                - text: <.calendar> <.badge variant=
+                - generic [ref=e2066]: "{:secondary}"
+                - text: ">Not ready yet</.badge> <p class=\"text-sm text-muted-foreground\">Calendar is not ready yet.</p> </.calendar>"
+            - generic [ref=e2068]: "examples: 1 · attrs: 1 · slots: 1"
+        - article [ref=e2069]:
+          - generic [ref=e2070]:
+            - generic [ref=e2071]:
+              - generic [ref=e2072]:
+                - heading "Advanced.carousel" [level=4] [ref=e2073]:
+                  - link "Advanced.carousel" [ref=e2074] [cursor=pointer]:
+                    - /url: /docs/advanced-carousel/
+                    - code [ref=e2075]: Advanced.carousel
+                - link "Open docs" [ref=e2077] [cursor=pointer]:
+                  - /url: /docs/advanced-carousel/
+              - paragraph [ref=e2079]: Carousel shell.
+            - generic [ref=e2081]:
+              - generic:
+                - button "←" [ref=e2082]
+                - button "→" [ref=e2083]
+            - generic [ref=e2084]:
+              - button "Copy HEEx" [ref=e2085]:
+                - img
+              - code [ref=e2087]: <.carousel id="docs-carousel"> <:item> <div class="h-24 rounded-md bg-muted"></div> </:item> <:item> <div class="h-24 rounded-md bg-muted/60"></div> </:item> </.carousel>
+            - generic [ref=e2089]: "examples: 1 · attrs: 2 · slots: 1"
+        - article [ref=e2090]:
+          - generic [ref=e2091]:
+            - generic [ref=e2092]:
+              - generic [ref=e2093]:
+                - heading "Advanced.chart" [level=4] [ref=e2094]:
+                  - link "Advanced.chart" [ref=e2095] [cursor=pointer]:
+                    - /url: /docs/advanced-chart/
+                    - code [ref=e2096]: Advanced.chart
+                - link "Open docs" [ref=e2098] [cursor=pointer]:
+                  - /url: /docs/advanced-chart/
+              - paragraph [ref=e2100]: Chart frame component for wrapping chart libraries with shadcn tokens.
+            - generic [ref=e2104]:
+              - heading "Traffic" [level=3] [ref=e2105]
+              - paragraph [ref=e2106]: Requests over the last 7 days.
+            - generic [ref=e2109]:
+              - button "Copy HEEx" [ref=e2110]:
+                - img
+              - code [ref=e2112]: <.chart> <:title>Traffic</:title> <:description>Requests over the last 7 days.</:description> <div class="h-40 rounded-md bg-muted/60"></div> </.chart>
+            - generic [ref=e2114]: "examples: 1 · attrs: 1 · slots: 3"
+        - article [ref=e2115]:
+          - generic [ref=e2116]:
+            - generic [ref=e2117]:
+              - generic [ref=e2118]:
+                - heading "Advanced.combobox" [level=4] [ref=e2119]:
+                  - link "Advanced.combobox" [ref=e2120] [cursor=pointer]:
+                    - /url: /docs/advanced-combobox/
+                    - code [ref=e2121]: Advanced.combobox
+                - link "Open docs" [ref=e2123] [cursor=pointer]:
+                  - /url: /docs/advanced-combobox/
+              - paragraph [ref=e2125]: Combobox scaffold using an input and option list.
+            - textbox "Select an option" [ref=e2129]: Pro
+            - generic [ref=e2130]:
+              - button "Copy HEEx" [ref=e2131]:
+                - img
+              - code [ref=e2133]:
+                - text: <.combobox id="docs-combobox" option=
+                - generic [ref=e2134]: "{[%{label: \"Free\", value: \"Free\"}, %{label: \"Pro\", value: \"Pro\"}]}"
+                - text: value="Pro" />
+            - generic [ref=e2136]: "examples: 1 · attrs: 4 · slots: 1"
+        - article [ref=e2137]:
+          - generic [ref=e2138]:
+            - generic [ref=e2139]:
+              - generic [ref=e2140]:
+                - heading "Advanced.command" [level=4] [ref=e2141]:
+                  - link "Advanced.command" [ref=e2142] [cursor=pointer]:
+                    - /url: /docs/advanced-command/
+                    - code [ref=e2143]: Advanced.command
+                - link "Open docs" [ref=e2145] [cursor=pointer]:
+                  - /url: /docs/advanced-command/
+              - paragraph [ref=e2147]: Command palette layout.
+            - generic [ref=e2150]:
+              - textbox "Search commands..." [ref=e2152]
+              - generic [ref=e2153]:
+                - generic [ref=e2154]:
+                  - generic [ref=e2155]: General
+                  - generic [ref=e2156]:
+                    - option "Profile" [ref=e2157]
+                    - option "Billing" [ref=e2158]
+                - generic [ref=e2159]:
+                  - generic [ref=e2160]: Workspace
+                  - option "Settings" [ref=e2162]
+            - generic [ref=e2163]:
+              - button "Copy HEEx" [ref=e2164]:
+                - img
+              - code [ref=e2166]: <.command placeholder="Search commands..."> <:group heading="General"> <.item value="profile">Profile</.item> <.item value="billing">Billing</.item> </:group> <:group heading="Workspace"> <.item value="settings">Settings</.item> </:group> </.command>
+            - generic [ref=e2168]: "examples: 2 · attrs: 2 · slots: 1"
+        - article [ref=e2169]:
+          - generic [ref=e2170]:
+            - generic [ref=e2171]:
+              - generic [ref=e2172]:
+                - heading "Advanced.item" [level=4] [ref=e2173]:
+                  - link "Advanced.item" [ref=e2174] [cursor=pointer]:
+                    - /url: /docs/advanced-item/
+                    - code [ref=e2175]: Advanced.item
+                - link "Open docs" [ref=e2177] [cursor=pointer]:
+                  - /url: /docs/advanced-item/
+              - paragraph [ref=e2179]: Command/list item.
+            - option "Profile" [ref=e2182]
+            - generic [ref=e2183]:
+              - button "Copy HEEx" [ref=e2184]:
+                - img
+              - code [ref=e2186]: <.item value="profile"> Profile </.item>
+            - generic [ref=e2188]: "examples: 1 · attrs: 4 · slots: 1"
+        - article [ref=e2189]:
+          - generic [ref=e2190]:
+            - generic [ref=e2191]:
+              - generic [ref=e2192]:
+                - heading "Advanced.sidebar" [level=4] [ref=e2193]:
+                  - link "Advanced.sidebar" [ref=e2194] [cursor=pointer]:
+                    - /url: /docs/advanced-sidebar/
+                    - code [ref=e2195]: Advanced.sidebar
+                - link "Open docs" [ref=e2197] [cursor=pointer]:
+                  - /url: /docs/advanced-sidebar/
+              - paragraph [ref=e2199]: Sidebar layout shell.
+            - generic [ref=e2202]:
+              - complementary [ref=e2203]:
+                - generic [ref=e2204]:
+                  - generic [ref=e2205]: Overview
+                  - generic [ref=e2206]: Settings
+              - main [ref=e2207]:
+                - generic [ref=e2208]: Main content
+            - generic [ref=e2209]:
+              - button "Copy HEEx" [ref=e2210]:
+                - img
+              - code [ref=e2212]: <.sidebar> <:rail> <div class="space-y-2 text-sm"> <div>Overview</div> <div>Settings</div> </div> </:rail> <:inset> <div class="rounded bg-muted p-4 text-sm">Main content</div> </:inset> </.sidebar>
+            - generic [ref=e2214]: "examples: 1 · attrs: 1 · slots: 2"
+```
