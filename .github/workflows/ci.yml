@@ -238,6 +238,7 @@ jobs:
         run: npx playwright test
 
       - name: Upload Playwright artifacts
+        id: playwright_artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -245,3 +246,12 @@ jobs:
           path: |
             demo/test-results
             demo/playwright-report
+
+      - name: Annotate Playwright VRT failures
+        if: failure()
+        working-directory: .
+        env:
+          PLAYWRIGHT_RESULTS_DIR: demo/test-results
+          PLAYWRIGHT_ARTIFACT_URL: ${{ steps.playwright_artifacts.outputs.artifact-url }}
+          PLAYWRIGHT_VRT_MAX_INLINE: "6"
+        run: node .github/scripts/playwright_vrt_report.mjs

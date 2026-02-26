@@ -11,37 +11,43 @@ defmodule Demo.SiteRenderer do
   def marketing_html do
     Marketing.render_marketing_html(%{
       component_count: SiteRuntime.catalog_component_count(),
-      docs_path: "/docs/",
-      theme_css_path: "/assets/theme.css",
-      site_css_path: "/assets/site.css"
+      docs_path: "./docs/",
+      theme_css_path: "./assets/theme.css",
+      site_css_path: "./assets/site.css"
     })
   end
 
   def docs_index_html do
     sections = SiteRuntime.catalog_sections()
+    root_prefix = "."
+    asset_prefix = ".."
 
     page_shell(
       title: "Cinder UI Docs",
       description: "Component docs for Cinder UI",
-      body_content: docs_index_body(sections),
+      body_content: docs_index_body(sections, root_prefix),
       sections: sections,
       active_entry_id: nil,
-      root_prefix: "/docs",
-      home_url: "/"
+      root_prefix: root_prefix,
+      home_url: "../",
+      asset_prefix: asset_prefix
     )
   end
 
   def docs_component_html(entry) do
     sections = SiteRuntime.catalog_sections()
+    root_prefix = ".."
+    asset_prefix = "../.."
 
     page_shell(
       title: "#{entry.module_name}.#{entry.title} · Cinder UI",
       description: entry.docs,
-      body_content: docs_component_body(entry, sections),
+      body_content: docs_component_body(entry, sections, root_prefix),
       sections: sections,
       active_entry_id: entry.id,
-      root_prefix: "/docs",
-      home_url: "/"
+      root_prefix: root_prefix,
+      home_url: "../../",
+      asset_prefix: asset_prefix
     )
   end
 
@@ -53,7 +59,8 @@ defmodule Demo.SiteRenderer do
       sections: opts[:sections],
       active_entry_id: opts[:active_entry_id],
       root_prefix: opts[:root_prefix],
-      home_url: opts[:home_url]
+      home_url: opts[:home_url],
+      asset_prefix: opts[:asset_prefix]
     }
 
     ~H"""
@@ -64,8 +71,8 @@ defmodule Demo.SiteRenderer do
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{@title}</title>
         <meta name="description" content={@description} />
-        <link rel="stylesheet" href="/assets/theme.css" />
-        <link rel="stylesheet" href="/assets/site.css" />
+        <link rel="stylesheet" href={"#{@asset_prefix}/assets/theme.css"} />
+        <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
       <body class="bg-background text-foreground">
         <UIComponents.docs_layout
@@ -80,7 +87,7 @@ defmodule Demo.SiteRenderer do
           {rendered(@body_content)}
         </UIComponents.docs_layout>
 
-        <script src="/assets/site.js">
+        <script src={"#{@asset_prefix}/assets/site.js"}>
         </script>
       </body>
     </html>
@@ -88,26 +95,30 @@ defmodule Demo.SiteRenderer do
     |> to_html()
   end
 
-  defp docs_index_body(sections) do
-    assigns = %{sections: sections, component_count: SiteRuntime.catalog_component_count()}
+  defp docs_index_body(sections, root_prefix) do
+    assigns = %{
+      sections: sections,
+      component_count: SiteRuntime.catalog_component_count(),
+      root_prefix: root_prefix
+    }
 
     ~H"""
     <UIComponents.docs_overview_intro component_count={@component_count} show_count={true} />
 
-    <UIComponents.docs_overview_sections sections={@sections} mode={:static} root_prefix="/docs" />
+    <UIComponents.docs_overview_sections sections={@sections} mode={:static} root_prefix={@root_prefix} />
     """
     |> to_html()
   end
 
-  defp docs_component_body(entry, sections) do
-    assigns = %{entry: entry, sections: sections}
+  defp docs_component_body(entry, sections, root_prefix) do
+    assigns = %{entry: entry, sections: sections, root_prefix: root_prefix}
 
     ~H"""
     <UIComponents.docs_component_detail
       entry={@entry}
       sections={@sections}
       mode={:static}
-      root_prefix="/docs"
+      root_prefix={@root_prefix}
     />
     """
     |> to_html()
