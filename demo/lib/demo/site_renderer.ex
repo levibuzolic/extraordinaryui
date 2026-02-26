@@ -105,7 +105,11 @@ defmodule Demo.SiteRenderer do
     ~H"""
     <UIComponents.docs_overview_intro component_count={@component_count} show_count={true} />
 
-    <UIComponents.docs_overview_sections sections={@sections} mode={:static} root_prefix={@root_prefix} />
+    <UIComponents.docs_overview_sections
+      sections={@sections}
+      mode={:static}
+      root_prefix={@root_prefix}
+    />
     """
     |> to_html()
   end
