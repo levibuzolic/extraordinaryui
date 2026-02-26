@@ -25,9 +25,25 @@ Thanks for contributing. This guide is for humans first: the goal is to help you
 Notes:
 
 - `./bin/bootstrap` runs `mise trust`, `mise install`, and dependency installation for both the repo root and `demo`.
+- `./bin/bootstrap` also installs git hooks via `lefthook install`.
 - Root package includes `lucide_icons` as an optional dependency for `CinderUI.Icons.icon/1` and icon-backed component primitives.
 - Demo includes `lucide_icons` directly so browser/docs examples always render icon previews.
 - Hex package artifacts intentionally ship only runtime modules and `mix cinder_ui.install`; static docs/site build tasks remain repository-only maintainer tooling.
+
+## Git Hooks (Lefthook + mise)
+
+- Hook config lives in `.lefthook.yml`.
+- Hooks run through `mise exec` so tool versions come from `.mise.toml`.
+- Install/update hooks at any time with:
+
+```bash
+mise exec -- lefthook install
+```
+
+Default hooks:
+
+- `pre-commit`: root+demo formatting, root compile warnings check, root+demo credo.
+- `pre-push`: full root quality/coverage/docs build plus demo unit/assets/browser checks.
 
 ## Development Workspaces
 

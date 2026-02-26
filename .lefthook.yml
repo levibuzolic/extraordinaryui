@@ -1,0 +1,31 @@
+pre-commit:
+  commands:
+    root_format:
+      run: mise exec -- mix format
+      glob: "*.{ex,exs,heex}"
+      stage_fixed: true
+    demo_format:
+      run: cd demo && mise exec -- mix format
+      glob: "demo/**/*.{ex,exs,heex}"
+      stage_fixed: true
+    root_compile:
+      run: mise exec -- mix compile --warnings-as-errors
+    root_credo:
+      run: mise exec -- mix credo --strict
+    demo_credo:
+      run: cd demo && mise exec -- mix credo --strict
+
+pre-push:
+  commands:
+    root_quality:
+      run: mise exec -- mix quality
+    root_coverage:
+      run: mise exec -- env MIX_ENV=test mix coveralls.cobertura --raise
+    docs_build:
+      run: mise exec -- mix cinder_ui.docs.build
+    demo_unit:
+      run: cd demo && mise exec -- sh -c "mix format --check-formatted && mix test"
+    demo_assets:
+      run: cd demo && mise exec -- mix assets.build
+    demo_browser:
+      run: cd demo && mise exec -- npx playwright test

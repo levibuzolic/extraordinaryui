@@ -2,3 +2,4 @@
 node = "latest"
 erlang = "latest"
 elixir = "latest"
+lefthook = "latest"

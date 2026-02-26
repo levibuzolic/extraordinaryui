@@ -77,4 +77,7 @@ run_mix_deps_get "$DEMO_DIR" "demo"
 run_node_install "$ROOT_DIR" "root"
 run_node_install "$DEMO_DIR" "demo"
 
+echo "==> root: lefthook install"
+run_with_mise "$ROOT_DIR" lefthook install
+
 echo "Bootstrap complete."
