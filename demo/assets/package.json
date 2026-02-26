@@ -1,6 +1,0 @@
-{
-  "private": true,
-  "devDependencies": {
-    "tailwindcss-animate": "^1.0.7"
-  }
-}
