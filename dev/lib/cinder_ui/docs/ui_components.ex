@@ -34,7 +34,6 @@ defmodule CinderUI.Docs.UIComponents do
   attr :mode, :atom, default: :static
   attr :root_prefix, :string, default: "."
   attr :active_entry_id, :string, default: nil
-  attr :show_overview, :boolean, default: true
 
   attr :home_url, :string, default: nil
   attr :github_url, :string, default: nil
@@ -49,6 +48,17 @@ defmodule CinderUI.Docs.UIComponents do
         data-docs-sidebar
         class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6"
       >
+        <script>
+          (() => {
+            try {
+              const key = "cui:docs:sidebar-scroll-top";
+              const sidebar = document.currentScript?.closest("[data-docs-sidebar]");
+              const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
+              if (!sidebar || !Number.isFinite(saved) || saved < 0) return;
+              sidebar.scrollTop = saved;
+            } catch (_error) {}
+          })();
+        </script>
         <div class="mb-6">
           <h1 class="text-xl font-semibold">
             <%= if is_binary(@home_url) and @home_url != "" do %>
@@ -71,7 +81,6 @@ defmodule CinderUI.Docs.UIComponents do
             mode={@mode}
             root_prefix={@root_prefix}
             active_entry_id={@active_entry_id}
-            show_overview={@show_overview}
           />
         </nav>
       </aside>
@@ -117,17 +126,15 @@ defmodule CinderUI.Docs.UIComponents do
 
   def docs_sidebar(assigns) do
     ~H"""
-    <%= if @show_overview do %>
-      <div>
-        <a
-          href={overview_href(@mode, @root_prefix)}
-          class={sidebar_link_class(is_nil(@active_entry_id))}
-          aria-current={if is_nil(@active_entry_id), do: "page", else: nil}
-        >
-          Overview
-        </a>
-      </div>
-    <% end %>
+    <div>
+      <a
+        href={overview_href(@mode, @root_prefix)}
+        class={sidebar_link_class(is_nil(@active_entry_id))}
+        aria-current={if is_nil(@active_entry_id), do: "page", else: nil}
+      >
+        Overview
+      </a>
+    </div>
 
     <%= for section <- @sections do %>
       <div>

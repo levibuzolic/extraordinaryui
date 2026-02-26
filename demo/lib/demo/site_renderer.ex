@@ -73,7 +73,6 @@ defmodule Demo.SiteRenderer do
           mode={:static}
           root_prefix={@root_prefix}
           active_entry_id={@active_entry_id}
-          show_overview={true}
           home_url={@home_url}
           github_url={project_source_url()}
           hex_package_url="https://hex.pm/packages/cinder_ui"

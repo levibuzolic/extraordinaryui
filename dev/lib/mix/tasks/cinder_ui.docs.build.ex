@@ -90,7 +90,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       sections: sections,
       root_prefix: ".",
       active_entry_id: nil,
-      show_overview: true,
       home_url: home_url,
       github_url: github_url,
       hex_package_url: hex_package_url
@@ -106,7 +105,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       sections: sections,
       root_prefix: "..",
       active_entry_id: entry.id,
-      show_overview: true,
       home_url: home_url,
       github_url: github_url,
       hex_package_url: hex_package_url
@@ -122,7 +120,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
       sections: opts[:sections],
       root_prefix: opts[:root_prefix],
       active_entry_id: opts[:active_entry_id],
-      show_overview: opts[:show_overview],
       home_url: opts[:home_url],
       github_url: opts[:github_url],
       hex_package_url: opts[:hex_package_url]
@@ -145,7 +142,6 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           mode={:static}
           root_prefix={@root_prefix}
           active_entry_id={@active_entry_id}
-          show_overview={@show_overview}
           home_url={@home_url}
           github_url={@github_url}
           hex_package_url={@hex_package_url}
