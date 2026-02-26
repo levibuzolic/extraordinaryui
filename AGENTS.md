@@ -1,55 +1,56 @@
 # AGENTS Guide
 
-Concise contributor guide for `cinder_ui`.
+Contributor guide for `cinder_ui`.
 
 ## Scope
 
-- This repo is a Phoenix component library built on components ported from shadcn/ui.
+- Phoenix + LiveView component library ported from shadcn/ui patterns.
 - Primary outputs:
-  - Hex package (`cinder_ui`)
-  - Unified static docs/site output (`dist/site`)
-  - Demo host app for integration/browser tests (`demo`)
+  - Hex package: `cinder_ui`
+  - Static site export: `dist/site`
+  - Demo app for integration and browser tests: `demo`
 
-## Architecture
+## Code Map
 
-- Library code: `lib/cinder_ui/**`
-- Public install task: `lib/mix/tasks/cinder_ui.install.ex`
-- Internal docs/site tasks:
-  - `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
-  - `dev/lib/cinder_ui/site/marketing.ex`
-- Static docs catalog source: `dev/lib/cinder_ui/docs/catalog.ex`
-- Demo app: `demo`
+- Library components: `lib/cinder_ui/**`
+- Public installer task: `lib/mix/tasks/cinder_ui.install.ex`
+- Static docs/site build task: `dev/lib/mix/tasks/cinder_ui.docs.build.ex`
+- Marketing/static site composition: `dev/lib/cinder_ui/site/marketing.ex`
+- Static docs catalog: `dev/lib/cinder_ui/docs/catalog.ex`
+- Demo host app: `demo`
 
-## Core Commands
+## Required Commands
+
+Run from repository root unless noted.
 
 - Root quality:
   - `mix quality`
-  - `MIX_ENV=test mix coveralls.cobertura --raise`
-- Static outputs:
+  - `MIX_ENV=test mix coveralls.cobertura --raise` (writes `cover/cobertura.xml`)
+- Static docs/site build:
   - `mix cinder_ui.docs.build`
-- Demo checks:
+- Demo unit checks:
   - `cd demo && mix format --check-formatted && mix test`
+- Demo browser checks:
   - `cd demo && npm ci && mix assets.build && npx playwright test`
 
-## Engineering Standards
+## Standards
 
-- Keep APIs Phoenix-first (HEEx function components, predictable assigns, typed `attr`/`slot` docs).
-- Prefer component composition in docs/snippets; use raw HTML only when no library primitive exists.
+- Keep APIs Phoenix-first: HEEx function components, predictable assigns, typed `attr`/`slot`.
+- Prefer composing with existing components in docs/examples; use raw HTML only when necessary.
 - Keep static docs and demo behavior aligned (theme controls, snippets, interactions).
-- Avoid machine-specific paths in docs; use repository-relative paths.
+- Use repository-relative paths in docs.
 - Update tests whenever component behavior, docs generation, or JS hooks change.
 
-## Documentation Requirements
+## Documentation Rules
 
-- Keep docs split by audience:
-  - `README.md` is user-facing installation/usage guidance.
-  - `CONTRIBUTING.md` is contributor workflow and project maintenance guidance.
-- Update both `README.md`/`CONTRIBUTING.md` (as applicable).
+- `README.md`: user-facing install and usage guidance.
+- `CONTRIBUTING.md`: contributor workflow and maintenance guidance.
+- Update `README.md` and `CONTRIBUTING.md` when changes impact their audiences.
 - Public component changes should include in-module docs and examples.
 
-## Release Flow
+## Release Checklist
 
-1. Update `mix.exs` version + `CHANGELOG.md`.
-2. Run all quality/test/browser commands above.
-3. Publish package/docs to Hex (currently manual).
+1. Bump version in `mix.exs` and update `CHANGELOG.md`.
+2. Run all required quality, coverage, docs, and demo checks.
+3. Publish package/docs to Hex (manual).
 4. Publish GitHub release (triggers Pages deploy via `.github/workflows/publish-site.yml`).
