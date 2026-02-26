@@ -46,19 +46,10 @@ defmodule CinderUI.Docs.UIComponents do
     <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
       <aside
         data-docs-sidebar
+        data-scroll-restored="false"
         class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6"
+        style="visibility: hidden;"
       >
-        <script>
-          (() => {
-            try {
-              const key = "cui:docs:sidebar-scroll-top";
-              const sidebar = document.currentScript?.closest("[data-docs-sidebar]");
-              const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
-              if (!sidebar || !Number.isFinite(saved) || saved < 0) return;
-              sidebar.scrollTop = saved;
-            } catch (_error) {}
-          })();
-        </script>
         <div class="mb-6">
           <h1 class="text-xl font-semibold">
             <%= if is_binary(@home_url) and @home_url != "" do %>
@@ -83,6 +74,21 @@ defmodule CinderUI.Docs.UIComponents do
             active_entry_id={@active_entry_id}
           />
         </nav>
+        <script>
+          (() => {
+            const sidebar = document.currentScript?.closest("[data-docs-sidebar]");
+            if (!sidebar) return;
+
+            try {
+              const key = "cui:docs:sidebar-scroll-top";
+              const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
+              if (Number.isFinite(saved) && saved >= 0) sidebar.scrollTop = saved;
+            } catch (_error) {}
+
+            sidebar.dataset.scrollRestored = "true";
+            sidebar.style.removeProperty("visibility");
+          })();
+        </script>
       </aside>
 
       <main class="min-w-0 px-5 py-6 lg:px-8">

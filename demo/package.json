@@ -9,6 +9,9 @@
     "test:browser:visual": "playwright test tests/browser/visual.spec.ts",
     "test:browser:visual:update": "playwright test tests/browser/visual.spec.ts --update-snapshots"
   },
+  "dependencies": {
+    "tailwindcss-animate": "^1.0.7"
+  },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^22.18.6",
