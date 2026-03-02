@@ -23,9 +23,7 @@ defmodule DemoWeb.SiteController do
     if static_render?(params) do
       render_html(conn, SiteRenderer.install_html())
     else
-      render(conn, :install,
-        sections: SiteRuntime.catalog_sections()
-      )
+      render(conn, :install, sections: SiteRuntime.catalog_sections())
     end
   end
 

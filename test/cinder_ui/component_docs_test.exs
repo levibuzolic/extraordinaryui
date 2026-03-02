@@ -8,9 +8,9 @@ defmodule CinderUI.ComponentDocsTest do
 
     [{^module, _beam}] = Code.compile_file(file)
 
-    assert apply(module, :first, [:ok]) == :ok
-    assert apply(module, :legacy, [:ok]) == :ok
-    assert apply(module, :already, [:ok]) == :ok
+    assert module.first(:ok) == :ok
+    assert module.legacy(:ok) == :ok
+    assert module.already(:ok) == :ok
   end
 
   test "doc/1 macro passes through non-binary docs" do
@@ -18,7 +18,7 @@ defmodule CinderUI.ComponentDocsTest do
     file = write_module_file(module, source_with_false_doc(module))
 
     [{^module, _beam}] = Code.compile_file(file)
-    assert apply(module, :hidden, [:ok]) == :ok
+    assert module.hidden(:ok) == :ok
   end
 
   defp unique_module(suffix) do

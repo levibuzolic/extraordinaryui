@@ -163,7 +163,8 @@ defmodule Demo.SiteRenderer do
       <h2 id="tailwind-css">1. Set up Tailwind CSS</h2>
       <p>
         Cinder UI requires Tailwind CSS v4+. New Phoenix projects generated with
-        <code>mix phx.new</code> include Tailwind by default — if yours already has
+        <code>mix phx.new</code>
+        include Tailwind by default — if yours already has
         it, skip to <a href="#add-cinder-ui">step 2</a>.
       </p>
       <p>Add the Tailwind plugin to your dependencies in <code>mix.exs</code>:</p>
@@ -198,25 +199,40 @@ defmodule Demo.SiteRenderer do
       <pre><code>mix cinder_ui.install</code></pre>
       <p>This will:</p>
       <ul>
-        <li>Copy <code>cinder_ui.css</code> into <code>assets/css/</code> (theme variables and dark mode)</li>
-        <li>Copy <code>cinder_ui.js</code> into <code>assets/js/</code> (LiveView hooks for interactive components)</li>
+        <li>
+          Copy <code>cinder_ui.css</code>
+          into <code>assets/css/</code>
+          (theme variables and dark mode)
+        </li>
+        <li>
+          Copy <code>cinder_ui.js</code>
+          into <code>assets/js/</code>
+          (LiveView hooks for interactive components)
+        </li>
         <li>
           Update <code>assets/css/app.css</code> with:<br />
           <code>@source "../../deps/cinder_ui";</code> — so Tailwind scans component classes<br />
           <code>@import "./cinder_ui.css";</code> — loads theme tokens
         </li>
-        <li>Update <code>assets/js/app.js</code> to merge <code>CinderUIHooks</code> into your LiveView hooks</li>
+        <li>
+          Update <code>assets/js/app.js</code>
+          to merge <code>CinderUIHooks</code>
+          into your LiveView hooks
+        </li>
         <li>Install the <code>tailwindcss-animate</code> npm package</li>
       </ul>
-      <p>The installer auto-detects your package manager (npm, pnpm, yarn, or bun). To specify one explicitly:</p>
+      <p>
+        The installer auto-detects your package manager (npm, pnpm, yarn, or bun). To specify one explicitly:
+      </p>
       <pre><code>mix cinder_ui.install --package-manager pnpm</code></pre>
       <p>To re-run without overwriting customized files:</p>
       <pre><code>mix cinder_ui.install --skip-existing</code></pre>
 
       <h2 id="configure-app">4. Configure your app</h2>
       <p>
-        Add <code>use CinderUI</code> to your app's <code>html_helpers</code> in
-        <code>lib/my_app_web.ex</code>:
+        Add <code>use CinderUI</code>
+        to your app's <code>html_helpers</code>
+        in <code>lib/my_app_web.ex</code>:
       </p>
       <pre><code class="language-elixir">{"defp html_helpers do\n  quote do\n    use Phoenix.Component\n    use CinderUI\n    # ...\n  end\nend"}</code></pre>
       <p>Or selectively import only the modules you need:</p>
