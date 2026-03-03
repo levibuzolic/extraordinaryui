@@ -53,8 +53,8 @@ defmodule Demo.SiteRenderer do
 
   def install_html do
     sections = SiteRuntime.catalog_sections()
-    root_prefix = "."
-    asset_prefix = ".."
+    root_prefix = ".."
+    asset_prefix = "../.."
 
     page_shell(
       title: "Installation · Cinder UI",
@@ -63,7 +63,7 @@ defmodule Demo.SiteRenderer do
       sections: sections,
       active_entry_id: nil,
       root_prefix: root_prefix,
-      home_url: "../",
+      home_url: "../../",
       asset_prefix: asset_prefix
     )
   end
