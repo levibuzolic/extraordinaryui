@@ -81,6 +81,19 @@ defmodule CinderUI.Components.Overlay do
     <p class="text-sm">Current plan: Pro</p>
   </.dialog>
   ```
+
+  ```heex title="Server-controlled with CinderUI.JS"
+  <.button phx-click={CinderUI.JS.open(to: "#account-dialog")}>
+    Open account dialog
+  </.button>
+
+  <.dialog id="account-dialog" open={@show_account_dialog}>
+    <:trigger><span class="hidden" /></:trigger>
+    <:title>Account</:title>
+    <:description>Managed from LiveView state.</:description>
+    <.button phx-click={CinderUI.JS.close(to: "#account-dialog")}>Close</.button>
+  </.dialog>
+  ```
   """)
 
   attr :id, :string, required: true

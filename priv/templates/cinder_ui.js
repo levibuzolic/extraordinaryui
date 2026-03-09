@@ -86,8 +86,12 @@ const restoreFocus = (preferred, fallback) => {
 
 const CuiDialog = {
   mounted() {
-    this.trigger = this.el.querySelector("[data-dialog-trigger]")
-    this.content = this.el.querySelector("[data-dialog-content]")
+    this.refreshElements = () => {
+      this.trigger = this.el.querySelector("[data-dialog-trigger]")
+      this.content = this.el.querySelector("[data-dialog-content]")
+    }
+
+    this.refreshElements()
     this.lastActiveElement = null
     this.sync(this.el.dataset.state === "open")
 
@@ -117,6 +121,7 @@ const CuiDialog = {
   },
 
   updated() {
+    this.refreshElements()
     this.sync(this.el.dataset.state === "open")
   },
 
@@ -151,8 +156,12 @@ const CuiDialog = {
 
 const CuiDrawer = {
   mounted() {
-    this.trigger = this.el.querySelector("[data-drawer-trigger]")
-    this.content = this.el.querySelector("[data-drawer-content]")
+    this.refreshElements = () => {
+      this.trigger = this.el.querySelector("[data-drawer-trigger]")
+      this.content = this.el.querySelector("[data-drawer-content]")
+    }
+
+    this.refreshElements()
     this.lastActiveElement = null
     this.sync(this.el.dataset.state === "open")
 
@@ -182,6 +191,7 @@ const CuiDrawer = {
   },
 
   updated() {
+    this.refreshElements()
     this.sync(this.el.dataset.state === "open")
   },
 
@@ -217,9 +227,11 @@ const CuiDrawer = {
 const CuiPopover = {
   mounted() {
     this.open = false
-    this.trigger = this.el.querySelector("[data-popover-trigger]")
-    this.content = this.el.querySelector("[data-popover-content]")
     this.lastActiveElement = null
+    this.refreshElements = () => {
+      this.trigger = this.el.querySelector("[data-popover-trigger]")
+      this.content = this.el.querySelector("[data-popover-content]")
+    }
 
     this.toggle = () => {
       if (!this.open) this.lastActiveElement = getFocusTarget(this.trigger)
@@ -239,15 +251,33 @@ const CuiPopover = {
       }
     }
 
-    this.trigger && this.trigger.addEventListener("click", this.toggle)
-    document.addEventListener("click", this.onDocumentClick)
-    document.addEventListener("keydown", this.onKeydown)
+    this.bindEvents = () => {
+      this.trigger && this.trigger.addEventListener("click", this.toggle)
+      document.addEventListener("click", this.onDocumentClick)
+      document.addEventListener("keydown", this.onKeydown)
+    }
+
+    this.unbindEvents = () => {
+      this.trigger && this.trigger.removeEventListener("click", this.toggle)
+      document.removeEventListener("click", this.onDocumentClick)
+      document.removeEventListener("keydown", this.onKeydown)
+    }
+
+    this.refreshElements()
+    this.bindEvents()
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => this.sync(true),
       close: () => this.sync(false),
       toggle: () => this.toggle(),
       focus: () => this.trigger?.focus(),
     })
+  },
+
+  updated() {
+    this.unbindEvents()
+    this.refreshElements()
+    this.bindEvents()
+    this.sync(this.open)
   },
 
   sync(open) {
@@ -273,9 +303,7 @@ const CuiPopover = {
   },
 
   destroyed() {
-    this.trigger && this.trigger.removeEventListener("click", this.toggle)
-    document.removeEventListener("click", this.onDocumentClick)
-    document.removeEventListener("keydown", this.onKeydown)
+    this.unbindEvents()
     this.removeCommandListener && this.removeCommandListener()
   },
 }
@@ -283,9 +311,11 @@ const CuiPopover = {
 const CuiDropdownMenu = {
   mounted() {
     this.open = false
-    this.trigger = this.el.querySelector("[data-dropdown-trigger]")
-    this.content = this.el.querySelector("[data-dropdown-content]")
     this.lastActiveElement = null
+    this.refreshElements = () => {
+      this.trigger = this.el.querySelector("[data-dropdown-trigger]")
+      this.content = this.el.querySelector("[data-dropdown-content]")
+    }
 
     this.toggle = () => {
       if (!this.open) this.lastActiveElement = getFocusTarget(this.trigger)
@@ -305,15 +335,33 @@ const CuiDropdownMenu = {
       }
     }
 
-    this.trigger && this.trigger.addEventListener("click", this.toggle)
-    document.addEventListener("click", this.onDocumentClick)
-    document.addEventListener("keydown", this.onKeydown)
+    this.bindEvents = () => {
+      this.trigger && this.trigger.addEventListener("click", this.toggle)
+      document.addEventListener("click", this.onDocumentClick)
+      document.addEventListener("keydown", this.onKeydown)
+    }
+
+    this.unbindEvents = () => {
+      this.trigger && this.trigger.removeEventListener("click", this.toggle)
+      document.removeEventListener("click", this.onDocumentClick)
+      document.removeEventListener("keydown", this.onKeydown)
+    }
+
+    this.refreshElements()
+    this.bindEvents()
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => this.sync(true),
       close: () => this.sync(false),
       toggle: () => this.toggle(),
       focus: () => this.trigger?.focus(),
     })
+  },
+
+  updated() {
+    this.unbindEvents()
+    this.refreshElements()
+    this.bindEvents()
+    this.sync(this.open)
   },
 
   sync(open) {
@@ -339,21 +387,21 @@ const CuiDropdownMenu = {
   },
 
   destroyed() {
-    this.trigger && this.trigger.removeEventListener("click", this.toggle)
-    document.removeEventListener("click", this.onDocumentClick)
-    document.removeEventListener("keydown", this.onKeydown)
+    this.unbindEvents()
     this.removeCommandListener && this.removeCommandListener()
   },
 }
 
 const CuiSelect = {
   mounted() {
-    this.trigger = this.el.querySelector("[data-select-trigger]")
-    this.content = this.el.querySelector("[data-select-content]")
-    this.input = this.el.querySelector("[data-slot='select-input']")
-    this.clearButton = this.el.querySelector("[data-select-clear]")
-    this.items = Array.from(this.el.querySelectorAll("[data-select-item]"))
     this.open = false
+    this.refreshElements = () => {
+      this.trigger = this.el.querySelector("[data-select-trigger]")
+      this.content = this.el.querySelector("[data-select-content]")
+      this.input = this.el.querySelector("[data-slot='select-input']")
+      this.clearButton = this.el.querySelector("[data-select-clear]")
+      this.items = Array.from(this.el.querySelectorAll("[data-select-item]"))
+    }
 
     this.enabledItems = () => this.items.filter((item) => item.dataset.disabled !== "true" && !item.disabled)
 
@@ -542,13 +590,28 @@ const CuiSelect = {
       if (!this.el.contains(event.target)) this.closeMenu()
     }
 
-    this.trigger && this.trigger.addEventListener("click", this.onTriggerClick)
-    this.clearButton && this.clearButton.addEventListener("click", this.onClearClick)
-    this.trigger && this.trigger.addEventListener("keydown", this.onTriggerKeyDown)
-    this.content && this.content.addEventListener("keydown", this.onContentKeyDown)
-    this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
-    this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
-    document.addEventListener("click", this.onDocumentClick)
+    this.bindEvents = () => {
+      this.trigger && this.trigger.addEventListener("click", this.onTriggerClick)
+      this.clearButton && this.clearButton.addEventListener("click", this.onClearClick)
+      this.trigger && this.trigger.addEventListener("keydown", this.onTriggerKeyDown)
+      this.content && this.content.addEventListener("keydown", this.onContentKeyDown)
+      this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
+      this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
+      document.addEventListener("click", this.onDocumentClick)
+    }
+
+    this.unbindEvents = () => {
+      this.trigger && this.trigger.removeEventListener("click", this.onTriggerClick)
+      this.clearButton && this.clearButton.removeEventListener("click", this.onClearClick)
+      this.trigger && this.trigger.removeEventListener("keydown", this.onTriggerKeyDown)
+      this.content && this.content.removeEventListener("keydown", this.onContentKeyDown)
+      this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
+      this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
+      document.removeEventListener("click", this.onDocumentClick)
+    }
+
+    this.refreshElements()
+    this.bindEvents()
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => this.openMenu(),
       close: () => this.closeMenu(),
@@ -565,29 +628,32 @@ const CuiSelect = {
     this.sync()
   },
 
+  updated() {
+    this.unbindEvents()
+    this.refreshElements()
+    this.bindEvents()
+    this.sync()
+  },
+
   destroyed() {
-    this.trigger && this.trigger.removeEventListener("click", this.onTriggerClick)
-    this.clearButton && this.clearButton.removeEventListener("click", this.onClearClick)
-    this.trigger && this.trigger.removeEventListener("keydown", this.onTriggerKeyDown)
-    this.content && this.content.removeEventListener("keydown", this.onContentKeyDown)
-    this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
-    this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
-    document.removeEventListener("click", this.onDocumentClick)
+    this.unbindEvents()
     this.removeCommandListener && this.removeCommandListener()
   },
 }
 
 const CuiAutocomplete = {
   mounted() {
-    this.input = this.el.querySelector("[data-autocomplete-input]")
-    this.content = this.el.querySelector("[data-autocomplete-content]")
-    this.valueInput = this.el.querySelector("[data-slot='autocomplete-value']")
-    this.items = Array.from(this.el.querySelectorAll("[data-autocomplete-item]"))
-    this.empty = this.el.querySelector("[data-slot='autocomplete-empty']")
-    this.loading = this.el.querySelector("[data-slot='autocomplete-loading']")
     this.selectedLabel = this.el.dataset.selectedLabel || ""
     this.open = false
     this.skipFocusOpen = false
+    this.refreshElements = () => {
+      this.input = this.el.querySelector("[data-autocomplete-input]")
+      this.content = this.el.querySelector("[data-autocomplete-content]")
+      this.valueInput = this.el.querySelector("[data-slot='autocomplete-value']")
+      this.items = Array.from(this.el.querySelectorAll("[data-autocomplete-item]"))
+      this.empty = this.el.querySelector("[data-slot='autocomplete-empty']")
+      this.loading = this.el.querySelector("[data-slot='autocomplete-loading']")
+    }
 
     this.visibleItems = () =>
       this.items.filter((item) => !item.classList.contains("hidden") && item.dataset.disabled !== "true" && !item.disabled)
@@ -769,13 +835,28 @@ const CuiAutocomplete = {
       this.sync()
     }
 
-    this.input?.addEventListener("focus", this.onFocus)
-    this.input?.addEventListener("input", this.onInput)
-    this.input?.addEventListener("keydown", this.onKeyDown)
-    this.content?.addEventListener("keydown", this.onContentKeyDown)
-    this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
-    this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
-    document.addEventListener("click", this.onDocumentClick)
+    this.bindEvents = () => {
+      this.input?.addEventListener("focus", this.onFocus)
+      this.input?.addEventListener("input", this.onInput)
+      this.input?.addEventListener("keydown", this.onKeyDown)
+      this.content?.addEventListener("keydown", this.onContentKeyDown)
+      this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
+      this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
+      document.addEventListener("click", this.onDocumentClick)
+    }
+
+    this.unbindEvents = () => {
+      this.input?.removeEventListener("focus", this.onFocus)
+      this.input?.removeEventListener("input", this.onInput)
+      this.input?.removeEventListener("keydown", this.onKeyDown)
+      this.content?.removeEventListener("keydown", this.onContentKeyDown)
+      this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
+      this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
+      document.removeEventListener("click", this.onDocumentClick)
+    }
+
+    this.refreshElements()
+    this.bindEvents()
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => {
         this.open = true
@@ -802,14 +883,17 @@ const CuiAutocomplete = {
     this.sync()
   },
 
+  updated() {
+    this.unbindEvents()
+    this.refreshElements()
+    this.selectedLabel = this.el.dataset.selectedLabel || this.selectedLabel
+    this.bindEvents()
+    this.syncEmpty()
+    this.sync()
+  },
+
   destroyed() {
-    this.input?.removeEventListener("focus", this.onFocus)
-    this.input?.removeEventListener("input", this.onInput)
-    this.input?.removeEventListener("keydown", this.onKeyDown)
-    this.content?.removeEventListener("keydown", this.onContentKeyDown)
-    this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
-    this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
-    document.removeEventListener("click", this.onDocumentClick)
+    this.unbindEvents()
     this.removeCommandListener && this.removeCommandListener()
   },
 }

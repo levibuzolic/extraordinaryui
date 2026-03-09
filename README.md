@@ -238,6 +238,7 @@ behavior is:
 - `Escape` closes dialogs, drawers, popovers, and dropdown menus
 - outside click closes popovers and dropdown menus
 - dialog and drawer overlay clicks dismiss the overlay
+- hook bindings are refreshed after LiveView-driven DOM updates
 
 Supported commands depend on the component, but the common baseline is:
 

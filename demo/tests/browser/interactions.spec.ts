@@ -109,6 +109,28 @@ test.describe("interactive previews", () => {
     expect(await hasClass(dropdownContent, "hidden")).toBe(true)
   })
 
+  test("interactive hooks remain usable after the docs page re-renders", async ({ page }) => {
+    const dialog = page.locator("[data-slot='dialog']").first()
+    const select = page.locator("[data-slot='select']").filter({ has: page.locator("[data-slot='select-input'][name='plan']") }).first()
+    const autocomplete = page.locator("[data-slot='autocomplete']").first()
+
+    await page.locator(".theme-mode-btn[data-theme-mode='dark']").first().click()
+
+    await dialog.locator("[data-dialog-trigger]").click()
+    expect(await hasClass(dialog.locator("[data-dialog-content]"), "hidden")).toBe(false)
+    await page.keyboard.press("Escape")
+    expect(await hasClass(dialog.locator("[data-dialog-content]"), "hidden")).toBe(true)
+
+    await select.locator("[data-select-trigger]").click()
+    expect(await hasClass(select.locator("[data-select-content]"), "hidden")).toBe(false)
+    await select.locator("[data-select-item]").last().click()
+    await expect(select.locator("[data-slot='select-input']")).not.toHaveValue("")
+
+    await autocomplete.locator("[data-autocomplete-input]").fill("Mira")
+    await autocomplete.locator("[data-slot='autocomplete-item'][data-value='mira']").click()
+    await expect(autocomplete.locator("[data-slot='autocomplete-value']")).toHaveValue("mira")
+  })
+
   test("select opens from the keyboard and updates the hidden value", async ({ page }) => {
     const select = page.locator("[data-slot='select']").first()
     const trigger = select.locator("[data-select-trigger]")

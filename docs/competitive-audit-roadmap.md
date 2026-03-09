@@ -210,8 +210,8 @@ Acceptance criteria:
 ### 2.2 Improve overlay behavior quality
 
 - [-] Add focus management expectations for dialog-like components.
-- [-] Review dismissal behavior: close button, escape key, outside click, server-controlled state updates.
-- [ ] Ensure patch-safe behavior when LiveView re-renders content.
+- [x] Review dismissal behavior: close button, escape key, outside click, server-controlled state updates.
+- [x] Ensure patch-safe behavior when LiveView re-renders content.
 - [ ] Revisit `drawer` vs `sheet` semantics and split them if needed.
 
 Acceptance criteria:
