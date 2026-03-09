@@ -10,11 +10,6 @@ concurrency:
   group: autofix-${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-env:
-  ELIXIR_VERSION: "1.19.5"
-  OTP_VERSION: "28.3.2"
-  NODE_VERSION: "25"
-
 jobs:
   autofix:
     name: Format and refresh visual artifacts
@@ -26,18 +21,11 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Setup BEAM
-        uses: erlef/setup-beam@v1
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: demo/package-lock.json
+          node-cache: npm
+          node-cache-dependency-path: demo/package-lock.json
 
       - name: Cache root Mix dependencies
         uses: actions/cache@v4

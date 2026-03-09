@@ -10,11 +10,6 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  ELIXIR_VERSION: "1.19.5"
-  OTP_VERSION: "28.3.2"
-  NODE_VERSION: "25"
-
 jobs:
   root_quality:
     name: Root Quality (format/lint/docs)
@@ -23,16 +18,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup BEAM
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
@@ -67,16 +54,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup BEAM
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
@@ -128,11 +107,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup BEAM
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
@@ -167,12 +143,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: demo/package-lock.json
+          node-cache: npm
+          node-cache-dependency-path: demo/package-lock.json
 
       - name: Install Node dependencies
         run: npm ci
@@ -190,18 +165,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup BEAM
-        uses: erlef/setup-beam@v1
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: demo/package-lock.json
+          node-cache: npm
+          node-cache-dependency-path: demo/package-lock.json
 
       - name: Cache Mix dependencies
         uses: actions/cache@v4
