@@ -1410,6 +1410,14 @@ defmodule CinderUI.Docs.Catalog do
   defp sample_assigns(Feedback, :alert_description), do: %{inner_block: slot("Description text")}
   defp sample_assigns(Feedback, :alert_title), do: %{inner_block: slot("Alert title")}
   defp sample_assigns(Feedback, :badge), do: %{variant: :secondary, inner_block: slot("Beta")}
+  defp sample_assigns(Feedback, :flash), do: %{kind: :info, flash: %{"info" => "Settings saved"}}
+
+  defp sample_assigns(Feedback, :flash_group) do
+    %{
+      id: "flash-group-preview",
+      flash: %{"info" => "Saved", "error" => "Unable to complete request"}
+    }
+  end
 
   defp sample_assigns(Feedback, :empty_state) do
     reset_html =
@@ -1870,7 +1878,10 @@ defmodule CinderUI.Docs.Catalog do
 
   defp sample_assigns(Advanced, :calendar) do
     not_ready_html =
-      render_component(Feedback, :badge, %{variant: :secondary, inner_block: slot("Not ready yet")})
+      render_component(Feedback, :badge, %{
+        variant: :secondary,
+        inner_block: slot("Not ready yet")
+      })
 
     %{
       inner_block:
