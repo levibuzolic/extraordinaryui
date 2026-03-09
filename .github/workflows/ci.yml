@@ -158,8 +158,6 @@ jobs:
           playwright-cache-key-prefix: browser
 
       - name: Run Playwright tests
-        env:
-          CINDER_UI_EXPORT_DOC_SCREENSHOTS: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
         run: npx playwright test
 
       - name: Upload Playwright artifacts
