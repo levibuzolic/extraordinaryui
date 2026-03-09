@@ -1,6 +1,6 @@
-import { defineConfig } from "@playwright/test"
+import { defineConfig, type PlaywrightTestConfig } from "@playwright/test"
 
-export default defineConfig({
+const config = {
   testDir: "./tests/browser",
   snapshotPathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}{ext}",
   timeout: 60_000,
@@ -30,4 +30,6 @@ export default defineConfig({
     reuseExistingServer: true,
     timeout: 120_000,
   },
-})
+} satisfies PlaywrightTestConfig
+
+export default defineConfig(config)
