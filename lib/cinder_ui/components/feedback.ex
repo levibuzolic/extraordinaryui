@@ -8,6 +8,8 @@ defmodule CinderUI.Components.Feedback do
   - `alert/1`
   - `alert_title/1`
   - `alert_description/1`
+  - `flash/1`
+  - `flash_group/1`
   - `progress/1`
   - `spinner/1`
   - `empty_state/1`
@@ -17,6 +19,7 @@ defmodule CinderUI.Components.Feedback do
 
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
+  alias Phoenix.LiveView.JS
 
   @badge_variants %{
     default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
@@ -194,6 +197,128 @@ defmodule CinderUI.Components.Feedback do
     ~H"""
     <div data-slot="alert-description" class={classes(@classes)}>
       {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  doc("""
+  Renders a flash notice.
+
+  Uses `alert/1` under the hood, without an alert title.
+
+  API-compatible with the Phoenix generated core component.
+
+  ## Examples
+
+  ```heex title="From flash map"
+  <.flash kind={:info} flash={@flash} />
+  ```
+
+  ```heex title="From slot"
+  <.flash kind={:error}>Unable to save changes.</.flash>
+  ```
+  """)
+
+  attr :id, :string, doc: "the optional id of flash container"
+  attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
+  attr :title, :string, default: nil
+  attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
+
+  slot :inner_block, doc: "the optional inner block that renders the flash message"
+
+  def flash(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:id, fn -> "flash-#{assigns.kind}" end)
+      |> assign(:variant, if(assigns.kind == :error, do: :destructive, else: :default))
+      |> assign(
+        :alert_classes,
+        if(assigns.kind == :error,
+          do: "border-destructive/40 bg-destructive/10 text-destructive",
+          else: "border-primary/20 bg-primary/10 text-primary"
+        )
+      )
+      |> assign(:icon_name, if(assigns.kind == :error, do: "circle-alert", else: "info"))
+
+    ~H"""
+    <div
+      :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
+      id={@id}
+      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> JS.hide(to: "##{@id}")}
+      role="alert"
+      class="fixed top-2 right-2 z-50 w-80 space-y-2 sm:w-96"
+      {@rest}
+    >
+      <.alert variant={@variant} class={@alert_classes}>
+        <CinderUI.Icons.icon name={@icon_name} class="size-4 shrink-0" />
+        <.alert_description class="text-current pr-8">{msg}</.alert_description>
+        <button
+          type="button"
+          class="col-start-2 row-start-1 -mt-1 -mr-1 justify-self-end rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"
+          aria-label="close"
+        >
+          <CinderUI.Icons.icon name="x" class="size-4 opacity-60" />
+        </button>
+      </.alert>
+    </div>
+    """
+  end
+
+  doc("""
+  Shows the flash group with standard titles and content.
+
+  API-compatible with Phoenix generated `flash_group/1`.
+
+  ## Example
+
+      <.flash_group flash={@flash} />
+  """)
+
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
+
+  def flash_group(assigns) do
+    ~H"""
+    <div id={@id} aria-live="polite">
+      <.flash kind={:info} flash={@flash} />
+      <.flash kind={:error} flash={@flash} />
+
+      <.flash
+        id="client-error"
+        kind={:error}
+        title="We can't find the internet"
+        phx-disconnected={
+          JS.show(to: ".phx-client-error #client-error")
+          |> JS.remove_attribute("hidden", to: "#client-error")
+        }
+        phx-connected={
+          JS.hide(to: "#client-error")
+          |> JS.set_attribute({"hidden", ""}, to: "#client-error")
+        }
+        hidden
+      >
+        Attempting to reconnect
+        <CinderUI.Icons.icon name="loader-circle" class="ml-1 size-3 motion-safe:animate-spin" />
+      </.flash>
+
+      <.flash
+        id="server-error"
+        kind={:error}
+        title="Something went wrong!"
+        phx-disconnected={
+          JS.show(to: ".phx-server-error #server-error")
+          |> JS.remove_attribute("hidden", to: "#server-error")
+        }
+        phx-connected={
+          JS.hide(to: "#server-error")
+          |> JS.set_attribute({"hidden", ""}, to: "#server-error")
+        }
+        hidden
+      >
+        Attempting to reconnect
+        <CinderUI.Icons.icon name="loader-circle" class="ml-1 size-3 motion-safe:animate-spin" />
+      </.flash>
     </div>
     """
   end

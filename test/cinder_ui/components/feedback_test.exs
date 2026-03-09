@@ -22,4 +22,38 @@ defmodule CinderUI.Components.FeedbackTest do
     assert html =~ "data-slot=\"progress\""
     assert html =~ "translateX(-50.0%)"
   end
+
+  test "flash renders from flash map using alert without title" do
+    html =
+      render_component(&Feedback.flash/1, %{
+        kind: :info,
+        flash: %{"info" => "Saved successfully"},
+        title: "Ignored title"
+      })
+
+    assert html =~ "data-slot=\"alert\""
+    assert html =~ "Saved successfully"
+    refute html =~ "Ignored title"
+    assert html =~ "lv:clear-flash"
+  end
+
+  test "flash renders from inner block" do
+    html =
+      render_component(&Feedback.flash/1, %{
+        kind: :error,
+        inner_block: TestHelpers.slot("Inline message")
+      })
+
+    assert html =~ "Inline message"
+    assert html =~ "circle-alert"
+  end
+
+  test "flash_group renders drop-in ids and wrappers" do
+    html = render_component(&Feedback.flash_group/1, %{flash: %{"info" => "Hi"}})
+
+    assert html =~ "id=\"flash-group\""
+    assert html =~ "id=\"flash-info\""
+    assert html =~ "id=\"client-error\""
+    assert html =~ "id=\"server-error\""
+  end
 end
