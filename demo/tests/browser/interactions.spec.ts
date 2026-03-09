@@ -123,6 +123,7 @@ test.describe("interactive previews", () => {
     await trigger.focus()
     await page.keyboard.press("ArrowDown")
     expect(await hasClass(content, "hidden")).toBe(false)
+    await expect(select.locator("[data-select-item][data-highlighted='true']").first()).toBeVisible()
 
     const itemStates = await select.locator("[data-select-item]").evaluateAll((els) =>
       els.map((el) => ({
@@ -144,6 +145,26 @@ test.describe("interactive previews", () => {
 
     await expect(hiddenInput).not.toHaveValue(initialValue)
     expect(await hasClass(content, "hidden")).toBe(true)
+  })
+
+  test("select clear button resets the hidden value", async ({ page }) => {
+    const select = page.locator("[data-slot='select']").filter({ has: page.locator("[data-slot='select-input'][name='plan']") }).first()
+    const hiddenInput = select.locator("[data-slot='select-input']")
+
+    await select.scrollIntoViewIfNeeded()
+    await expect(hiddenInput).not.toHaveValue("")
+
+    await page.evaluate(() => {
+      const target = document.querySelector("[data-slot='select']:has([data-slot='select-input'][name='plan'])")
+      target?.dispatchEvent(
+        new CustomEvent("cinder-ui:command", {
+          bubbles: false,
+          detail: { command: "clear" },
+        }),
+      )
+    })
+
+    await expect(hiddenInput).toHaveValue("")
   })
 
   test("combobox filters and selects", async ({ page }) => {
@@ -184,6 +205,8 @@ test.describe("interactive previews", () => {
     expect(await hasClass(content, "hidden")).toBe(false)
 
     await input.fill("Mira")
+    await page.keyboard.press("ArrowDown")
+    await expect(autocomplete.locator("[data-slot='autocomplete-item'][data-highlighted='true']").first()).toBeVisible()
     const itemStates = await autocomplete.locator("[data-slot='autocomplete-item']").evaluateAll((els) =>
       els.map((el) => ({
         text: el.getAttribute("data-label") || (el.textContent || "").trim(),

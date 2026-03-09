@@ -31,6 +31,32 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "phx-hook=\"CuiSelect\""
   end
 
+  test "select supports grouped options, clear button, and default empty state" do
+    html =
+      render_component(&Forms.select/1, %{
+        id: "owner",
+        name: "owner",
+        value: "mira",
+        clearable: true,
+        option: [
+          %{value: "levi", label: "Levi", group: "Engineering", inner_block: fn -> "" end},
+          %{value: "mira", label: "Mira", group: "Design", inner_block: fn -> "" end}
+        ]
+      })
+
+    empty_html =
+      render_component(&Forms.select/1, %{
+        id: "empty-select",
+        option: [],
+        empty: []
+      })
+
+    assert html =~ "data-slot=\"select-group\""
+    assert html =~ "data-slot=\"select-group-label\""
+    assert html =~ "data-slot=\"select-clear\""
+    assert empty_html =~ "No options available."
+  end
+
   test "native_select renders native wrapper and element" do
     html =
       render_component(&Forms.native_select/1, %{
@@ -74,11 +100,29 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "phx-hook=\"CuiAutocomplete\""
   end
 
+  test "autocomplete renders loading text and server-search-friendly markup" do
+    html =
+      render_component(&Forms.autocomplete/1, %{
+        id: "repo-search",
+        name: "repo",
+        loading: true,
+        loading_text: "Searching repositories...",
+        option: [],
+        empty: [%{inner_block: fn _, _ -> "No repositories found" end}]
+      })
+
+    assert html =~ "data-loading"
+    assert html =~ "data-slot=\"autocomplete-loading\""
+    assert html =~ "Searching repositories..."
+    assert html =~ "data-slot=\"autocomplete-empty\""
+  end
+
   test "field infers invalid state from error slot and renders subcomponents" do
     html =
       render_component(&Forms.field/1, %{
         label: [%{inner_block: fn _, _ -> "Username" end}],
         description: [%{inner_block: fn _, _ -> "Public handle" end}],
+        message: [%{inner_block: fn _, _ -> "Saved automatically" end}],
         error: [%{inner_block: fn _, _ -> "Already taken" end}],
         inner_block: [%{inner_block: fn _, _ -> "<input data-slot=\"input\" />" end}]
       })
@@ -88,6 +132,7 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "data-slot=\"field-label\""
     assert html =~ "data-slot=\"field-control\""
     assert html =~ "data-slot=\"field-description\""
+    assert html =~ "data-slot=\"field-message\""
     assert html =~ "data-slot=\"field-error\""
   end
 

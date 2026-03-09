@@ -1252,6 +1252,9 @@ defmodule CinderUI.Docs.Catalog do
   defp sample_assigns(Forms, :field_description),
     do: %{inner_block: slot("Helper copy appears here.")}
 
+  defp sample_assigns(Forms, :field_message),
+    do: %{inner_block: slot("Changes save automatically.")}
+
   defp sample_assigns(Forms, :field_error),
     do: %{inner_block: slot("This value is required.")}
 
@@ -1273,6 +1276,7 @@ defmodule CinderUI.Docs.Catalog do
           """
         ),
       description: slot("This is your public identifier."),
+      message: slot("Visible immediately after save."),
       error: slot(""),
       inner_block:
         slot(
@@ -1290,6 +1294,7 @@ defmodule CinderUI.Docs.Catalog do
       id: "docs-autocomplete",
       name: "owner",
       value: "levi",
+      loading_text: "Searching teammates...",
       option: [
         %{value: "levi", label: "Levi Buzolic", description: "Engineering"},
         %{value: "mira", label: "Mira Chen", description: "Design"},
@@ -1349,9 +1354,10 @@ defmodule CinderUI.Docs.Catalog do
       id: "docs-select",
       name: "plan",
       value: "pro",
+      clearable: true,
       option: [
-        %{value: "free", label: "Free", description: "For side projects"},
-        %{value: "pro", label: "Pro", description: "For growing teams"}
+        %{value: "free", label: "Free", description: "For side projects", group: "Plans"},
+        %{value: "pro", label: "Pro", description: "For growing teams", group: "Plans"}
       ]
     }
   end

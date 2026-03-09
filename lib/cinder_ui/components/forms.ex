@@ -9,6 +9,7 @@ defmodule CinderUI.Components.Forms do
   - `field_label/1`
   - `field_control/1`
   - `field_description/1`
+  - `field_message/1`
   - `field_error/1`
   - `input/1`
   - `textarea/1`
@@ -65,7 +66,7 @@ defmodule CinderUI.Components.Forms do
 
   `field/1` remains the simplest composition helper. For more explicit form
   structure, compose it with `field_label/1`, `field_control/1`,
-  `field_description/1`, and `field_error/1`.
+  `field_description/1`, `field_message/1`, and `field_error/1`.
 
   ## Examples
 
@@ -132,6 +133,7 @@ defmodule CinderUI.Components.Forms do
   attr :invalid, :boolean, default: false
   slot :label
   slot :description
+  slot :message
   slot :error
   slot :inner_block, required: true
 
@@ -148,6 +150,7 @@ defmodule CinderUI.Components.Forms do
       <.field_label :if={@label != []}>{render_slot(@label)}</.field_label>
       <.field_control>{render_slot(@inner_block)}</.field_control>
       <.field_description :if={@description != []}>{render_slot(@description)}</.field_description>
+      <.field_message :if={@message != []}>{render_slot(@message)}</.field_message>
       <.field_error :if={@error != []}>{render_slot(@error)}</.field_error>
     </div>
     """
@@ -201,6 +204,22 @@ defmodule CinderUI.Components.Forms do
 
     ~H"""
     <p data-slot="field-description" class={classes(@classes)}>{render_slot(@inner_block)}</p>
+    """
+  end
+
+  doc("""
+  Neutral status or informational message shown beneath a field control.
+  """)
+
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def field_message(assigns) do
+    assigns =
+      assign(assigns, :classes, ["text-foreground text-sm", assigns.class])
+
+    ~H"""
+    <p data-slot="field-message" class={classes(@classes)}>{render_slot(@inner_block)}</p>
     """
   end
 
@@ -467,8 +486,8 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Grouped labels" align="full"
   <.select id="assignee" name="assignee" placeholder="Assign a teammate">
-    <:option value="levi" label="Levi" description="Engineering" />
-    <:option value="mira" label="Mira" description="Design" />
+    <:option value="levi" label="Levi" description="Platform" group="Engineering" />
+    <:option value="mira" label="Mira" description="Product Design" group="Design" />
   </.select>
   ```
 
@@ -479,6 +498,13 @@ defmodule CinderUI.Components.Forms do
     <:option value="apac" label="APAC" disabled={true} />
   </.select>
   ```
+
+  ```heex title="Clearable select" align="full"
+  <.select id="support-tier" name="tier" value="pro" clearable={true}>
+    <:option value="free" label="Free" />
+    <:option value="pro" label="Pro" />
+  </.select>
+  ```
   """)
 
   attr :id, :string, required: true
@@ -486,6 +512,7 @@ defmodule CinderUI.Components.Forms do
   attr :value, :string, default: nil
   attr :placeholder, :string, default: "Choose an option"
   attr :disabled, :boolean, default: false
+  attr :clearable, :boolean, default: false
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
   attr :rest, :global, include: ~w(required aria-label)
@@ -495,6 +522,7 @@ defmodule CinderUI.Components.Forms do
     attr :label, :string, required: true
     attr :description, :string
     attr :disabled, :boolean
+    attr :group, :string
   end
 
   slot :empty
@@ -511,6 +539,7 @@ defmodule CinderUI.Components.Forms do
       |> assign(:trigger_classes, [
         "border-input bg-background text-foreground flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        assigns.clearable && "pr-16",
         !selected_option && "text-muted-foreground"
       ])
       |> assign(:content_classes, [
@@ -524,6 +553,7 @@ defmodule CinderUI.Components.Forms do
       id={@id}
       data-slot="select"
       data-state="closed"
+      data-placeholder={@placeholder}
       class={classes(@root_classes)}
       phx-hook="CuiSelect"
     >
@@ -551,6 +581,22 @@ defmodule CinderUI.Components.Forms do
         <span class="text-muted-foreground ml-2 shrink-0" aria-hidden="true">▾</span>
       </button>
 
+      <button
+        :if={@clearable}
+        type="button"
+        data-slot="select-clear"
+        data-select-clear
+        aria-label="Clear selection"
+        class={
+          classes([
+            "text-muted-foreground hover:text-foreground absolute top-1/2 right-8 -translate-y-1/2 rounded-xs",
+            !@selected_value && "hidden"
+          ])
+        }
+      >
+        ×
+      </button>
+
       <div
         id={"#{@id}-content"}
         data-slot="select-content"
@@ -559,43 +605,58 @@ defmodule CinderUI.Components.Forms do
         tabindex="-1"
         class={classes(@content_classes)}
       >
-        <button
-          :for={{option, index} <- Enum.with_index(@option)}
-          id={"#{@id}-option-#{index}"}
-          type="button"
-          role="option"
-          data-slot="select-item"
-          data-select-item
-          data-value={option.value}
-          data-label={option.label}
-          data-disabled={option[:disabled] || false}
-          data-selected={@value == option.value}
-          aria-selected={@value == option.value}
-          disabled={option[:disabled] || false}
-          class={
-            classes([
-              "relative flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-hidden select-none",
-              "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              "disabled:pointer-events-none disabled:opacity-50",
-              @value == option.value && "bg-accent text-accent-foreground"
-            ])
-          }
+        <div
+          :for={group <- grouped_options(@option)}
+          :if={@option != []}
+          data-slot="select-group"
+          class="py-1"
         >
-          <span class="min-w-0 flex-1">
-            <span class="block truncate">{option.label}</span>
-            <span :if={option[:description]} class="text-muted-foreground block text-xs">
-              {option.description}
+          <div
+            :if={group.label}
+            data-slot="select-group-label"
+            class="text-muted-foreground px-2 py-1 text-xs font-medium"
+          >
+            {group.label}
+          </div>
+
+          <button
+            :for={{option, index} <- group.options}
+            id={"#{@id}-option-#{index}"}
+            type="button"
+            role="option"
+            data-slot="select-item"
+            data-select-item
+            data-value={option.value}
+            data-label={option.label}
+            data-disabled={option[:disabled] || false}
+            data-selected={@value == option.value}
+            aria-selected={@value == option.value}
+            disabled={option[:disabled] || false}
+            class={
+              classes([
+                "relative flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-hidden select-none",
+                "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                "disabled:pointer-events-none disabled:opacity-50",
+                @value == option.value && "bg-accent text-accent-foreground"
+              ])
+            }
+          >
+            <span class="min-w-0 flex-1">
+              <span class="block truncate">{option.label}</span>
+              <span :if={option[:description]} class="text-muted-foreground block text-xs">
+                {option.description}
+              </span>
             </span>
-          </span>
-          <span :if={@value == option.value} class="shrink-0" aria-hidden="true">✓</span>
-        </button>
+            <span :if={@value == option.value} class="shrink-0" aria-hidden="true">✓</span>
+          </button>
+        </div>
 
         <div
-          :if={@option == [] and @empty != []}
+          :if={@option == []}
           data-slot="select-empty"
           class="text-muted-foreground px-2 py-1.5 text-sm"
         >
-          {render_slot(@empty)}
+          {if @empty != [], do: render_slot(@empty), else: "No options available."}
         </div>
       </div>
     </div>
@@ -670,6 +731,11 @@ defmodule CinderUI.Components.Forms do
   This is intended for searching and selecting from a known set of options. Use
   `select/1` when you want a trigger-driven listbox instead of a text input.
 
+  For server-backed search, keep the current query in LiveView assigns and
+  update the option list on `phx-change` or `phx-input`. The component keeps
+  its hidden value form-friendly while the visible input remains a normal text
+  field that can participate in debounced LiveView events.
+
   ## Examples
 
   ```heex title="Autocomplete" align="full"
@@ -685,6 +751,23 @@ defmodule CinderUI.Components.Forms do
     <:option value="cinder" label="cinder_ui" />
   </.autocomplete>
   ```
+
+  ```heex title="LiveView server search" align="full"
+  <.form for={@form} phx-change="search-owners">
+    <.autocomplete
+      id="owner-search"
+      name="owner"
+      value={@selected_owner}
+      placeholder="Search teammates..."
+      loading={@loading_owners}
+      phx-debounce="300"
+      aria-label="Search owners"
+    >
+      <:option :for={owner <- @owner_options} value={owner.id} label={owner.name} />
+      <:empty>No teammates match the current query.</:empty>
+    </.autocomplete>
+  </.form>
+  ```
   """)
 
   attr :id, :string, required: true
@@ -693,6 +776,7 @@ defmodule CinderUI.Components.Forms do
   attr :placeholder, :string, default: "Search options..."
   attr :disabled, :boolean, default: false
   attr :loading, :boolean, default: false
+  attr :loading_text, :string, default: "Loading..."
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
   attr :rest, :global, include: ~w(required aria-label)
@@ -730,6 +814,7 @@ defmodule CinderUI.Components.Forms do
       data-slot="autocomplete"
       data-state="closed"
       data-selected-label={@selected_label}
+      data-loading={@loading}
       class={classes(@root_classes)}
       phx-hook="CuiAutocomplete"
     >
@@ -770,7 +855,7 @@ defmodule CinderUI.Components.Forms do
           data-slot="autocomplete-loading"
           class="text-muted-foreground px-2 py-1.5 text-sm"
         >
-          Loading...
+          {@loading_text}
         </div>
 
         <button
@@ -814,6 +899,18 @@ defmodule CinderUI.Components.Forms do
       </div>
     </div>
     """
+  end
+
+  defp grouped_options(options) do
+    options
+    |> Enum.with_index()
+    |> Enum.chunk_by(fn {option, _index} -> Map.get(option, :group) end)
+    |> Enum.map(fn group_options ->
+      %{
+        label: group_options |> List.first() |> elem(0) |> Map.get(:group),
+        options: group_options
+      }
+    end)
   end
 
   doc("""

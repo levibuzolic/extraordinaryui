@@ -219,6 +219,7 @@ Available field helpers:
 - `field_label/1`
 - `field_control/1`
 - `field_description/1`
+- `field_message/1`
 - `field_error/1`
 - `input/1`
 - `select/1`

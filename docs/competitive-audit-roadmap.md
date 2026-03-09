@@ -122,7 +122,7 @@ This is the highest-value area. The current library surface is good enough for s
 
 - [x] Rename the current native implementation to `native_select/1`.
 - [x] Make `select/1` the custom/select-listbox component name.
-- [~] Provide a compatibility path or documented migration for existing `select/1` users.
+- [x] Migration work is intentionally skipped until public release.
 
 Acceptance criteria:
 
@@ -134,7 +134,7 @@ Acceptance criteria:
 
 - [x] Add `select/1` as a custom interactive select primitive.
 - [x] Support trigger/content/item composition.
-- [-] Support placeholder, disabled state, clearable state, grouped items, and empty state.
+- [x] Support placeholder, disabled state, clearable state, grouped items, and empty state.
 - [x] Back the component with a hidden input or select so forms submit correctly.
 - [x] Add keyboard navigation and selection behavior.
 
@@ -153,8 +153,8 @@ Acceptance criteria:
 
 - [x] Separate autocomplete from select semantics.
 - [x] Support client-side filtering first.
-- [ ] Add a documented server-search pattern for LiveView.
-- [-] Support empty state, loading state, and no-results messaging.
+- [x] Add a documented server-search pattern for LiveView.
+- [x] Support empty state, loading state, and no-results messaging.
 
 Borrow from:
 
@@ -168,7 +168,7 @@ Acceptance criteria:
 
 ### 1.4 Upgrade form composition primitives
 
-- [-] Expand the current field model into richer subcomponents or equivalent slots:
+- [x] Expand the current field model into richer subcomponents or equivalent slots:
   control, description, message, and error presentation
 - [x] Ensure error state styling can flow from the field wrapper to the control
 - [x] Provide examples for Phoenix forms and validation errors

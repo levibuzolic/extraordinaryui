@@ -351,6 +351,7 @@ const CuiSelect = {
     this.trigger = this.el.querySelector("[data-select-trigger]")
     this.content = this.el.querySelector("[data-select-content]")
     this.input = this.el.querySelector("[data-slot='select-input']")
+    this.clearButton = this.el.querySelector("[data-select-clear]")
     this.items = Array.from(this.el.querySelectorAll("[data-select-item]"))
     this.open = false
 
@@ -358,6 +359,13 @@ const CuiSelect = {
 
     this.selectedIndex = () =>
       this.items.findIndex((item) => item.dataset.selected === "true")
+
+    this.highlightItem = (target) => {
+      this.items.forEach((item) => {
+        const highlighted = item === target
+        item.dataset.highlighted = highlighted ? "true" : "false"
+      })
+    }
 
     this.sync = () => {
       this.el.dataset.state = this.open ? "open" : "closed"
@@ -370,6 +378,7 @@ const CuiSelect = {
       if (!enabledItems.length) return
 
       const nextIndex = Math.min(Math.max(index, 0), enabledItems.length - 1)
+      this.highlightItem(enabledItems[nextIndex])
       enabledItems[nextIndex].focus()
     }
 
@@ -400,6 +409,7 @@ const CuiSelect = {
       this.items.forEach((entry) => {
         const selected = entry === item
         entry.dataset.selected = selected ? "true" : "false"
+        entry.dataset.highlighted = "false"
         entry.setAttribute("aria-selected", selected ? "true" : "false")
         entry.classList.toggle("bg-accent", selected)
         entry.classList.toggle("text-accent-foreground", selected)
@@ -407,9 +417,30 @@ const CuiSelect = {
 
       const valueEl = this.el.querySelector("[data-slot='select-value']")
       if (valueEl) valueEl.textContent = label
+      if (this.clearButton) this.clearButton.classList.remove("hidden")
 
       this.closeMenu()
       if (this.trigger) this.trigger.focus()
+      if (this.input) {
+        this.input.dispatchEvent(new Event("input", { bubbles: true }))
+        this.input.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+    }
+
+    this.clearSelection = () => {
+      const placeholder = this.el.dataset.placeholder || ""
+      if (this.input) this.input.value = ""
+      this.items.forEach((entry) => {
+        entry.dataset.selected = "false"
+        entry.dataset.highlighted = "false"
+        entry.setAttribute("aria-selected", "false")
+        entry.classList.remove("bg-accent", "text-accent-foreground")
+      })
+
+      const valueEl = this.el.querySelector("[data-slot='select-value']")
+      if (valueEl) valueEl.textContent = placeholder
+      if (this.clearButton) this.clearButton.classList.add("hidden")
+      this.closeMenu()
       if (this.input) {
         this.input.dispatchEvent(new Event("input", { bubbles: true }))
         this.input.dispatchEvent(new Event("change", { bubbles: true }))
@@ -431,6 +462,13 @@ const CuiSelect = {
       } else {
         this.openMenu()
       }
+    }
+
+    this.onClearClick = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      this.clearSelection()
+      this.trigger?.focus()
     }
 
     this.onTriggerKeyDown = (event) => {
@@ -496,14 +534,20 @@ const CuiSelect = {
       this.selectItem(item)
     }
 
+    this.onItemFocus = (event) => {
+      this.highlightItem(event.currentTarget)
+    }
+
     this.onDocumentClick = (event) => {
       if (!this.el.contains(event.target)) this.closeMenu()
     }
 
     this.trigger && this.trigger.addEventListener("click", this.onTriggerClick)
+    this.clearButton && this.clearButton.addEventListener("click", this.onClearClick)
     this.trigger && this.trigger.addEventListener("keydown", this.onTriggerKeyDown)
     this.content && this.content.addEventListener("keydown", this.onContentKeyDown)
     this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
+    this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
     document.addEventListener("click", this.onDocumentClick)
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => this.openMenu(),
@@ -516,15 +560,18 @@ const CuiSelect = {
         }
       },
       focus: () => this.trigger?.focus(),
+      clear: () => this.clearSelection(),
     })
     this.sync()
   },
 
   destroyed() {
     this.trigger && this.trigger.removeEventListener("click", this.onTriggerClick)
+    this.clearButton && this.clearButton.removeEventListener("click", this.onClearClick)
     this.trigger && this.trigger.removeEventListener("keydown", this.onTriggerKeyDown)
     this.content && this.content.removeEventListener("keydown", this.onContentKeyDown)
     this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
+    this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
     document.removeEventListener("click", this.onDocumentClick)
     this.removeCommandListener && this.removeCommandListener()
   },
@@ -537,12 +584,20 @@ const CuiAutocomplete = {
     this.valueInput = this.el.querySelector("[data-slot='autocomplete-value']")
     this.items = Array.from(this.el.querySelectorAll("[data-autocomplete-item]"))
     this.empty = this.el.querySelector("[data-slot='autocomplete-empty']")
+    this.loading = this.el.querySelector("[data-slot='autocomplete-loading']")
     this.selectedLabel = this.el.dataset.selectedLabel || ""
     this.open = false
     this.skipFocusOpen = false
 
     this.visibleItems = () =>
       this.items.filter((item) => !item.classList.contains("hidden") && item.dataset.disabled !== "true" && !item.disabled)
+
+    this.highlightItem = (target) => {
+      this.items.forEach((item) => {
+        const highlighted = item === target
+        item.dataset.highlighted = highlighted ? "true" : "false"
+      })
+    }
 
     this.sync = () => {
       this.el.dataset.state = this.open ? "open" : "closed"
@@ -552,6 +607,10 @@ const CuiAutocomplete = {
 
     this.syncEmpty = () => {
       if (!this.empty) return
+      if (this.el.dataset.loading === "true") {
+        this.empty.classList.add("hidden")
+        return
+      }
       const hasVisibleItems = this.items.some((item) => !item.classList.contains("hidden"))
       this.empty.classList.toggle("hidden", hasVisibleItems)
     }
@@ -568,6 +627,7 @@ const CuiAutocomplete = {
       this.items.forEach((entry) => {
         const selected = entry === item
         entry.dataset.selected = selected ? "true" : "false"
+        entry.dataset.highlighted = "false"
         entry.setAttribute("aria-selected", selected ? "true" : "false")
         entry.classList.toggle("bg-accent", selected)
         entry.classList.toggle("text-accent-foreground", selected)
@@ -604,6 +664,7 @@ const CuiAutocomplete = {
 
       const currentIndex = visibleItems.findIndex((item) => item === document.activeElement)
       const nextIndex = currentIndex === -1 ? 0 : (currentIndex + delta + visibleItems.length) % visibleItems.length
+      this.highlightItem(visibleItems[nextIndex])
       visibleItems[nextIndex].focus()
     }
 
@@ -692,6 +753,10 @@ const CuiAutocomplete = {
       this.input?.focus()
     }
 
+    this.onItemFocus = (event) => {
+      this.highlightItem(event.currentTarget)
+    }
+
     this.onDocumentClick = (event) => {
       if (this.el.contains(event.target)) return
       this.open = false
@@ -709,6 +774,7 @@ const CuiAutocomplete = {
     this.input?.addEventListener("keydown", this.onKeyDown)
     this.content?.addEventListener("keydown", this.onContentKeyDown)
     this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
+    this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
     document.addEventListener("click", this.onDocumentClick)
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => {
@@ -742,6 +808,7 @@ const CuiAutocomplete = {
     this.input?.removeEventListener("keydown", this.onKeyDown)
     this.content?.removeEventListener("keydown", this.onContentKeyDown)
     this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
+    this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
     document.removeEventListener("click", this.onDocumentClick)
     this.removeCommandListener && this.removeCommandListener()
   },
