@@ -4,6 +4,9 @@ import { expect, test } from "@playwright/test"
 
 test.describe("visual regression", () => {
   const fixedPreviewWidthPx = 550
+  const shouldExportDocsScreenshots = process.env.CI
+    ? process.env.CINDER_UI_EXPORT_DOC_SCREENSHOTS === "true"
+    : true
 
   test.use({
     viewport: { width: 1600, height: 1200 },
@@ -49,7 +52,9 @@ test.describe("visual regression", () => {
   })
 
   test("captures each component card", async ({ page }) => {
-    await mkdir(screenshotOutputDir, { recursive: true })
+    if (shouldExportDocsScreenshots) {
+      await mkdir(screenshotOutputDir, { recursive: true })
+    }
 
     const cards = page.locator("[data-component-card]")
     const total = await cards.count()
@@ -66,10 +71,13 @@ test.describe("visual regression", () => {
       await preview.scrollIntoViewIfNeeded()
       await expect(preview).toBeVisible()
       await expect(preview).toHaveScreenshot(snapshotName, { scale: "device" })
-      await preview.screenshot({
-        path: path.join(screenshotOutputDir, `${componentId}.png`),
-        scale: "device",
-      })
+
+      if (shouldExportDocsScreenshots) {
+        await preview.screenshot({
+          path: path.join(screenshotOutputDir, `${componentId}.png`),
+          scale: "device",
+        })
+      }
     }
   })
 })
