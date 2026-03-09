@@ -27,64 +27,27 @@ jobs:
           node-cache: npm
           node-cache-dependency-path: demo/package-lock.json
 
-      - name: Cache root Mix dependencies
-        uses: actions/cache@v4
+      - name: Setup root Mix
+        uses: ./.github/actions/setup-root-mix
         with:
-          path: |
-            deps
-            _build
-          key: ${{ runner.os }}-mix-autofix-root-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-autofix-root-
-            ${{ runner.os }}-mix-root-
-            ${{ runner.os }}-mix-
+          cache-key-prefix: autofix-root
 
-      - name: Cache demo Mix dependencies
-        uses: actions/cache@v4
+      - name: Setup demo Mix
+        uses: ./.github/actions/setup-demo-mix
         with:
-          path: |
-            demo/deps
-            demo/_build
-          key: ${{ runner.os }}-mix-autofix-demo-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-autofix-demo-
-            ${{ runner.os }}-mix-demo-
-            ${{ runner.os }}-mix-
+          cache-key-prefix: autofix
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
+      - name: Setup demo browser
+        uses: ./.github/actions/setup-demo-browser
         with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-autofix-${{ hashFiles('demo/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-autofix-
-            ${{ runner.os }}-playwright-
-
-      - name: Install root dependencies
-        run: mix deps.get
+          playwright-cache-key-prefix: autofix
 
       - name: Format root project
         run: mix format
 
-      - name: Install demo dependencies
-        working-directory: demo
-        run: mix deps.get
-
       - name: Format demo project
         working-directory: demo
         run: mix format
-
-      - name: Install demo Node dependencies
-        working-directory: demo
-        run: npm ci
-
-      - name: Build demo assets
-        working-directory: demo
-        run: mix assets.build
-
-      - name: Install Playwright browser
-        working-directory: demo
-        run: npx playwright install --with-deps chromium
 
       - name: Refresh visual snapshots and docs screenshots
         working-directory: demo

@@ -21,19 +21,10 @@ jobs:
       - name: Setup toolchains
         uses: ./.github/actions/setup-toolchains
 
-      - name: Cache Mix dependencies
-        uses: actions/cache@v4
+      - name: Setup root Mix
+        uses: ./.github/actions/setup-root-mix
         with:
-          path: |
-            deps
-            _build
-          key: ${{ runner.os }}-mix-root-quality-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-root-quality-
-            ${{ runner.os }}-mix-root-
-
-      - name: Install dependencies
-        run: mix deps.get
+          cache-key-prefix: root-quality
 
       - name: Check formatting
         run: mix format --check-formatted
@@ -57,19 +48,10 @@ jobs:
       - name: Setup toolchains
         uses: ./.github/actions/setup-toolchains
 
-      - name: Cache Mix dependencies
-        uses: actions/cache@v4
+      - name: Setup root Mix
+        uses: ./.github/actions/setup-root-mix
         with:
-          path: |
-            deps
-            _build
-          key: ${{ runner.os }}-mix-root-test-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-root-test-
-            ${{ runner.os }}-mix-root-
-
-      - name: Install dependencies
-        run: mix deps.get
+          cache-key-prefix: root-test
 
       - name: Run unit tests with coverage gate + Cobertura export
         run: MIX_ENV=test mix coveralls.cobertura --raise
@@ -110,19 +92,10 @@ jobs:
       - name: Setup toolchains
         uses: ./.github/actions/setup-toolchains
 
-      - name: Cache Mix dependencies
-        uses: actions/cache@v4
+      - name: Setup demo Mix
+        uses: ./.github/actions/setup-demo-mix
         with:
-          path: |
-            demo/deps
-            demo/_build
-          key: ${{ runner.os }}-mix-demo-unit-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-demo-unit-
-            ${{ runner.os }}-mix-demo-
-
-      - name: Install dependencies
-        run: mix deps.get
+          cache-key-prefix: unit
 
       - name: Check formatting
         run: mix format --check-formatted
@@ -171,36 +144,15 @@ jobs:
           node-cache: npm
           node-cache-dependency-path: demo/package-lock.json
 
-      - name: Cache Mix dependencies
-        uses: actions/cache@v4
+      - name: Setup demo Mix
+        uses: ./.github/actions/setup-demo-mix
         with:
-          path: |
-            demo/deps
-            demo/_build
-          key: ${{ runner.os }}-mix-demo-browser-${{ hashFiles('demo/mix.lock', 'mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-demo-browser-
-            ${{ runner.os }}-mix-demo-
+          cache-key-prefix: browser
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
+      - name: Setup demo browser
+        uses: ./.github/actions/setup-demo-browser
         with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('demo/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Elixir dependencies
-        run: mix deps.get
-
-      - name: Install Node dependencies
-        run: npm ci
-
-      - name: Build frontend assets
-        run: mix assets.build
-
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+          playwright-cache-key-prefix: browser
 
       - name: Run Playwright tests
         run: npx playwright test
