@@ -237,6 +237,12 @@ Why this matters:
 
 Date and time pickers are a major capability gap compared with the best Phoenix UI libraries.
 
+Current scope decision:
+
+- Date/time pickers are intentionally out of scope for now.
+- If we revisit this later, prefer wrapping a well-supported underlying solution rather than owning a fully custom picker.
+- Until then, lean on browser-native date inputs in host apps.
+
 ### 3.1 Add `date_picker/1`
 
 - [ ] Build a practical date picker with form integration.
@@ -255,7 +261,7 @@ Date and time pickers are a major capability gap compared with the best Phoenix 
 
 Borrow from:
 
-- Fluxon date picker family
+- Fluxon date picker family for API and interaction ideas only
 
 Acceptance criteria:
 

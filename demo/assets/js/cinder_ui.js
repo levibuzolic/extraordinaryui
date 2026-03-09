@@ -783,7 +783,7 @@ const CuiAutocomplete = {
         const firstVisible = this.visibleItems()[0]
         if (!this.open || !firstVisible) return
         event.preventDefault()
-        this.applySelection(document.activeElement?.matches?.("[data-autocomplete-item]") ? document.activeElement : firstVisible)
+        this.applySelection(document.activeElement?.dataset?.autocompleteItem !== undefined ? document.activeElement : firstVisible)
       }
 
       if (event.key === "Escape") {

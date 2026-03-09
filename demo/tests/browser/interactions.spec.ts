@@ -147,7 +147,7 @@ test.describe("interactive previews", () => {
   })
 
   test("select opens from the keyboard and updates the hidden value", async ({ page }) => {
-    const select = page.locator("[data-slot='select']").first()
+    const select = page.locator("#docs-select")
     const trigger = select.locator("[data-select-trigger]")
     const content = select.locator("[data-select-content]")
     const hiddenInput = select.locator("[data-slot='select-input']")
@@ -234,7 +234,7 @@ test.describe("interactive previews", () => {
   })
 
   test("autocomplete filters and updates the hidden value", async ({ page }) => {
-    const autocomplete = page.locator("[data-slot='autocomplete']").first()
+    const autocomplete = page.locator("#docs-autocomplete")
     const input = autocomplete.locator("[data-autocomplete-input]")
     const content = autocomplete.locator("[data-autocomplete-content]")
     const hiddenInput = autocomplete.locator("[data-slot='autocomplete-value']")
