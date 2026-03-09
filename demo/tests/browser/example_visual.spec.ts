@@ -62,7 +62,7 @@ test.describe("promoted example visual regression", () => {
     for (const path of componentPaths) {
       await page.goto(path)
 
-      const examples = await page.locator("[data-component-example][data-promoted-visual='true']").evaluateAll((nodes) =>
+      const examples = await page.locator("[data-component-example][data-promoted-visual]").evaluateAll((nodes) =>
         nodes.map((node) => ({
           componentId: node.getAttribute("data-component-id") || "",
           exampleId: node.getAttribute("data-example-id") || "",
@@ -79,7 +79,7 @@ test.describe("promoted example visual regression", () => {
       await page.goto(path)
 
       const example = page.locator(
-        `[data-component-example][data-component-id="${componentId}"][data-example-id="${exampleId}"][data-promoted-visual="true"]`,
+        `[data-component-example][data-component-id="${componentId}"][data-example-id="${exampleId}"][data-promoted-visual]`,
       )
       const preview = example.locator('[data-slot="preview"]')
 
