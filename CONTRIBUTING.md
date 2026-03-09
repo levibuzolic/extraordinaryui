@@ -53,6 +53,7 @@ Default hooks:
 - Static docs catalog definitions: `dev/lib/cinder_ui/docs/catalog.ex`
 - Demo integration app: `demo`
 - Browser tests: `demo/tests/browser/**`
+- Long-lived competitive roadmap and backlog: `docs/competitive-audit-roadmap.md`
 
 ## Typical Workflow
 
@@ -60,7 +61,8 @@ Default hooks:
 2. Update docs/examples if API or behavior changed.
 3. Update static docs catalog sample(s) in `dev/lib/cinder_ui/docs/catalog.ex`.
 4. Add or adjust unit/browser tests.
-5. Run quality gates.
+5. If the change relates to strategic component coverage or interaction quality, update `docs/competitive-audit-roadmap.md`.
+6. Run quality gates.
 
 ## Quality Gates
 

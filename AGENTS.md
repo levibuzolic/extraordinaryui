@@ -40,6 +40,7 @@ Run from repository root unless noted.
 - Keep static docs and demo behavior aligned (theme controls, snippets, interactions).
 - Use repository-relative paths in docs.
 - Update tests whenever component behavior, docs generation, or JS hooks change.
+- RTL support is intentionally out of scope for `cinder_ui`. Do not implement RTL-specific behavior, logical-side rewrites, or parity work driven only by upstream RTL changes unless a maintainer explicitly asks for it.
 
 ## Documentation Rules
 
