@@ -606,7 +606,7 @@ defmodule CinderUI.Docs.UIComponents do
   defp overview_href(:live, _root_prefix), do: "/docs"
 
   defp install_href(:static, root_prefix), do: "#{root_prefix}/install/"
-  defp install_href(:live, _root_prefix), do: "/docs/install"
+  defp install_href(:live, _root_prefix), do: "/docs/install/"
 
   defp section_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
   defp section_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
