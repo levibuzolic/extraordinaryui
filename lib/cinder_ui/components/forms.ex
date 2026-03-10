@@ -477,7 +477,7 @@ defmodule CinderUI.Components.Forms do
   ## Examples
 
   ```heex title="Custom select" align="full"
-  <.select id="team-plan" name="plan" value="pro">
+  <.select id="docs-select" name="plan" value="pro">
     <:option value="free" label="Free" />
     <:option value="pro" label="Pro" />
     <:option value="enterprise" label="Enterprise" />
@@ -740,7 +740,7 @@ defmodule CinderUI.Components.Forms do
   ## Examples
 
   ```heex title="Autocomplete" align="full"
-  <.autocomplete id="team-owner" name="owner" value="levi">
+  <.autocomplete id="docs-autocomplete" name="owner" value="levi">
     <:option value="levi" label="Levi Buzolic" description="Engineering" />
     <:option value="mira" label="Mira Chen" description="Design" />
     <:option value="sam" label="Sam Hall" description="Operations" />

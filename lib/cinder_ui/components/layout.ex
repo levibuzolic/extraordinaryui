@@ -370,11 +370,19 @@ defmodule CinderUI.Components.Layout do
   doc("""
   Maintains a fixed aspect ratio for content.
 
-  ## Example
+  ## Examples
 
-      <.aspect_ratio ratio="16 / 9">
-        <img src="https://picsum.photos/id/191/800/800" class="h-full w-full object-cover" />
-      </.aspect_ratio>
+  ```heex title="16:9 placeholder"
+  <.aspect_ratio ratio="16 / 9">
+    <div class="flex h-full w-full items-center justify-center bg-muted text-xs text-muted-foreground">16:9</div>
+  </.aspect_ratio>
+  ```
+
+  ```heex title="With an image"
+  <.aspect_ratio ratio="16 / 9">
+    <img src="https://picsum.photos/id/191/800/800" class="h-full w-full object-cover" />
+  </.aspect_ratio>
+  ```
   """)
 
   attr :ratio, :string, default: "16 / 9"
