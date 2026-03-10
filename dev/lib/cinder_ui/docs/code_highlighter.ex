@@ -2,14 +2,22 @@ defmodule CinderUI.Docs.CodeHighlighter do
   @moduledoc false
 
   @keywords MapSet.new(~w(true false nil do end fn if else case when with for in))
+  @elixir_keywords MapSet.new(~w(
+                       true false nil do end fn if else case when with for in
+                       def defp defmodule use alias import require quote unquote
+                       try catch rescue receive after cond
+                     ))
+  @bash_keywords MapSet.new(~w(mix cd npm pnpm yarn bun))
 
-  @type language :: :auto | :heex | :css | :plain
+  @type language :: :auto | :heex | :elixir | :css | :bash | :plain
 
   @spec highlight(String.t(), language()) :: String.t()
   def highlight(source, language \\ :auto) when is_binary(source) do
     case resolve_language(source, language) do
       :heex -> highlight_heex(source)
+      :elixir -> highlight_elixir(source)
       :css -> highlight_css(source)
+      :bash -> highlight_bash(source)
       :plain -> escape_html(source)
     end
   end
@@ -43,7 +51,10 @@ defmodule CinderUI.Docs.CodeHighlighter do
   end
 
   defp resolve_language(source, :auto), do: if(heex_like?(source), do: :heex, else: :plain)
-  defp resolve_language(_source, language) when language in [:heex, :css, :plain], do: language
+
+  defp resolve_language(_source, language) when language in [:heex, :elixir, :css, :bash, :plain],
+    do: language
+
   defp resolve_language(_source, _language), do: :plain
 
   defp highlight_heex(source), do: highlight_heex(source, 0, [])
@@ -325,6 +336,142 @@ defmodule CinderUI.Docs.CodeHighlighter do
     end
   end
 
+  defp highlight_elixir(source), do: highlight_elixir(source, 0, [])
+
+  defp highlight_elixir(source, idx, out) when idx >= byte_size(source) do
+    out |> Enum.reverse() |> IO.iodata_to_binary()
+  end
+
+  defp highlight_elixir(source, idx, out) do
+    cond do
+      starts_with?(source, idx, "#") ->
+        {comment, next_idx} = take_until_char_or_eof(source, idx, ?\n)
+
+        highlight_elixir(source, next_idx, [
+          [~s(<span class="tok-comment">), escape_html(comment), "</span>"] | out
+        ])
+
+      at(source, idx) in [?", ?'] ->
+        {chunk, next_idx} = take_string(source, idx, at(source, idx))
+
+        highlight_elixir(source, next_idx, [
+          [~s(<span class="tok-string">), escape_html(chunk), "</span>"] | out
+        ])
+
+      at(source, idx) == ?: and ident_start?(safe_at(source, idx + 1)) ->
+        {word, next_idx} = take_while(source, idx + 1, &ident_char?/1)
+        token = ":" <> word
+
+        highlight_elixir(source, next_idx, [
+          [~s(<span class="tok-atom">), escape_html(token), "</span>"] | out
+        ])
+
+      digit?(at(source, idx)) ->
+        {number, next_idx} = take_while(source, idx, fn c -> digit?(c) or c in [?., ?_] end)
+
+        highlight_elixir(source, next_idx, [
+          [~s(<span class="tok-number">), escape_html(number), "</span>"] | out
+        ])
+
+      tag_name_char?(at(source, idx)) ->
+        {word, next_idx} = take_while(source, idx, &tag_name_char?/1)
+        klass = if(MapSet.member?(@elixir_keywords, word), do: "tok-keyword", else: "tok-ident")
+
+        highlight_elixir(source, next_idx, [
+          [~s(<span class="#{klass}">), escape_html(word), "</span>"] | out
+        ])
+
+      operator?(at(source, idx)) ->
+        {op, next_idx} = take_while(source, idx, &operator?/1)
+
+        highlight_elixir(source, next_idx, [
+          [~s(<span class="tok-operator">), escape_html(op), "</span>"] | out
+        ])
+
+      punct_or_block_char?(at(source, idx)) ->
+        highlight_elixir(
+          source,
+          idx + 1,
+          [[~s(<span class="tok-punct">), escape_html(<<at(source, idx)>>), "</span>"] | out]
+        )
+
+      true ->
+        highlight_elixir(source, idx + 1, [escape_html(<<at(source, idx)>>) | out])
+    end
+  end
+
+  defp highlight_bash(source), do: highlight_bash(source, 0, [])
+
+  defp highlight_bash(source, idx, out) when idx >= byte_size(source) do
+    out |> Enum.reverse() |> IO.iodata_to_binary()
+  end
+
+  defp highlight_bash(source, idx, out) do
+    cond do
+      starts_with?(source, idx, "#") ->
+        {comment, next_idx} = take_until_char_or_eof(source, idx, ?\n)
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="tok-comment">), escape_html(comment), "</span>"] | out
+        ])
+
+      at(source, idx) in [?", ?'] ->
+        {chunk, next_idx} = take_string(source, idx, at(source, idx))
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="tok-string">), escape_html(chunk), "</span>"] | out
+        ])
+
+      at(source, idx) == ?$ and ident_start?(safe_at(source, idx + 1)) ->
+        {word, next_idx} = take_while(source, idx + 1, &ident_char?/1)
+        token = "$" <> word
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="tok-atom">), escape_html(token), "</span>"] | out
+        ])
+
+      starts_with?(source, idx, "--") and css_ident_char?(safe_at(source, idx + 2)) ->
+        {name, next_idx} = take_while(source, idx + 2, &css_ident_char?/1)
+        token = "--" <> name
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="tok-attr">), escape_html(token), "</span>"] | out
+        ])
+
+      digit?(at(source, idx)) ->
+        {number, next_idx} = take_while(source, idx, fn c -> digit?(c) or c in [?., ?_] end)
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="tok-number">), escape_html(number), "</span>"] | out
+        ])
+
+      ident_start?(at(source, idx)) ->
+        {word, next_idx} = take_while(source, idx, &ident_char?/1)
+        klass = if(MapSet.member?(@bash_keywords, word), do: "tok-keyword", else: "tok-ident")
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="#{klass}">), escape_html(word), "</span>"] | out
+        ])
+
+      operator?(at(source, idx)) ->
+        {op, next_idx} = take_while(source, idx, &operator?/1)
+
+        highlight_bash(source, next_idx, [
+          [~s(<span class="tok-operator">), escape_html(op), "</span>"] | out
+        ])
+
+      bash_punct?(at(source, idx)) ->
+        highlight_bash(
+          source,
+          idx + 1,
+          [[~s(<span class="tok-punct">), escape_html(<<at(source, idx)>>), "</span>"] | out]
+        )
+
+      true ->
+        highlight_bash(source, idx + 1, [escape_html(<<at(source, idx)>>) | out])
+    end
+  end
+
   defp read_balanced(source, start_idx, open_char, close_char) do
     read_balanced(source, start_idx, open_char, close_char, 0, nil, start_idx)
   end
@@ -405,6 +552,13 @@ defmodule CinderUI.Docs.CodeHighlighter do
     end
   end
 
+  defp take_until_char_or_eof(source, idx, char) do
+    case take_until_char(source, idx, char, 1) do
+      {chunk, next_idx} -> {chunk, next_idx}
+      :not_found -> {binary_part(source, idx, byte_size(source) - idx), byte_size(source)}
+    end
+  end
+
   defp take_string(source, idx, quote_char) do
     take_string(source, idx + 1, quote_char, idx)
   end
@@ -477,8 +631,10 @@ defmodule CinderUI.Docs.CodeHighlighter do
   defp attr_char?(char), do: attr_char_start?(char) or digit?(char) or char in [?., ?-]
   defp operator?(char), do: char in [?=, ?+, ?-, ?*, ?/, ?>, ?<, ?!, ?|, ?&]
   defp punct?(char), do: char in [?(, ?), ?[, ?], ?,, ?., ?%]
+  defp punct_or_block_char?(char), do: punct?(char) or char in [?{, ?}]
   defp css_ident_start?(char), do: letter?(char) or char in [?_]
   defp css_ident_char?(char), do: css_ident_start?(char) or digit?(char) or char in [?-]
+  defp bash_punct?(char), do: char in [?(, ?), ?[, ?], ?{, ?}, ?,, ?., ?%]
 
   defp hex_char?(char),
     do: digit?(char) or (char >= ?a and char <= ?f) or (char >= ?A and char <= ?F)

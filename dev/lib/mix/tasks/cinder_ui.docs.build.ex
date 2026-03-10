@@ -196,9 +196,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   defp rendered(html) when is_binary(html), do: Phoenix.HTML.raw(html)
 
   defp site_js do
-    [site_asset!("shared.js"), docs_asset!("site.js")]
-    |> Enum.join(";\n\n")
-    |> Kernel.<>(";\n")
+    docs_asset!("site.js") <> ";\n"
   end
 
   defp site_css do

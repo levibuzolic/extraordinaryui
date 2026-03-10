@@ -32,6 +32,8 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert marketing_index =~ "https://hexdocs.pm/cinder_ui"
     assert marketing_index =~ "GitHub"
     assert marketing_index =~ "Component examples"
+    assert marketing_index =~ ~s(class="code-highlight block min-w-max whitespace-pre")
+    assert marketing_index =~ ~s(<span class="tok-keyword">mix</span>)
 
     assert docs_index =~ "Component Library"
     assert docs_index =~ "Actions.button"
@@ -44,10 +46,13 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert component_page =~ "Slots"
     assert component_page =~ "https://ui.shadcn.com/docs/components/button"
     assert component_page =~ ~s(data-slot="component-preview")
+    assert component_page =~ ~s(class="code-highlight block min-w-max whitespace-pre")
+    assert component_page =~ ~s(<span class="tok-tag">.button</span>)
 
-    assert site_js =~ "highlightCodeBlocks"
     assert site_js =~ "initCommandPalette"
     assert site_js =~ "restoreSidebarScroll"
+    refute site_js =~ "highlightCodeBlocks"
+    refute site_js =~ "CinderUISiteShared"
     assert site_css =~ ".docs-markdown"
     assert site_css =~ ".docs-k-panel"
   end

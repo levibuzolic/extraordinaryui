@@ -4,7 +4,6 @@ defmodule CinderUI.Site.Marketing do
   use Phoenix.Component
 
   alias CinderUI.Components.Actions
-  alias CinderUI.Components.DataDisplay
   alias CinderUI.Components.Feedback
   alias CinderUI.Components.Forms
   alias CinderUI.Components.Layout
@@ -13,7 +12,6 @@ defmodule CinderUI.Site.Marketing do
   alias CinderUI.Icons
   alias Phoenix.HTML.Safe
 
-  @repo_root Path.expand("../../../../", __DIR__)
   @template_dir Path.expand("../../../../priv/site_templates", __DIR__)
 
   def write_marketing_index!(output_dir, opts \\ %{}) do
@@ -85,7 +83,6 @@ defmodule CinderUI.Site.Marketing do
       theme_bootstrap_script: theme_bootstrap_script(),
       theme_css_path: theme_css_path,
       site_css_path: site_css_path,
-      shared_script: shared_script(),
       header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
       hero_html: hero_html(version, component_count, shadcn_url, docs_path),
@@ -388,7 +385,11 @@ defmodule CinderUI.Site.Marketing do
           {rendered(@preview_html)}
         </div>
         <div class="mt-3">
-          <DataDisplay.code_block>{@snippet}</DataDisplay.code_block>
+          <Docs.docs_code_block
+            source={@snippet}
+            language={:heex}
+            pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+          />
         </div>
       </Layout.card_content>
     </Layout.card>
@@ -424,13 +425,21 @@ defmodule CinderUI.Site.Marketing do
       </p>
       <div class="space-y-2">
         <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
-        <DataDisplay.code_block>{@deps_code}</DataDisplay.code_block>
+        <Docs.docs_code_block
+          source={@deps_code}
+          language={:elixir}
+          pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+        />
       </div>
       <div class="space-y-2">
         <p class="text-sm font-medium text-foreground">
           2) Install and run setup commands in your terminal
         </p>
-        <DataDisplay.code_block>{@terminal_code}</DataDisplay.code_block>
+        <Docs.docs_code_block
+          source={@terminal_code}
+          language={:bash}
+          pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+        />
       </div>
     </section>
     """
@@ -494,7 +503,11 @@ defmodule CinderUI.Site.Marketing do
         Customize your theme in <code>assets/css/app.css</code> by overriding semantic CSS variables.
         Radius is controlled via <code>--radius</code>; component radii are derived from it automatically.
       </p>
-      <DataDisplay.code_block>{@tokens_code}</DataDisplay.code_block>
+      <Docs.docs_code_block
+        source={@tokens_code}
+        language={:css}
+        pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+      />
     </section>
     """
     |> to_html()
@@ -563,18 +576,11 @@ defmodule CinderUI.Site.Marketing do
     "<script>\n#{template!("theme_bootstrap.js")}\n</script>"
   end
 
-  defp shared_script do
-    "<script>\n#{shared_asset!("shared.js")}\n</script>"
-  end
-
   defp theme_toggle_script do
     "<script>\n#{template!("theme_toggle.js")}\n</script>"
   end
 
   defp template!(name), do: File.read!(Path.join(@template_dir, name))
-
-  defp shared_asset!(name),
-    do: File.read!(Path.join([@repo_root, "dev", "assets", "site", name]))
 
   defp to_html(rendered) do
     rendered

@@ -1,4 +1,4 @@
-@import "../../../assets/css/cinder_ui.css";
+@import "../../../priv/templates/cinder_ui.css";
 
 @source "../../../lib";
 @source "../../../dev/lib";
