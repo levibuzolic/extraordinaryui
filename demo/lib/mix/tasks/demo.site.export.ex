@@ -70,12 +70,6 @@ defmodule Mix.Tasks.Demo.Site.Export do
     )
 
     File.write!(Path.join(assets_dir, "site.css"), File.read!(SiteRuntime.asset_path("site.css")))
-
-    File.write!(
-      Path.join(assets_dir, "shared.js"),
-      File.read!(SiteRuntime.asset_path("shared.js"))
-    )
-
     File.write!(Path.join(assets_dir, "site.js"), SiteRuntime.docs_site_js())
   end
 

@@ -162,7 +162,7 @@ test.describe("interactive previews", () => {
     expect(await hasClass(content, "hidden")).toBe(false)
     const highlightedSelectItem = select.locator("[data-select-item][data-highlighted='true']").first()
     await expect(highlightedSelectItem).toBeVisible()
-    await expect(trigger).toHaveAttribute("aria-activedescendant", await highlightedSelectItem.getAttribute("id"))
+    await expect(trigger).toHaveAttribute("aria-activedescendant", (await highlightedSelectItem.getAttribute("id"))!)
 
     const itemStates = await select.locator("[data-select-item]").evaluateAll((els) =>
       els.map((el) => ({
@@ -247,7 +247,7 @@ test.describe("interactive previews", () => {
     await page.keyboard.press("ArrowDown")
     const highlightedAutocompleteItem = autocomplete.locator("[data-slot='autocomplete-item'][data-highlighted='true']").first()
     await expect(highlightedAutocompleteItem).toBeVisible()
-    await expect(input).toHaveAttribute("aria-activedescendant", await highlightedAutocompleteItem.getAttribute("id"))
+    await expect(input).toHaveAttribute("aria-activedescendant", (await highlightedAutocompleteItem.getAttribute("id"))!)
     const itemStates = await autocomplete.locator("[data-slot='autocomplete-item']").evaluateAll((els) =>
       els.map((el) => ({
         text: el.getAttribute("data-label") || (el.textContent || "").trim(),
@@ -334,7 +334,7 @@ test.describe("interactive previews", () => {
     const hasInertSiblings = await root.evaluate((el) => {
       let current: Element | null = el
       while (current && current !== document.body) {
-        const parent = current.parentElement
+        const parent: Element | null = current.parentElement
         if (parent) {
           for (const sibling of Array.from(parent.children)) {
             if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
@@ -355,7 +355,7 @@ test.describe("interactive previews", () => {
     const hasInertAfterClose = await root.evaluate((el) => {
       let current: Element | null = el
       while (current && current !== document.body) {
-        const parent = current.parentElement
+        const parent: Element | null = current.parentElement
         if (parent) {
           for (const sibling of Array.from(parent.children)) {
             if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
@@ -383,7 +383,7 @@ test.describe("interactive previews", () => {
     const hasInertSiblings = await root.evaluate((el) => {
       let current: Element | null = el
       while (current && current !== document.body) {
-        const parent = current.parentElement
+        const parent: Element | null = current.parentElement
         if (parent) {
           for (const sibling of Array.from(parent.children)) {
             if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
@@ -404,7 +404,7 @@ test.describe("interactive previews", () => {
     const hasInertAfterClose = await root.evaluate((el) => {
       let current: Element | null = el
       while (current && current !== document.body) {
-        const parent = current.parentElement
+        const parent: Element | null = current.parentElement
         if (parent) {
           for (const sibling of Array.from(parent.children)) {
             if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {

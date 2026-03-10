@@ -16,7 +16,6 @@ defmodule Demo.SiteRuntime do
   def asset_path(path) when is_binary(path) do
     case path do
       "site.js" -> Path.join(@docs_assets_dir, "site.js")
-      "shared.js" -> Path.join(@site_assets_dir, "shared.js")
       "site.css" -> Path.join(@site_assets_dir, "site.css")
       "theme.css" -> theme_css_path()
       _ -> nil
@@ -24,9 +23,7 @@ defmodule Demo.SiteRuntime do
   end
 
   def docs_site_js do
-    [asset!("shared.js"), asset!("site.js")]
-    |> Enum.join(";\n\n")
-    |> Kernel.<>(";\n")
+    asset!("site.js") <> ";\n"
   end
 
   def catalog_sections do
