@@ -1244,8 +1244,14 @@ defmodule CinderUI.Docs.Catalog do
     do: %{id: "docs-checkbox", checked: true, inner_block: slot("Accept terms")}
 
   defp sample_assigns(Forms, :field_control) do
+    input_html = render_component(Forms, :input, %{id: "docs-field-control", value: "levi"})
+
     %{
-      inner_block: slot(~S(<.input id="docs-field-control" value="levi" />))
+      inner_block:
+        slot(
+          input_html,
+          ~S(<.input id="docs-field-control" value="levi" />)
+        )
     }
   end
 
@@ -1258,8 +1264,18 @@ defmodule CinderUI.Docs.Catalog do
   defp sample_assigns(Forms, :field_error),
     do: %{inner_block: slot("This value is required.")}
 
-  defp sample_assigns(Forms, :field_label),
-    do: %{inner_block: slot(~S(<.label for="docs-field-input">Username</.label>))}
+  defp sample_assigns(Forms, :field_label) do
+    label_html =
+      render_component(Forms, :label, %{for: "docs-field-input", inner_block: slot("Username")})
+
+    %{
+      inner_block:
+        slot(
+          label_html,
+          ~S(<.label for="docs-field-input">Username</.label>)
+        )
+    }
+  end
 
   defp sample_assigns(Forms, :field) do
     label_html =
