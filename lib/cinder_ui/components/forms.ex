@@ -579,7 +579,11 @@ defmodule CinderUI.Components.Forms do
         {@rest}
       >
         <span data-slot="select-value" class="truncate">{@selected_label}</span>
-        <span class="text-muted-foreground ml-2 shrink-0" aria-hidden="true">▾</span>
+        <CinderUI.Icons.icon
+          name="chevron-down"
+          class="text-muted-foreground ml-2 size-4 shrink-0"
+          aria-hidden="true"
+        />
       </button>
 
       <button
