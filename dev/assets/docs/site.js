@@ -535,20 +535,62 @@
     })
   })
 
+  const applyInert = (overlayEl) => {
+    const inertedElements = []
+    let current = overlayEl
+
+    while (current && current !== document.body) {
+      const parent = current.parentElement
+      if (parent) {
+        for (const sibling of parent.children) {
+          if (sibling !== current && !sibling.inert) {
+            sibling.inert = true
+            inertedElements.push(sibling)
+          }
+        }
+      }
+      current = parent
+    }
+
+    return inertedElements
+  }
+
+  const removeInert = (inertedElements) => {
+    if (!inertedElements) return
+    for (const el of inertedElements) {
+      el.inert = false
+    }
+  }
+
   // Dialogs (includes alert dialogs)
   qs(document, "[data-slot='dialog']").forEach((root) => {
     const overlay = root.querySelector("[data-dialog-overlay]")
     const content = root.querySelector("[data-dialog-content]")
+    let inertedElements = null
 
     const sync = (open) => {
+      const wasOpen = root.dataset.state === "open"
       root.dataset.state = open ? "open" : "closed"
       toggleVisibility(overlay, open)
       toggleVisibility(content, open)
+      if (open && !wasOpen) {
+        inertedElements = applyInert(root)
+      }
+      if (!open && wasOpen) {
+        removeInert(inertedElements)
+        inertedElements = null
+      }
     }
 
     root.addEventListener("click", (event) => {
       if (event.target.closest("[data-dialog-trigger]")) sync(true)
       if (event.target.closest("[data-dialog-close]") || event.target.closest("[data-dialog-overlay]")) sync(false)
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && root.dataset.state === "open") {
+        sync(false)
+      }
     })
 
     sync(root.dataset.state === "open")
@@ -558,16 +600,31 @@
   qs(document, "[data-slot='drawer']").forEach((root) => {
     const overlay = root.querySelector("[data-drawer-overlay]")
     const content = root.querySelector("[data-drawer-content]")
+    let inertedElements = null
 
     const sync = (open) => {
+      const wasOpen = root.dataset.state === "open"
       root.dataset.state = open ? "open" : "closed"
       toggleVisibility(overlay, open)
       toggleVisibility(content, open)
+      if (open && !wasOpen) {
+        inertedElements = applyInert(root)
+      }
+      if (!open && wasOpen) {
+        removeInert(inertedElements)
+        inertedElements = null
+      }
     }
 
     root.addEventListener("click", (event) => {
       if (event.target.closest("[data-drawer-trigger]")) sync(true)
       if (event.target.closest("[data-drawer-overlay]")) sync(false)
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && root.dataset.state === "open") {
+        sync(false)
+      }
     })
 
     sync(root.dataset.state === "open")

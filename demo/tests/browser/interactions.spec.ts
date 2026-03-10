@@ -321,6 +321,131 @@ test.describe("interactive previews", () => {
     await expect(shell).toHaveClass(/hidden/)
     await expect(trigger).toHaveAttribute("aria-expanded", "false")
   })
+
+  test("dialog applies inert to background when open", async ({ page }) => {
+    const root = page.locator("[data-slot='dialog']").first()
+    const trigger = root.locator("[data-dialog-trigger]")
+    const content = root.locator("[data-dialog-content]")
+
+    await root.scrollIntoViewIfNeeded()
+    await trigger.click()
+    await expect(content).toBeVisible()
+
+    const hasInertSiblings = await root.evaluate((el) => {
+      let current: Element | null = el
+      while (current && current !== document.body) {
+        const parent = current.parentElement
+        if (parent) {
+          for (const sibling of Array.from(parent.children)) {
+            if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
+              return true
+            }
+          }
+        }
+        current = parent
+      }
+      return false
+    })
+
+    expect(hasInertSiblings).toBe(true)
+
+    await page.keyboard.press("Escape")
+    await expect(content).toBeHidden()
+
+    const hasInertAfterClose = await root.evaluate((el) => {
+      let current: Element | null = el
+      while (current && current !== document.body) {
+        const parent = current.parentElement
+        if (parent) {
+          for (const sibling of Array.from(parent.children)) {
+            if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
+              return true
+            }
+          }
+        }
+        current = parent
+      }
+      return false
+    })
+
+    expect(hasInertAfterClose).toBe(false)
+  })
+
+  test("drawer applies inert to background when open", async ({ page }) => {
+    const root = page.locator("[data-slot='drawer']").first()
+    const trigger = root.locator("[data-drawer-trigger]")
+    const content = root.locator("[data-drawer-content]")
+
+    await root.scrollIntoViewIfNeeded()
+    await trigger.click()
+    await expect(content).toBeVisible()
+
+    const hasInertSiblings = await root.evaluate((el) => {
+      let current: Element | null = el
+      while (current && current !== document.body) {
+        const parent = current.parentElement
+        if (parent) {
+          for (const sibling of Array.from(parent.children)) {
+            if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
+              return true
+            }
+          }
+        }
+        current = parent
+      }
+      return false
+    })
+
+    expect(hasInertSiblings).toBe(true)
+
+    await page.keyboard.press("Escape")
+    await expect(content).toBeHidden()
+
+    const hasInertAfterClose = await root.evaluate((el) => {
+      let current: Element | null = el
+      while (current && current !== document.body) {
+        const parent = current.parentElement
+        if (parent) {
+          for (const sibling of Array.from(parent.children)) {
+            if (sibling !== current && sibling instanceof HTMLElement && sibling.inert) {
+              return true
+            }
+          }
+        }
+        current = parent
+      }
+      return false
+    })
+
+    expect(hasInertAfterClose).toBe(false)
+  })
+
+  test("pre-existing inert elements stay inert after modal closes", async ({ page }) => {
+    const root = page.locator("[data-slot='dialog']").first()
+    const trigger = root.locator("[data-dialog-trigger]")
+
+    await root.scrollIntoViewIfNeeded()
+
+    await page.evaluate(() => {
+      const footer = document.querySelector("footer")
+      if (footer) (footer as HTMLElement).inert = true
+    })
+
+    await trigger.click()
+    await page.keyboard.press("Escape")
+
+    const footerStillInert = await page.evaluate(() => {
+      const footer = document.querySelector("footer")
+      return footer ? (footer as HTMLElement).inert : false
+    })
+
+    expect(footerStillInert).toBe(true)
+
+    await page.evaluate(() => {
+      const footer = document.querySelector("footer")
+      if (footer) (footer as HTMLElement).inert = false
+    })
+  })
 })
 
 test.describe("page integrity", () => {
