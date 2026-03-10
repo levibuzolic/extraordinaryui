@@ -3,7 +3,6 @@
   const root = document.documentElement;
   const buttons = Array.from(document.querySelectorAll("[data-theme-mode]"));
   const media = window.matchMedia("(prefers-color-scheme: dark)");
-  const highlightCodeBlocks = window.CinderUISiteShared?.highlightCodeBlocks || (() => {});
 
   const resolveMode = (mode) => (mode === "auto" ? (media.matches ? "dark" : "light") : mode);
   const readMode = () => localStorage.getItem(storageKey) || "auto";
@@ -39,5 +38,4 @@
   }
 
   apply();
-  highlightCodeBlocks();
 })();

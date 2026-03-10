@@ -5,17 +5,6 @@
     el.classList.toggle("hidden", !visible)
     el.dataset.state = visible ? "open" : "closed"
   }
-  const shared = window.CinderUISiteShared || {}
-  const escapeHtml =
-    shared.escapeHtml ||
-    ((value) =>
-      value
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;"))
-  const highlightCodeBlocks = shared.highlightCodeBlocks || (() => {})
   const themeStorage = {
     mode: "cui:theme:mode",
     color: "cui:theme:color",
@@ -329,7 +318,6 @@
 
   applyTheme()
   restoreSidebarScroll()
-  highlightCodeBlocks()
 
   sidebar?.addEventListener("scroll", persistSidebarScroll, { passive: true })
   qs(sidebar || document, "a[href]").forEach((link) => {

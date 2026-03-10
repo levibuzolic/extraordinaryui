@@ -4,6 +4,7 @@ defmodule CinderUI.Docs.UIComponents do
   use Phoenix.Component
 
   alias CinderUI.Components.{Actions, Feedback, Forms, Layout, Navigation}
+  alias CinderUI.Docs.CodeHighlighter
   alias CinderUI.Icons
   alias Phoenix.HTML
 
@@ -242,6 +243,32 @@ defmodule CinderUI.Docs.UIComponents do
     """
   end
 
+  attr :id, :string, default: nil
+  attr :source, :string, required: true
+  attr :language, :atom, default: :auto
+  attr :pre_class, :any, default: nil
+  attr :code_class, :any, default: nil
+
+  def docs_code_block(assigns) do
+    assigns =
+      assigns
+      |> assign(:highlighted_html, highlighted_code_html(assigns.source, assigns.language))
+      |> assign(
+        :pre_classes,
+        List.wrap(assigns.pre_class)
+      )
+      |> assign(
+        :code_classes,
+        ["code-highlight block min-w-max whitespace-pre" | List.wrap(assigns.code_class)]
+      )
+
+    ~H"""
+    <pre class={@pre_classes}>
+      <code id={@id} class={@code_classes}><%= rendered(@highlighted_html) %></code>
+    </pre>
+    """
+  end
+
   attr :component_count, :integer, default: nil
   attr :show_count, :boolean, default: false
 
@@ -386,7 +413,12 @@ defmodule CinderUI.Docs.UIComponents do
               >
                 <CinderUI.Icons.icon name="copy" class="size-4" />
               </Actions.button>
-              <pre class="m-0 min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs leading-4"><code id={"code-#{@entry.id}-#{example.id}"} class="block min-w-max whitespace-pre">{example.template_heex}</code></pre>
+              <.docs_code_block
+                id={"code-#{@entry.id}-#{example.id}"}
+                source={example.template_heex}
+                language={:heex}
+                pre_class="m-0 min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs leading-4"
+              />
             </div>
           </div>
         </section>
@@ -503,7 +535,6 @@ defmodule CinderUI.Docs.UIComponents do
     assigns =
       assigns
       |> assign(:docs_html, summary_markdown_html(assigns.entry.docs))
-      |> assign(:template_html, escape(assigns.entry.template_heex))
       |> assign(:attrs_count, length(assigns.entry.attributes))
       |> assign(:slots_count, length(assigns.entry.slots))
       |> assign(:examples_count, length(assigns.entry.examples))
@@ -569,7 +600,12 @@ defmodule CinderUI.Docs.UIComponents do
           >
             <Icons.icon name="copy" class="size-4" />
           </Actions.button>
-          <pre class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs"><code id={"code-#{@entry.id}"} class="block min-w-max whitespace-pre"><%= rendered(@template_html) %></code></pre>
+          <.docs_code_block
+            id={"code-#{@entry.id}"}
+            source={@entry.template_heex}
+            language={:heex}
+            pre_class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs"
+          />
         </div>
         <div class="flex flex-wrap items-center justify-between gap-2 p-4 text-xs">
           <span class="text-muted-foreground">
@@ -679,6 +715,10 @@ defmodule CinderUI.Docs.UIComponents do
   end
 
   defp rendered(html) when is_binary(html), do: Phoenix.HTML.raw(html)
+
+  defp highlighted_code_html(source, language) do
+    CodeHighlighter.highlight(source, language)
+  end
 
   defp summary_markdown_html(text) do
     case Earmark.as_html(text, compact_output: true) do
