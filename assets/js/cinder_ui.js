@@ -25,8 +25,36 @@ const normalizePercentages = (values) => {
   return values.map((value) => (value / total) * 100)
 }
 
+const applyInert = (overlayEl) => {
+  const inertedElements = []
+  let current = overlayEl
+
+  while (current && current !== document.body) {
+    const parent = current.parentElement
+    if (parent) {
+      for (const sibling of parent.children) {
+        if (sibling !== current && !sibling.inert) {
+          sibling.inert = true
+          inertedElements.push(sibling)
+        }
+      }
+    }
+    current = parent
+  }
+
+  return inertedElements
+}
+
+const removeInert = (inertedElements) => {
+  if (!inertedElements) return
+  for (const el of inertedElements) {
+    el.inert = false
+  }
+}
+
 const CuiDialog = {
   mounted() {
+    this.inertedElements = null
     this.sync(this.el.dataset.state === "open")
 
     this.handleEvent = (event) => {
@@ -45,15 +73,23 @@ const CuiDialog = {
     this.el.dataset.state = open ? "open" : "closed"
     toggleVisibility(this.el.querySelector("[data-dialog-overlay]"), open)
     toggleVisibility(this.el.querySelector("[data-dialog-content]"), open)
+    if (open) {
+      this.inertedElements = applyInert(this.el)
+    } else {
+      removeInert(this.inertedElements)
+      this.inertedElements = null
+    }
   },
 
   destroyed() {
+    removeInert(this.inertedElements)
     this.el.removeEventListener("click", this.handleEvent)
   },
 }
 
 const CuiDrawer = {
   mounted() {
+    this.inertedElements = null
     this.sync(this.el.dataset.state === "open")
 
     this.handleEvent = (event) => {
@@ -72,9 +108,16 @@ const CuiDrawer = {
     this.el.dataset.state = open ? "open" : "closed"
     toggleVisibility(this.el.querySelector("[data-drawer-overlay]"), open)
     toggleVisibility(this.el.querySelector("[data-drawer-content]"), open)
+    if (open) {
+      this.inertedElements = applyInert(this.el)
+    } else {
+      removeInert(this.inertedElements)
+      this.inertedElements = null
+    }
   },
 
   destroyed() {
+    removeInert(this.inertedElements)
     this.el.removeEventListener("click", this.handleEvent)
   },
 }
