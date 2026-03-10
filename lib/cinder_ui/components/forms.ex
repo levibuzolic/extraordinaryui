@@ -672,10 +672,6 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.native_select name="timezone" value="utc">
-        <:option value="utc" label="UTC" />
-      </.native_select>
-
       <.native_select name="framework" value="phoenix">
         <:option value="phoenix" label="Phoenix" />
         <:option value="rails" label="Rails" />
@@ -684,7 +680,7 @@ defmodule CinderUI.Components.Forms do
 
       <.native_select name="assignee" placeholder="Assign a teammate">
         <:option value="levi" label="Levi" />
-        <:option value="sam" label="Sam" />
+        <:option value="juz" label="Justin" />
       </.native_select>
   """)
 
