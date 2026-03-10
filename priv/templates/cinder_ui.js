@@ -84,6 +84,33 @@ const restoreFocus = (preferred, fallback) => {
   }
 }
 
+const applyInert = (overlayEl) => {
+  const inertedElements = []
+  let current = overlayEl
+
+  while (current && current !== document.body) {
+    const parent = current.parentElement
+    if (parent) {
+      for (const sibling of parent.children) {
+        if (sibling !== current && !sibling.inert) {
+          sibling.inert = true
+          inertedElements.push(sibling)
+        }
+      }
+    }
+    current = parent
+  }
+
+  return inertedElements
+}
+
+const removeInert = (inertedElements) => {
+  if (!inertedElements) return
+  for (const el of inertedElements) {
+    el.inert = false
+  }
+}
+
 const CuiDialog = {
   mounted() {
     this.refreshElements = () => {
@@ -93,6 +120,7 @@ const CuiDialog = {
 
     this.refreshElements()
     this.lastActiveElement = null
+    this.inertedElements = null
     this.sync(this.el.dataset.state === "open")
 
     this.handleEvent = (event) => {
@@ -139,6 +167,15 @@ const CuiDialog = {
     toggleVisibility(this.content, open)
 
     if (open && !wasOpen) {
+      this.inertedElements = applyInert(this.el)
+    }
+
+    if (!open && wasOpen) {
+      removeInert(this.inertedElements)
+      this.inertedElements = null
+    }
+
+    if (open && !wasOpen) {
       window.requestAnimationFrame(() => focusFirst(this.content))
     }
 
@@ -148,6 +185,7 @@ const CuiDialog = {
   },
 
   destroyed() {
+    removeInert(this.inertedElements)
     this.el.removeEventListener("click", this.handleEvent)
     document.removeEventListener("keydown", this.onKeydown)
     this.removeCommandListener && this.removeCommandListener()
@@ -163,6 +201,7 @@ const createPanelHook = (config) => ({
 
     this.refreshElements()
     this.lastActiveElement = null
+    this.inertedElements = null
     this.sync(this.el.dataset.state === "open")
 
     this.handleEvent = (event) => {
@@ -209,6 +248,15 @@ const createPanelHook = (config) => ({
     toggleVisibility(this.content, open)
 
     if (open && !wasOpen) {
+      this.inertedElements = applyInert(this.el)
+    }
+
+    if (!open && wasOpen) {
+      removeInert(this.inertedElements)
+      this.inertedElements = null
+    }
+
+    if (open && !wasOpen) {
       window.requestAnimationFrame(() => focusFirst(this.content))
     }
 
@@ -218,6 +266,7 @@ const createPanelHook = (config) => ({
   },
 
   destroyed() {
+    removeInert(this.inertedElements)
     this.el.removeEventListener("click", this.handleEvent)
     document.removeEventListener("keydown", this.onKeydown)
     this.removeCommandListener && this.removeCommandListener()
