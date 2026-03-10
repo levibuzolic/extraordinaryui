@@ -12,6 +12,7 @@ config :demo, DemoWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}],
   check_origin: false,
   code_reloader: true,
+  reloadable_apps: [:demo, :cinder_ui],
   debug_errors: true,
   secret_key_base: "9GhjwYbcEyljv26wpHdrBYN3LAF8m8F8r/L9xJQKBRueDk67KNO+OG4R77CyjLuB",
   watchers: [
@@ -42,10 +43,21 @@ config :demo, DemoWeb.Endpoint,
 # configured to run both http and https servers on
 # different ports.
 
+# Watch parent package sources so live reload picks up component changes.
+config :phoenix_live_reload, :dirs, [
+  Path.expand("../..", __DIR__)
+]
+
 # Reload browser tabs when matching files change.
 config :demo, DemoWeb.Endpoint,
   live_reload: [
     web_console_logger: true,
+    notify: [
+      catalog_change: [
+        ~r"lib/cinder_ui/.*\.ex$"E,
+        ~r"dev/lib/cinder_ui/.*\.ex$"E
+      ]
+    ],
     patterns: [
       # Static assets, except user uploads
       ~r"priv/static/(?!uploads/).*\.(js|css|png|jpeg|jpg|gif|svg)$"E,
@@ -53,7 +65,10 @@ config :demo, DemoWeb.Endpoint,
       ~r"priv/gettext/.*\.po$"E,
       # Router, Controllers, LiveViews and LiveComponents
       ~r"lib/demo_web/router\.ex$"E,
-      ~r"lib/demo_web/(controllers|live|components)/.*\.(ex|heex)$"E
+      ~r"lib/demo_web/(controllers|live|components)/.*\.(ex|heex)$"E,
+      # Parent package component library
+      ~r"lib/cinder_ui/.*\.ex$"E,
+      ~r"dev/lib/cinder_ui/.*\.ex$"E
     ]
   ]
 

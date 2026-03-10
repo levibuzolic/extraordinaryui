@@ -7,11 +7,14 @@ defmodule Demo.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      {DNSCluster, query: Application.get_env(:demo, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Demo.PubSub},
-      DemoWeb.Endpoint
-    ]
+    children =
+      [
+        {DNSCluster, query: Application.get_env(:demo, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: Demo.PubSub},
+        if(Application.get_env(:demo, DemoWeb.Endpoint)[:code_reloader], do: Demo.CatalogReloader),
+        DemoWeb.Endpoint
+      ]
+      |> Enum.reject(&is_nil/1)
 
     opts = [strategy: :one_for_one, name: Demo.Supervisor]
     Supervisor.start_link(children, opts)
