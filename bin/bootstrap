@@ -68,24 +68,12 @@ run_node_install() {
 run_demo_cinder_ui_install() {
   local dir="$1"
 
-  if [[ ! -f "${dir}/mix.exs" ]]; then
+  if [[ -f "${dir}/mix.exs" ]]; then
+    echo "==> demo: mix cinder_ui.install --assets-path assets --skip-patching"
+    run_with_mise "$dir" mix cinder_ui.install --assets-path assets --skip-patching
+  else
     echo "==> demo: no mix.exs found, skipping Cinder UI asset install"
-    return
   fi
-
-  echo "==> demo: symlinking cinder_ui assets from priv/templates"
-
-  mkdir -p "${dir}/assets/js" "${dir}/assets/css"
-
-  for pair in "cinder_ui.js:js" "cinder_ui.css:css"; do
-    local file="${pair%%:*}"
-    local subdir="${pair##*:}"
-    local target="${dir}/assets/${subdir}/${file}"
-
-    rm -f "$target"
-    ln -s "../../../priv/templates/${file}" "$target"
-    echo "    ${target} -> priv/templates/${file}"
-  done
 }
 
 require_cmd mise
