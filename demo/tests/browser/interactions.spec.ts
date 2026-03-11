@@ -449,6 +449,150 @@ test.describe("interactive previews", () => {
   })
 })
 
+test.describe("select highlight and keyboard behavior", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/docs/")
+  })
+
+  test("only one item is highlighted at a time via keyboard", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+    const items = select.locator("[data-select-item]")
+
+    await select.scrollIntoViewIfNeeded()
+    await trigger.focus()
+    await page.keyboard.press("ArrowDown")
+
+    // Press down a couple of times
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowDown")
+
+    const highlightedCount = await items.filter({ has: page.locator("[data-highlighted='true']") }).count()
+    // Only use evaluateAll to check data attribute directly since filter uses CSS
+    const highlightedItems = await items.evaluateAll((els) =>
+      els.filter((el) => el.getAttribute("data-highlighted") === "true").map((el) => el.getAttribute("data-value")),
+    )
+    expect(highlightedItems.length).toBe(1)
+  })
+
+  test("selected item shows check icon but no background highlight", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+
+    await select.scrollIntoViewIfNeeded()
+    await trigger.click()
+
+    // "pro" is the pre-selected value
+    const selectedItem = select.locator("[data-select-item][data-value='pro']")
+    const checkIcon = selectedItem.locator("[data-slot='select-check']")
+
+    // Check icon should be visible for the selected item
+    await expect(checkIcon).toBeVisible()
+
+    // Selected item should NOT have highlighted=true (no background)
+    await expect(selectedItem).not.toHaveAttribute("data-highlighted", "true")
+  })
+
+  test("non-selected items have check icon hidden", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+
+    await select.scrollIntoViewIfNeeded()
+    await trigger.click()
+
+    const freeItem = select.locator("[data-select-item][data-value='free']")
+    const checkIcon = freeItem.locator("[data-slot='select-check']")
+
+    await expect(checkIcon).toBeHidden()
+  })
+
+  test("keyboard navigation moves highlight between items", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+
+    await select.scrollIntoViewIfNeeded()
+    await trigger.focus()
+    await page.keyboard.press("ArrowDown")
+
+    // Get initial highlighted item
+    const firstHighlighted = await select
+      .locator("[data-select-item][data-highlighted='true']")
+      .first()
+      .getAttribute("data-value")
+
+    // Move down
+    await page.keyboard.press("ArrowDown")
+
+    const secondHighlighted = await select
+      .locator("[data-select-item][data-highlighted='true']")
+      .first()
+      .getAttribute("data-value")
+
+    // Highlighted item should have changed
+    expect(firstHighlighted).not.toBe(secondHighlighted)
+  })
+
+  test("selecting an item updates check icon position", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+
+    await select.scrollIntoViewIfNeeded()
+    await trigger.click()
+
+    // Initially "pro" has the visible check
+    await expect(select.locator("[data-select-item][data-value='pro'] [data-slot='select-check']")).toBeVisible()
+    await expect(select.locator("[data-select-item][data-value='free'] [data-slot='select-check']")).toBeHidden()
+
+    // Select "free"
+    await select.locator("[data-select-item][data-value='free']").click()
+
+    // Re-open to verify
+    await trigger.click()
+
+    await expect(select.locator("[data-select-item][data-value='free'] [data-slot='select-check']")).toBeVisible()
+    await expect(select.locator("[data-select-item][data-value='pro'] [data-slot='select-check']")).toBeHidden()
+  })
+
+  test("Enter key selects the highlighted item and closes", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+    const content = select.locator("[data-select-content]")
+    const hiddenInput = select.locator("[data-slot='select-input']")
+
+    await select.scrollIntoViewIfNeeded()
+    await trigger.focus()
+    await page.keyboard.press("ArrowDown")
+
+    // Navigate to "free" (first enabled item)
+    const highlighted = select.locator("[data-select-item][data-highlighted='true']").first()
+    const highlightedValue = await highlighted.getAttribute("data-value")
+
+    await page.keyboard.press("Enter")
+
+    // Should close and update value
+    await expect(content).toHaveClass(/hidden/)
+    await expect(hiddenInput).toHaveValue(highlightedValue!)
+  })
+
+  test("Escape closes without changing selection", async ({ page }) => {
+    const select = page.locator("#team-plan")
+    const trigger = select.locator("[data-select-trigger]")
+    const content = select.locator("[data-select-content]")
+    const hiddenInput = select.locator("[data-slot='select-input']")
+
+    await select.scrollIntoViewIfNeeded()
+    const initialValue = await hiddenInput.inputValue()
+
+    await trigger.focus()
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("Escape")
+
+    await expect(content).toHaveClass(/hidden/)
+    await expect(hiddenInput).toHaveValue(initialValue)
+  })
+})
+
 test.describe("page integrity", () => {
   test("home/docs/component have no console errors or failed requests", async ({ page }) => {
     const consoleErrors: string[] = []

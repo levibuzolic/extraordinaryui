@@ -16,6 +16,8 @@ defmodule CinderUI.Components.DataDisplay do
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
 
+  alias CinderUI.Icons
+
   doc("""
   Renders a circular avatar with optional image and fallback.
 
@@ -525,16 +527,17 @@ defmodule CinderUI.Components.DataDisplay do
         :for={item <- @item}
         data-slot="accordion-item"
         open={Map.get(item, :open, false)}
-        class="border-b last:border-b-0"
+        class="group border-b last:border-b-0"
       >
         <summary
           data-slot="accordion-trigger"
-          class="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
+          class="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
         >
-          {item.title}
-          <span class="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5">
-            ⌄
-          </span>
+          <span class="hover:underline">{item.title}</span>
+          <Icons.icon
+            name="chevron-down"
+            class="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200 group-open:rotate-180"
+          />
         </summary>
         <div data-slot="accordion-content" class="overflow-hidden text-sm">
           <div class="pt-0 pb-4">{render_slot(item)}</div>
@@ -570,13 +573,16 @@ defmodule CinderUI.Components.DataDisplay do
     assigns = assign(assigns, :classes, ["w-full rounded-md border px-4", assigns.class])
 
     ~H"""
-    <details data-slot="collapsible" open={@open} class={classes(@classes)}>
+    <details data-slot="collapsible" open={@open} class={classes(["group" | @classes])}>
       <summary
         data-slot="collapsible-trigger"
         class="flex cursor-pointer list-none items-center justify-between py-3 text-sm font-medium"
       >
         {render_slot(@trigger)}
-        <span class="text-muted-foreground">⌄</span>
+        <Icons.icon
+          name="chevron-down"
+          class="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200 group-open:rotate-180"
+        />
       </summary>
       <div data-slot="collapsible-content" class="pb-4 text-sm text-muted-foreground">
         {render_slot(@inner_block)}
