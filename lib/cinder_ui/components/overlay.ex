@@ -578,7 +578,7 @@ defmodule CinderUI.Components.Overlay do
       <div data-slot="hover-card-trigger">{render_slot(@trigger)}</div>
       <div
         data-slot="hover-card-content"
-        class="bg-popover text-popover-foreground absolute left-0 top-[calc(100%+8px)] z-50 hidden w-64 rounded-md border p-4 shadow-md outline-hidden group-hover:block"
+        class="bg-popover text-popover-foreground absolute left-0 top-[calc(100%+8px)] z-50 hidden w-64 rounded-md border p-4 shadow-md outline-hidden group-hover:block group-focus-within:block"
       >
         {render_slot(@content)}
       </div>

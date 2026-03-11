@@ -94,4 +94,16 @@ defmodule CinderUI.Components.OverlayTest do
     [_, tooltip_id] = Regex.run(~r/aria-describedby="([^"]+)"/, html)
     assert html =~ ~s(id="#{tooltip_id}")
   end
+
+  test "hover card supports focus-within visibility class" do
+    html =
+      render_component(&Overlay.hover_card/1, %{
+        trigger: [%{inner_block: fn _, _ -> "Levi" end}],
+        content: [%{inner_block: fn _, _ -> "Maintains docs" end}]
+      })
+
+    assert html =~ "data-slot=\"hover-card\""
+    assert html =~ "group-hover:block"
+    assert html =~ "group-focus-within:block"
+  end
 end

@@ -34,7 +34,7 @@ for each pattern. These are template-only changes (no JS).
 - [x] 2.4 **Tooltip** — `overlay.ex`: add `role="tooltip"` and `id` on tooltip content, `aria-describedby` on trigger
 - [x] 2.5 **Autocomplete** — `forms.ex`: add `role="combobox"` on the input element
 - [x] 2.6 **Carousel** — `advanced.ex`: add `aria-label` on prev/next buttons, `aria-roledescription="carousel"` on root, `aria-roledescription="slide"` on items
-- [ ] 2.7 **Hover card** — `overlay.ex`: add `group-focus-within:block` alongside `group-hover:block` for keyboard access
+- [x] 2.7 **Hover card** — `overlay.ex`: add `group-focus-within:block` alongside `group-hover:block` for keyboard access
 
 ## Phase 3: Flash / Alert rework
 
