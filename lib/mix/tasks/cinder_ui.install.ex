@@ -20,6 +20,7 @@ defmodule Mix.Tasks.CinderUi.Install do
     * `--package-manager` - `npm`, `pnpm`, `yarn`, or `bun`
     * `--skip-existing` - do not overwrite Cinder UI generated files if they already exist
     * `--skip-patching` - do not patch `assets/css/app.css` or `assets/js/app.js`
+    * `--dry-run` - print planned changes without writing files or installing packages
 
   ## Example
 
@@ -40,6 +41,7 @@ defmodule Mix.Tasks.CinderUi.Install do
           package_manager: :string,
           skip_existing: :boolean,
           skip_patching: :boolean,
+          dry_run: :boolean,
           help: :boolean
         ]
       )
@@ -48,23 +50,24 @@ defmodule Mix.Tasks.CinderUi.Install do
       Mix.shell().info(@moduledoc)
     else
       assets_path = Path.expand(opts[:assets_path] || "assets", File.cwd!())
-      package_install_path = resolve_package_install_path!(assets_path)
+      dry_run = opts[:dry_run] || false
+      package_install_path = resolve_package_install_path!(assets_path, dry_run)
       package_manager = normalize_package_manager(opts[:package_manager], package_install_path)
       skip_existing = opts[:skip_existing] || false
       skip_patching = opts[:skip_patching] || false
 
       ensure_assets_dir!(assets_path)
 
-      install_css!(assets_path, skip_existing)
-      install_js!(assets_path, skip_existing)
+      install_css!(assets_path, skip_existing, dry_run)
+      install_js!(assets_path, skip_existing, dry_run)
 
       unless skip_patching do
-        patch_app_css!(assets_path)
-        patch_app_js!(assets_path)
+        patch_app_css!(assets_path, dry_run)
+        patch_app_js!(assets_path, dry_run)
       end
 
-      maybe_install_package!(package_install_path, package_manager, "tailwindcss-animate")
-      Mix.shell().info("Cinder UI install complete.")
+      maybe_install_package!(package_install_path, package_manager, "tailwindcss-animate", dry_run)
+      Mix.shell().info(if(dry_run, do: "Cinder UI dry run complete.", else: "Cinder UI install complete."))
     end
   end
 
@@ -74,23 +77,29 @@ defmodule Mix.Tasks.CinderUi.Install do
     end
   end
 
-  defp install_css!(assets_path, skip_existing) do
+  defp install_css!(assets_path, skip_existing, dry_run) do
     src = Path.join(@template_dir, "cinder_ui.css")
     target = Path.join([assets_path, "css", "cinder_ui.css"])
 
-    File.mkdir_p!(Path.dirname(target))
-    write_generated_file!(target, File.read!(src), skip_existing, "created")
+    unless dry_run do
+      File.mkdir_p!(Path.dirname(target))
+    end
+
+    write_generated_file!(target, File.read!(src), skip_existing, "created", dry_run)
   end
 
-  defp install_js!(assets_path, skip_existing) do
+  defp install_js!(assets_path, skip_existing, dry_run) do
     src = Path.join(@template_dir, "cinder_ui.js")
     target = Path.join([assets_path, "js", "cinder_ui.js"])
 
-    File.mkdir_p!(Path.dirname(target))
-    write_generated_file!(target, File.read!(src), skip_existing, "created")
+    unless dry_run do
+      File.mkdir_p!(Path.dirname(target))
+    end
+
+    write_generated_file!(target, File.read!(src), skip_existing, "created", dry_run)
   end
 
-  defp patch_app_css!(assets_path) do
+  defp patch_app_css!(assets_path, dry_run) do
     app_css_path = Path.join([assets_path, "css", "app.css"])
 
     base_content =
@@ -105,10 +114,10 @@ defmodule Mix.Tasks.CinderUi.Install do
       |> ensure_line("@source \"../../deps/cinder_ui\";")
       |> ensure_line("@import \"./cinder_ui.css\";")
 
-    write_if_changed!(app_css_path, base_content, updated_content)
+    write_if_changed!(app_css_path, base_content, updated_content, dry_run)
   end
 
-  defp patch_app_js!(assets_path) do
+  defp patch_app_js!(assets_path, dry_run) do
     app_js_path = Path.join([assets_path, "js", "app.js"])
 
     base_content =
@@ -123,7 +132,7 @@ defmodule Mix.Tasks.CinderUi.Install do
       |> ensure_line("import { CinderUIHooks } from \"./cinder_ui\"")
       |> inject_hooks_merge()
 
-    write_if_changed!(app_js_path, base_content, updated_content)
+    write_if_changed!(app_js_path, base_content, updated_content, dry_run)
   end
 
   defp inject_hooks_merge(content) do
@@ -189,29 +198,38 @@ defmodule Mix.Tasks.CinderUi.Install do
       else: String.trim_trailing(content) <> "\n" <> line <> "\n"
   end
 
-  defp write_if_changed!(path, content, content) do
+  defp write_if_changed!(path, content, content, _dry_run) do
     Mix.shell().info("already up to date #{relative(path)}")
   end
 
-  defp write_if_changed!(path, _old_content, new_content) do
+  defp write_if_changed!(path, _old_content, _new_content, true) do
+    Mix.shell().info("would update #{relative(path)}")
+  end
+
+  defp write_if_changed!(path, _old_content, new_content, false) do
     File.write!(path, new_content)
     Mix.shell().info("updated #{relative(path)}")
   end
 
-  defp maybe_install_package!(install_path, package_manager, package) do
+  defp maybe_install_package!(install_path, package_manager, package, dry_run) do
     if package_installed?(install_path, package) do
       Mix.shell().info("already present #{package} (in #{relative(install_path)})")
       :ok
     else
       {cmd, args} = package_command(package_manager, package)
-      Mix.shell().info("running #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})")
-      {output, status} = System.cmd(cmd, args, cd: install_path, stderr_to_stdout: true)
 
-      if status == 0 do
-        Mix.shell().info(String.trim(output))
+      if dry_run do
+        Mix.shell().info("would run #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})")
       else
-        Mix.shell().error(String.trim(output))
-        Mix.raise("failed to install #{package} using #{package_manager}")
+        Mix.shell().info("running #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})")
+        {output, status} = System.cmd(cmd, args, cd: install_path, stderr_to_stdout: true)
+
+        if status == 0 do
+          Mix.shell().info(String.trim(output))
+        else
+          Mix.shell().error(String.trim(output))
+          Mix.raise("failed to install #{package} using #{package_manager}")
+        end
       end
     end
   end
@@ -235,7 +253,7 @@ defmodule Mix.Tasks.CinderUi.Install do
 
   defp declared_dependency?(_, _package), do: false
 
-  defp resolve_package_install_path!(assets_path) do
+  defp resolve_package_install_path!(assets_path, dry_run) do
     assets_package_json = Path.join(assets_path, "package.json")
     project_path = Path.dirname(assets_path)
     project_package_json = Path.join(project_path, "package.json")
@@ -248,8 +266,13 @@ defmodule Mix.Tasks.CinderUi.Install do
         project_path
 
       true ->
-        File.write!(assets_package_json, "{\n  \"private\": true\n}\n")
-        Mix.shell().info("created #{relative(assets_package_json)}")
+        if dry_run do
+          Mix.shell().info("would create #{relative(assets_package_json)}")
+        else
+          File.write!(assets_package_json, "{\n  \"private\": true\n}\n")
+          Mix.shell().info("created #{relative(assets_package_json)}")
+        end
+
         assets_path
     end
   end
@@ -259,7 +282,15 @@ defmodule Mix.Tasks.CinderUi.Install do
   defp package_command("yarn", package), do: {"yarn", ["add", "-D", package]}
   defp package_command("bun", package), do: {"bun", ["add", "-d", package]}
 
-  defp write_generated_file!(path, content, true, verb) do
+  defp write_generated_file!(path, _content, true, _verb, true) do
+    if File.exists?(path) do
+      Mix.shell().info("would skip existing #{relative(path)}")
+    else
+      Mix.shell().info("would create #{relative(path)}")
+    end
+  end
+
+  defp write_generated_file!(path, content, true, verb, false) do
     if File.exists?(path) do
       Mix.shell().info("skipped existing #{relative(path)}")
     else
@@ -268,7 +299,12 @@ defmodule Mix.Tasks.CinderUi.Install do
     end
   end
 
-  defp write_generated_file!(path, content, false, verb) do
+  defp write_generated_file!(path, _content, false, _verb, true) do
+    action = if File.exists?(path), do: "would update", else: "would create"
+    Mix.shell().info("#{action} #{relative(path)}")
+  end
+
+  defp write_generated_file!(path, content, false, verb, false) do
     File.write!(path, content)
     Mix.shell().info("#{verb} #{relative(path)}")
   end

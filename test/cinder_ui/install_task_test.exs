@@ -271,6 +271,57 @@ defmodule CinderUI.InstallTaskTest do
     assert File.read!(Path.join(assets, "js/app.js")) == original_app_js
   end
 
+  test "dry-run reports changes without writing files or installing packages", %{tmp_dir: tmp_dir} do
+    project = Path.join(tmp_dir, "project")
+    assets = Path.join(project, "assets")
+    bin_dir = Path.join(project, "bin")
+
+    File.mkdir_p!(Path.join(assets, "css"))
+    File.mkdir_p!(Path.join(assets, "js"))
+    File.mkdir_p!(bin_dir)
+
+    original_app_css = "@import \"tailwindcss\";\n"
+    original_app_js = "import {LiveSocket} from \"phoenix_live_view\"\nlet Hooks = {}\n"
+    File.write!(Path.join(assets, "css/app.css"), original_app_css)
+    File.write!(Path.join(assets, "js/app.js"), original_app_js)
+
+    write_fake_npm!(bin_dir)
+    Mix.shell(Mix.Shell.Process)
+
+    try do
+      with_fake_path(bin_dir, fn ->
+        File.cd!(project, fn ->
+          Mix.Task.reenable(@task)
+
+          Mix.Task.run(@task, [
+            "--assets-path",
+            "assets",
+            "--package-manager",
+            "npm",
+            "--dry-run"
+          ])
+        end)
+      end)
+
+      assert_received {:mix_shell, :info, ["would create assets/package.json"]}
+      assert_received {:mix_shell, :info, ["would create assets/css/cinder_ui.css"]}
+      assert_received {:mix_shell, :info, ["would create assets/js/cinder_ui.js"]}
+      assert_received {:mix_shell, :info, ["would update assets/css/app.css"]}
+      assert_received {:mix_shell, :info, ["would update assets/js/app.js"]}
+      assert_received {:mix_shell, :info, ["would run npm install -D tailwindcss-animate (in assets)"]}
+      assert_received {:mix_shell, :info, ["Cinder UI dry run complete."]}
+    after
+      Mix.shell(Mix.Shell.IO)
+    end
+
+    refute File.exists?(Path.join(assets, "package.json"))
+    refute File.exists?(Path.join([assets, "css", "cinder_ui.css"]))
+    refute File.exists?(Path.join([assets, "js", "cinder_ui.js"]))
+    refute File.exists?(Path.join(assets, ".npm-args"))
+    assert File.read!(Path.join(assets, "css/app.css")) == original_app_css
+    assert File.read!(Path.join(assets, "js/app.js")) == original_app_js
+  end
+
   test "help flag prints task docs", %{tmp_dir: tmp_dir} do
     project = Path.join(tmp_dir, "project")
     File.mkdir_p!(project)

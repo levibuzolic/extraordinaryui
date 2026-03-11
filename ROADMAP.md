@@ -83,7 +83,7 @@ After editing, run `mix assets.build` from `demo/` to regenerate copies.
 
 - [x] 9.1 **Detect `bun.lock`** — `lib/mix/tasks/cinder_ui.install.ex` line 258 only checks `bun.lockb`. Add `bun.lock` detection for Bun v1.1+
 - [x] 9.2 **Handle inline Hooks** — `inject_hooks_merge/1` doesn't handle `const liveSocket = new LiveSocket(...)` with Hooks defined inline. Add detection for this pattern
-- [ ] 9.3 **Add --dry-run option** — Print what would change without writing files
+- [x] 9.3 **Add --dry-run option** — Print what would change without writing files
 
 ## Phase 10: New components
 
