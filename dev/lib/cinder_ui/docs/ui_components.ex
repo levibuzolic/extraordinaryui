@@ -343,10 +343,10 @@ defmodule CinderUI.Docs.UIComponents do
 
     <section class="mb-6">
       <p class="text-muted-foreground text-xs">{@entry.module_name}</p>
-      <h2 class="mt-1 text-2xl font-semibold tracking-tight">
-        <code>{@entry.module_name}.{@entry.title}</code>
-      </h2>
-      <div class="mt-3">
+      <div class="mt-1 flex flex-wrap items-center gap-3">
+        <h2 class="text-2xl font-semibold tracking-tight">
+          <code>{@entry.module_name}.{@entry.title}</code>
+        </h2>
         <.docs_runtime_badge runtime={@entry.runtime} show_summary />
       </div>
       <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
