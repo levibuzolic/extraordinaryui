@@ -36,9 +36,7 @@ defmodule CinderUI.TailwindConfig do
   def config do
     TailwindMerge.Config.new(
       class_groups:
-        TailwindMerge.Config.class_groups(
-          colors: TailwindMerge.Config.colors() ++ @shadcn_colors
-        )
+        TailwindMerge.Config.class_groups(colors: TailwindMerge.Config.colors() ++ @shadcn_colors)
     )
   end
 end

@@ -66,8 +66,16 @@ defmodule Mix.Tasks.CinderUi.Install do
         patch_app_js!(assets_path, dry_run)
       end
 
-      maybe_install_package!(package_install_path, package_manager, "tailwindcss-animate", dry_run)
-      Mix.shell().info(if(dry_run, do: "Cinder UI dry run complete.", else: "Cinder UI install complete."))
+      maybe_install_package!(
+        package_install_path,
+        package_manager,
+        "tailwindcss-animate",
+        dry_run
+      )
+
+      Mix.shell().info(
+        if(dry_run, do: "Cinder UI dry run complete.", else: "Cinder UI install complete.")
+      )
     end
   end
 
@@ -219,7 +227,9 @@ defmodule Mix.Tasks.CinderUi.Install do
       {cmd, args} = package_command(package_manager, package)
 
       if dry_run do
-        Mix.shell().info("would run #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})")
+        Mix.shell().info(
+          "would run #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})"
+        )
       else
         Mix.shell().info("running #{cmd} #{Enum.join(args, " ")} (in #{relative(install_path)})")
         {output, status} = System.cmd(cmd, args, cd: install_path, stderr_to_stdout: true)

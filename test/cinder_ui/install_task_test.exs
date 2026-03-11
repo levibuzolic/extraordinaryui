@@ -308,7 +308,10 @@ defmodule CinderUI.InstallTaskTest do
       assert_received {:mix_shell, :info, ["would create assets/js/cinder_ui.js"]}
       assert_received {:mix_shell, :info, ["would update assets/css/app.css"]}
       assert_received {:mix_shell, :info, ["would update assets/js/app.js"]}
-      assert_received {:mix_shell, :info, ["would run npm install -D tailwindcss-animate (in assets)"]}
+
+      assert_received {:mix_shell, :info,
+                       ["would run npm install -D tailwindcss-animate (in assets)"]}
+
       assert_received {:mix_shell, :info, ["Cinder UI dry run complete."]}
     after
       Mix.shell(Mix.Shell.IO)
