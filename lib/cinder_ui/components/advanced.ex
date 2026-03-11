@@ -192,12 +192,20 @@ defmodule CinderUI.Components.Advanced do
           data-value={option.value}
           class={
             classes([
-              "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
-              @value == option.value && "bg-accent text-accent-foreground"
+              "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground"
             ])
           }
         >
           {option.label}
+          <span
+            data-slot="select-check"
+            class={[
+              "absolute right-2 flex size-3.5 items-center justify-center",
+              @value != option.value && "hidden"
+            ]}
+          >
+            <Icons.icon name="check" class="size-4" aria-hidden="true" />
+          </span>
         </button>
       </div>
     </div>

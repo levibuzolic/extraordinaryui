@@ -678,10 +678,9 @@ defmodule CinderUI.Components.Forms do
             disabled={option[:disabled] || false}
             class={
               classes([
-                "relative flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-hidden select-none",
-                "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground",
-                "disabled:pointer-events-none disabled:opacity-50",
-                @value == option.value && "bg-accent text-accent-foreground"
+                "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-left text-sm outline-hidden select-none",
+                "data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground",
+                "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50"
               ])
             }
           >
@@ -691,7 +690,15 @@ defmodule CinderUI.Components.Forms do
                 {option.description}
               </span>
             </span>
-            <Icons.icon :if={@value == option.value} name="check" class="size-4 shrink-0" aria-hidden="true" />
+            <span
+              data-slot="select-check"
+              class={[
+                "absolute right-2 flex size-3.5 items-center justify-center",
+                @value != option.value && "hidden"
+              ]}
+            >
+              <Icons.icon name="check" class="size-4" aria-hidden="true" />
+            </span>
           </button>
         </div>
 
@@ -915,10 +922,9 @@ defmodule CinderUI.Components.Forms do
           disabled={option[:disabled] || false}
           class={
             classes([
-              "relative flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-hidden select-none",
-              "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground",
-              "disabled:pointer-events-none disabled:opacity-50",
-              @value == option.value && "bg-accent text-accent-foreground"
+              "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-left text-sm outline-hidden select-none",
+              "data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground",
+              "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50"
             ])
           }
         >
@@ -928,7 +934,15 @@ defmodule CinderUI.Components.Forms do
               {option.description}
             </span>
           </span>
-          <Icons.icon :if={@value == option.value} name="check" class="size-4 shrink-0" aria-hidden="true" />
+          <span
+            data-slot="select-check"
+            class={[
+              "absolute right-2 flex size-3.5 items-center justify-center",
+              @value != option.value && "hidden"
+            ]}
+          >
+            <Icons.icon name="check" class="size-4" aria-hidden="true" />
+          </span>
         </button>
 
         <div

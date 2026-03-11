@@ -822,8 +822,8 @@ qs(document, "[data-slot='autocomplete']").forEach((root) => {
         const selected = entry === item
         entry.dataset.selected = selected ? "true" : "false"
         entry.setAttribute("aria-selected", selected ? "true" : "false")
-        entry.classList.toggle("bg-accent", selected)
-        entry.classList.toggle("text-accent-foreground", selected)
+        const check = entry.querySelector("[data-slot='select-check']")
+        if (check) check.classList.toggle("hidden", !selected)
       })
 
       sync(false)

@@ -74,6 +74,48 @@ const normalizePercentages = (values) => {
   return values.map((value) => (value / total) * 100)
 }
 
+/**
+ * Create highlight helpers for a listbox-style component.
+ *
+ * Returns an object with:
+ * - `highlight(target)` — mark a single item (or `null` to clear all)
+ * - `onMouseEnter` / `onMouseLeave` / `onFocus` — event handlers
+ * - `bind(items)` / `unbind(items)` — attach/detach listeners on item elements
+ *
+ * @param {() => HTMLElement[]} getItems - Returns current item elements.
+ * @param {() => void} [onAfterHighlight] - Optional callback after highlight changes (e.g. sync ARIA).
+ */
+const createItemHighlighter = (getItems, onAfterHighlight) => {
+  const highlight = (target) => {
+    for (const item of getItems()) {
+      item.dataset.highlighted = item === target ? "true" : "false"
+    }
+    if (onAfterHighlight) onAfterHighlight()
+  }
+
+  const onFocus = (event) => highlight(event.currentTarget)
+  const onMouseEnter = (event) => highlight(event.currentTarget)
+  const onMouseLeave = () => highlight(null)
+
+  const bind = (items) => {
+    for (const item of items) {
+      item.addEventListener("focus", onFocus)
+      item.addEventListener("mouseenter", onMouseEnter)
+      item.addEventListener("mouseleave", onMouseLeave)
+    }
+  }
+
+  const unbind = (items) => {
+    for (const item of items) {
+      item.removeEventListener("focus", onFocus)
+      item.removeEventListener("mouseenter", onMouseEnter)
+      item.removeEventListener("mouseleave", onMouseLeave)
+    }
+  }
+
+  return { highlight, onFocus, onMouseEnter, onMouseLeave, bind, unbind }
+}
+
 // -----------------------------------------------------------------------------
 // MARK: Command System
 // -----------------------------------------------------------------------------
@@ -685,16 +727,8 @@ const CuiSelect = {
     this.selectedIndex = () =>
       this.items.findIndex((item) => item.dataset.selected === "true")
 
-    /**
-     * Mark `target` as the highlighted item, clearing all others.
-     * @param {HTMLElement} target
-     */
-    this.highlightItem = (target) => {
-      this.items.forEach((item) => {
-        const highlighted = item === target
-        item.dataset.highlighted = highlighted ? "true" : "false"
-      })
-    }
+    this._hl = createItemHighlighter(() => this.items, () => this.sync())
+    this.highlightItem = this._hl.highlight
 
     /** Synchronize DOM state (visibility, ARIA attributes) with `this.open`. */
     this.sync = () => {
@@ -753,8 +787,8 @@ const CuiSelect = {
         entry.dataset.selected = selected ? "true" : "false"
         entry.dataset.highlighted = "false"
         entry.setAttribute("aria-selected", selected ? "true" : "false")
-        entry.classList.toggle("bg-accent", selected)
-        entry.classList.toggle("text-accent-foreground", selected)
+        const check = entry.querySelector("[data-slot='select-check']")
+        if (check) check.classList.toggle("hidden", !selected)
       })
 
       const valueEl = this.el.querySelector("[data-slot='select-value']")
@@ -777,7 +811,8 @@ const CuiSelect = {
         entry.dataset.selected = "false"
         entry.dataset.highlighted = "false"
         entry.setAttribute("aria-selected", "false")
-        entry.classList.remove("bg-accent", "text-accent-foreground")
+        const check = entry.querySelector("[data-slot='select-check']")
+        if (check) check.classList.add("hidden")
       })
 
       const valueEl = this.el.querySelector("[data-slot='select-value']")
@@ -886,11 +921,6 @@ const CuiSelect = {
       this.selectItem(item)
     }
 
-    this.onItemFocus = (event) => {
-      this.highlightItem(event.currentTarget)
-      this.sync()
-    }
-
     this.onDocumentClick = (event) => {
       if (!this.el.contains(event.target)) this.closeMenu()
     }
@@ -903,7 +933,7 @@ const CuiSelect = {
       this.trigger && this.trigger.addEventListener("keydown", this.onTriggerKeyDown)
       this.content && this.content.addEventListener("keydown", this.onContentKeyDown)
       this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
-      this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
+      this._hl.bind(this.items)
       document.addEventListener("click", this.onDocumentClick)
     }
 
@@ -913,7 +943,7 @@ const CuiSelect = {
       this.trigger && this.trigger.removeEventListener("keydown", this.onTriggerKeyDown)
       this.content && this.content.removeEventListener("keydown", this.onContentKeyDown)
       this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
-      this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
+      this._hl.unbind(this.items)
       document.removeEventListener("click", this.onDocumentClick)
     }
 
@@ -985,16 +1015,8 @@ const CuiAutocomplete = {
     this.visibleItems = () =>
       this.items.filter((item) => !item.classList.contains("hidden") && item.dataset.disabled !== "true" && !item.disabled)
 
-    /**
-     * Mark `target` as the highlighted item, clearing all others.
-     * @param {HTMLElement} target
-     */
-    this.highlightItem = (target) => {
-      this.items.forEach((item) => {
-        const highlighted = item === target
-        item.dataset.highlighted = highlighted ? "true" : "false"
-      })
-    }
+    this._hl = createItemHighlighter(() => this.items, () => this.sync())
+    this.highlightItem = this._hl.highlight
 
     /** Synchronize DOM state (visibility, ARIA attributes) with `this.open`. */
     this.sync = () => {
@@ -1034,8 +1056,8 @@ const CuiAutocomplete = {
         entry.dataset.selected = selected ? "true" : "false"
         entry.dataset.highlighted = "false"
         entry.setAttribute("aria-selected", selected ? "true" : "false")
-        entry.classList.toggle("bg-accent", selected)
-        entry.classList.toggle("text-accent-foreground", selected)
+        const check = entry.querySelector("[data-slot='select-check']")
+        if (check) check.classList.toggle("hidden", !selected)
       })
 
       this.open = false
@@ -1167,11 +1189,6 @@ const CuiAutocomplete = {
       this.input?.focus()
     }
 
-    this.onItemFocus = (event) => {
-      this.highlightItem(event.currentTarget)
-      this.sync()
-    }
-
     this.onDocumentClick = (event) => {
       if (this.el.contains(event.target)) return
       this.open = false
@@ -1192,7 +1209,7 @@ const CuiAutocomplete = {
       this.input?.addEventListener("keydown", this.onKeyDown)
       this.content?.addEventListener("keydown", this.onContentKeyDown)
       this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
-      this.items.forEach((item) => item.addEventListener("focus", this.onItemFocus))
+      this._hl.bind(this.items)
       document.addEventListener("click", this.onDocumentClick)
     }
 
@@ -1202,7 +1219,7 @@ const CuiAutocomplete = {
       this.input?.removeEventListener("keydown", this.onKeyDown)
       this.content?.removeEventListener("keydown", this.onContentKeyDown)
       this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
-      this.items.forEach((item) => item.removeEventListener("focus", this.onItemFocus))
+      this._hl.unbind(this.items)
       document.removeEventListener("click", this.onDocumentClick)
     }
 
@@ -1283,6 +1300,8 @@ const CuiCombobox = {
       toggleVisibility(this.content, true)
     }
 
+    this._hl = createItemHighlighter(() => this.items)
+
     this.onItemClick = (event) => {
       const item = event.currentTarget
       this.input.value = item.dataset.value || item.textContent.trim()
@@ -1298,6 +1317,7 @@ const CuiCombobox = {
     this.input && this.input.addEventListener("focus", () => toggleVisibility(this.content, true))
     this.input && this.input.addEventListener("input", this.onInput)
     this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
+    this._hl.bind(this.items)
     document.addEventListener("click", this.onDocumentClick)
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => toggleVisibility(this.content, true),
@@ -1314,6 +1334,7 @@ const CuiCombobox = {
   destroyed() {
     this.input && this.input.removeEventListener("input", this.onInput)
     this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
+    this._hl.unbind(this.items)
     document.removeEventListener("click", this.onDocumentClick)
     this.removeCommandListener && this.removeCommandListener()
   },
