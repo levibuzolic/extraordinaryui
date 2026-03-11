@@ -259,19 +259,33 @@ defmodule CinderUI.Components.Advanced do
     <:item><div class="rounded-md bg-muted/60 p-8 text-sm">Slide two</div></:item>
   </.carousel>
   ```
+
+  ```heex title="Autoplay with indicators" align="full"
+  <.carousel id="marketing-carousel" autoplay={4000} indicators={true}>
+    <:item><div class="rounded-md bg-muted p-8 text-sm">Overview</div></:item>
+    <:item><div class="rounded-md bg-muted/60 p-8 text-sm">Analytics</div></:item>
+    <:item><div class="rounded-md bg-muted/40 p-8 text-sm">Deployments</div></:item>
+  </.carousel>
+  ```
   """)
 
   attr :id, :string, required: true
+  attr :autoplay, :integer, default: nil
+  attr :indicators, :boolean, default: false
   attr :class, :string, default: nil
   slot :item, required: true
 
   def carousel(assigns) do
-    assigns = assign(assigns, :classes, ["relative", assigns.class])
+    assigns =
+      assigns
+      |> assign(:classes, ["relative", assigns.class])
+      |> assign(:item_count, length(assigns.item))
 
     ~H"""
     <div
       id={@id}
       data-slot="carousel"
+      data-autoplay={@autoplay}
       role="region"
       aria-roledescription="carousel"
       class={classes(@classes)}
@@ -309,6 +323,22 @@ defmodule CinderUI.Components.Advanced do
       >
         <Icons.icon name="chevron-right" class="size-4" />
       </button>
+
+      <div
+        :if={@indicators and @item_count > 1}
+        data-slot="carousel-indicators"
+        class="mt-4 flex items-center justify-center gap-2"
+      >
+        <button
+          :for={index <- Enum.to_list(0..(@item_count - 1))}
+          type="button"
+          data-slot="carousel-indicator"
+          data-carousel-indicator={index}
+          data-active={index == 0}
+          aria-label={"Go to slide #{index + 1}"}
+          class="bg-muted-foreground/30 data-[active=true]:bg-primary h-2.5 w-2.5 rounded-full transition-colors"
+        />
+      </div>
     </div>
     """
   end

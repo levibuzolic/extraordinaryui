@@ -17,10 +17,12 @@ defmodule CinderUI.Components.AdvancedTest do
     assert html =~ "Main"
   end
 
-  test "carousel renders aria semantics and controls" do
+  test "carousel renders aria semantics, controls, and indicators" do
     html =
       render_component(&Advanced.carousel/1, %{
         id: "feature-carousel",
+        autoplay: 4000,
+        indicators: true,
         item: [
           %{inner_block: fn _, _ -> "Slide one" end},
           %{inner_block: fn _, _ -> "Slide two" end}
@@ -28,11 +30,14 @@ defmodule CinderUI.Components.AdvancedTest do
       })
 
     assert html =~ "data-slot=\"carousel\""
+    assert html =~ "data-autoplay=\"4000\""
     assert html =~ ~s(aria-roledescription="carousel")
     assert html =~ ~s(data-slot="carousel-item")
     assert html =~ ~s(aria-roledescription="slide")
     assert html =~ ~s(aria-label="Previous slide")
     assert html =~ ~s(aria-label="Next slide")
+    assert html =~ ~s(data-slot="carousel-indicator")
+    assert html =~ ~s(aria-label="Go to slide 1")
     assert html =~ "Slide one"
     assert html =~ "Slide two"
   end
