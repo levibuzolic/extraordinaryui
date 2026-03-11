@@ -1228,6 +1228,19 @@ const CuiAutocomplete = {
       visibleItems[nextIndex].focus()
     }
 
+    /**
+     * Focus a specific visible item by index.
+     * @param {number} index
+     */
+    this.focusVisibleItem = (index) => {
+      const visibleItems = this.visibleItems()
+      if (!visibleItems.length) return
+
+      const nextIndex = clamp(index, 0, visibleItems.length - 1)
+      this.highlightItem(visibleItems[nextIndex])
+      visibleItems[nextIndex].focus()
+    }
+
     // -- Event handlers -------------------------------------------------------
 
     this.onFocus = () => {
@@ -1257,6 +1270,20 @@ const CuiAutocomplete = {
         this.open = true
         this.sync()
         this.move(-1)
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault()
+        this.open = true
+        this.sync()
+        this.focusVisibleItem(0)
+      }
+
+      if (event.key === "End") {
+        event.preventDefault()
+        this.open = true
+        this.sync()
+        this.focusVisibleItem(this.visibleItems().length - 1)
       }
 
       if (event.key === "Enter") {
@@ -1290,6 +1317,16 @@ const CuiAutocomplete = {
       if (event.key === "ArrowUp") {
         event.preventDefault()
         this.move(-1)
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault()
+        this.focusVisibleItem(0)
+      }
+
+      if (event.key === "End") {
+        event.preventDefault()
+        this.focusVisibleItem(this.visibleItems().length - 1)
       }
 
       if (event.key === "Enter" || event.key === " ") {
