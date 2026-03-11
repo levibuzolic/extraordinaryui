@@ -24,7 +24,7 @@ const config = {
     video: "off",
   },
   webServer: {
-    command: "mix phx.server",
+    command: "mix do app.config --no-validate-compile-env + phx.server",
     url: "http://127.0.0.1:4000",
     cwd: __dirname,
     reuseExistingServer: true,
