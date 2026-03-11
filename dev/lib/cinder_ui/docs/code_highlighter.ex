@@ -108,8 +108,8 @@ defmodule CinderUI.Docs.CodeHighlighter do
     {tag_name, cursor} = take_while(tag, cursor, &tag_name_char?/1)
 
     out = [
-      ~s(<span class="tok-punct">#{open_punct}</span>),
-      ~s(<span class="tok-tag">#{escape_html(tag_name)}</span>)
+      ~s(<span class="tok-tag">#{escape_html(tag_name)}</span>),
+      ~s(<span class="tok-punct">#{open_punct}</span>)
     ]
 
     out =
@@ -121,7 +121,7 @@ defmodule CinderUI.Docs.CodeHighlighter do
       )
 
     [
-      out,
+      Enum.reverse(out),
       ~s(<span class="tok-punct">#{if(close_token == "/>", do: "/&gt;", else: "&gt;")}</span>)
     ]
     |> IO.iodata_to_binary()
