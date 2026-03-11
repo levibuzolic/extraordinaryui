@@ -162,6 +162,45 @@ defmodule CinderUI.InstallTaskTest do
     assert app_js =~ "hooks: {...colocatedHooks, ...CinderUIHooks}"
   end
 
+  test "merges Cinder UI hooks into inline live socket hooks config", %{tmp_dir: tmp_dir} do
+    project = Path.join(tmp_dir, "project")
+    assets = Path.join(project, "assets")
+    bin_dir = Path.join(project, "bin")
+
+    File.mkdir_p!(Path.join(assets, "css"))
+    File.mkdir_p!(Path.join(assets, "js"))
+    File.mkdir_p!(bin_dir)
+
+    File.write!(Path.join(project, "package.json"), "{\n  \"private\": true\n}\n")
+    File.write!(Path.join(assets, "css/app.css"), "@import \"tailwindcss\";\n")
+
+    File.write!(
+      Path.join(assets, "js/app.js"),
+      """
+      import DemoHook from "./demo_hook"
+      const liveSocket = new LiveSocket("/live", Socket, {
+        hooks: {
+          DemoHook,
+        },
+      })
+      """
+    )
+
+    write_fake_npm!(bin_dir)
+
+    with_fake_path(bin_dir, fn ->
+      File.cd!(project, fn ->
+        Mix.Task.reenable(@task)
+        Mix.Task.run(@task, ["--assets-path", "assets", "--package-manager", "npm"])
+      end)
+    end)
+
+    app_js = File.read!(Path.join(assets, "js/app.js"))
+    assert app_js =~ "import { CinderUIHooks } from \"./cinder_ui\""
+    assert app_js =~ "DemoHook"
+    assert app_js =~ "...CinderUIHooks"
+  end
+
   test "skip-existing preserves generated files", %{tmp_dir: tmp_dir} do
     project = Path.join(tmp_dir, "project")
     assets = Path.join(project, "assets")

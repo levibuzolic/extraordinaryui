@@ -131,6 +131,28 @@ defmodule Mix.Tasks.CinderUi.Install do
       String.contains?(content, "...CinderUIHooks") ->
         content
 
+      Regex.match?(~r/hooks:\s*\{(?<hooks_body>[^}]*)\}/s, content) ->
+        Regex.replace(
+          ~r/hooks:\s*\{(?<hooks_body>[^}]*)\}/s,
+          content,
+          fn _match, hooks_body ->
+            merged_body =
+              case String.trim(hooks_body) do
+                "" ->
+                  "...CinderUIHooks"
+
+                trimmed ->
+                  if String.ends_with?(trimmed, ",") do
+                    "#{String.trim_trailing(hooks_body)} ...CinderUIHooks"
+                  else
+                    "#{String.trim_trailing(hooks_body)}, ...CinderUIHooks"
+                  end
+              end
+
+            "hooks: {#{merged_body}}"
+          end
+        )
+
       Regex.match?(~r/hooks:\s*\{\s*\.\.\.colocatedHooks\s*\}/, content) ->
         Regex.replace(
           ~r/hooks:\s*\{\s*\.\.\.colocatedHooks\s*\}/,
