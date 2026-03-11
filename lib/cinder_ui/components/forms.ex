@@ -298,7 +298,8 @@ defmodule CinderUI.Components.Forms do
   attr :class, :string, default: nil
 
   attr :rest, :global,
-    include: ~w(accept autocomplete disabled maxlength minlength pattern readonly required step)
+    include:
+      ~w(accept autocomplete disabled max maxlength min minlength pattern readonly required step)
 
   def input(assigns) do
     assigns =

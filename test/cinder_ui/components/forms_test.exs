@@ -5,10 +5,19 @@ defmodule CinderUI.Components.FormsTest do
 
   alias CinderUI.Components.Forms
 
-  test "input renders with data-slot" do
-    html = render_component(&Forms.input/1, %{id: "email", type: "email"})
+  test "input renders with data-slot and forwards min/max attributes" do
+    html =
+      render_component(&Forms.input/1, %{
+        id: "capacity",
+        type: "number",
+        min: "1",
+        max: "10"
+      })
+
     assert html =~ "data-slot=\"input\""
-    assert html =~ "type=\"email\""
+    assert html =~ "type=\"number\""
+    assert html =~ "min=\"1\""
+    assert html =~ "max=\"10\""
   end
 
   test "select renders custom trigger, hidden input, and items" do
