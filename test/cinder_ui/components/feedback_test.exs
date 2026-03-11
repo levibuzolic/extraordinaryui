@@ -31,6 +31,9 @@ defmodule CinderUI.Components.FeedbackTest do
         title: "Saved"
       })
 
+    assert html =~ ~s(data-slot="alert")
+    assert html =~ ~s(data-slot="alert-title")
+    assert html =~ ~s(data-slot="alert-description")
     assert html =~ ~s(role="alert")
     assert html =~ ~s(id="flash-info")
     assert html =~ "border-primary/20"
@@ -48,6 +51,7 @@ defmodule CinderUI.Components.FeedbackTest do
 
     assert html =~ "Inline message"
     assert html =~ "circle-alert"
+    refute html =~ ~s(data-slot="alert-description")
   end
 
   test "flash close button uses consistent aria-label casing" do

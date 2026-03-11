@@ -118,20 +118,29 @@ defmodule CinderUI.Components.Feedback do
   ```
   """)
 
+  attr :id, :string, default: nil
   attr :variant, :atom, default: :default, values: [:default, :destructive]
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def alert(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+        "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start has-[>svg]:[&>svg]:row-span-2 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
         variant(@alert_variants, assigns.variant, @alert_variants.default),
         assigns.class
       ])
 
     ~H"""
-    <div data-slot="alert" data-variant={@variant} role="alert" class={classes(@classes)}>
+    <div
+      id={@id}
+      data-slot="alert"
+      data-variant={@variant}
+      role="alert"
+      class={classes(@classes)}
+      {@rest}
+    >
       {render_slot(@inner_block)}
     </div>
     """
@@ -231,13 +240,11 @@ defmodule CinderUI.Components.Feedback do
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
 
-  # TODO: Rework flash to use alert/1 internally so the two share a consistent
-  # layout. The alert grid (icon | title/description) should work for flashes
-  # once the vertical alignment issues are resolved.
   def flash(assigns) do
     assigns =
       assigns
       |> assign_new(:id, fn -> "flash-#{assigns.kind}" end)
+      |> assign(:variant, if(assigns.kind == :error, do: :destructive, else: :default))
       |> assign(
         :style_classes,
         if(assigns.kind == :error,
@@ -248,34 +255,30 @@ defmodule CinderUI.Components.Feedback do
       |> assign(:icon_name, if(assigns.kind == :error, do: "circle-alert", else: "info"))
 
     ~H"""
-    <div
+    <.alert
       :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
+      variant={@variant}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> JS.hide(to: "##{@id}")}
-      role="alert"
       class={
         classes([
-          "fixed top-2 right-2 z-50 w-80 sm:w-96 rounded-lg border px-4 py-3 text-sm",
+          "fixed top-2 right-2 z-50 w-80 sm:w-96 pr-12",
           @style_classes
         ])
       }
       {@rest}
     >
-      <div class="flex items-center gap-3">
-        <CinderUI.Icons.icon name={@icon_name} class="size-4 shrink-0" />
-        <div class="flex-1 min-w-0">
-          <p class="font-medium tracking-tight">{@title || msg}</p>
-          <p :if={@title} class="mt-0.5 opacity-90">{msg}</p>
-        </div>
-        <button
-          type="button"
-          class="-mr-1 shrink-0 rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"
-          aria-label="Close"
-        >
-          <CinderUI.Icons.icon name="x" class="size-4 opacity-60" />
-        </button>
-      </div>
-    </div>
+      <CinderUI.Icons.icon name={@icon_name} class="size-4 shrink-0" />
+      <.alert_title>{@title || msg}</.alert_title>
+      <.alert_description :if={@title}>{msg}</.alert_description>
+      <button
+        type="button"
+        class="absolute top-3 right-3 rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"
+        aria-label="Close"
+      >
+        <CinderUI.Icons.icon name="x" class="size-4 opacity-60" />
+      </button>
+    </.alert>
     """
   end
 
