@@ -231,13 +231,15 @@ defmodule CinderUI.Components.Feedback do
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
 
+  # TODO: Rework flash to use alert/1 internally so the two share a consistent
+  # layout. The alert grid (icon | title/description) should work for flashes
+  # once the vertical alignment issues are resolved.
   def flash(assigns) do
     assigns =
       assigns
       |> assign_new(:id, fn -> "flash-#{assigns.kind}" end)
-      |> assign(:variant, if(assigns.kind == :error, do: :destructive, else: :default))
       |> assign(
-        :alert_classes,
+        :style_classes,
         if(assigns.kind == :error,
           do: "border-destructive/40 bg-destructive/10 text-destructive",
           else: "border-primary/20 bg-primary/10 text-primary"
@@ -251,21 +253,23 @@ defmodule CinderUI.Components.Feedback do
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> JS.hide(to: "##{@id}")}
       role="alert"
-      class="fixed top-2 right-2 z-50 w-80 space-y-2 sm:w-96"
+      class={classes(["fixed top-2 right-2 z-50 w-80 sm:w-96 rounded-lg border px-4 py-3 text-sm", @style_classes])}
       {@rest}
     >
-      <.alert variant={@variant} class={@alert_classes}>
+      <div class="flex items-center gap-3">
         <CinderUI.Icons.icon name={@icon_name} class="size-4 shrink-0" />
-        <.alert_title :if={@title} class="text-current pr-8">{@title}</.alert_title>
-        <.alert_description class="text-current pr-8">{msg}</.alert_description>
+        <div class="flex-1 min-w-0">
+          <p class="font-medium tracking-tight">{@title || msg}</p>
+          <p :if={@title} class="mt-0.5 opacity-90">{msg}</p>
+        </div>
         <button
           type="button"
-          class="col-start-2 row-start-1 -mt-1 -mr-1 justify-self-end rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"
+          class="-mr-1 shrink-0 rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"
           aria-label="close"
         >
           <CinderUI.Icons.icon name="x" class="size-4 opacity-60" />
         </button>
-      </.alert>
+      </div>
     </div>
     """
   end
