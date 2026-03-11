@@ -111,6 +111,8 @@ defmodule CinderUI.Components.Overlay do
   def dialog(assigns) do
     assigns =
       assigns
+      |> assign(:title_id, slot_dom_id(assigns.id, :title, assigns.title))
+      |> assign(:description_id, slot_dom_id(assigns.id, :description, assigns.description))
       |> assign(:root_classes, ["relative", assigns.class])
       |> assign(:overlay_classes, [
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
@@ -139,15 +141,23 @@ defmodule CinderUI.Components.Overlay do
         data-dialog-content
         role="dialog"
         aria-modal="true"
+        aria-labelledby={@title_id}
+        aria-describedby={@description_id}
         tabindex="-1"
         class={classes(@content_classes)}
       >
         <header data-slot="dialog-header" class="flex flex-col gap-2 text-center sm:text-left">
-          <h2 :if={@title != []} data-slot="dialog-title" class="text-lg leading-none font-semibold">
+          <h2
+            :if={@title != []}
+            id={@title_id}
+            data-slot="dialog-title"
+            class="text-lg leading-none font-semibold"
+          >
             {render_slot(@title)}
           </h2>
           <p
             :if={@description != []}
+            id={@description_id}
             data-slot="dialog-description"
             class="text-muted-foreground text-sm"
           >
@@ -273,6 +283,8 @@ defmodule CinderUI.Components.Overlay do
     assigns =
       assigns
       |> assign(:side_classes, side_classes)
+      |> assign(:title_id, slot_dom_id(assigns.id, :title, assigns.title))
+      |> assign(:description_id, slot_dom_id(assigns.id, :description, assigns.description))
       |> assign(:overlay_classes, [
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
         !assigns.open && "hidden"
@@ -301,17 +313,25 @@ defmodule CinderUI.Components.Overlay do
         data-drawer-content
         role="dialog"
         aria-modal="true"
+        aria-labelledby={@title_id}
+        aria-describedby={@description_id}
         tabindex="-1"
         class={classes(@content_classes)}
       >
         <div class="bg-muted mx-auto mt-4 h-2 w-[100px] shrink-0 rounded-full" />
 
         <header data-slot="drawer-header" class="flex flex-col gap-0.5 p-4 md:gap-1.5 md:text-left">
-          <h2 :if={@title != []} data-slot="drawer-title" class="text-foreground font-semibold">
+          <h2
+            :if={@title != []}
+            id={@title_id}
+            data-slot="drawer-title"
+            class="text-foreground font-semibold"
+          >
             {render_slot(@title)}
           </h2>
           <p
             :if={@description != []}
+            id={@description_id}
             data-slot="drawer-description"
             class="text-muted-foreground text-sm"
           >
@@ -371,6 +391,8 @@ defmodule CinderUI.Components.Overlay do
     assigns =
       assigns
       |> assign(:side_classes, side_classes)
+      |> assign(:title_id, slot_dom_id(assigns.id, :title, assigns.title))
+      |> assign(:description_id, slot_dom_id(assigns.id, :description, assigns.description))
       |> assign(:overlay_classes, [
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
         !assigns.open && "hidden"
@@ -399,15 +421,23 @@ defmodule CinderUI.Components.Overlay do
         data-sheet-content
         role="dialog"
         aria-modal="true"
+        aria-labelledby={@title_id}
+        aria-describedby={@description_id}
         tabindex="-1"
         class={classes(@content_classes)}
       >
         <header data-slot="sheet-header" class="flex flex-col gap-0.5 p-4 md:gap-1.5 md:text-left">
-          <h2 :if={@title != []} data-slot="sheet-title" class="text-foreground font-semibold">
+          <h2
+            :if={@title != []}
+            id={@title_id}
+            data-slot="sheet-title"
+            class="text-foreground font-semibold"
+          >
             {render_slot(@title)}
           </h2>
           <p
             :if={@description != []}
+            id={@description_id}
             data-slot="sheet-description"
             class="text-muted-foreground text-sm"
           >
@@ -424,6 +454,9 @@ defmodule CinderUI.Components.Overlay do
     </div>
     """
   end
+
+  defp slot_dom_id(_root_id, _suffix, []), do: nil
+  defp slot_dom_id(root_id, suffix, _slot), do: "#{root_id}-#{suffix}"
 
   doc("""
   Popover with trigger and content slots.

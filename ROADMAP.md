@@ -29,7 +29,7 @@ Add missing ARIA roles and attributes. Reference the WAI-ARIA Authoring Practice
 for each pattern. These are template-only changes (no JS).
 
 - [x] 2.1 **Tabs** — `navigation.ex`: add `role="tablist"` on list, `role="tab"` on triggers with `aria-selected`, `role="tabpanel"` on content panels with `aria-labelledby`
-- [ ] 2.2 **Dialog/Sheet/Drawer** — `overlay.ex`: generate stable ids for title and description elements, add `aria-labelledby` and `aria-describedby` on the dialog container
+- [x] 2.2 **Dialog/Sheet/Drawer** — `overlay.ex`: generate stable ids for title and description elements, add `aria-labelledby` and `aria-describedby` on the dialog container
 - [ ] 2.3 **Dropdown menu** — `overlay.ex`: add `role="menu"` on content, `role="menuitem"` on items
 - [ ] 2.4 **Tooltip** — `overlay.ex`: add `role="tooltip"` and `id` on tooltip content, `aria-describedby` on trigger
 - [ ] 2.5 **Autocomplete** — `forms.ex`: add `role="combobox"` on the input element

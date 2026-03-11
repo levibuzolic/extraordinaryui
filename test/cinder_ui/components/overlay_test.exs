@@ -6,7 +6,7 @@ defmodule CinderUI.Components.OverlayTest do
   alias CinderUI.Components.Overlay
   alias CinderUI.TestHelpers
 
-  test "dialog renders trigger and content" do
+  test "dialog renders trigger, content, and aria relationships" do
     html =
       render_component(&Overlay.dialog/1, %{
         id: "demo-dialog",
@@ -21,6 +21,10 @@ defmodule CinderUI.Components.OverlayTest do
     assert html =~ "data-slot=\"dialog\""
     assert html =~ "Open"
     assert html =~ "Body"
+    assert html =~ ~s(aria-labelledby="demo-dialog-title")
+    assert html =~ ~s(aria-describedby="demo-dialog-description")
+    assert html =~ ~s(id="demo-dialog-title")
+    assert html =~ ~s(id="demo-dialog-description")
   end
 
   test "dropdown menu renders items" do
@@ -65,7 +69,11 @@ defmodule CinderUI.Components.OverlayTest do
 
     assert drawer_html =~ "data-slot=\"drawer\""
     assert drawer_html =~ "data-drawer-side=\"bottom\""
+    assert drawer_html =~ ~s(aria-labelledby="demo-drawer-title")
+    assert drawer_html =~ ~s(aria-describedby="demo-drawer-description")
     assert sheet_html =~ "data-slot=\"sheet\""
     assert sheet_html =~ "data-sheet-side=\"right\""
+    assert sheet_html =~ ~s(aria-labelledby="demo-sheet-title")
+    assert sheet_html =~ ~s(aria-describedby="demo-sheet-description")
   end
 end
