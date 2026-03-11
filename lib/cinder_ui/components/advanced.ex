@@ -148,6 +148,15 @@ defmodule CinderUI.Components.Advanced do
 
   It is intentionally unopinionated on state and filtering logic.
 
+  ## When to use it
+
+  Use `combobox/1` when you want a lightweight client-side filter input that
+  simply writes the selected label back into the visible text field.
+
+  Prefer `autocomplete/1` when the selected value needs to submit through a
+  hidden input, when labels and values differ, or when the control participates
+  in a larger form workflow.
+
   ## Example
 
   ```heex title="Combobox" align="full"

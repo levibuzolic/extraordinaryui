@@ -873,6 +873,15 @@ defmodule CinderUI.Components.Forms do
   This is intended for searching and selecting from a known set of options. Use
   `select/1` when you want a trigger-driven listbox instead of a text input.
 
+  ## When to use it
+
+  Use `autocomplete/1` when the person typing should search by label, but the
+  form needs to submit a separate stable value through the hidden input.
+
+  Prefer `combobox/1` for simpler label-in/label-out filtering where the typed
+  text itself is the selected value and you do not need a separate hidden form
+  field.
+
   For server-backed search, keep the current query in LiveView assigns and
   update the option list on `phx-change` or `phx-input`. The component keeps
   its hidden value form-friendly while the visible input remains a normal text
