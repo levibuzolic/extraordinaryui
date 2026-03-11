@@ -41,6 +41,10 @@ test.describe("component catalog", () => {
     await expect(progressiveBadge).toBeVisible()
     await expect(progressiveBadge).toContainText("Progressive")
 
+    const progressiveBadgePill = progressiveBadge.locator("[data-slot='badge']").first()
+    await progressiveBadgePill.hover()
+    await expect(progressiveBadge.locator("[role='tooltip']").first()).toBeVisible()
+
     await page.getByRole("link", { name: /Forms\.select/i }).click()
     const detailRuntime = page.locator("section").filter({ has: page.locator("[data-component-runtime][data-runtime-kind='progressive']") }).first()
     const detailRuntimeBadge = detailRuntime.locator("[data-component-runtime][data-runtime-kind='progressive']")
