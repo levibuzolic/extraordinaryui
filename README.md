@@ -405,7 +405,7 @@ Legend:
 | Popover | ⚡ Progressive | Server + hooks | Hook layer handles open/close behavior |
 | Progress | ✅ Full | Server-rendered | - |
 | Radio Group | ✅ Full | Server-rendered | - |
-| Resizable | 🚧 In Progress | Not ready for use | `resizable/1` is currently in progress and not ready for production use |
+| Resizable | 🧱 Scaffold | Server + hooks | Supports adjacent panel resizing, keyboard handles, and persisted sizes; collapsed panels and richer panel APIs are still missing |
 | Scroll Area | ✅ Full | Server-rendered | - |
 | Select | ✅ Full | Server + hooks | Custom trigger + listbox with hidden input and keyboard support |
 | Separator | ✅ Full | Server-rendered | - |

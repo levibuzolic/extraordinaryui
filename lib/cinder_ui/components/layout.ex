@@ -536,10 +536,12 @@ defmodule CinderUI.Components.Layout do
   doc("""
   Resizable split layout container with optional client-side persistence.
 
-  > #### In Progress
+  > #### Current Scope
   >
-  > `resizable/1` is in progress and not ready for use. Expect behavioral
-  > and API changes in upcoming releases.
+  > `resizable/1` currently supports adjacent panel resizing, keyboard handle
+  > controls, optional visible handles, and `localStorage` persistence.
+  > It does not yet include collapsed panels, imperative panel APIs, or the
+  > richer nested-group ergonomics of a full panel system.
 
   Uses the optional `CuiResizable` LiveView hook to support drag handles.
   Provide `storage_key` to persist panel percentages in `localStorage`.
