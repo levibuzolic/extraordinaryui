@@ -375,24 +375,27 @@ defmodule CinderUI.Site.Marketing do
 
   defp marketing_example_card(assigns) do
     ~H"""
-    <Layout.card>
-      <Layout.card_header>
-        <Layout.card_title>{@title}</Layout.card_title>
-        <Layout.card_description>{@description}</Layout.card_description>
-      </Layout.card_header>
-      <Layout.card_content>
-        <div class="rounded-lg border bg-background p-4">
-          {rendered(@preview_html)}
-        </div>
-        <div class="mt-3">
-          <Docs.docs_code_block
-            source={@snippet}
-            language={:heex}
-            pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-          />
-        </div>
-      </Layout.card_content>
-    </Layout.card>
+    <Layout.panel class="h-full divide-y">
+      <div class="p-4">
+        <h4 class="font-medium">{@title}</h4>
+        <p class="text-muted-foreground mt-1 text-sm">{@description}</p>
+      </div>
+
+      <div
+        data-slot="preview"
+        class="bg-background flex min-h-[7rem] flex-1 items-center justify-center p-4"
+      >
+        {rendered(@preview_html)}
+      </div>
+
+      <div data-slot="code" class="relative min-w-0 border-t">
+        <Docs.docs_code_block
+          source={@snippet}
+          language={:heex}
+          pre_class="m-0 min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs leading-4"
+        />
+      </div>
+    </Layout.panel>
     """
   end
 

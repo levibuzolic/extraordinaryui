@@ -23,6 +23,8 @@ defmodule CinderUI.Components.Overlay do
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
 
+  alias CinderUI.Icons
+
   doc("""
   Modal dialog with trigger/content slots.
 
@@ -170,7 +172,8 @@ defmodule CinderUI.Components.Overlay do
           aria-label="Close"
           class="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
         >
-          × <span class="sr-only">Close</span>
+          <Icons.icon name="x" class="size-4" />
+          <span class="sr-only">Close</span>
         </button>
       </section>
     </div>

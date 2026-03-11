@@ -29,6 +29,8 @@ defmodule CinderUI.Components.Forms do
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
 
+  alias CinderUI.Icons
+
   doc("""
   Renders a form label.
 
@@ -636,7 +638,7 @@ defmodule CinderUI.Components.Forms do
           ])
         }
       >
-        ×
+        <Icons.icon name="x" class="size-3.5" />
       </button>
 
       <div
@@ -689,7 +691,7 @@ defmodule CinderUI.Components.Forms do
                 {option.description}
               </span>
             </span>
-            <span :if={@value == option.value} class="shrink-0" aria-hidden="true">✓</span>
+            <Icons.icon :if={@value == option.value} name="check" class="size-4 shrink-0" aria-hidden="true" />
           </button>
         </div>
 
@@ -926,7 +928,7 @@ defmodule CinderUI.Components.Forms do
               {option.description}
             </span>
           </span>
-          <span :if={@value == option.value} class="shrink-0" aria-hidden="true">✓</span>
+          <Icons.icon :if={@value == option.value} name="check" class="size-4 shrink-0" aria-hidden="true" />
         </button>
 
         <div

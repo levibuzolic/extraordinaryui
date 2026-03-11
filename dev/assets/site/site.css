@@ -10,6 +10,16 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Contain fixed-position components (e.g. flash, flash_group) within their
+   example preview box instead of escaping to the viewport. */
+[data-slot="preview"] {
+  position: relative;
+}
+
+[data-slot="preview"] .fixed {
+  position: absolute;
+}
+
 pre[data-slot="code-block"], [data-slot="code-block"] {
   white-space: pre-wrap;
   word-break: break-word;

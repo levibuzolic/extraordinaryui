@@ -330,7 +330,7 @@ defmodule CinderUI.Docs.UIComponents do
         variant={:outline}
         size={:xs}
       >
-        ← Back to index
+        <Icons.icon name="arrow-left" class="size-3.5" /> Back to index
       </Actions.button>
       <.docs_external_link_button
         href={@entry.shadcn_url}
@@ -377,50 +377,14 @@ defmodule CinderUI.Docs.UIComponents do
             </p>
           </header>
 
-          <div
-            data-slot="component-preview"
-            data-component-id={@entry.id}
-            data-example-id={example.id}
-            data-example-title={example.title}
-            data-promoted-visual={example.promoted_visual}
-            class="mt-4 overflow-hidden rounded-xl border"
-          >
-            <div
-              data-slot="preview"
-              data-preview-align={example.preview_align || :center}
-              data-component-id={@entry.id}
-              data-example-id={example.id}
-              data-example-title={example.title}
-              data-promoted-visual={example.promoted_visual}
-              class={[
-                "p-4 sm:p-6",
-                (example.preview_align || :center) == :center &&
-                  "flex items-center justify-center"
-              ]}
-            >
-              {rendered(example.preview_html)}
-            </div>
-
-            <div data-slot="code" class="relative min-w-0 border-t bg-muted/20">
-              <Actions.button
-                as="button"
-                variant={:outline}
-                size={:icon_sm}
-                data-copy-template={"#{@entry.id}-#{example.id}"}
-                aria-label="Copy HEEx"
-                title="Copy HEEx"
-                class="absolute top-2.5 right-2 z-10 bg-background/80"
-              >
-                <CinderUI.Icons.icon name="copy" class="size-4" />
-              </Actions.button>
-              <.docs_code_block
-                id={"code-#{@entry.id}-#{example.id}"}
-                source={example.template_heex}
-                language={:heex}
-                pre_class="m-0 min-w-0 max-h-96 w-full max-w-full overflow-x-auto overflow-y-auto bg-muted/30 p-4 text-xs leading-4"
-              />
-            </div>
-          </div>
+          <.docs_example_card
+            preview_html={example.preview_html}
+            template_heex={example.template_heex}
+            copy_id={"#{@entry.id}-#{example.id}"}
+            code_id={"code-#{@entry.id}-#{example.id}"}
+            preview_align={example.preview_align || :center}
+            class="mt-4"
+          />
         </section>
       <% end %>
     </section>
@@ -535,9 +499,6 @@ defmodule CinderUI.Docs.UIComponents do
     assigns =
       assigns
       |> assign(:docs_html, summary_markdown_html(assigns.entry.docs))
-      |> assign(:attrs_count, length(assigns.entry.attributes))
-      |> assign(:slots_count, length(assigns.entry.slots))
-      |> assign(:examples_count, length(assigns.entry.examples))
       |> assign(:preview_align, assigns.entry.preview_align || :center)
       |> assign(
         :entry_href,
@@ -572,36 +533,14 @@ defmodule CinderUI.Docs.UIComponents do
           <div class="docs-markdown text-sm">{rendered(@docs_html)}</div>
         </div>
 
-        <div class={[
-          "bg-background flex min-h-[7rem] flex-1 p-4",
-          @preview_align == :center && "items-center justify-center"
-        ]}>
-          <div
-            data-preview-align={@preview_align}
-            class={["w-full", @preview_align == :center && "flex justify-center"]}
-          >
-            {rendered(@entry.preview_html)}
-          </div>
-        </div>
-        <div class="relative min-w-0 border-t">
-          <Actions.button
-            as="button"
-            variant={:outline}
-            size={:icon_sm}
-            data-copy-template={@entry.id}
-            aria-label="Copy HEEx"
-            title="Copy HEEx"
-            class="absolute top-2.5 right-2 z-10 bg-background/80"
-          >
-            <Icons.icon name="copy" class="size-4" />
-          </Actions.button>
-          <.docs_code_block
-            id={"code-#{@entry.id}"}
-            source={@entry.template_heex}
-            language={:heex}
-            pre_class="min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs"
-          />
-        </div>
+        <.docs_example_card
+          preview_html={@entry.preview_html}
+          template_heex={@entry.template_heex}
+          copy_id={@entry.id}
+          code_id={"code-#{@entry.id}"}
+          preview_align={@preview_align}
+          compact
+        />
       </Layout.panel>
     </article>
     """
@@ -647,6 +586,91 @@ defmodule CinderUI.Docs.UIComponents do
 
   defp back_to_index_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
   defp back_to_index_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
+
+  attr :preview_html, :string, required: true
+  attr :template_heex, :string, required: true
+  attr :copy_id, :string, required: true
+  attr :code_id, :string, required: true
+  attr :preview_align, :atom, default: :center
+  attr :compact, :boolean, default: false
+  attr :class, :string, default: nil
+
+  defp docs_example_card(%{compact: true} = assigns) do
+    ~H"""
+    <div
+      data-slot="preview"
+      data-preview-align={@preview_align}
+      class={[
+        "bg-background min-h-[7rem] flex-1 p-4",
+        @preview_align == :center && "flex items-center justify-center"
+      ]}
+    >
+      {rendered(@preview_html)}
+    </div>
+
+    <.docs_example_code
+      copy_id={@copy_id}
+      code_id={@code_id}
+      template_heex={@template_heex}
+      compact
+    />
+    """
+  end
+
+  defp docs_example_card(assigns) do
+    ~H"""
+    <div class={["rounded-xl border", @class]}>
+      <div
+        data-slot="preview"
+        data-preview-align={@preview_align}
+        class={[
+          "p-4 sm:p-6",
+          @preview_align == :center && "flex items-center justify-center"
+        ]}
+      >
+        {rendered(@preview_html)}
+      </div>
+
+      <.docs_example_code
+        copy_id={@copy_id}
+        code_id={@code_id}
+        template_heex={@template_heex}
+      />
+    </div>
+    """
+  end
+
+  attr :copy_id, :string, required: true
+  attr :code_id, :string, required: true
+  attr :template_heex, :string, required: true
+  attr :compact, :boolean, default: false
+
+  defp docs_example_code(assigns) do
+    ~H"""
+    <div data-slot="code" class="relative min-w-0 border-t">
+      <Actions.button
+        as="button"
+        variant={:outline}
+        size={:icon_sm}
+        data-copy-template={@copy_id}
+        aria-label="Copy HEEx"
+        title="Copy HEEx"
+        class="absolute top-2.5 right-2 z-10 bg-background/80"
+      >
+        <Icons.icon name="copy" class="size-4" />
+      </Actions.button>
+      <.docs_code_block
+        id={@code_id}
+        source={@template_heex}
+        language={:heex}
+        pre_class={[
+          "m-0 min-w-0 max-w-full overflow-x-auto overflow-y-auto p-4 text-xs leading-4",
+          if(@compact, do: "max-h-56 pr-12", else: "max-h-96 bg-muted/30")
+        ]}
+      />
+    </div>
+    """
+  end
 
   attr :class, :string, default: nil
 

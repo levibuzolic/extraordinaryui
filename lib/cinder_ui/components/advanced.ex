@@ -21,6 +21,8 @@ defmodule CinderUI.Components.Advanced do
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
 
+  alias CinderUI.Icons
+
   doc("""
   Command palette layout.
 
@@ -278,7 +280,7 @@ defmodule CinderUI.Components.Advanced do
         data-carousel-prev
         class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border bg-background p-2"
       >
-        ←
+        <Icons.icon name="chevron-left" class="size-4" />
       </button>
       <button
         type="button"
@@ -286,7 +288,7 @@ defmodule CinderUI.Components.Advanced do
         data-carousel-next
         class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border bg-background p-2"
       >
-        →
+        <Icons.icon name="chevron-right" class="size-4" />
       </button>
     </div>
     """

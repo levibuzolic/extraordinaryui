@@ -16,6 +16,8 @@ defmodule CinderUI.Components.Navigation do
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
 
+  alias CinderUI.Icons
+
   doc("""
   Breadcrumb nav wrapper.
 
@@ -371,7 +373,7 @@ defmodule CinderUI.Components.Navigation do
       class={classes(@classes)}
       aria-label="Go to previous page"
     >
-      <span aria-hidden="true">←</span>
+      <Icons.icon name="chevron-left" class="size-4" aria-hidden="true" />
       <span class="hidden sm:block">Previous</span>
     </.pagination_link>
     """
@@ -401,7 +403,7 @@ defmodule CinderUI.Components.Navigation do
       aria-label="Go to next page"
     >
       <span class="hidden sm:block">Next</span>
-      <span aria-hidden="true">→</span>
+      <Icons.icon name="chevron-right" class="size-4" aria-hidden="true" />
     </.pagination_link>
     """
   end
