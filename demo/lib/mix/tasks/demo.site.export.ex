@@ -45,6 +45,7 @@ defmodule Mix.Tasks.Demo.Site.Export do
       |> Application.get_env(DemoWeb.Endpoint, [])
       |> Keyword.merge(server: true, url: [host: "127.0.0.1", port: port, scheme: "http"])
       |> Keyword.put(:http, ip: {127, 0, 0, 1}, port: port)
+      |> Keyword.delete(:live_reload)
 
     Application.put_env(:demo, DemoWeb.Endpoint, endpoint_env)
   end
