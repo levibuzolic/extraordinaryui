@@ -219,6 +219,23 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "opacity-50"
   end
 
+  test "input_otp renders hook-enabled segmented inputs" do
+    html =
+      render_component(&Forms.input_otp/1, %{
+        name: "verification_code[]",
+        length: 4,
+        values: ["1", "", "3", ""]
+      })
+
+    assert html =~ "data-slot=\"input-otp\""
+    assert html =~ "phx-hook=\"CuiInputOtp\""
+    assert html =~ "data-input-otp-input"
+    assert html =~ "data-input-otp-index=\"0\""
+    assert html =~ "data-input-otp-index=\"3\""
+    assert html =~ "value=\"1\""
+    assert html =~ "value=\"3\""
+  end
+
   test "input_group renders a unified control shell" do
     html =
       render_component(&Forms.input_group/1, %{

@@ -1120,7 +1120,8 @@ defmodule CinderUI.Components.Forms do
   Renders an OTP-style segmented input layout.
 
   This component renders one input per position and can be wired using standard
-  Phoenix input names such as `code[]`.
+  Phoenix input names such as `code[]`. The bundled `CuiInputOtp` hook adds
+  auto-advance, backspace-to-previous, and paste distribution behavior.
 
   ## Examples
 
@@ -1133,6 +1134,7 @@ defmodule CinderUI.Components.Forms do
       />
   """)
 
+  attr :id, :string, default: nil
   attr :name, :string, default: "code[]"
   attr :length, :integer, default: 6
   attr :values, :list, default: []
@@ -1142,15 +1144,19 @@ defmodule CinderUI.Components.Forms do
 
   def input_otp(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> assign_new(:id, fn -> "cinder-ui-input-otp-#{System.unique_integer([:positive])}" end)
+      |> assign(:classes, [
         "flex items-center gap-2",
         assigns.class
       ])
 
     ~H"""
-    <div data-slot="input-otp" class={classes(@classes)}>
+    <div id={@id} data-slot="input-otp" class={classes(@classes)} phx-hook="CuiInputOtp">
       <input
         :for={index <- Enum.to_list(0..(@length - 1))}
+        data-input-otp-input
+        data-input-otp-index={index}
         type="text"
         inputmode="numeric"
         pattern="[0-9]*"
