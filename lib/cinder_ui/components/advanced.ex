@@ -269,12 +269,21 @@ defmodule CinderUI.Components.Advanced do
     assigns = assign(assigns, :classes, ["relative", assigns.class])
 
     ~H"""
-    <div id={@id} data-slot="carousel" class={classes(@classes)} phx-hook="CuiCarousel">
+    <div
+      id={@id}
+      data-slot="carousel"
+      role="region"
+      aria-roledescription="carousel"
+      class={classes(@classes)}
+      phx-hook="CuiCarousel"
+    >
       <div data-slot="carousel-content" class="overflow-hidden">
         <div class="flex" data-carousel-track>
           <div
             :for={item <- @item}
             data-slot="carousel-item"
+            role="group"
+            aria-roledescription="slide"
             class="min-w-0 shrink-0 grow-0 basis-full"
           >
             {render_slot(item)}
@@ -286,6 +295,7 @@ defmodule CinderUI.Components.Advanced do
         type="button"
         data-slot="carousel-previous"
         data-carousel-prev
+        aria-label="Previous slide"
         class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border bg-background p-2"
       >
         <Icons.icon name="chevron-left" class="size-4" />
@@ -294,6 +304,7 @@ defmodule CinderUI.Components.Advanced do
         type="button"
         data-slot="carousel-next"
         data-carousel-next
+        aria-label="Next slide"
         class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border bg-background p-2"
       >
         <Icons.icon name="chevron-right" class="size-4" />
