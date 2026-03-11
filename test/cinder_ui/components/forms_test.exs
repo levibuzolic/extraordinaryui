@@ -166,7 +166,12 @@ defmodule CinderUI.Components.FormsTest do
 
     assert html =~ "data-slot=\"field-control\""
     assert html =~ "data-slot=select-trigger"
+    assert html =~ "data-slot=native-select"
     assert html =~ "data-slot=autocomplete-input"
+    assert html =~ "data-slot=combobox-input"
+    assert html =~ "data-slot=switch"
+    assert html =~ "data-slot=checkbox"
+    assert html =~ "data-slot=radio-group-item"
   end
 
   test "switch hides native checkbox glyph and renders thumb" do

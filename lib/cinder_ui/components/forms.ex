@@ -203,7 +203,7 @@ defmodule CinderUI.Components.Forms do
   def field_control(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "group-data-[invalid=true]:[&_[data-slot=input]]:border-destructive group-data-[invalid=true]:[&_[data-slot=input]]:ring-destructive/20 group-data-[invalid=true]:[&_[data-slot=textarea]]:border-destructive group-data-[invalid=true]:[&_[data-slot=textarea]]:ring-destructive/20 group-data-[invalid=true]:[&_[data-slot=select-trigger]]:border-destructive group-data-[invalid=true]:[&_[data-slot=autocomplete-input]]:border-destructive",
+        "group-data-[invalid=true]:[&_[data-slot=input]]:border-destructive group-data-[invalid=true]:[&_[data-slot=input]]:ring-destructive/20 group-data-[invalid=true]:[&_[data-slot=textarea]]:border-destructive group-data-[invalid=true]:[&_[data-slot=textarea]]:ring-destructive/20 group-data-[invalid=true]:[&_[data-slot=select-trigger]]:border-destructive group-data-[invalid=true]:[&_[data-slot=native-select]]:border-destructive group-data-[invalid=true]:[&_[data-slot=native-select]]:ring-destructive/20 group-data-[invalid=true]:[&_[data-slot=autocomplete-input]]:border-destructive group-data-[invalid=true]:[&_[data-slot=combobox-input]]:border-destructive group-data-[invalid=true]:[&_[data-slot=switch]]:border-destructive group-data-[invalid=true]:[&_[data-slot=checkbox]]:border-destructive group-data-[invalid=true]:[&_[data-slot=radio-group-item]]:border-destructive",
         assigns.class
       ])
 
