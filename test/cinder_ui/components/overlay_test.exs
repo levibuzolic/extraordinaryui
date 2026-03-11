@@ -78,4 +78,20 @@ defmodule CinderUI.Components.OverlayTest do
     assert sheet_html =~ ~s(aria-labelledby="demo-sheet-title")
     assert sheet_html =~ ~s(aria-describedby="demo-sheet-description")
   end
+
+  test "tooltip links trigger and content with aria-describedby" do
+    html =
+      render_component(&Overlay.tooltip/1, %{
+        text: "Copy API key",
+        inner_block: TestHelpers.slot("Copy")
+      })
+
+    assert html =~ "data-slot=\"tooltip\""
+    assert html =~ "data-slot=\"tooltip-trigger\""
+    assert html =~ "data-slot=\"tooltip-content\""
+    assert html =~ ~s(role="tooltip")
+
+    [_, tooltip_id] = Regex.run(~r/aria-describedby="([^"]+)"/, html)
+    assert html =~ ~s(id="#{tooltip_id}")
+  end
 end
