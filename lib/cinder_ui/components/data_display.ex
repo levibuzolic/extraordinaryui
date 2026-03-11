@@ -39,10 +39,28 @@ defmodule CinderUI.Components.DataDisplay do
   </div>
   ```
 
-  ```heex title="Presence badge"
+  ```heex title="Badge"
   <.avatar src="example.png" alt="Online User">
-    <:badge><span class="sr-only">Online</span></:badge>
+    <:badge class="bg-green-600 dark:bg-green-800"><span class="sr-only">Online</span></:badge>
   </.avatar>
+  ```
+
+  ```heex title="Badge with icon"
+  <.avatar class="grayscale" src="example.png" alt="Add User">
+    <:badge><.icon name="plus" class="size-2" /></:badge>
+  </.avatar>
+  ```
+
+  ```heex title="Dropdown"
+  <.dropdown_menu id="avatar-dropdown">
+    <:trigger>
+      <.avatar src="example.png" alt="Levi" />
+    </:trigger>
+    <:item>Profile</:item>
+    <:item>Billing</:item>
+    <:item>Settings</:item>
+    <:item>Log out</:item>
+  </.dropdown_menu>
   ```
   """)
 
@@ -51,7 +69,9 @@ defmodule CinderUI.Components.DataDisplay do
   attr :fallback, :string, default: nil
   attr :size, :atom, default: :default, values: [:sm, :default, :lg]
   attr :class, :string, default: nil
-  slot :badge
+  slot :badge do
+    attr :class, :string
+  end
 
   def avatar(assigns) do
     size_class =
@@ -80,7 +100,8 @@ defmodule CinderUI.Components.DataDisplay do
       assigns
       |> assign(:fallback_text, fallback)
       |> assign(:classes, [
-        "group/avatar relative flex shrink-0 overflow-hidden rounded-full select-none",
+        "group/avatar relative flex shrink-0 rounded-full select-none",
+        assigns.badge == [] && "overflow-hidden",
         size_class,
         assigns.class
       ])
@@ -92,7 +113,7 @@ defmodule CinderUI.Components.DataDisplay do
         data-slot="avatar-image"
         src={@src}
         alt={@alt}
-        class="aspect-square size-full"
+        class="aspect-square size-full rounded-full"
         loading="lazy"
       />
       <div
@@ -103,11 +124,19 @@ defmodule CinderUI.Components.DataDisplay do
         {@fallback_text}
       </div>
       <span
-        :if={@badge != []}
+        :for={badge <- @badge}
         data-slot="avatar-badge"
-        class="bg-primary text-primary-foreground ring-background absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full ring-2 size-2.5"
+        class={
+          classes([
+            "absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-background select-none",
+            "group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden",
+            "group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2",
+            "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2",
+            badge[:class]
+          ])
+        }
       >
-        {render_slot(@badge)}
+        {render_slot(badge)}
       </span>
     </div>
     """

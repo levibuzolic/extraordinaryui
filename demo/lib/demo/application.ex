@@ -19,7 +19,12 @@ defmodule Demo.Application do
       |> Enum.reject(&is_nil/1)
 
     opts = [strategy: :one_for_one, name: Demo.Supervisor]
-    Supervisor.start_link(children, opts)
+    result = Supervisor.start_link(children, opts)
+
+    # Warm the catalog cache in the background so first page load is fast.
+    Task.start(fn -> Demo.SiteRuntime.catalog_sections() end)
+
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration

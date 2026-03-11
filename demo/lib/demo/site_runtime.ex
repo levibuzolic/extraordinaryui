@@ -10,7 +10,6 @@ defmodule Demo.SiteRuntime do
   @github_url "https://github.com/levibuzolic/cinder_ui"
   @hex_package_url "https://hex.pm/packages/cinder_ui"
 
-  @catalog_sections_key {__MODULE__, :catalog_sections}
   @catalog_count_key {__MODULE__, :catalog_count}
 
   def asset_path(path) when is_binary(path) do
@@ -27,15 +26,7 @@ defmodule Demo.SiteRuntime do
   end
 
   def catalog_sections do
-    case :persistent_term.get(@catalog_sections_key, :missing) do
-      :missing ->
-        sections = Catalog.sections()
-        :persistent_term.put(@catalog_sections_key, sections)
-        sections
-
-      sections ->
-        sections
-    end
+    Enum.map(Catalog.section_definitions(), &cached_section/1)
   end
 
   def catalog_component_count do
@@ -69,10 +60,35 @@ defmodule Demo.SiteRuntime do
   def hex_package_url, do: @hex_package_url
 
   def clear_catalog_cache do
-    :persistent_term.erase(@catalog_sections_key)
+    for section <- Catalog.section_definitions() do
+      :persistent_term.erase(section_key(section.id))
+    end
+
     :persistent_term.erase(@catalog_count_key)
     :ok
   end
+
+  def clear_section_cache(section_id) when is_binary(section_id) do
+    :persistent_term.erase(section_key(section_id))
+    :persistent_term.erase(@catalog_count_key)
+    :ok
+  end
+
+  defp cached_section(%{id: id} = section) do
+    key = section_key(id)
+
+    case :persistent_term.get(key, :missing) do
+      :missing ->
+        built = Catalog.build_section(section)
+        :persistent_term.put(key, built)
+        built
+
+      built ->
+        built
+    end
+  end
+
+  defp section_key(id), do: {__MODULE__, :section, id}
 
   defp theme_css_path do
     if File.regular?(@theme_css_fallback), do: @theme_css_fallback, else: nil

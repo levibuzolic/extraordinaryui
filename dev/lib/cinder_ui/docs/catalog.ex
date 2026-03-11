@@ -60,15 +60,36 @@ defmodule CinderUI.Docs.Catalog do
   """
   @spec sections() :: [map()]
   def sections do
-    Enum.map(@sections, fn section ->
-      entries =
-        section.module
-        |> component_functions()
-        |> Enum.map(&entry(section.module, &1))
-
-      Map.put(section, :entries, entries)
-    end)
+    Enum.map(@sections, &build_section/1)
   end
+
+  @doc """
+  Build a single section by id.
+  """
+  @spec build_section(map()) :: map()
+  def build_section(%{module: module} = section) do
+    entries =
+      module
+      |> component_functions()
+      |> Enum.map(&entry(module, &1))
+
+    Map.put(section, :entries, entries)
+  end
+
+  @doc """
+  Returns the section metadata (without entries) for a given module.
+  Returns `nil` if no section matches.
+  """
+  @spec section_for_module(module()) :: map() | nil
+  def section_for_module(module) do
+    Enum.find(@sections, &(&1.module == module))
+  end
+
+  @doc """
+  Returns all section definitions (without entries).
+  """
+  @spec section_definitions() :: [map()]
+  def section_definitions, do: @sections
 
   @doc """
   Total number of component entries in the catalog.
