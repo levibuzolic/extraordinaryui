@@ -17,8 +17,26 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
+  root_format:
+    name: Root Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
+
+      - name: Setup root Mix
+        uses: ./.github/actions/setup-root-mix
+        with:
+          cache-key-prefix: root-format
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
   root_quality:
-    name: Root Quality (format/lint/docs)
+    name: Root Quality (lint/docs)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,9 +49,6 @@ jobs:
         uses: ./.github/actions/setup-root-mix
         with:
           cache-key-prefix: root-quality
-
-      - name: Check formatting
-        run: mix format --check-formatted
 
       - name: Compile with warnings as errors
         run: mix compile --warnings-as-errors
@@ -85,8 +100,29 @@ jobs:
             cover/excoveralls.json
             cover/
 
+  demo_format:
+    name: Demo Format
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup toolchains
+        uses: ./.github/actions/setup-toolchains
+
+      - name: Setup demo Mix
+        uses: ./.github/actions/setup-demo-mix
+        with:
+          cache-key-prefix: demo-format
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
   demo_unit:
-    name: Demo Unit Tests
+    name: Demo Lint + Unit Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -102,9 +138,6 @@ jobs:
         uses: ./.github/actions/setup-demo-mix
         with:
           cache-key-prefix: unit
-
-      - name: Check formatting
-        run: mix format --check-formatted
 
       - name: Run demo Credo (strict)
         run: mix credo --strict
@@ -204,13 +237,17 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository &&
       always() &&
       (
+        needs.root_format.result == 'failure' ||
         needs.root_quality.result == 'failure' ||
+        needs.demo_format.result == 'failure' ||
         needs.demo_unit.result == 'failure' ||
         needs.demo_browser.result == 'failure'
       )
     needs:
+      - root_format
       - root_quality
       - root_tests
+      - demo_format
       - demo_unit
       - demo_typecheck
       - demo_browser
@@ -240,23 +277,28 @@ jobs:
           node-cache-dependency-path: demo/package-lock.json
 
       - name: Setup root Mix
-        if: ${{ needs.root_quality.result == 'failure' || needs.demo_unit.result == 'failure' }}
+        if: ${{ needs.root_format.result == 'failure' }}
         uses: ./.github/actions/setup-root-mix
         with:
           cache-key-prefix: pr-autofix-root
 
       - name: Setup demo Mix
-        if: ${{ needs.root_quality.result == 'failure' || needs.demo_unit.result == 'failure' || needs.demo_browser.result == 'failure' }}
+        if: ${{ needs.demo_format.result == 'failure' || needs.demo_browser.result == 'failure' }}
         uses: ./.github/actions/setup-demo-mix
         with:
           cache-key-prefix: pr-autofix
 
       - name: Fix formatting
-        if: ${{ needs.root_quality.result == 'failure' || needs.demo_unit.result == 'failure' }}
+        if: ${{ needs.root_format.result == 'failure' || needs.demo_format.result == 'failure' }}
         run: |
-          mix format
-          cd demo
-          mix format
+          if [ "${{ needs.root_format.result }}" = "failure" ]; then
+            mix format
+          fi
+
+          if [ "${{ needs.demo_format.result }}" = "failure" ]; then
+            cd demo
+            mix format
+          fi
 
       - name: Download visual autofix artifacts
         if: ${{ needs.demo_browser.result == 'failure' }}
