@@ -56,4 +56,42 @@ defmodule CinderUI.Components.NavigationTest do
     assert html =~ "data-active"
     assert html =~ "aria-disabled=\"true\""
   end
+
+  test "pagination renders navigation structure and active link state" do
+    pagination_html =
+      render_component(&Navigation.pagination/1, %{
+        inner_block: TestHelpers.slot("Pages")
+      })
+
+    content_html =
+      render_component(&Navigation.pagination_content/1, %{
+        inner_block: TestHelpers.slot("Items")
+      })
+
+    item_html =
+      render_component(&Navigation.pagination_item/1, %{
+        inner_block: TestHelpers.slot("Entry")
+      })
+
+    link_html =
+      render_component(&Navigation.pagination_link/1, %{
+        href: "#",
+        active: true,
+        inner_block: TestHelpers.slot("1")
+      })
+
+    previous_html = render_component(&Navigation.pagination_previous/1, %{href: "#"})
+    next_html = render_component(&Navigation.pagination_next/1, %{href: "#"})
+    ellipsis_html = render_component(&Navigation.pagination_ellipsis/1, %{})
+
+    assert pagination_html =~ "data-slot=\"pagination\""
+    assert pagination_html =~ "aria-label=\"pagination\""
+    assert content_html =~ "data-slot=\"pagination-content\""
+    assert item_html =~ "data-slot=\"pagination-item\""
+    assert link_html =~ "data-slot=\"pagination-link\""
+    assert link_html =~ "aria-current=\"page\""
+    assert previous_html =~ "Go to previous page"
+    assert next_html =~ "Go to next page"
+    assert ellipsis_html =~ "data-slot=\"pagination-ellipsis\""
+  end
 end

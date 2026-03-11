@@ -125,4 +125,36 @@ defmodule CinderUI.Components.OverlayTest do
     assert html =~ ~s(aria-controls="app-menubar-menu-0")
     assert html =~ ~s(role="menu")
   end
+
+  test "popover renders trigger and hook-backed content" do
+    html =
+      render_component(&Overlay.popover/1, %{
+        id: "share-popover",
+        trigger: [%{inner_block: fn _, _ -> "Share" end}],
+        content: [%{inner_block: fn _, _ -> "Copy link" end}]
+      })
+
+    assert html =~ "data-slot=\"popover\""
+    assert html =~ "phx-hook=\"CuiPopover\""
+    assert html =~ "data-slot=\"popover-trigger\""
+    assert html =~ "data-slot=\"popover-content\""
+  end
+
+  test "alert_dialog delegates to dialog structure with destructive styling" do
+    html =
+      render_component(&Overlay.alert_dialog/1, %{
+        id: "delete-dialog",
+        open: true,
+        trigger: [%{inner_block: fn _, _ -> "Delete" end}],
+        title: [%{inner_block: fn _, _ -> "Delete project?" end}],
+        description: [%{inner_block: fn _, _ -> "This cannot be undone." end}],
+        footer: [%{inner_block: fn _, _ -> "Footer" end}],
+        inner_block: TestHelpers.slot("Body")
+      })
+
+    assert html =~ "data-slot=\"dialog\""
+    assert html =~ "data-slot=\"dialog-content\""
+    assert html =~ "ring-destructive/20"
+    assert html =~ "Delete project?"
+  end
 end

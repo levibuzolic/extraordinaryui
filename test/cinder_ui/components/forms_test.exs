@@ -174,6 +174,50 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "data-slot=radio-group-item"
   end
 
+  test "label and field helper components render structural classes" do
+    label_html =
+      render_component(&Forms.label/1, %{
+        for: "email",
+        inner_block: CinderUI.TestHelpers.slot("Email")
+      })
+
+    field_label_html =
+      render_component(&Forms.field_label/1, %{
+        inner_block: CinderUI.TestHelpers.slot("Field label")
+      })
+
+    description_html =
+      render_component(&Forms.field_description/1, %{
+        inner_block: CinderUI.TestHelpers.slot("Helpful text")
+      })
+
+    message_html =
+      render_component(&Forms.field_message/1, %{
+        inner_block: CinderUI.TestHelpers.slot("Saved")
+      })
+
+    assert label_html =~ "data-slot=\"label\""
+    assert label_html =~ "for=\"email\""
+    assert field_label_html =~ "data-slot=\"field-label\""
+    assert description_html =~ "data-slot=\"field-description\""
+    assert description_html =~ "text-muted-foreground"
+    assert message_html =~ "data-slot=\"field-message\""
+    assert message_html =~ "text-foreground"
+  end
+
+  test "checkbox renders native input and label content" do
+    html =
+      render_component(&Forms.checkbox/1, %{
+        id: "terms",
+        checked: true,
+        inner_block: CinderUI.TestHelpers.slot("Accept terms")
+      })
+
+    assert html =~ "data-slot=\"checkbox\""
+    assert html =~ "checked"
+    assert html =~ "Accept terms"
+  end
+
   test "switch hides native checkbox glyph and renders thumb" do
     html = render_component(&Forms.switch/1, %{id: "marketing", checked: true})
 

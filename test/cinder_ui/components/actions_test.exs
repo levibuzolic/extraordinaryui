@@ -34,4 +34,18 @@ defmodule CinderUI.Components.ActionsTest do
     assert html =~ "[&amp;&gt;*:first-child]:rounded-r-none"
     assert html =~ "[&amp;&gt;*:last-child]:rounded-l-none"
   end
+
+  test "toggle_group renders type and orientation metadata" do
+    html =
+      render_component(&Actions.toggle_group/1, %{
+        type: :multiple,
+        orientation: :vertical,
+        inner_block: TestHelpers.slot("Items")
+      })
+
+    assert html =~ "data-slot=\"toggle-group\""
+    assert html =~ "data-type=\"multiple\""
+    assert html =~ "data-orientation=\"vertical\""
+    assert html =~ "role=\"group\""
+  end
 end

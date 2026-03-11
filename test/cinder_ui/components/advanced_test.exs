@@ -55,4 +55,36 @@ defmodule CinderUI.Components.AdvancedTest do
     assert html =~ "text-sidebar-foreground"
     assert html =~ "border-sidebar-border"
   end
+
+  test "combobox renders hook-backed input and items" do
+    html =
+      render_component(&Advanced.combobox/1, %{
+        id: "plan-combobox",
+        value: "Pro",
+        option: [
+          %{value: "Free", label: "Free", inner_block: fn -> "" end},
+          %{value: "Pro", label: "Pro", inner_block: fn -> "" end}
+        ]
+      })
+
+    assert html =~ "data-slot=\"combobox\""
+    assert html =~ "phx-hook=\"CuiCombobox\""
+    assert html =~ "data-slot=\"combobox-input\""
+    assert html =~ "data-slot=\"combobox-item\""
+    assert html =~ "data-slot=\"select-check\""
+  end
+
+  test "chart renders title, description, and content shell" do
+    html =
+      render_component(&Advanced.chart/1, %{
+        title: [%{inner_block: fn _, _ -> "Traffic" end}],
+        description: [%{inner_block: fn _, _ -> "Last 7 days" end}],
+        inner_block: [%{inner_block: fn _, _ -> "<div>Chart body</div>" end}]
+      })
+
+    assert html =~ "data-slot=\"chart\""
+    assert html =~ "data-slot=\"chart-content\""
+    assert html =~ "Traffic"
+    assert html =~ "Last 7 days"
+  end
 end

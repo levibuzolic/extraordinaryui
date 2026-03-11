@@ -39,6 +39,47 @@ defmodule CinderUI.Components.DataDisplayTest do
     assert html =~ "+3"
   end
 
+  test "avatar_group renders overlap classes" do
+    html =
+      render_component(&DataDisplay.avatar_group/1, %{
+        inner_block: TestHelpers.slot("Avatars")
+      })
+
+    assert html =~ "data-slot=\"avatar-group\""
+    assert html =~ "-space-x-2"
+    assert html =~ "*:data-[slot=avatar]:ring-2"
+  end
+
+  test "accordion renders item structure and open state" do
+    html =
+      render_component(&DataDisplay.accordion/1, %{
+        item: [
+          %{title: "Item 1", open: true, inner_block: fn _, _ -> "Content 1" end},
+          %{title: "Item 2", inner_block: fn _, _ -> "Content 2" end}
+        ]
+      })
+
+    assert html =~ "data-slot=\"accordion\""
+    assert html =~ "data-slot=\"accordion-item\""
+    assert html =~ "data-slot=\"accordion-trigger\""
+    assert html =~ "data-slot=\"accordion-content\""
+    assert html =~ "open"
+  end
+
+  test "collapsible renders trigger and content" do
+    html =
+      render_component(&DataDisplay.collapsible/1, %{
+        open: true,
+        trigger: [%{inner_block: fn _, _ -> "Release notes" end}],
+        inner_block: TestHelpers.slot("Added examples")
+      })
+
+    assert html =~ "data-slot=\"collapsible\""
+    assert html =~ "data-slot=\"collapsible-trigger\""
+    assert html =~ "data-slot=\"collapsible-content\""
+    assert html =~ "Release notes"
+  end
+
   test "code_block renders copy button and hook" do
     html =
       render_component(&DataDisplay.code_block/1, %{
