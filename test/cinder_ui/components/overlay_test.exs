@@ -106,4 +106,23 @@ defmodule CinderUI.Components.OverlayTest do
     assert html =~ "group-hover:block"
     assert html =~ "group-focus-within:block"
   end
+
+  test "menubar renders hook-enabled triggers and menus" do
+    html =
+      render_component(&Overlay.menubar/1, %{
+        id: "app-menubar",
+        menu: [
+          %{label: "File", inner_block: fn _, _ -> "New project" end},
+          %{label: "View", inner_block: fn _, _ -> "Toggle sidebar" end}
+        ]
+      })
+
+    assert html =~ "data-slot=\"menubar\""
+    assert html =~ "phx-hook=\"CuiMenubar\""
+    assert html =~ ~s(role="menubar")
+    assert html =~ "data-menubar-trigger"
+    assert html =~ "data-menubar-content"
+    assert html =~ ~s(aria-controls="app-menubar-menu-0")
+    assert html =~ ~s(role="menu")
+  end
 end

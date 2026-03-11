@@ -696,6 +696,7 @@ defmodule CinderUI.Components.Overlay do
   ```
   """)
 
+  attr :id, :string, default: nil
   attr :class, :string, default: nil
 
   slot :menu, required: true do
@@ -704,24 +705,39 @@ defmodule CinderUI.Components.Overlay do
 
   def menubar(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> assign_new(:id, fn -> "cinder-ui-menubar-#{System.unique_integer([:positive])}" end)
+      |> assign(:classes, [
         "bg-background flex items-center gap-1 rounded-md border p-1",
         assigns.class
       ])
 
     ~H"""
-    <div data-slot="menubar" class={classes(@classes)}>
-      <div :for={menu <- @menu} data-slot="menubar-menu" class="relative group">
+    <div
+      id={@id}
+      data-slot="menubar"
+      role="menubar"
+      class={classes(@classes)}
+      phx-hook="CuiMenubar"
+    >
+      <div :for={{menu, index} <- Enum.with_index(@menu)} data-slot="menubar-menu" class="relative">
         <button
           type="button"
           data-slot="menubar-trigger"
+          data-menubar-trigger
+          aria-haspopup="menu"
+          aria-expanded="false"
+          aria-controls={"#{@id}-menu-#{index}"}
           class="inline-flex h-8 items-center rounded-sm px-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
         >
           {menu.label}
         </button>
         <div
+          id={"#{@id}-menu-#{index}"}
           data-slot="menubar-content"
-          class="bg-popover text-popover-foreground invisible absolute left-0 top-[calc(100%+4px)] z-50 min-w-40 rounded-md border p-1 opacity-0 shadow-md transition group-hover:visible group-hover:opacity-100"
+          data-menubar-content
+          role="menu"
+          class="bg-popover text-popover-foreground absolute left-0 top-[calc(100%+4px)] z-50 hidden min-w-40 rounded-md border p-1 shadow-md"
         >
           {render_slot(menu)}
         </div>
