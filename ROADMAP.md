@@ -1,102 +1,106 @@
 # Cinder UI Roadmap
 
-Task list for AI agents working on improving the library.
-Items are grouped by priority and category.
+AI agent task list organized as sequential phases. Each phase is a self-contained
+unit of work that can be completed in a single session. Phases are ordered by
+priority and dependency — complete them in order.
+
+**Before starting any phase:** Read `CLAUDE.md` for project conventions.
+**After completing a phase:** Run `mix compile --warnings-as-errors` and `mix test`
+from the root, then `mix compile --warnings-as-errors` from `demo/`. Commit with
+a descriptive message referencing the phase.
 
 ---
 
-## High Priority
+## Phase 1: Quick Wins (code quality, no behavior changes)
 
-### Accessibility
+Small fixes that reduce tech debt. Each is independent — can be done in parallel.
 
-- [ ] **Tabs: add ARIA tab pattern** — `navigation.ex` tabs component needs `role="tablist"` on list, `role="tab"` on triggers, `role="tabpanel"` on content, `aria-selected` on active trigger
-- [ ] **Dialog/Sheet/Drawer: add aria-labelledby/describedby** — `overlay.ex` dialog has `role="dialog"` but no `aria-labelledby` pointing at the title or `aria-describedby` pointing at the description
-- [ ] **Dropdown menu: add menu roles** — `overlay.ex` dropdown needs `role="menu"` on content, `role="menuitem"` on items
-- [ ] **Tooltip: add role and aria-describedby** — `overlay.ex` tooltip needs `role="tooltip"`, an `id`, and trigger must reference it via `aria-describedby`
-- [ ] **Autocomplete: add role="combobox"** — `forms.ex` autocomplete input is missing `role="combobox"` per WAI-ARIA pattern
-- [ ] **Carousel: add aria-labels** — `advanced.ex` prev/next buttons need `aria-label`, root needs `aria-roledescription="carousel"`
-- [ ] **Hover card: add keyboard support** — `overlay.ex` hover_card uses only `group-hover:block`, needs `group-focus-within:block` for keyboard users
-- [ ] **Consistent aria-label casing** — Standardize `aria-label="Close"` (capitalized) across flash and dialog close buttons
+- [ ] 1.1 **Unify HEEx syntax** — Convert remaining `<%= %>` to `{}` syntax in `overlay.ex` (lines 586-614), `layout.ex` (lines 614-676), `navigation.ex` (lines 544-553), `data_display.ex` (line 647)
+- [ ] 1.2 **Remove redundant disabled class in dropdown_menu** — `overlay.ex` items apply both `disabled` HTML attr and manual `pointer-events-none opacity-50` class. The HTML attr already triggers Tailwind `disabled:` utilities. Remove the manual class
+- [ ] 1.3 **Remove dead switch thumb_position case** — `forms.ex` lines 459-463: both `:sm` and `:default` return the same value. Collapse to a single constant
+- [ ] 1.4 **Consistent aria-label casing** — Standardize to `aria-label="Close"` (capitalized) on flash close button (`feedback.ex`) to match dialog (`overlay.ex`)
+- [ ] 1.5 **Input: add min/max to rest includes** — `forms.ex` input `@rest` include list omits `min` and `max`, needed for number/date inputs
+- [ ] 1.6 **Slider: accept float values** — `forms.ex` slider uses `attr :value, :integer`, change to `:any` or `:float`
+- [ ] 1.7 **Radio group: add per-option disabled** — Add `disabled` attribute to `forms.ex` radio_group option slot
 
-### Flash / Alert alignment
+## Phase 2: Accessibility — ARIA attributes
 
-- [ ] **Rework flash to use alert/1 internally** — Flash currently uses its own flex layout (see TODO in `feedback.ex`). Resolve the alert grid vertical alignment issues and share the layout between flash and alert
-- [ ] **Add :success and :warning flash kinds** — Only `:info` and `:error` exist. Real apps commonly need `:success` and `:warning`
-- [ ] **Add :success and :warning alert variants** — Only `:default` and `:destructive` exist
+Add missing ARIA roles and attributes. Reference the WAI-ARIA Authoring Practices
+for each pattern. These are template-only changes (no JS).
 
-### Forms
+- [ ] 2.1 **Tabs** — `navigation.ex`: add `role="tablist"` on list, `role="tab"` on triggers with `aria-selected`, `role="tabpanel"` on content panels with `aria-labelledby`
+- [ ] 2.2 **Dialog/Sheet/Drawer** — `overlay.ex`: generate stable ids for title and description elements, add `aria-labelledby` and `aria-describedby` on the dialog container
+- [ ] 2.3 **Dropdown menu** — `overlay.ex`: add `role="menu"` on content, `role="menuitem"` on items
+- [ ] 2.4 **Tooltip** — `overlay.ex`: add `role="tooltip"` and `id` on tooltip content, `aria-describedby` on trigger
+- [ ] 2.5 **Autocomplete** — `forms.ex`: add `role="combobox"` on the input element
+- [ ] 2.6 **Carousel** — `advanced.ex`: add `aria-label` on prev/next buttons, `aria-roledescription="carousel"` on root, `aria-roledescription="slide"` on items
+- [ ] 2.7 **Hover card** — `overlay.ex`: add `group-focus-within:block` alongside `group-hover:block` for keyboard access
 
-- [ ] **field_control invalid state: cover all controls** — `forms.ex` `field_control/1` cascades invalid styling to `input`, `textarea`, `select-trigger`, `autocomplete-input` but misses `native-select`, `combobox-input`, `switch`, `checkbox`, `radio-group-item`
-- [ ] **Input: add min/max to rest includes** — `forms.ex` input `@rest` include list omits `min` and `max`, needed for number/date inputs
-- [ ] **Slider: support float values** — `forms.ex` slider uses `attr :value, :integer`, should accept floats
-- [ ] **Radio group: add per-option disabled** — `forms.ex` radio_group option slot lacks a `disabled` attribute
-- [ ] **Input OTP: implement JS hook** — No `CuiInputOtp` hook exists. Auto-advance focus on input and backspace-to-previous are unimplemented
-- [ ] **Input OTP: add separator support** — shadcn supports visual separators between digit groups
+## Phase 3: Flash / Alert rework
 
----
+- [ ] 3.1 **Investigate alert grid alignment** — The alert grid layout (`has-[>svg]:grid-cols-[...]`) doesn't align icon+title correctly when used inside flash. Debug this in the browser and fix the root cause in `feedback.ex` alert component
+- [ ] 3.2 **Rework flash to use alert/1** — Once 3.1 is resolved, replace the flash flex layout with `<.alert>` internally (remove the TODO comment in `feedback.ex`)
+- [ ] 3.3 **Add flash kinds: :success and :warning** — Extend `feedback.ex` flash to support `:success` and `:warning` with appropriate colors and icons
+- [ ] 3.4 **Add alert variants: :success and :warning** — Extend `@alert_variants` map with matching styles
 
-## Medium Priority
+## Phase 4: Forms completeness
 
-### Missing JS Hooks
+- [ ] 4.1 **field_control: cover all controls** — `forms.ex` `field_control/1` cascades invalid styling but misses `native-select`, `combobox-input`, `switch`, `checkbox`, `radio-group-item`. Add data-slot selectors for each
+- [ ] 4.2 **Input OTP: implement JS hook** — Create `CuiInputOtp` hook in `priv/templates/cinder_ui.js` with auto-advance on input, backspace-to-previous, paste handling
+- [ ] 4.3 **Input OTP: add separator support** — Add a `separator` slot or `groups` attr to `forms.ex` input_otp for visual separators between digit groups
 
-- [ ] **Menubar: implement JS hook** — `overlay.ex` menubar has no JS hook at all, relies only on CSS hover. Needs keyboard arrow navigation and click-to-open
-- [ ] **Autocomplete: add Home/End key support** — `CuiSelect` handles Home/End but `CuiAutocomplete` does not
-- [ ] **Select/Dropdown: add typeahead search** — Pressing a letter key should jump to matching items (WAI-ARIA listbox pattern)
+## Phase 5: JS Hook improvements
 
-### Component Improvements
+Each task requires editing `priv/templates/cinder_ui.js` (the source of truth).
+After editing, run `mix assets.build` from `demo/` to regenerate copies.
 
-- [ ] **Avatar: add image error fallback** — When `@src` 404s, the `<img>` shows as broken. Add `onerror` handling to fall back to initials
-- [ ] **Avatar group count: support size prop** — `data_display.ex` `avatar_group_count/1` is hardcoded to `size-8`, should respect avatar group size
-- [ ] **Code block: add copy button** — `data_display.ex` code_block has a `relative` wrapper but no copy-to-clipboard button
-- [ ] **Sidebar: use sidebar CSS variables** — `advanced.ex` sidebar uses `bg-muted/20` inline instead of the `--sidebar` CSS variables defined in `cinder_ui.css`
-- [ ] **Button group: merge borders** — shadcn merges inner borders between adjacent buttons with negative margin. CinderUI just uses `gap-2`
-- [ ] **Popover/dropdown: viewport-aware positioning** — Hardcoded `mt-2` below trigger. Add a JS-based placement system for edge-of-viewport handling
-- [ ] **Carousel: add autoplay, loop, and indicators** — Hook only does prev/next. No autoplay interval, pause-on-hover, or dot indicators
+- [ ] 5.1 **Menubar: implement CuiMenubar hook** — Click-to-open menus, arrow-left/right between menus, arrow-down into items, Escape to close. Update `overlay.ex` to add `phx-hook="CuiMenubar"`
+- [ ] 5.2 **Autocomplete: add Home/End key support** — `CuiAutocomplete` only handles ArrowDown/Up/Enter/Escape. Add Home and End to match `CuiSelect`
+- [ ] 5.3 **Select/Dropdown: add typeahead** — Pressing a letter key should jump to the first matching item. Implement in `createItemHighlighter` or per-hook
 
-### Code Quality
+## Phase 6: Component improvements
 
-- [ ] **Unify HEEx syntax** — Some files still use `<%= %>` (overlay.ex lines 586-614, layout.ex lines 614-676, navigation.ex lines 544-553, data_display.ex line 647). Convert to `{}` syntax everywhere
-- [ ] **Remove redundant disabled class in dropdown_menu** — `overlay.ex` items apply both `disabled` HTML attr and manual opacity class. The HTML attr already triggers Tailwind disabled: utilities
-- [ ] **Remove dead switch thumb_position case** — `forms.ex` lines 459-463 both `:sm` and `:default` return the same value
+- [ ] 6.1 **Avatar: image error fallback** — Add `onerror` to the `<img>` in `data_display.ex` that hides the image and shows the fallback initials
+- [ ] 6.2 **Avatar group count: size prop** — `data_display.ex` `avatar_group_count/1` is hardcoded `size-8`. Add a `size` attr or use `group-has-data-[size=*]` responsive classes like shadcn
+- [ ] 6.3 **Code block: copy button** — Add a copy-to-clipboard button to `data_display.ex` code_block. May need a small JS hook
+- [ ] 6.4 **Button group: merge borders** — Implement negative margin + z-index pattern in `actions.ex` button_group to merge adjacent button borders like shadcn
+- [ ] 6.5 **Sidebar: use CSS variables** — Update `advanced.ex` sidebar to use `bg-sidebar`, `text-sidebar-foreground` etc. instead of hardcoded `bg-muted/20`
+- [ ] 6.6 **Carousel: autoplay and indicators** — Extend `CuiCarousel` hook with autoplay interval, pause-on-hover, dot indicator rendering
 
-### CSS
+## Phase 7: CSS fixes
 
-- [ ] **Reconcile dark mode systems** — `cinder_ui.css` defines `@custom-variant dark` for `[data-theme=dark]` but CSS variables only switch under `.dark` class. These need to be consistent
-- [ ] **Map chart/sidebar CSS vars to Tailwind** — `--chart-1` through `--chart-5` and `--sidebar-*` variables exist but aren't in `@theme inline`, so `bg-chart-1` etc. don't work as utilities
-- [ ] **Add prefers-reduced-motion overrides** — Animation classes from tailwindcss-animate have no reduced-motion consideration (except flash spinner)
+- [ ] 7.1 **Reconcile dark mode** — `cinder_ui.css` defines `@custom-variant dark` for `[data-theme=dark]` but CSS variables switch under `.dark` class. Make these consistent
+- [ ] 7.2 **Map chart/sidebar CSS vars to Tailwind** — Add `--chart-1` through `--chart-5` and `--sidebar-*` variables to `@theme inline` so they work as `bg-chart-1` etc.
+- [ ] 7.3 **prefers-reduced-motion** — Add `motion-reduce:` overrides for animated components or disable `tailwindcss-animate` transitions when reduced motion is preferred
 
----
+## Phase 8: Testing
 
-## Low Priority
+- [ ] 8.1 **Expand unit tests** — Add structural assertions beyond `data-slot` presence for: button_group, toggle_group, accordion, collapsible, code_block, avatar_group, popover, tooltip, hover_card, alert_dialog, menubar, pagination, combobox, carousel, chart, sidebar, checkbox, radio_group, slider, input_otp, label, field_label, field_description, field_message
+- [ ] 8.2 **Playwright interaction tests** — Add browser tests for: dialog open/close, select keyboard navigation, autocomplete filtering, dropdown menu, tabs switching, carousel prev/next
+- [ ] 8.3 **JS hook unit tests** — Set up a test harness for client-side behavior (consider vitest or playwright component testing)
 
-### Missing Components
+## Phase 9: Install task improvements
 
-- [ ] **Context Menu** — Right-click context menu (significant JS required)
-- [ ] **Toast/Sonner** — Stacking toast notifications (intentionally deferred)
-- [ ] **Date Picker** — Combine Calendar + Popover with date selection logic
-- [ ] **Data Table** — Compose table/1 with sorting, filtering, pagination
-- [ ] **Number Field** — Increment/decrement input
-- [ ] **File Upload / Dropzone** — Styled drop zone for Phoenix `allow_upload/3`
-- [ ] **Stepper** — Multi-step progress indicator for wizards
+- [ ] 9.1 **Detect `bun.lock`** — `lib/mix/tasks/cinder_ui.install.ex` line 258 only checks `bun.lockb`. Add `bun.lock` detection for Bun v1.1+
+- [ ] 9.2 **Handle inline Hooks** — `inject_hooks_merge/1` doesn't handle `const liveSocket = new LiveSocket(...)` with Hooks defined inline. Add detection for this pattern
+- [ ] 9.3 **Add --dry-run option** — Print what would change without writing files
 
-### Calendar
+## Phase 10: New components
 
-- [ ] **Implement date selection logic** — Currently just a styled container. Needs week/month navigation, single/range/multi select, server state integration
+Lower priority. Each is a standalone task.
 
-### Testing
+- [ ] 10.1 **Context Menu** — Right-click context menu with JS hook for positioning and keyboard navigation
+- [ ] 10.2 **Toast/Sonner** — Stacking toast notification system with auto-dismiss, progress, and swipe-to-dismiss
+- [ ] 10.3 **Date Picker** — Compose Calendar + Popover with full date selection (single, range), month/year navigation
+- [ ] 10.4 **Data Table** — Compose table/1 with sortable headers, filtering, and pagination. LiveView-friendly with server-side data handling
+- [ ] 10.5 **Number Field** — Increment/decrement input with keyboard support and min/max/step
+- [ ] 10.6 **File Upload / Dropzone** — Styled drag-and-drop zone wrapping Phoenix `allow_upload/3`
+- [ ] 10.7 **Stepper** — Multi-step progress indicator for wizard flows
+- [ ] 10.8 **Calendar: full implementation** — Week/month navigation, single/range/multi select, server state integration
 
-- [ ] **Expand component unit tests** — Most tests only check `data-slot` presence. Missing structural assertions for: button_group, toggle_group, accordion, collapsible, code_block, avatar_group, popover, tooltip, hover_card, alert_dialog, menubar, pagination, combobox, carousel, chart, sidebar, checkbox, radio_group, slider, input_otp, label, field_label, field_description, field_message
-- [ ] **Add LiveView integration tests** — No tests exercise hook interactions (open/close dialog, select options, autocomplete filtering)
-- [ ] **Add JS hook tests** — Zero automated tests for client-side behavior
+## Phase 11: Documentation
 
-### Install Task
-
-- [ ] **Detect `bun.lock` (text format)** — `lib/mix/tasks/cinder_ui.install.ex` line 258 only checks `bun.lockb` (binary). Bun v1.1+ uses `bun.lock`
-- [ ] **Handle inline Hooks in app.js** — `inject_hooks_merge/1` doesn't handle `const liveSocket = new LiveSocket(...)` with Hooks defined inline
-- [ ] **Add --dry-run option** — Let users preview install changes without writing files
-
-### Documentation
-
-- [ ] **Clarify combobox vs autocomplete** — Add "when to use which" guidance to both component docs
-- [ ] **Fix select README description** — README says "native select style variant" which describes native_select, not select
-- [ ] **Update resizable status** — Either promote from "In Progress" or document what's specifically incomplete
+- [ ] 11.1 **Clarify combobox vs autocomplete** — Add "when to use which" guidance to both component docs
+- [ ] 11.2 **Fix select README description** — README incorrectly says "native select style variant" for select/1
+- [ ] 11.3 **Update resizable status** — Either promote from "In Progress" or document what's specifically incomplete
+- [ ] 11.4 **Popover/dropdown positioning** — Document the limitation of hardcoded `mt-2` positioning and plans for viewport-aware placement
