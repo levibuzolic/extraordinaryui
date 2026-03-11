@@ -29,12 +29,16 @@ defmodule CinderUI.Components.OverlayTest do
         id: "demo-dropdown",
         trigger: [%{inner_block: fn _, _ -> "Open" end}],
         item: [
-          %{href: "/settings", disabled: false, inner_block: fn _, _ -> "Settings" end}
+          %{href: "/settings", disabled: false, inner_block: fn _, _ -> "Settings" end},
+          %{disabled: true, inner_block: fn _, _ -> "Archive" end}
         ]
       })
 
     assert html =~ "data-slot=\"dropdown-menu\""
     assert html =~ "Settings"
+    assert html =~ "Archive"
+    assert html =~ "disabled"
+    refute html =~ "pointer-events-none opacity-50"
   end
 
   test "drawer and sheet render distinct slots" do

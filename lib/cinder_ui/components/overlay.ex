@@ -614,8 +614,7 @@ defmodule CinderUI.Components.Overlay do
       disabled={@item[:disabled]}
       class={
         classes([
-          "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50",
-          @item[:disabled] && "pointer-events-none opacity-50"
+          "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
         ])
       }
     >
