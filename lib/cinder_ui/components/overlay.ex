@@ -463,6 +463,10 @@ defmodule CinderUI.Components.Overlay do
 
   Uses optional `CuiPopover` hook for click toggling.
 
+  Positioning is currently a fixed offset anchored under the trigger
+  (`mt-2` plus the component's absolute positioning classes). Collision-aware
+  flipping and viewport overflow handling are not implemented yet.
+
   ## Example
 
   ```heex title="Popover" align="full"
@@ -590,6 +594,8 @@ defmodule CinderUI.Components.Overlay do
   Dropdown menu structure.
 
   Menu open/close behavior is provided by the optional `CuiDropdownMenu` hook.
+  Positioning is currently a fixed offset anchored from the trigger container,
+  so menus do not yet flip or shift to stay inside the viewport.
 
   ## Example
 

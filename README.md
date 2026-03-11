@@ -257,6 +257,11 @@ Some input-style components also support:
 
 - `clear`
 
+Current limitation:
+
+- popover and dropdown content still use fixed offset positioning classes such
+  as `mt-2`; viewport-aware flipping and collision handling are not implemented yet
+
 LiveView example:
 
 ```heex
