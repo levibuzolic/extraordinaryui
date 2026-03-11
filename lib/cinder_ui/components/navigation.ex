@@ -486,6 +486,7 @@ defmodule CinderUI.Components.Navigation do
   ```
   """)
 
+  attr :id, :string, default: nil
   attr :value, :string, required: true
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :variant, :atom, default: :default, values: [:default, :line]
@@ -509,6 +510,7 @@ defmodule CinderUI.Components.Navigation do
 
     assigns =
       assigns
+      |> assign_new(:id, fn -> "cinder-ui-tabs-#{System.unique_integer([:positive])}" end)
       |> assign(:root_classes, ["group/tabs flex gap-2", root_orientation, assigns.class])
       |> assign(:list_classes, [
         "rounded-lg p-[3px] text-muted-foreground inline-flex w-fit items-center justify-center",
@@ -518,14 +520,25 @@ defmodule CinderUI.Components.Navigation do
       ])
 
     ~H"""
-    <div data-slot="tabs" data-orientation={@orientation} class={classes(@root_classes)}>
-      <div data-slot="tabs-list" data-variant={@variant} class={classes(@list_classes)}>
+    <div id={@id} data-slot="tabs" data-orientation={@orientation} class={classes(@root_classes)}>
+      <div
+        data-slot="tabs-list"
+        data-variant={@variant}
+        role="tablist"
+        aria-orientation={@orientation}
+        class={classes(@list_classes)}
+      >
         <button
           :for={trigger <- @trigger}
+          id={tabs_trigger_id(@id, trigger.value)}
           data-slot="tabs-trigger"
           data-state={if(trigger.value == @value, do: "active", else: "inactive")}
           data-theme-mode={trigger[:data_theme_mode]}
           type="button"
+          role="tab"
+          aria-selected={if(trigger.value == @value, do: "true", else: "false")}
+          aria-controls={tabs_content_id(@id, trigger.value)}
+          tabindex={if(trigger.value == @value, do: "0", else: "-1")}
           class={
             classes([
               "text-foreground/60 hover:text-foreground relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50",
@@ -543,14 +556,27 @@ defmodule CinderUI.Components.Navigation do
 
       <div
         :for={content <- @content}
+        id={tabs_content_id(@id, content.value)}
         data-slot="tabs-content"
         data-state={if(content.value == @value, do: "active", else: "inactive")}
+        role="tabpanel"
+        aria-labelledby={tabs_trigger_id(@id, content.value)}
         class={classes(["flex-1 outline-none", content.value != @value && "hidden"])}
       >
         {render_slot(content)}
       </div>
     </div>
     """
+  end
+
+  defp tabs_trigger_id(root_id, value), do: "#{root_id}-tab-#{tabs_dom_id(value)}"
+
+  defp tabs_content_id(root_id, value), do: "#{root_id}-panel-#{tabs_dom_id(value)}"
+
+  defp tabs_dom_id(value) do
+    value
+    |> String.replace(~r/[^a-zA-Z0-9_-]+/u, "-")
+    |> String.trim("-")
   end
 
   doc("""

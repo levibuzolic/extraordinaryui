@@ -17,9 +17,10 @@ defmodule CinderUI.Components.NavigationTest do
     assert html =~ "Home"
   end
 
-  test "tabs renders active state" do
+  test "tabs renders active state and ARIA relationships" do
     html =
       render_component(&Navigation.tabs/1, %{
+        id: "settings-tabs",
         value: "profile",
         trigger: [
           %{value: "profile", inner_block: fn _, _ -> "Profile" end},
@@ -32,6 +33,12 @@ defmodule CinderUI.Components.NavigationTest do
       })
 
     assert html =~ "data-slot=\"tabs\""
+    assert html =~ "role=\"tablist\""
+    assert html =~ "role=\"tab\""
+    assert html =~ "aria-selected=\"true\""
+    assert html =~ "aria-controls=\"settings-tabs-panel-profile\""
+    assert html =~ "role=\"tabpanel\""
+    assert html =~ "aria-labelledby=\"settings-tabs-tab-profile\""
     assert html =~ "Profile Content"
   end
 
