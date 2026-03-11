@@ -36,4 +36,18 @@ defmodule CinderUI.Components.AdvancedTest do
     assert html =~ "Slide one"
     assert html =~ "Slide two"
   end
+
+  test "sidebar uses sidebar token classes" do
+    html =
+      render_component(&Advanced.sidebar/1, %{
+        rail: [%{inner_block: fn _, _ -> "Overview" end}],
+        inset: [%{inner_block: fn _, _ -> "Main content" end}]
+      })
+
+    assert html =~ "data-slot=\"sidebar\""
+    assert html =~ "data-slot=\"sidebar-rail\""
+    assert html =~ "bg-sidebar"
+    assert html =~ "text-sidebar-foreground"
+    assert html =~ "border-sidebar-border"
+  end
 end

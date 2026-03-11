@@ -378,8 +378,15 @@ defmodule CinderUI.Components.Advanced do
 
     ~H"""
     <div data-slot="sidebar" class={classes(@classes)}>
-      <aside data-slot="sidebar-rail" class="border-r bg-muted/20 p-4">{render_slot(@rail)}</aside>
-      <main data-slot="sidebar-inset" class="min-w-0 p-6">{render_slot(@inset)}</main>
+      <aside
+        data-slot="sidebar-rail"
+        class="bg-sidebar text-sidebar-foreground border-r border-sidebar-border p-4"
+      >
+        {render_slot(@rail)}
+      </aside>
+      <main data-slot="sidebar-inset" class="bg-background text-foreground min-w-0 p-6">
+        {render_slot(@inset)}
+      </main>
     </div>
     """
   end

@@ -64,7 +64,7 @@ After editing, run `mix assets.build` from `demo/` to regenerate copies.
 - [x] 6.2 **Avatar group count: size prop** — `data_display.ex` `avatar_group_count/1` is hardcoded `size-8`. Add a `size` attr or use `group-has-data-[size=*]` responsive classes like shadcn
 - [x] 6.3 **Code block: copy button** — Add a copy-to-clipboard button to `data_display.ex` code_block. May need a small JS hook
 - [x] 6.4 **Button group: merge borders** — Implement negative margin + z-index pattern in `actions.ex` button_group to merge adjacent button borders like shadcn
-- [ ] 6.5 **Sidebar: use CSS variables** — Update `advanced.ex` sidebar to use `bg-sidebar`, `text-sidebar-foreground` etc. instead of hardcoded `bg-muted/20`
+- [x] 6.5 **Sidebar: use CSS variables** — Update `advanced.ex` sidebar to use `bg-sidebar`, `text-sidebar-foreground` etc. instead of hardcoded `bg-muted/20`
 - [ ] 6.6 **Carousel: autoplay and indicators** — Extend `CuiCarousel` hook with autoplay interval, pause-on-hover, dot indicator rendering
 
 ## Phase 7: CSS fixes
