@@ -26,6 +26,19 @@ defmodule CinderUI.Components.DataDisplayTest do
     assert html =~ "PJ"
   end
 
+  test "avatar_group_count supports size variants" do
+    html =
+      render_component(&DataDisplay.avatar_group_count/1, %{
+        size: :sm,
+        inner_block: TestHelpers.slot("+3")
+      })
+
+    assert html =~ "data-slot=\"avatar-group-count\""
+    assert html =~ "data-size=\"sm\""
+    assert html =~ "size-6"
+    assert html =~ "+3"
+  end
+
   test "table renders slots" do
     html =
       render_component(&DataDisplay.table/1, %{

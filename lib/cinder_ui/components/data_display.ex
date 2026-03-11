@@ -198,23 +198,34 @@ defmodule CinderUI.Components.DataDisplay do
   <.avatar_group>
     <.avatar alt="Levi Buzolic" />
     <.avatar alt="Mira Jones" />
-    <.avatar_group_count>+3</.avatar_group_count>
+    <.avatar_group_count size={:sm}>+3</.avatar_group_count>
   </.avatar_group>
   ```
   """)
 
+  attr :size, :atom, default: :default, values: [:sm, :default, :lg]
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
   def avatar_group_count(assigns) do
+    size_class =
+      case assigns.size do
+        :sm -> "size-6 text-xs"
+        :default -> "size-8 text-sm"
+        :lg -> "size-10 text-base"
+      end
+
     assigns =
       assign(assigns, :classes, [
-        "bg-muted text-muted-foreground ring-background relative flex size-8 shrink-0 items-center justify-center rounded-full text-sm ring-2",
+        "bg-muted text-muted-foreground ring-background relative flex shrink-0 items-center justify-center rounded-full ring-2",
+        size_class,
         assigns.class
       ])
 
     ~H"""
-    <div data-slot="avatar-group-count" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="avatar-group-count" data-size={@size} class={classes(@classes)}>
+      {render_slot(@inner_block)}
+    </div>
     """
   end
 
