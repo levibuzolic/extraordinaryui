@@ -1329,7 +1329,7 @@ defmodule CinderUI.Docs.Catalog do
         %{value: "mira", label: "Mira Chen", description: "Design"},
         %{value: "sam", label: "Sam Hall", description: "Operations"}
       ],
-      empty: [slot("No matching teammates.")]
+      empty: slot("No matching teammates.")
     }
   end
 
