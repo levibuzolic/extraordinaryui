@@ -455,18 +455,12 @@ defmodule CinderUI.Components.Forms do
         :default -> "size-4"
       end
 
-    thumb_position =
-      case assigns.size do
-        :sm -> "peer-checked:translate-x-[calc(100%-2px)]"
-        :default -> "peer-checked:translate-x-[calc(100%-2px)]"
-      end
-
     assigns =
       assigns
       |> assign(:state, state)
       |> assign(:root_size, root_size)
       |> assign(:thumb_size, thumb_size)
-      |> assign(:thumb_position, thumb_position)
+      |> assign(:thumb_position, "peer-checked:translate-x-[calc(100%-2px)]")
       |> assign(:track_classes, [
         "peer appearance-none bg-input checked:bg-primary focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/80 dark:checked:bg-primary inline-flex shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
         root_size,
