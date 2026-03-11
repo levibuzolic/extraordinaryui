@@ -214,11 +214,11 @@ defmodule CinderUI.Components.Feedback do
 
   ## Examples
 
-  ```heex title="From flash map"
-  <.flash kind={:info} flash={%{"info" => "Settings saved."}} />
+  ```heex title="Info flash"
+  <.flash kind={:info}>Settings saved.</.flash>
   ```
 
-  ```heex title="From slot"
+  ```heex title="Error flash"
   <.flash kind={:error}>Unable to save changes.</.flash>
   ```
   """)
