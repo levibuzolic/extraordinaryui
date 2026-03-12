@@ -201,7 +201,7 @@ defmodule CinderUI.Site.Marketing do
             </Feedback.badge>
           </div>
           <div class="hero-actions flex flex-wrap justify-center gap-3 pt-2">
-            <Actions.button as="a" href={@docs_path} size={:lg} class="hero-button">
+            <Actions.button as="a" href={@docs_path} size={:lg} class="hero-button hero-button-primary">
               Explore Components
             </Actions.button>
             <Actions.button
