@@ -185,16 +185,16 @@ defmodule Mix.Tasks.CinderUi.Install do
   end
 
   defp merged_hooks_body(hooks_body) do
-    hooks_body
-    |> String.trim()
-    |> case do
-      "" ->
+    trimmed = String.trim(hooks_body)
+
+    cond do
+      trimmed == "" ->
         "...CinderUIHooks"
 
-      trimmed when String.ends_with?(trimmed, ",") ->
+      String.ends_with?(trimmed, ",") ->
         "#{String.trim_trailing(hooks_body)} ...CinderUIHooks"
 
-      _trimmed ->
+      true ->
         "#{String.trim_trailing(hooks_body)}, ...CinderUIHooks"
     end
   end

@@ -292,7 +292,7 @@ defmodule CinderUI.Components.Layout do
   end
 
   doc("""
-  A borderless surface with card-like styling but no inner padding or gap,
+  A bordered surface with card-like styling but no inner padding or gap,
   for flexible layouts where the caller controls spacing.
 
   ## Example
