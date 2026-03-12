@@ -158,11 +158,11 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section class="hero-section overflow-hidden py-20 md:py-28">
+    <section class="hero-section py-20 md:py-28">
       <div class="hero-backdrop" aria-hidden="true">
         <div class="hero-glow"></div>
         <div class="hero-heat"></div>
-        <div class="hero-rings"></div>
+        <div class="hero-falloff"></div>
         <div class="hero-beam hero-beam-left"></div>
         <div class="hero-beam hero-beam-right"></div>
         <div class="hero-ember-field">

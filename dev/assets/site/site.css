@@ -89,13 +89,17 @@ MARK: Home Page
 */
 
 :root {
-  --ember-glow: oklch(0.85 0.08 65);
-  --ember-glow-strong: oklch(0.80 0.12 55);
+  --ember-glow: oklch(0.79 0.16 68);
+  --ember-glow-strong: oklch(0.72 0.21 42);
+  --ember-core: oklch(0.88 0.13 82);
+  --ember-deep: oklch(0.61 0.23 28);
 }
 
 [data-theme="dark"] {
-  --ember-glow: oklch(0.35 0.12 30);
-  --ember-glow-strong: oklch(0.30 0.15 25);
+  --ember-glow: oklch(0.54 0.16 55);
+  --ember-glow-strong: oklch(0.62 0.22 38);
+  --ember-core: oklch(0.74 0.14 78);
+  --ember-deep: oklch(0.46 0.2 24);
 }
 
 /* Subtle noise texture overlay */
@@ -123,8 +127,8 @@ body.home-page::before {
 
 .hero-backdrop {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
+  inset: 0 0 -10rem;
+  overflow: visible;
   pointer-events: none;
   z-index: -2;
 }
@@ -138,35 +142,39 @@ body.home-page::before {
   height: min(58vw, 640px);
   border-radius: 50%;
   background:
-    radial-gradient(ellipse at center, color-mix(in oklab, var(--ember-glow-strong) 26%, transparent) 0%, color-mix(in oklab, var(--ember-glow) 18%, transparent) 24%, color-mix(in oklab, var(--ember-glow) 10%, transparent) 46%, transparent 74%);
-  opacity: 0.36;
-  filter: blur(22px);
+    radial-gradient(ellipse at center, color-mix(in oklab, var(--ember-core) 32%, transparent) 0%, color-mix(in oklab, var(--ember-glow-strong) 26%, transparent) 20%, color-mix(in oklab, var(--ember-glow) 20%, transparent) 42%, color-mix(in oklab, var(--ember-deep) 12%, transparent) 58%, transparent 76%);
+  opacity: 0.42;
+  filter: blur(26px);
   animation: hero-glow-breathe 11s ease-in-out infinite alternate;
 }
 
 [data-theme="dark"] .hero-glow {
-  opacity: 0.26;
+  opacity: 0.34;
 }
 
 .hero-heat {
   position: absolute;
-  inset: 18% 28% 8%;
+  inset: 14% 24% 0;
   background:
-    radial-gradient(circle at 50% 68%, color-mix(in oklab, var(--ember-glow-strong) 20%, transparent) 0%, color-mix(in oklab, var(--ember-glow) 12%, transparent) 24%, transparent 58%);
-  filter: blur(36px);
-  opacity: 0.55;
+    radial-gradient(circle at 50% 64%, color-mix(in oklab, var(--ember-core) 18%, transparent) 0%, color-mix(in oklab, var(--ember-glow-strong) 16%, transparent) 18%, color-mix(in oklab, var(--ember-glow) 14%, transparent) 34%, color-mix(in oklab, var(--ember-deep) 10%, transparent) 52%, transparent 68%);
+  filter: blur(42px);
+  opacity: 0.72;
   animation: hero-heat-shift 9s ease-in-out infinite alternate;
 }
 
-.hero-rings {
+.hero-falloff {
   position: absolute;
-  inset: 8% 22%;
+  left: 50%;
+  bottom: -9rem;
+  width: min(96vw, 1220px);
+  height: 22rem;
+  transform: translateX(-50%);
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, transparent 0 34%, color-mix(in oklab, var(--ember-glow-strong) 16%, transparent) 35%, transparent 36% 50%, color-mix(in oklab, var(--ember-glow) 12%, transparent) 51%, transparent 52% 66%, color-mix(in oklab, var(--foreground) 5%, transparent) 67%, transparent 68%);
-  opacity: 0.34;
-  filter: blur(1px);
-  animation: hero-rings-rotate 30s linear infinite;
+    radial-gradient(ellipse at center, color-mix(in oklab, var(--ember-glow) 18%, transparent) 0%, color-mix(in oklab, var(--ember-glow-strong) 12%, transparent) 24%, color-mix(in oklab, var(--ember-deep) 8%, transparent) 42%, transparent 72%);
+  opacity: 0.54;
+  filter: blur(44px);
+  animation: hero-falloff-breathe 14s ease-in-out infinite alternate;
 }
 
 .hero-beam {
@@ -176,7 +184,7 @@ body.home-page::before {
   height: 145%;
   filter: blur(42px);
   opacity: 0.32;
-  background: linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--ember-glow-strong) 10%, transparent) 26%, color-mix(in oklab, var(--foreground) 3%, transparent) 52%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--ember-core) 8%, transparent) 18%, color-mix(in oklab, var(--ember-glow-strong) 14%, transparent) 36%, color-mix(in oklab, var(--ember-deep) 10%, transparent) 58%, transparent 100%);
   mix-blend-mode: screen;
 }
 
@@ -206,10 +214,11 @@ body.home-page::before {
   border-radius: 9999px;
   opacity: 0;
   background:
-    radial-gradient(circle at 30% 30%, color-mix(in oklab, white 85%, var(--ember-glow-strong)) 0%, var(--ember-glow-strong) 28%, color-mix(in oklab, var(--ember-glow) 78%, transparent) 62%, transparent 100%);
+    radial-gradient(circle at 32% 28%, color-mix(in oklab, white 86%, var(--ember-core)) 0%, var(--ember-core) 18%, var(--ember-glow-strong) 42%, color-mix(in oklab, var(--ember-deep) 58%, transparent) 72%, transparent 100%);
   box-shadow:
-    0 0 12px color-mix(in oklab, var(--ember-glow-strong) 55%, transparent),
-    0 0 24px color-mix(in oklab, var(--ember-glow) 38%, transparent);
+    0 0 12px color-mix(in oklab, var(--ember-glow-strong) 62%, transparent),
+    0 0 24px color-mix(in oklab, var(--ember-glow) 42%, transparent),
+    0 0 42px color-mix(in oklab, var(--ember-deep) 18%, transparent);
   filter: blur(var(--ember-blur));
   transform: translate3d(0, 0, 0) scale(var(--ember-scale));
   animation:
@@ -268,25 +277,23 @@ body.home-page::before {
 
 @keyframes hero-heat-shift {
   0% {
-    transform: translateY(0) scale(0.96);
+    transform: translateY(0) scale(0.97);
   }
 
   100% {
-    transform: translateY(-1rem) scale(1.04);
+    transform: translateY(-1.2rem) scale(1.05);
   }
 }
 
-@keyframes hero-rings-rotate {
+@keyframes hero-falloff-breathe {
   from {
-    transform: rotate(0deg) scale(0.98);
-  }
-
-  50% {
-    transform: rotate(180deg) scale(1.02);
+    transform: translateX(-50%) scaleX(0.95);
+    opacity: 0.42;
   }
 
   to {
-    transform: rotate(360deg) scale(0.98);
+    transform: translateX(-50%) scaleX(1.03);
+    opacity: 0.62;
   }
 }
 
@@ -394,7 +401,7 @@ body.home-page::before {
 @media (prefers-reduced-motion: reduce) {
   .hero-glow,
   .hero-heat,
-  .hero-rings,
+  .hero-falloff,
   .hero-beam,
   .hero-ember {
     animation: none !important;
