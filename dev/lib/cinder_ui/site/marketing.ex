@@ -92,13 +92,15 @@ defmodule CinderUI.Site.Marketing do
       theme_bootstrap_script: theme_bootstrap_script(),
       theme_css_path: theme_css_path,
       site_css_path: site_css_path,
-      header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
+      header_controls_html:
+        header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
       hero_html: hero_html(version, component_count, shadcn_url, docs_path),
       component_examples_html: component_examples_html(shadcn_url),
       install_html: install_html(version, docs_path),
-      theme_tokens_html: theme_tokens_html(),
       features_html: features_html(shadcn_url),
+      footer_html:
+        footer_html(github_url, hex_url, hexdocs_url, shadcn_url, docs_path),
       theme_script_src: theme_script_src
     ]
 
@@ -158,39 +160,33 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section>
-      <div class="grid gap-6 lg:grid-cols-[1.45fr_0.55fr]">
-        <div class="space-y-4">
-          <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
-            <a
-              href={@shadcn_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="underline underline-offset-4"
-            >
-              shadcn/ui
-            </a>
-            component patterns, packaged for Phoenix + LiveView.
+    <section class="bp-hero relative overflow-hidden">
+      <div class="bp-dot-grid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+      <div class="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12 py-12 md:py-16">
+        <div class="space-y-6">
+          <div class="flex flex-wrap items-center gap-2">
+            <Feedback.badge variant={:outline}>
+              v{@version}
+            </Feedback.badge>
+            <Feedback.badge variant={:secondary}>
+              {@component_count} components
+            </Feedback.badge>
+          </div>
+          <h1 class="bp-heading text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+            Components for Phoenix.
           </h1>
-          <p class="max-w-2xl text-base text-muted-foreground">
-            Cinder UI provides server-rendered components, typed attrs/slots,
-            and installer automation that keep parity with
+          <p class="max-w-xl text-base text-muted-foreground md:text-lg">
             <a
               href={@shadcn_url}
               target="_blank"
               rel="noopener noreferrer"
               class="underline underline-offset-4"
-            >
-              shadcn/ui
-            </a>
-            conventions while fitting Phoenix conventions.
+            >shadcn/ui</a>
+            patterns, server-rendered. Typed HEEx APIs. One command to install.
           </p>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-3">
             <Actions.button as="a" href={@docs_path}>
-              Browse Component Library
-            </Actions.button>
-            <Actions.button as="a" variant={:outline} href={@install_docs_path}>
-              Installation Guide
+              Browse Components
             </Actions.button>
             <Actions.button as="a" variant={:outline} href="#install">
               Quick Start
@@ -198,20 +194,20 @@ defmodule CinderUI.Site.Marketing do
           </div>
         </div>
 
-        <Layout.card class="lg:self-start">
-          <Layout.card_content>
-            <dl class="space-y-2 text-sm">
-              <div class="flex items-center justify-between gap-2">
-                <dt class="text-muted-foreground">Latest release</dt>
-                <dd class="font-medium"><code>v{@version}</code></dd>
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <dt class="text-muted-foreground">Components</dt>
-                <dd class="font-medium"><code>{@component_count}</code></dd>
-              </div>
-            </dl>
-          </Layout.card_content>
-        </Layout.card>
+        <div class="bp-terminal lg:self-center lg:min-w-[360px]">
+          <div class="bp-terminal-chrome">
+            <span class="bp-terminal-dot"></span>
+            <span class="bp-terminal-dot"></span>
+            <span class="bp-terminal-dot"></span>
+            <span class="bp-terminal-title">Terminal</span>
+          </div>
+          <div class="bp-terminal-body">
+            <code class="bp-terminal-line">
+              <span class="text-muted-foreground">$</span>
+              <span> mix cinder_ui.install --skip-existing</span><span class="bp-cursor">|</span>
+            </code>
+          </div>
+        </div>
       </div>
     </section>
     """
@@ -229,9 +225,10 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section id="examples" class="space-y-4">
-      <h2 class="text-2xl font-semibold tracking-tight">Component examples</h2>
-      <div class="grid gap-4 md:grid-cols-2">
+    <section id="examples">
+      <div class="bp-section-connector" aria-hidden="true"></div>
+      <p class="bp-section-label">// components</p>
+      <div class="grid gap-4 md:grid-cols-2 mt-4">
         <.marketing_example_card
           :for={card <- @cards}
           title={card.title}
@@ -265,7 +262,7 @@ defmodule CinderUI.Site.Marketing do
     """
 
     %{
-      title: "Actions.button_group",
+      title: "button_group",
       description: "Grouped primary + secondary actions.",
       preview_html: preview,
       snippet: snippet,
@@ -299,7 +296,7 @@ defmodule CinderUI.Site.Marketing do
     """
 
     %{
-      title: "Forms.field",
+      title: "field",
       description: "Label + input + helper text using the shared token model.",
       preview_html: preview,
       snippet: snippet,
@@ -330,7 +327,7 @@ defmodule CinderUI.Site.Marketing do
     """
 
     %{
-      title: "Feedback.alert",
+      title: "alert",
       description: "Status messaging aligned with upstream alert patterns.",
       preview_html: preview,
       snippet: snippet,
@@ -361,7 +358,7 @@ defmodule CinderUI.Site.Marketing do
     """
 
     %{
-      title: "Navigation.tabs",
+      title: "tabs",
       description: "Tab primitives with server-driven active state.",
       preview_html: preview,
       snippet: snippet,
@@ -377,9 +374,9 @@ defmodule CinderUI.Site.Marketing do
 
   defp marketing_example_card(assigns) do
     ~H"""
-    <Layout.panel class="h-full divide-y">
+    <Layout.panel class="bp-example-card h-full divide-y">
       <div class="p-4">
-        <h4 class="font-medium">{@title}</h4>
+        <h4 class="bp-mono text-sm font-medium text-muted-foreground">{@title}</h4>
         <p class="text-muted-foreground mt-1 text-sm">{@description}</p>
       </div>
 
@@ -390,13 +387,20 @@ defmodule CinderUI.Site.Marketing do
         {rendered(@preview_html)}
       </div>
 
-      <div data-slot="code" class="relative min-w-0 border-t">
+      <details data-slot="code-details" class="relative min-w-0 border-t">
+        <summary
+          data-slot="code-summary"
+          class="bp-mono flex cursor-pointer items-center gap-2 px-4 py-2 text-xs text-muted-foreground hover:text-foreground select-none"
+        >
+          <Icons.icon name="code" class="size-3.5" />
+          <span>View source</span>
+        </summary>
         <Docs.docs_code_block
           source={@snippet}
           language={:heex}
           pre_class="m-0 min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs leading-4"
         />
-      </div>
+      </details>
     </Layout.panel>
     """
   end
@@ -423,96 +427,42 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section id="install" class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
-      <p class="text-sm text-muted-foreground">
-        Need the full setup flow? <a href={@install_docs_path} class="underline underline-offset-4">Read the installation guide</a>.
+    <section id="install">
+      <div class="bp-section-connector" aria-hidden="true"></div>
+      <p class="bp-section-label">// install</p>
+      <h2 class="bp-heading text-2xl font-semibold tracking-tight mt-2">Quick start</h2>
+      <p class="text-sm text-muted-foreground mt-1">
+        Full guide:
+        <a href={@install_docs_path} class="underline underline-offset-4">installation docs</a>.
       </p>
-      <div class="space-y-2">
-        <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
-        <Docs.docs_code_block
-          source={@deps_code}
-          language={:elixir}
-          pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-        />
+      <div class="bp-install-steps mt-6 space-y-6">
+        <div class="bp-install-step">
+          <p class="bp-mono text-sm font-medium text-foreground">
+            <span class="text-muted-foreground">01</span>
+            &nbsp;Add dependencies to <code class="inline-code">mix.exs</code>
+          </p>
+          <div class="mt-2">
+            <Docs.docs_code_block
+              source={@deps_code}
+              language={:elixir}
+              pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+            />
+          </div>
+        </div>
+        <div class="bp-install-step">
+          <p class="bp-mono text-sm font-medium text-foreground">
+            <span class="text-muted-foreground">02</span>
+            &nbsp;Fetch and install
+          </p>
+          <div class="mt-2 bp-terminal-block">
+            <Docs.docs_code_block
+              source={@terminal_code}
+              language={:bash}
+              pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+            />
+          </div>
+        </div>
       </div>
-      <div class="space-y-2">
-        <p class="text-sm font-medium text-foreground">
-          2) Install and run setup commands in your terminal
-        </p>
-        <Docs.docs_code_block
-          source={@terminal_code}
-          language={:bash}
-          pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-        />
-      </div>
-    </section>
-    """
-    |> to_html()
-  end
-
-  defp theme_tokens_html do
-    tokens_code = """
-    :root {
-      --background: oklch(1 0 0);
-      --foreground: oklch(0.145 0 0);
-      --card: oklch(1 0 0);
-      --card-foreground: oklch(0.145 0 0);
-      --popover: oklch(1 0 0);
-      --popover-foreground: oklch(0.145 0 0);
-      --primary: oklch(0.205 0 0);
-      --primary-foreground: oklch(0.985 0 0);
-      --secondary: oklch(0.97 0 0);
-      --secondary-foreground: oklch(0.205 0 0);
-      --muted: oklch(0.97 0 0);
-      --muted-foreground: oklch(0.556 0 0);
-      --accent: oklch(0.97 0 0);
-      --accent-foreground: oklch(0.205 0 0);
-      --destructive: oklch(0.577 0.245 27.325);
-      --destructive-foreground: oklch(0.985 0 0);
-      --border: oklch(0.922 0 0);
-      --input: oklch(0.922 0 0);
-      --ring: oklch(0.708 0 0);
-      --radius: 0.75rem;
-    }
-
-    .dark {
-      --background: oklch(0.145 0 0);
-      --foreground: oklch(0.985 0 0);
-      --card: oklch(0.205 0 0);
-      --card-foreground: oklch(0.985 0 0);
-      --popover: oklch(0.205 0 0);
-      --popover-foreground: oklch(0.985 0 0);
-      --primary: oklch(0.922 0 0);
-      --primary-foreground: oklch(0.205 0 0);
-      --secondary: oklch(0.269 0 0);
-      --secondary-foreground: oklch(0.985 0 0);
-      --muted: oklch(0.269 0 0);
-      --muted-foreground: oklch(0.708 0 0);
-      --accent: oklch(0.269 0 0);
-      --accent-foreground: oklch(0.985 0 0);
-      --destructive: oklch(0.704 0.191 22.216);
-      --destructive-foreground: oklch(0.985 0 0);
-      --border: oklch(1 0 0 / 10%);
-      --input: oklch(1 0 0 / 15%);
-      --ring: oklch(0.556 0 0);
-    }
-    """
-
-    assigns = %{tokens_code: tokens_code}
-
-    ~H"""
-    <section id="tokens" class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">Configure tokens like shadcn/ui</h2>
-      <p class="text-sm text-muted-foreground">
-        Customize your theme in <code>assets/css/app.css</code> by overriding semantic CSS variables.
-        Radius is controlled via <code>--radius</code>; component radii are derived from it automatically.
-      </p>
-      <Docs.docs_code_block
-        source={@tokens_code}
-        language={:css}
-        pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-      />
     </section>
     """
     |> to_html()
@@ -522,36 +472,39 @@ defmodule CinderUI.Site.Marketing do
     assigns = %{
       features: [
         %{
-          title: "Phoenix-native API",
-          body_html:
-            "Typed HEEx function components with predictable attrs/slots and composable primitives."
+          icon: "blocks",
+          title: "Phoenix-native",
+          body: "Typed HEEx function components with predictable attrs and slots."
         },
         %{
-          title: "Fast app integration",
-          body_html:
-            "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects."
+          icon: "terminal",
+          title: "Fast setup",
+          body: "One command wires Tailwind, CSS tokens, and optional LiveView hooks."
         },
         %{
-          title: "shadcn-aligned styles",
-          body_html:
-            "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics."
+          icon: "paintbrush",
+          title: "shadcn-aligned",
+          body:
+            "API surface and CSS variables match <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions."
         },
         %{
-          title: "Production confidence",
-          body_html:
-            "Unit, browser, and visual regression coverage keeps components stable as your app evolves."
+          icon: "circle-check",
+          title: "Battle-tested",
+          body: "Unit, browser, and visual regression coverage for every component."
         }
       ]
     }
 
     ~H"""
-    <section class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
-      <div class="grid gap-4 md:grid-cols-2">
+    <section id="features">
+      <div class="bp-section-connector" aria-hidden="true"></div>
+      <p class="bp-section-label">// features</p>
+      <div class="grid gap-3 mt-4 sm:grid-cols-2 lg:grid-cols-4">
         <.marketing_feature_card
           :for={feature <- @features}
+          icon={feature.icon}
           title={feature.title}
-          body_html={feature.body_html}
+          body_html={feature.body}
         />
       </div>
     </section>
@@ -559,22 +512,72 @@ defmodule CinderUI.Site.Marketing do
     |> to_html()
   end
 
+  attr :icon, :string, required: true
   attr :title, :string, required: true
   attr :body_html, :string, required: true
 
   defp marketing_feature_card(assigns) do
     ~H"""
-    <Layout.card>
-      <Layout.card_header>
-        <Layout.card_title>{@title}</Layout.card_title>
-      </Layout.card_header>
-      <Layout.card_content>
-        <Layout.card_description>
+    <Layout.card class="bp-feature-card">
+      <Layout.card_content class="flex flex-col gap-2 p-4">
+        <div class="flex items-center gap-2">
+          <Icons.icon name={@icon} class="size-4 text-muted-foreground" />
+          <span class="bp-mono text-sm font-medium">{@title}</span>
+        </div>
+        <Layout.card_description class="text-sm">
           {rendered(@body_html)}
         </Layout.card_description>
       </Layout.card_content>
     </Layout.card>
     """
+  end
+
+  defp footer_html(github_url, hex_url, hexdocs_url, shadcn_url, docs_path) do
+    assigns = %{
+      github_url: github_url,
+      hex_url: hex_url,
+      hexdocs_url: hexdocs_url,
+      shadcn_url: shadcn_url,
+      docs_path: docs_path
+    }
+
+    ~H"""
+    <footer class="bp-footer mt-16 border-t pt-8 pb-12">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div class="space-y-2">
+          <p class="bp-mono text-sm font-medium text-foreground">Cinder UI</p>
+          <p class="text-sm text-muted-foreground max-w-md">
+            An independent project based on
+            <a
+              href={@shadcn_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline underline-offset-4"
+            >shadcn/ui</a>
+            patterns, built for Elixir, Phoenix, and LiveView by
+            <a
+              href="https://levibuzolic.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline underline-offset-4"
+            >Levi Buzolic</a>.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+          <a :if={is_binary(@github_url) and @github_url != ""} href={@github_url} target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">GitHub</a>
+          <a :if={is_binary(@hex_url) and @hex_url != ""} href={@hex_url} target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">Hex</a>
+          <a :if={is_binary(@hexdocs_url) and @hexdocs_url != ""} href={@hexdocs_url} target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">HexDocs</a>
+          <a href={@docs_path} class="hover:text-foreground transition-colors">Docs</a>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+        <span>Press</span>
+        <kbd class="bp-kbd">&#8984;K</kbd>
+        <span>to search components</span>
+      </div>
+    </footer>
+    """
+    |> to_html()
   end
 
   defp theme_bootstrap_script do

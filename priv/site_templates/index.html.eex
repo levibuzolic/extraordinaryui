@@ -26,29 +26,22 @@
     </script>
   </head>
   <body class="bg-background text-foreground">
-    <header class="border-b bg-card/80">
-      <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-3 px-4 py-4 md:px-6">
-        <a href="./" class="text-4xl font-semibold tracking-tight">Cinder UI</a>
+    <header class="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-40">
+      <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6">
+        <a href="./" class="bp-mono text-lg font-semibold tracking-tight">Cinder UI</a>
         <%= header_controls_html %>
       </div>
     </header>
 
     <div class="site-shell mx-auto max-w-[1200px] px-4 py-6 md:px-6">
-      <main class="space-y-10">
+      <main class="space-y-12">
         <%= hero_html %>
         <%= component_examples_html %>
         <%= install_html %>
-        <%= theme_tokens_html %>
         <%= features_html %>
       </main>
 
-      <footer class="my-10 text-sm text-muted-foreground">
-        <p>
-          Cinder UI is an independent project based on the design and API patterns of
-          <a href="<%= shadcn_url %>" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>, built for Elixir, Phoenix, and LiveView by
-          <a href="https://levibuzolic.com" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">Levi Buzolic</a>.
-        </p>
-      </footer>
+      <%= footer_html %>
     </div>
     <script type="module" src="<%= theme_script_src %>"></script>
   </body>
