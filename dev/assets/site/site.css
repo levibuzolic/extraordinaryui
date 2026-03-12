@@ -200,33 +200,6 @@ body.home-page::before {
   animation: hero-beam-sway-right 21s ease-in-out infinite;
 }
 
-.hero-ember-field {
-  position: absolute;
-  inset: 0;
-}
-
-.hero-ember {
-  position: absolute;
-  left: var(--ember-left);
-  bottom: var(--ember-bottom);
-  width: var(--ember-size);
-  height: var(--ember-size);
-  border-radius: 9999px;
-  opacity: 0;
-  background:
-    radial-gradient(circle at 32% 28%, color-mix(in oklab, white 86%, var(--ember-core)) 0%, var(--ember-core) 18%, var(--ember-glow-strong) 42%, color-mix(in oklab, var(--ember-deep) 58%, transparent) 72%, transparent 100%);
-  box-shadow:
-    0 0 12px color-mix(in oklab, var(--ember-glow-strong) 62%, transparent),
-    0 0 24px color-mix(in oklab, var(--ember-glow) 42%, transparent),
-    0 0 42px color-mix(in oklab, var(--ember-deep) 18%, transparent);
-  filter: blur(var(--ember-blur));
-  transform: translate3d(0, 0, 0) scale(var(--ember-scale));
-  animation:
-    hero-ember-rise var(--ember-duration) cubic-bezier(0.24, 0.1, 0.18, 1) infinite,
-    hero-ember-flicker calc(var(--ember-duration) * 0.42) ease-in-out infinite;
-  animation-delay: var(--ember-delay), var(--ember-delay);
-}
-
 .hero-content {
   position: relative;
   z-index: 1;
@@ -379,48 +352,6 @@ body.home-page::before {
   }
 }
 
-@keyframes hero-ember-rise {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) scale(calc(var(--ember-scale) * 0.82));
-  }
-
-  10% {
-    opacity: var(--ember-opacity);
-  }
-
-  32% {
-    transform: translate3d(var(--ember-drift-a), calc(var(--ember-rise) * -0.32), 0) scale(var(--ember-scale));
-  }
-
-  58% {
-    transform: translate3d(calc(var(--ember-drift-a) * -0.35), calc(var(--ember-rise) * -0.58), 0) scale(calc(var(--ember-scale) * 0.84));
-  }
-
-  75% {
-    opacity: calc(var(--ember-opacity) * 0.88);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--ember-drift-b), calc(var(--ember-rise) * -1), 0) scale(calc(var(--ember-scale) * 0.48));
-  }
-}
-
-@keyframes hero-ember-flicker {
-  0%, 100% {
-    filter: blur(var(--ember-blur)) brightness(0.95);
-  }
-
-  35% {
-    filter: blur(var(--ember-blur)) brightness(1.18);
-  }
-
-  60% {
-    filter: blur(var(--ember-blur)) brightness(0.9);
-  }
-}
-
 /* Glass-morphism cards */
 .glass-card {
   position: relative;
@@ -489,19 +420,10 @@ body.home-page::before {
   .hero-heat,
   .hero-falloff,
   .hero-beam,
-  .hero-ember,
   .hero-heading,
   .hero-button-primary::before {
     animation: none !important;
   }
-}
-
-/* Footer separator glow */
-.ember-separator {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--ember-glow-strong), transparent);
-  opacity: 0.4;
-  border: none;
 }
 
 /* Install code blocks warm tint in dark mode */

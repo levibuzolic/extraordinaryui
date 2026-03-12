@@ -153,8 +153,7 @@ defmodule CinderUI.Site.Marketing do
       version: version,
       component_count: component_count,
       docs_path: docs_path,
-      install_docs_path: Path.join(docs_path, "install/"),
-      embers: hero_embers()
+      install_docs_path: Path.join(docs_path, "install/")
     }
 
     ~H"""
@@ -165,26 +164,6 @@ defmodule CinderUI.Site.Marketing do
         <div class="hero-falloff"></div>
         <div class="hero-beam hero-beam-left"></div>
         <div class="hero-beam hero-beam-right"></div>
-        <div class="hero-ember-field">
-          <div
-            :for={ember <- @embers}
-            class="hero-ember"
-            style={
-              "--ember-left: #{ember.left}; " <>
-                "--ember-bottom: #{ember.bottom}; " <>
-                "--ember-size: #{ember.size}; " <>
-              "--ember-duration: #{ember.duration}; " <>
-                "--ember-delay: #{ember.delay}; " <>
-                "--ember-drift-a: #{ember.drift_a}; " <>
-                "--ember-drift-b: #{ember.drift_b}; " <>
-                "--ember-rise: #{ember.rise}; " <>
-                "--ember-blur: #{ember.blur}; " <>
-                "--ember-opacity: #{ember.opacity}; " <>
-                "--ember-scale: #{ember.scale};"
-            }
-          >
-          </div>
-        </div>
       </div>
       <div class="mx-auto max-w-[1100px] px-4 md:px-6">
         <div class="hero-content flex flex-col items-center text-center space-y-6">
@@ -221,29 +200,6 @@ defmodule CinderUI.Site.Marketing do
     </section>
     """
     |> to_html()
-  end
-
-  defp hero_embers do
-    [
-      %{left: "8%", bottom: "4%", size: "0.38rem", duration: "9.6s", delay: "-2.1s", drift_a: "0.9rem", drift_b: "2.8rem", rise: "18rem", blur: "0px", opacity: "0.9", scale: "1"},
-      %{left: "13%", bottom: "9%", size: "0.28rem", duration: "11.4s", delay: "-6.2s", drift_a: "-0.8rem", drift_b: "1.4rem", rise: "20rem", blur: "0px", opacity: "0.7", scale: "0.92"},
-      %{left: "19%", bottom: "3%", size: "0.52rem", duration: "8.9s", delay: "-3.4s", drift_a: "1.7rem", drift_b: "3.6rem", rise: "17rem", blur: "1px", opacity: "0.84", scale: "1.16"},
-      %{left: "23%", bottom: "12%", size: "0.2rem", duration: "7.3s", delay: "-1.2s", drift_a: "-0.6rem", drift_b: "0.8rem", rise: "15rem", blur: "0px", opacity: "0.6", scale: "0.78"},
-      %{left: "27.5%", bottom: "6%", size: "0.44rem", duration: "10.7s", delay: "-5.1s", drift_a: "0.4rem", drift_b: "-1.9rem", rise: "21rem", blur: "1px", opacity: "0.8", scale: "1.04"},
-      %{left: "31%", bottom: "14%", size: "0.24rem", duration: "8.2s", delay: "-2.6s", drift_a: "1.1rem", drift_b: "2rem", rise: "16rem", blur: "0px", opacity: "0.64", scale: "0.86"},
-      %{left: "37%", bottom: "5%", size: "0.5rem", duration: "12.1s", delay: "-7.4s", drift_a: "-1.4rem", drift_b: "0.9rem", rise: "23rem", blur: "1px", opacity: "0.85", scale: "1.12"},
-      %{left: "41.5%", bottom: "10%", size: "0.3rem", duration: "9.4s", delay: "-4.2s", drift_a: "0.7rem", drift_b: "-1.5rem", rise: "18rem", blur: "0px", opacity: "0.72", scale: "0.94"},
-      %{left: "46%", bottom: "2%", size: "0.6rem", duration: "11.2s", delay: "-6.6s", drift_a: "1.9rem", drift_b: "4rem", rise: "22rem", blur: "1px", opacity: "0.88", scale: "1.2"},
-      %{left: "50%", bottom: "8%", size: "0.22rem", duration: "6.8s", delay: "-1.7s", drift_a: "-0.7rem", drift_b: "1.1rem", rise: "14rem", blur: "0px", opacity: "0.58", scale: "0.82"},
-      %{left: "54%", bottom: "4%", size: "0.36rem", duration: "8.7s", delay: "-3.8s", drift_a: "1.3rem", drift_b: "-0.8rem", rise: "17rem", blur: "0px", opacity: "0.74", scale: "0.96"},
-      %{left: "58.5%", bottom: "11%", size: "0.48rem", duration: "10.4s", delay: "-5.9s", drift_a: "-1.2rem", drift_b: "-2.6rem", rise: "19rem", blur: "1px", opacity: "0.82", scale: "1.08"},
-      %{left: "63%", bottom: "6%", size: "0.26rem", duration: "7.7s", delay: "-2.3s", drift_a: "0.8rem", drift_b: "1.6rem", rise: "16rem", blur: "0px", opacity: "0.65", scale: "0.88"},
-      %{left: "68%", bottom: "13%", size: "0.56rem", duration: "11.7s", delay: "-6.7s", drift_a: "-0.9rem", drift_b: "2.2rem", rise: "21rem", blur: "1px", opacity: "0.86", scale: "1.14"},
-      %{left: "72.5%", bottom: "5%", size: "0.34rem", duration: "9.3s", delay: "-4.6s", drift_a: "1.5rem", drift_b: "-1.2rem", rise: "18rem", blur: "0px", opacity: "0.73", scale: "0.98"},
-      %{left: "77%", bottom: "9%", size: "0.42rem", duration: "10.1s", delay: "-5.3s", drift_a: "-1.6rem", drift_b: "-2.9rem", rise: "20rem", blur: "0px", opacity: "0.79", scale: "1.02"},
-      %{left: "83%", bottom: "3%", size: "0.54rem", duration: "12.5s", delay: "-7.8s", drift_a: "0.6rem", drift_b: "3.3rem", rise: "23rem", blur: "1px", opacity: "0.87", scale: "1.15"},
-      %{left: "89%", bottom: "10%", size: "0.24rem", duration: "8.5s", delay: "-3.1s", drift_a: "-0.5rem", drift_b: "1.3rem", rise: "15rem", blur: "0px", opacity: "0.62", scale: "0.84"}
-    ]
   end
 
   defp component_examples_html(shadcn_url) do
