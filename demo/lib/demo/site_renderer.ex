@@ -8,6 +8,8 @@ defmodule Demo.SiteRenderer do
   alias Demo.SiteRuntime
   alias Phoenix.HTML.Safe
 
+  @theme_bootstrap_path Path.expand("../../../priv/site_templates/theme_bootstrap.js", __DIR__)
+
   def marketing_html do
     Marketing.render_marketing_html(%{
       component_count: SiteRuntime.catalog_component_count(),
@@ -101,6 +103,7 @@ defmodule Demo.SiteRenderer do
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{@title}</title>
         <meta name="description" content={@description} />
+        {rendered(theme_bootstrap_script())}
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/theme.css"} />
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
@@ -333,6 +336,10 @@ defmodule Demo.SiteRenderer do
   end
 
   defp rendered(html) when is_binary(html), do: Phoenix.HTML.raw(html)
+
+  defp theme_bootstrap_script do
+    "<script>\n#{File.read!(@theme_bootstrap_path)}\n</script>"
+  end
 
   defp to_html(rendered) do
     rendered

@@ -24,6 +24,8 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   alias CinderUI.Site.Marketing
   alias Phoenix.HTML.Safe
 
+  @theme_bootstrap_path Path.expand("../../../../priv/site_templates/theme_bootstrap.js", __DIR__)
+
   @impl true
   def run(argv) do
     if argv != [] do
@@ -137,6 +139,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{@title}</title>
         <meta name="description" content={@description} />
+        {rendered(theme_bootstrap_script())}
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/theme.css"} />
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
@@ -257,6 +260,10 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   defp docs_speculation_rules_html do
     template!("docs_speculation_rules.html.eex")
     |> EEx.eval_string([])
+  end
+
+  defp theme_bootstrap_script do
+    "<script>\n#{File.read!(@theme_bootstrap_path)}\n</script>"
   end
 
   defp docs_asset!(name) do
