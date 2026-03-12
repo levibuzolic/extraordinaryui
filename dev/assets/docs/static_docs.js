@@ -266,7 +266,7 @@ const root = document.documentElement
 const sidebar = document.querySelector("[data-docs-sidebar]")
 const colorSelect = document.querySelector("#theme-color [data-slot='select-input']")
 const radiusSelect = document.querySelector("#theme-radius [data-slot='select-input']")
-const themeModeButtons = () => qs(document, "[data-theme-mode]")
+const themeModeButtons = () => qs(document, ".theme-mode-btn[data-theme-mode]")
 
 const readSetting = (key, fallback) => localStorage.getItem(key) || fallback
 const writeSetting = (key, value) => localStorage.setItem(key, value)
@@ -312,7 +312,7 @@ const applyTheme = () => {
 
 // Bind theme picker controls.
 document.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-theme-mode]")
+  const button = event.target.closest(".theme-mode-btn[data-theme-mode]")
   if (!button) return
 
   writeSetting(themeStorage.mode, button.dataset.themeMode || "auto")

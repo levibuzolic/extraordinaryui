@@ -95,6 +95,7 @@ MARK: Home Page
   --ember-deep: oklch(0.8 0.09 240);
 }
 
+html.dark,
 [data-theme="dark"] {
   --ember-glow: oklch(0.54 0.16 55);
   --ember-glow-strong: oklch(0.62 0.22 38);
@@ -125,7 +126,7 @@ body.home-page::before {
   isolation: isolate;
 }
 
-html:not(.dark) .home-page .hero-section::before {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-section::before {
   content: "";
   position: absolute;
   inset: 1.5rem 12% 0;
@@ -144,7 +145,7 @@ html:not(.dark) .home-page .hero-section::before {
   pointer-events: none;
 }
 
-html:not(.dark) body.home-page {
+html:not(.dark):not([data-theme="dark"]) body.home-page {
   background:
     radial-gradient(circle at 50% 18%, color-mix(in oklab, var(--ember-core) 18%, white) 0%, transparent 28%),
     linear-gradient(180deg, color-mix(in oklab, var(--ember-deep) 5%, white) 0%, white 22%);
@@ -177,7 +178,7 @@ html:not(.dark) body.home-page {
   opacity: 0.34;
 }
 
-html:not(.dark) .home-page .hero-glow {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-glow {
   width: min(64vw, 760px);
   height: min(42vw, 460px);
   background:
@@ -203,7 +204,7 @@ html:not(.dark) .home-page .hero-glow {
   animation: hero-heat-shift 9s ease-in-out infinite alternate;
 }
 
-html:not(.dark) .home-page .hero-heat {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-heat {
   inset: 10% 28% 10%;
   background:
     radial-gradient(
@@ -297,7 +298,7 @@ html:not(.dark) .home-page .hero-heat {
   animation: hero-falloff-breathe 14s ease-in-out infinite alternate;
 }
 
-html:not(.dark) .home-page .hero-falloff {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-falloff {
   width: min(82vw, 980px);
   height: 16rem;
   background:
@@ -335,7 +336,7 @@ html:not(.dark) .home-page .hero-falloff {
   animation: hero-beam-sway-right 21s ease-in-out infinite;
 }
 
-html:not(.dark) .home-page .hero-beam {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-beam {
   opacity: 0.12;
   filter: blur(34px);
 }
@@ -346,7 +347,7 @@ html:not(.dark) .home-page .hero-beam {
   text-shadow: 0 10px 32px color-mix(in oklab, black 22%, transparent);
 }
 
-html:not(.dark) .home-page .hero-content {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-content {
   text-shadow: none;
 }
 
@@ -373,15 +374,15 @@ html:not(.dark) .home-page .hero-content {
   pointer-events: none;
 }
 
-html:not(.dark) .hero-heading {
+html:not(.dark):not([data-theme="dark"]) .hero-heading {
   filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9));
 }
 
-html:not(.dark) .hero-heading::before {
+html:not(.dark):not([data-theme="dark"]) .hero-heading::before {
   display: none;
 }
 
-html:not(.dark) .heading-gradient {
+html:not(.dark):not([data-theme="dark"]) .heading-gradient {
   background: linear-gradient(118deg, oklch(0.72 0.11 255) 0%, oklch(0.83 0.1 315) 26%, oklch(0.9 0.18 12) 54%, oklch(0.8 0.12 335) 78%, oklch(0.74 0.1 265) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -394,7 +395,7 @@ html:not(.dark) .heading-gradient {
     0 0 18px color-mix(in oklab, var(--ember-deep) 8%, transparent);
 }
 
-html:not(.dark) .hero-copy {
+html:not(.dark):not([data-theme="dark"]) .hero-copy {
   color: color-mix(in oklab, var(--foreground) 68%, var(--muted-foreground));
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
@@ -409,7 +410,7 @@ html:not(.dark) .hero-copy {
   -webkit-backdrop-filter: blur(10px);
 }
 
-html:not(.dark) .hero-pill {
+html:not(.dark):not([data-theme="dark"]) .hero-pill {
   background: color-mix(in oklab, white 84%, var(--card));
   border-color: color-mix(in oklab, var(--ember-glow) 20%, var(--border));
   box-shadow:
@@ -452,22 +453,22 @@ html:not(.dark) .hero-pill {
   -webkit-backdrop-filter: blur(10px);
 }
 
-html:not(.dark) .home-page .hero-button {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-button {
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-html:not(.dark) .home-page .hero-button-primary {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-button-primary {
   box-shadow:
     0 10px 22px color-mix(in oklab, black 12%, transparent),
     0 0 18px color-mix(in oklab, var(--ember-glow-strong) 8%, transparent);
 }
 
-html:not(.dark) .home-page .hero-button-primary::before {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-button-primary::before {
   opacity: 0.32;
   filter: blur(10px);
 }
 
-html:not(.dark) .home-page .hero-button-outline {
+html:not(.dark):not([data-theme="dark"]) .home-page .hero-button-outline {
   background: color-mix(in oklab, white 88%, var(--card));
   border-color: color-mix(in oklab, var(--ember-glow) 18%, var(--border));
 }
@@ -654,7 +655,7 @@ html:not(.dark) .home-page .hero-button-outline {
   transition: border-color 0.3s ease;
 }
 
-html:not(.dark) .home-page .marketing-surface {
+html:not(.dark):not([data-theme="dark"]) .home-page .marketing-surface {
   background: color-mix(in oklab, white 94%, var(--card));
   border-color: color-mix(in oklab, var(--border) 68%, white);
   box-shadow: none;
@@ -662,11 +663,11 @@ html:not(.dark) .home-page .marketing-surface {
   -webkit-backdrop-filter: blur(14px);
 }
 
-html:not(.dark) .home-page .marketing-surface [data-slot="preview"] {
+html:not(.dark):not([data-theme="dark"]) .home-page .marketing-surface [data-slot="preview"] {
   background: color-mix(in oklab, white 82%, var(--muted));
 }
 
-html:not(.dark) .home-page .marketing-surface [data-slot="code"] {
+html:not(.dark):not([data-theme="dark"]) .home-page .marketing-surface [data-slot="code"] {
   background: color-mix(in oklab, white 88%, var(--card));
 }
 
