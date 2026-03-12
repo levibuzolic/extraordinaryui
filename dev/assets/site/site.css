@@ -88,6 +88,131 @@ MARK: Home Page
 --------------------------------------------------------------------------------
 */
 
+body.site-page {
+  font-family: "Instrument Sans", "Avenir Next", sans-serif;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in oklab, var(--chart-2) 12%, transparent), transparent 22rem),
+    radial-gradient(circle at 88% 12%, color-mix(in oklab, var(--chart-4) 14%, transparent), transparent 24rem),
+    linear-gradient(180deg, color-mix(in oklab, var(--background) 82%, black 6%) 0%, var(--background) 35%, color-mix(in oklab, var(--background) 90%, black 6%) 100%);
+}
+
+.site-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--border) 20%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--border) 16%, transparent) 1px, transparent 1px);
+  background-size: 4.75rem 4.75rem;
+  mask-image: linear-gradient(180deg, white 0%, white 24%, transparent 78%);
+  opacity: 0.22;
+}
+
+.site-chrome,
+.site-header,
+.site-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.site-chrome {
+  position: fixed;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.site-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.55;
+}
+
+.site-orb-left {
+  width: 20rem;
+  height: 20rem;
+  top: -4rem;
+  left: -4rem;
+  background: color-mix(in oklab, var(--chart-2) 16%, transparent);
+}
+
+.site-orb-right {
+  width: 18rem;
+  height: 18rem;
+  top: 16rem;
+  right: -5rem;
+  background: color-mix(in oklab, var(--chart-5) 18%, transparent);
+}
+
+.site-grid-fade {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, color-mix(in oklab, var(--foreground) 4%, transparent) 0, transparent 28rem);
+}
+
+.site-header {
+  padding-top: 1rem;
+}
+
+.site-header-shell {
+  border: 1px solid color-mix(in oklab, var(--border) 74%, transparent);
+  border-radius: calc(var(--radius) + 0.8rem);
+  background: color-mix(in oklab, var(--card) 78%, transparent);
+  box-shadow:
+    0 18px 50px color-mix(in oklab, black 14%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 12%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.site-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.site-wordmark-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--foreground) 88%, var(--background)), color-mix(in oklab, var(--chart-2) 20%, var(--foreground)));
+  color: var(--background);
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.site-wordmark-text {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(1.8rem, 2vw, 2.55rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+
+.site-header-controls {
+  row-gap: 0.55rem;
+}
+
+.site-header-link {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.1rem;
+}
+
+.site-header-link:hover {
+  color: var(--foreground);
+}
+
 .site-theme-toggle [data-site-theme][data-active="true"] {
   background: var(--accent);
   color: var(--accent-foreground);
@@ -98,6 +223,433 @@ MARK: Home Page
   background: var(--accent);
   color: var(--accent-foreground);
   border-color: var(--border);
+}
+
+.site-main > * {
+  animation: site-rise 650ms ease both;
+}
+
+.site-main > *:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.site-main > *:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.site-main > *:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.site-main > *:nth-child(5) {
+  animation-delay: 270ms;
+}
+
+.site-main > *:nth-child(6) {
+  animation-delay: 330ms;
+}
+
+.site-hero {
+  border: 1px solid color-mix(in oklab, var(--border) 76%, transparent);
+  border-radius: calc(var(--radius) + 1rem);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--card) 94%, transparent), color-mix(in oklab, var(--card) 78%, transparent)),
+    linear-gradient(135deg, color-mix(in oklab, var(--muted) 26%, transparent), transparent 42%);
+  box-shadow:
+    0 32px 90px color-mix(in oklab, black 14%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+  padding: clamp(1.35rem, 2vw, 2rem);
+}
+
+.site-hero-intro,
+.site-hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.site-hero-intro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1rem;
+  align-items: center;
+  margin-bottom: 1.4rem;
+}
+
+.site-hero-badge {
+  background: color-mix(in oklab, var(--background) 74%, transparent);
+  border-color: color-mix(in oklab, var(--border) 70%, transparent);
+}
+
+.site-hero-kicker {
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
+
+.site-hero-grid {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.site-hero-copy {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.site-hero-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(3rem, 7vw, 6.1rem);
+  line-height: 0.93;
+  letter-spacing: -0.07em;
+  display: grid;
+  max-width: 8.5ch;
+}
+
+.site-hero-body {
+  max-width: 40rem;
+  color: color-mix(in oklab, var(--muted-foreground) 84%, var(--foreground));
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+
+.site-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.site-proof-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.site-proof-card,
+.site-example-card,
+.site-install-card,
+.site-token-card,
+.site-feature-card,
+.site-stage-card {
+  border-color: color-mix(in oklab, var(--border) 72%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--card) 95%, transparent), color-mix(in oklab, var(--muted) 18%, transparent));
+  box-shadow:
+    0 18px 44px color-mix(in oklab, black 10%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+}
+
+.site-proof-content {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.site-proof-label,
+.site-stage-metric-label,
+.site-review-label,
+.site-signal-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted-foreground);
+}
+
+.site-proof-value {
+  margin-top: 0.35rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.site-stage-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.site-stage-card-main {
+  overflow: hidden;
+}
+
+.site-stage-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.site-stage-title {
+  font-size: 1.35rem;
+}
+
+.site-inline-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+  border-radius: calc(var(--radius) + 0.15rem);
+  background: color-mix(in oklab, var(--muted) 28%, transparent);
+  padding: 0.8rem 0.95rem;
+}
+
+.site-review-grid {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.site-review-cell {
+  border: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+  border-radius: calc(var(--radius) + 0.05rem);
+  background: color-mix(in oklab, var(--muted) 22%, transparent);
+  padding: 0.9rem;
+}
+
+.site-review-copy,
+.site-stage-metric-copy {
+  margin-top: 0.45rem;
+  color: var(--foreground);
+  line-height: 1.55;
+}
+
+.site-signal-strip {
+  border: 1px solid color-mix(in oklab, var(--border) 76%, transparent);
+  border-radius: calc(var(--radius) + 0.65rem);
+  overflow: hidden;
+  background: color-mix(in oklab, var(--card) 82%, transparent);
+  box-shadow: 0 18px 44px color-mix(in oklab, black 12%, transparent);
+}
+
+.site-signal-grid {
+  display: grid;
+  gap: 1px;
+  background: color-mix(in oklab, var(--border) 55%, transparent);
+}
+
+.site-signal-item {
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  padding: 1rem 1.15rem;
+}
+
+.site-signal-value {
+  display: inline-block;
+  margin-top: 0.45rem;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.site-section {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.site-section-heading {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.site-section-title {
+  margin-top: 0.85rem;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  max-width: 14ch;
+}
+
+.site-section-copy {
+  max-width: 38rem;
+  color: var(--muted-foreground);
+  line-height: 1.75;
+}
+
+.site-example-grid,
+.site-install-grid,
+.site-token-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.site-example-header {
+  background: color-mix(in oklab, var(--muted) 18%, transparent);
+}
+
+.site-example-link {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.site-example-link:hover {
+  color: var(--foreground);
+}
+
+.site-example-preview {
+  position: relative;
+  background:
+    radial-gradient(circle at top left, color-mix(in oklab, var(--chart-2) 10%, transparent), transparent 12rem),
+    linear-gradient(180deg, color-mix(in oklab, var(--background) 94%, transparent), color-mix(in oklab, var(--muted) 12%, transparent));
+}
+
+.site-example-code,
+.site-code-shell {
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--background) 92%, transparent), color-mix(in oklab, var(--muted) 14%, transparent));
+}
+
+.site-code-shell {
+  border-color: color-mix(in oklab, var(--border) 72%, transparent);
+  box-shadow:
+    0 18px 44px color-mix(in oklab, black 10%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+}
+
+.site-step-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.site-step-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.8rem;
+  align-items: start;
+  color: var(--foreground);
+}
+
+.site-step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.4rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 74%, transparent);
+  background: color-mix(in oklab, var(--muted) 30%, transparent);
+  color: var(--muted-foreground);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  padding: 0.15rem 0.45rem;
+}
+
+.site-token-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.site-token-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.site-token-chip {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 74%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, white 12%, transparent);
+}
+
+.site-token-primary {
+  background: var(--primary);
+}
+
+.site-token-muted {
+  background: var(--muted);
+}
+
+.site-token-border {
+  background: color-mix(in oklab, var(--border) 70%, var(--card));
+}
+
+.site-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 74%, transparent);
+  background: color-mix(in oklab, var(--muted) 26%, transparent);
+}
+
+.site-footer {
+  border-top: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+  padding-top: 1.5rem;
+}
+
+@keyframes site-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 900px) {
+  .site-hero-grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(21rem, 0.98fr);
+    align-items: start;
+  }
+
+  .site-proof-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-stage-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.62fr);
+    align-items: start;
+  }
+
+  .site-review-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-signal-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .site-section-heading {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 34rem);
+    align-items: end;
+  }
+
+  .site-example-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-install-grid,
+  .site-token-grid {
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 899px) {
+  .site-proof-grid,
+  .site-signal-grid,
+  .site-review-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header-shell,
+  .site-hero,
+  .site-signal-strip {
+    border-radius: calc(var(--radius) + 0.5rem);
+  }
+
+  .site-wordmark-text {
+    font-size: 1.55rem;
+  }
+
+  .site-hero-title {
+    font-size: 2.8rem;
+  }
 }
 
 .sidebar-section-link {

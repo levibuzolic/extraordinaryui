@@ -95,6 +95,7 @@ defmodule CinderUI.Site.Marketing do
       header_controls_html: header_controls_html(docs_path, github_url, hex_url, hexdocs_url),
       shadcn_url: shadcn_url,
       hero_html: hero_html(version, component_count, shadcn_url, docs_path),
+      signal_strip_html: signal_strip_html(version, component_count, github_url, hex_url),
       component_examples_html: component_examples_html(shadcn_url),
       install_html: install_html(version, docs_path),
       theme_tokens_html: theme_tokens_html(),
@@ -110,13 +111,16 @@ defmodule CinderUI.Site.Marketing do
   defp header_controls_html(docs_path, github_url, hex_url, hexdocs_url) do
     assigns = %{
       docs_path: docs_path,
+      install_docs_path: Path.join(docs_path, "install/"),
       github_url: github_url,
       hex_url: hex_url,
       hexdocs_url: hexdocs_url
     }
 
     ~H"""
-    <div class="flex flex-wrap items-center gap-2 md:justify-end">
+    <div class="site-header-controls flex flex-wrap items-center gap-2 md:justify-end">
+      <a href={@docs_path} class="site-header-link">Docs</a>
+      <a href={@install_docs_path} class="site-header-link">Install</a>
       <Docs.docs_external_link_button
         :if={is_binary(@github_url) and @github_url != ""}
         href={@github_url}
@@ -154,27 +158,32 @@ defmodule CinderUI.Site.Marketing do
       component_count: component_count,
       shadcn_url: shadcn_url,
       docs_path: docs_path,
-      install_docs_path: Path.join(docs_path, "install/")
+      install_docs_path: Path.join(docs_path, "install/"),
+      hero_stage_html: hero_stage_html()
     }
 
     ~H"""
-    <section>
-      <div class="grid gap-6 lg:grid-cols-[1.45fr_0.55fr]">
-        <div class="space-y-4">
-          <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
-            <a
-              href={@shadcn_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="underline underline-offset-4"
-            >
-              shadcn/ui
-            </a>
-            component patterns, packaged for Phoenix + LiveView.
+    <section class="site-hero">
+      <div class="site-hero-intro">
+        <Feedback.badge variant={:outline} class="site-hero-badge">
+          <Icons.icon name="sparkles" class="size-3" />
+          Phoenix + LiveView component library
+        </Feedback.badge>
+        <p class="site-hero-kicker">
+          The <a href={@shadcn_url} target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">shadcn/ui</a>
+          design language, rebuilt for HEEx, server rendering, and real Phoenix projects.
+        </p>
+      </div>
+
+      <div class="site-hero-grid">
+        <div class="site-hero-copy">
+          <h1 class="site-hero-title">
+            <span>Build a</span>
+            <span>serious-looking</span>
+            <span>LiveView app fast.</span>
           </h1>
-          <p class="max-w-2xl text-base text-muted-foreground">
-            Cinder UI provides server-rendered components, typed attrs/slots,
-            and installer automation that keep parity with
+          <p class="site-hero-body">
+            Cinder UI gives Phoenix teams typed components, shared tokens, and progressive hooks where they matter, without losing the calm polish that makes
             <a
               href={@shadcn_url}
               target="_blank"
@@ -183,35 +192,161 @@ defmodule CinderUI.Site.Marketing do
             >
               shadcn/ui
             </a>
-            conventions while fitting Phoenix conventions.
+            attractive in the first place.
           </p>
-          <div class="flex flex-wrap gap-2">
+
+          <div class="site-hero-actions">
             <Actions.button as="a" href={@docs_path}>
-              Browse Component Library
+              Component docs
             </Actions.button>
             <Actions.button as="a" variant={:outline} href={@install_docs_path}>
-              Installation Guide
+              Install guide
             </Actions.button>
             <Actions.button as="a" variant={:outline} href="#install">
-              Quick Start
+              Quick start
             </Actions.button>
+          </div>
+
+          <div class="site-proof-grid">
+            <Layout.card class="site-proof-card">
+              <Layout.card_content class="site-proof-content">
+                <p class="site-proof-label">Release</p>
+                <p class="site-proof-value"><code>v{@version}</code></p>
+              </Layout.card_content>
+            </Layout.card>
+            <Layout.card class="site-proof-card">
+              <Layout.card_content class="site-proof-content">
+                <p class="site-proof-label">Components</p>
+                <p class="site-proof-value"><code>{@component_count}</code></p>
+              </Layout.card_content>
+            </Layout.card>
+            <Layout.card class="site-proof-card">
+              <Layout.card_content class="site-proof-content">
+                <p class="site-proof-label">Philosophy</p>
+                <p class="site-proof-value">Server-rendered first</p>
+              </Layout.card_content>
+            </Layout.card>
           </div>
         </div>
 
-        <Layout.card class="lg:self-start">
-          <Layout.card_content>
-            <dl class="space-y-2 text-sm">
-              <div class="flex items-center justify-between gap-2">
-                <dt class="text-muted-foreground">Latest release</dt>
-                <dd class="font-medium"><code>v{@version}</code></dd>
+        <div class="site-hero-stage">
+          {rendered(@hero_stage_html)}
+        </div>
+      </div>
+    </section>
+    """
+    |> to_html()
+  end
+
+  defp hero_stage_html do
+    assigns = %{}
+
+    ~H"""
+    <div class="site-stage-grid">
+      <Layout.card class="site-stage-card site-stage-card-main">
+        <Layout.card_header class="border-b">
+          <div class="site-stage-badges">
+            <Feedback.badge variant={:secondary}>Real components</Feedback.badge>
+            <Feedback.badge variant={:outline}>Preview</Feedback.badge>
+          </div>
+          <Layout.card_title class="site-stage-title">Release workspace</Layout.card_title>
+          <Layout.card_description>
+            Enough surface area to feel like an application, not a gallery of isolated widgets.
+          </Layout.card_description>
+        </Layout.card_header>
+        <Layout.card_content class="space-y-4">
+          <Feedback.alert variant={:success}>
+            <Icons.icon name="circle-check-big" class="size-4" />
+            <Feedback.alert_title>Ready to ship</Feedback.alert_title>
+            <Feedback.alert_description>
+              The installer, docs, and hooks are aligned, so teams can move from browsing to implementation quickly.
+            </Feedback.alert_description>
+          </Feedback.alert>
+
+          <Navigation.tabs value="compose">
+            <:trigger value="compose">Compose</:trigger>
+            <:trigger value="review">Review</:trigger>
+            <:content value="compose">
+              <div class="space-y-3 pt-1">
+                <Forms.field>
+                  <:label><Forms.label for="site-team-email">Team email</Forms.label></:label>
+                  <Forms.input id="site-team-email" placeholder="team@example.com" value="design@cinder.dev" />
+                  <:description>Example using the same field, label, and description primitives shipped in the library.</:description>
+                </Forms.field>
+                <div class="site-inline-setting">
+                  <div>
+                    <p class="text-sm font-medium">Progressive enhancement</p>
+                    <p class="text-xs text-muted-foreground">Use server-rendered components first, then layer on hook-driven behavior where it helps.</p>
+                  </div>
+                  <Forms.switch id="site-progressive-mode" checked={true} />
+                </div>
               </div>
-              <div class="flex items-center justify-between gap-2">
-                <dt class="text-muted-foreground">Components</dt>
-                <dd class="font-medium"><code>{@component_count}</code></dd>
+            </:content>
+            <:content value="review">
+              <div class="site-review-grid">
+                <div class="site-review-cell">
+                  <p class="site-review-label">Docs</p>
+                  <p class="site-review-copy">Detailed API pages, examples, and runtime notes.</p>
+                </div>
+                <div class="site-review-cell">
+                  <p class="site-review-label">Install</p>
+                  <p class="site-review-copy">One task for CSS, hooks, and entrypoint patching.</p>
+                </div>
+                <div class="site-review-cell">
+                  <p class="site-review-label">Confidence</p>
+                  <p class="site-review-copy">Unit, browser, and visual checks protect behavior.</p>
+                </div>
+                <div class="site-review-cell">
+                  <p class="site-review-label">Style</p>
+                  <p class="site-review-copy">Token-driven surfaces with light and dark parity.</p>
+                </div>
               </div>
-            </dl>
-          </Layout.card_content>
-        </Layout.card>
+            </:content>
+          </Navigation.tabs>
+        </Layout.card_content>
+      </Layout.card>
+
+      <Layout.card class="site-stage-card site-stage-card-side">
+        <Layout.card_content class="space-y-4">
+          <div>
+            <p class="site-stage-metric-label">What this page is showing</p>
+            <p class="site-stage-metric-copy">The homepage itself uses Cinder UI components so developers can judge the system from a believable context.</p>
+          </div>
+          <Actions.button_group class="w-full">
+            <Actions.button class="flex-1">Open docs</Actions.button>
+            <Actions.button variant={:outline} class="flex-1">Read install</Actions.button>
+          </Actions.button_group>
+        </Layout.card_content>
+      </Layout.card>
+    </div>
+    """
+    |> to_html()
+  end
+
+  defp signal_strip_html(version, component_count, github_url, hex_url) do
+    items =
+      [
+        %{label: "Release", value: "v#{version}", href: nil},
+        %{label: "Components", value: Integer.to_string(component_count), href: nil},
+        %{label: "Hex package", value: "Published", href: hex_url},
+        %{label: "Source", value: "GitHub", href: github_url}
+      ]
+
+    assigns = %{items: items}
+
+    ~H"""
+    <section class="site-signal-strip" aria-label="Project overview">
+      <div class="site-signal-grid">
+        <div :for={item <- @items} class="site-signal-item">
+          <p class="site-signal-label">{item.label}</p>
+          <%= if is_binary(item.href) and item.href != "" do %>
+            <a href={item.href} target="_blank" rel="noopener noreferrer" class="site-signal-value underline underline-offset-4">
+              {item.value}
+            </a>
+          <% else %>
+            <p class="site-signal-value">{item.value}</p>
+          <% end %>
+        </div>
       </div>
     </section>
     """
@@ -229,9 +364,18 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section id="examples" class="space-y-4">
-      <h2 class="text-2xl font-semibold tracking-tight">Component examples</h2>
-      <div class="grid gap-4 md:grid-cols-2">
+    <section id="examples" class="site-section">
+      <div class="site-section-heading">
+        <div>
+          <Feedback.badge variant={:outline}>Cherry-picked examples</Feedback.badge>
+          <h2 class="site-section-title">What the library looks like in use.</h2>
+        </div>
+        <p class="site-section-copy">
+          A small set of representative components with real HEEx, so developers can read the API and see the resulting surfaces immediately.
+        </p>
+      </div>
+
+      <div class="site-example-grid">
         <.marketing_example_card
           :for={card <- @cards}
           title={card.title}
@@ -377,20 +521,32 @@ defmodule CinderUI.Site.Marketing do
 
   defp marketing_example_card(assigns) do
     ~H"""
-    <Layout.panel class="h-full divide-y">
-      <div class="p-4">
-        <h4 class="font-medium">{@title}</h4>
-        <p class="text-muted-foreground mt-1 text-sm">{@description}</p>
+    <Layout.panel class="site-example-card h-full divide-y overflow-hidden">
+      <div class="site-example-header p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h4 class="font-medium">{@title}</h4>
+            <p class="text-muted-foreground mt-1 text-sm">{@description}</p>
+          </div>
+          <a
+            href={@shadcn_component_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="site-example-link"
+          >
+            Upstream
+          </a>
+        </div>
       </div>
 
       <div
         data-slot="preview"
-        class="bg-background flex min-h-[7rem] flex-1 items-center justify-center p-4"
+        class="site-example-preview bg-background flex min-h-[12rem] flex-1 items-center justify-center p-5"
       >
         {rendered(@preview_html)}
       </div>
 
-      <div data-slot="code" class="relative min-w-0 border-t">
+      <div data-slot="code" class="site-example-code relative min-w-0 border-t">
         <Docs.docs_code_block
           source={@snippet}
           language={:heex}
@@ -423,28 +579,57 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section id="install" class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">Install in your Phoenix app</h2>
-      <p class="text-sm text-muted-foreground">
-        Need the full setup flow? <a href={@install_docs_path} class="underline underline-offset-4">Read the installation guide</a>.
-      </p>
-      <div class="space-y-2">
-        <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
-        <Docs.docs_code_block
-          source={@deps_code}
-          language={:elixir}
-          pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-        />
-      </div>
-      <div class="space-y-2">
-        <p class="text-sm font-medium text-foreground">
-          2) Install and run setup commands in your terminal
+    <section id="install" class="site-section">
+      <div class="site-section-heading">
+        <div>
+          <Feedback.badge variant={:outline}>Minimal getting started</Feedback.badge>
+          <h2 class="site-section-title">Install in minutes, then go deeper in the dedicated guide.</h2>
+        </div>
+        <p class="site-section-copy">
+          This page keeps the onboarding intentionally short.
+          <a href={@install_docs_path} class="underline underline-offset-4">The install guide</a>
+          covers the full Tailwind, watcher, and application wiring details.
         </p>
-        <Docs.docs_code_block
-          source={@terminal_code}
-          language={:bash}
-          pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-        />
+      </div>
+
+      <div class="site-install-grid">
+        <Layout.card class="site-install-card">
+          <Layout.card_header class="border-b">
+            <Layout.card_title>What the installer handles</Layout.card_title>
+            <Layout.card_description>
+              Copies theme assets, patches common entrypoints, merges LiveView hooks, and detects your package manager.
+            </Layout.card_description>
+          </Layout.card_header>
+          <Layout.card_content class="space-y-4">
+            <ol class="site-step-list">
+              <li><span class="site-step-number">01</span> Add `cinder_ui` and optional icons to `mix.exs`.</li>
+              <li><span class="site-step-number">02</span> Run the installer and fetch dependencies.</li>
+              <li><span class="site-step-number">03</span> Jump into the component docs for copy-pasteable HEEx.</li>
+            </ol>
+            <Actions.button as="a" href={@install_docs_path} variant={:outline} class="w-full">
+              Open full installation guide
+            </Actions.button>
+          </Layout.card_content>
+        </Layout.card>
+
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p class="text-sm font-medium text-foreground">1) Add dependencies to <code>mix.exs</code></p>
+            <Docs.docs_code_block
+              source={@deps_code}
+              language={:elixir}
+              pre_class="site-code-shell relative rounded-lg border px-4 py-3 text-sm"
+            />
+          </div>
+          <div class="space-y-2">
+            <p class="text-sm font-medium text-foreground">2) Install and run setup commands in your terminal</p>
+            <Docs.docs_code_block
+              source={@terminal_code}
+              language={:bash}
+              pre_class="site-code-shell relative rounded-lg border px-4 py-3 text-sm"
+            />
+          </div>
+        </div>
       </div>
     </section>
     """
@@ -502,17 +687,64 @@ defmodule CinderUI.Site.Marketing do
     assigns = %{tokens_code: tokens_code}
 
     ~H"""
-    <section id="tokens" class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">Configure tokens like shadcn/ui</h2>
-      <p class="text-sm text-muted-foreground">
-        Customize your theme in <code>assets/css/app.css</code> by overriding semantic CSS variables.
-        Radius is controlled via <code>--radius</code>; component radii are derived from it automatically.
-      </p>
-      <Docs.docs_code_block
-        source={@tokens_code}
-        language={:css}
-        pre_class="relative rounded-lg border bg-muted/30 px-4 py-3 text-sm"
-      />
+    <section id="tokens" class="site-section">
+      <div class="site-section-heading">
+        <div>
+          <Feedback.badge variant={:outline}>Theme tokens</Feedback.badge>
+          <h2 class="site-section-title">Style it like shadcn/ui, but keep Phoenix in charge.</h2>
+        </div>
+        <p class="site-section-copy">
+          Semantic CSS variables keep the surface flexible. Override a small token set and the rest of the component system follows.
+        </p>
+      </div>
+
+      <div class="site-token-grid">
+        <Layout.card class="site-token-card">
+          <Layout.card_header class="border-b">
+            <Layout.card_title>Token-driven appearance</Layout.card_title>
+            <Layout.card_description>
+              The same variables shape the homepage, docs, and component previews.
+            </Layout.card_description>
+          </Layout.card_header>
+          <Layout.card_content class="space-y-4">
+            <div class="site-token-list">
+              <div class="site-token-item">
+                <span class="site-token-chip site-token-primary"></span>
+                <div>
+                  <p class="font-medium">Primary</p>
+                  <p class="text-xs text-muted-foreground">Actions, emphasis, and strong contrast moments.</p>
+                </div>
+              </div>
+              <div class="site-token-item">
+                <span class="site-token-chip site-token-muted"></span>
+                <div>
+                  <p class="font-medium">Muted</p>
+                  <p class="text-xs text-muted-foreground">Secondary surfaces and quieter container treatments.</p>
+                </div>
+              </div>
+              <div class="site-token-item">
+                <span class="site-token-chip site-token-border"></span>
+                <div>
+                  <p class="font-medium">Border</p>
+                  <p class="text-xs text-muted-foreground">Consistent edges across cards, inputs, panels, and previews.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <Feedback.badge>Primary badge</Feedback.badge>
+              <Feedback.badge variant={:secondary}>Secondary badge</Feedback.badge>
+              <Feedback.badge variant={:outline}>Outline badge</Feedback.badge>
+            </div>
+          </Layout.card_content>
+        </Layout.card>
+
+        <Docs.docs_code_block
+          source={@tokens_code}
+          language={:css}
+          pre_class="site-code-shell relative rounded-lg border px-4 py-3 text-sm"
+        />
+      </div>
     </section>
     """
     |> to_html()
@@ -522,21 +754,25 @@ defmodule CinderUI.Site.Marketing do
     assigns = %{
       features: [
         %{
+          icon_name: "layers-3",
           title: "Phoenix-native API",
           body_html:
             "Typed HEEx function components with predictable attrs/slots and composable primitives."
         },
         %{
+          icon_name: "wand-sparkles",
           title: "Fast app integration",
           body_html:
             "One command setup for Tailwind source wiring, component CSS, and optional LiveView hooks in existing projects."
         },
         %{
+          icon_name: "palette",
           title: "shadcn-aligned styles",
           body_html:
             "Broad API surface aligned with <a href=\"#{shadcn_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline underline-offset-4\">shadcn/ui</a> conventions and token semantics."
         },
         %{
+          icon_name: "shield-check",
           title: "Production confidence",
           body_html:
             "Unit, browser, and visual regression coverage keeps components stable as your app evolves."
@@ -545,11 +781,20 @@ defmodule CinderUI.Site.Marketing do
     }
 
     ~H"""
-    <section class="space-y-3">
-      <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
+    <section class="site-section">
+      <div class="site-section-heading">
+        <div>
+          <Feedback.badge variant={:outline}>Why this exists</Feedback.badge>
+          <h2 class="site-section-title">A component library for Phoenix teams that care about polish.</h2>
+        </div>
+        <p class="site-section-copy">
+          The point is not novelty. It is shipping faster with better defaults, clearer APIs, and a visual language modern frontend teams already understand.
+        </p>
+      </div>
       <div class="grid gap-4 md:grid-cols-2">
         <.marketing_feature_card
           :for={feature <- @features}
+          icon_name={feature.icon_name}
           title={feature.title}
           body_html={feature.body_html}
         />
@@ -560,12 +805,16 @@ defmodule CinderUI.Site.Marketing do
   end
 
   attr :title, :string, required: true
+  attr :icon_name, :string, required: true
   attr :body_html, :string, required: true
 
   defp marketing_feature_card(assigns) do
     ~H"""
-    <Layout.card>
+    <Layout.card class="site-feature-card">
       <Layout.card_header>
+        <div class="site-feature-icon">
+          <Icons.icon name={@icon_name} class="size-4" />
+        </div>
         <Layout.card_title>{@title}</Layout.card_title>
       </Layout.card_header>
       <Layout.card_content>
