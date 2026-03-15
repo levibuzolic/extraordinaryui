@@ -75,7 +75,7 @@ defmodule CinderUI.Components.Layout do
   def card(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6",
         assigns.class
       ])
 
@@ -316,7 +316,7 @@ defmodule CinderUI.Components.Layout do
   def panel(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "bg-card text-card-foreground flex flex-col rounded-xl border shadow-sm",
+        "bg-card text-card-foreground flex flex-col rounded-xl border",
         assigns.class
       ])
 

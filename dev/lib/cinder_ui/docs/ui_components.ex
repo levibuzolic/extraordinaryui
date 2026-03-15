@@ -707,7 +707,7 @@ defmodule CinderUI.Docs.UIComponents do
 
   defp docs_example_code(assigns) do
     ~H"""
-    <div data-slot="code" class="relative min-w-0 border-t">
+    <div data-slot="code" class="relative min-w-0">
       <Actions.button
         as="button"
         variant={:outline}
@@ -753,13 +753,13 @@ defmodule CinderUI.Docs.UIComponents do
     <div
       data-component-runtime
       data-runtime-kind={@runtime.kind}
-      class="flex flex-wrap items-center gap-2"
+      class={["flex gap-2", @show_summary && "items-start", !@show_summary && "items-center"]}
     >
       <Overlay.tooltip
         text={@runtime.summary}
         content_class="w-max max-w-56 whitespace-normal text-left text-pretty"
       >
-        <span class="inline-flex" tabindex="0">
+        <span class="inline-flex shrink-0" tabindex="0">
           <Feedback.badge variant={:outline} class={@badge_class}>
             <span aria-hidden="true" class={@dot_class} />
             {@runtime.label}
@@ -838,15 +838,15 @@ defmodule CinderUI.Docs.UIComponents do
   defp escape(text), do: text |> HTML.html_escape() |> HTML.safe_to_string()
 
   defp runtime_badge_class(:server) do
-    "gap-1.5 border-emerald-200 bg-emerald-50/80 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-300"
+    "h-6 gap-1.5 px-2.5 leading-none border-emerald-200 bg-emerald-50/80 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-300"
   end
 
   defp runtime_badge_class(:progressive) do
-    "gap-1.5 border-sky-200 bg-sky-50/80 text-sky-700 dark:border-sky-900/70 dark:bg-sky-950/40 dark:text-sky-300"
+    "h-6 gap-1.5 px-2.5 leading-none border-sky-200 bg-sky-50/80 text-sky-700 dark:border-sky-900/70 dark:bg-sky-950/40 dark:text-sky-300"
   end
 
   defp runtime_badge_class(:scaffold) do
-    "gap-1.5 border-amber-200 bg-amber-50/80 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/40 dark:text-amber-300"
+    "h-6 gap-1.5 px-2.5 leading-none border-amber-200 bg-amber-50/80 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/40 dark:text-amber-300"
   end
 
   defp runtime_dot_class(:server) do

@@ -383,7 +383,7 @@ defmodule CinderUI.Site.Marketing do
 
   defp marketing_example_card(assigns) do
     ~H"""
-    <Layout.panel class="marketing-surface glass-card h-full w-full max-w-[32rem] divide-y rounded-xl">
+    <Layout.panel class="marketing-surface glass-card h-full min-w-0 w-full max-w-[32rem] divide-y rounded-xl overflow-hidden">
       <div class="p-4">
         <h4 class="font-medium">{@title}</h4>
         <p class="text-muted-foreground mt-1 text-sm">{@description}</p>
