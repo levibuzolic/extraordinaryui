@@ -237,7 +237,7 @@ defmodule CinderUI.Site.Marketing do
           A growing library of production-ready components, each with typed APIs and composable slots.
         </p>
       </div>
-      <div class="staggered-grid pt-4">
+      <div class="staggered-grid mx-auto max-w-5xl pt-4">
         <.marketing_example_card
           :for={card <- @cards}
           title={card.title}
@@ -383,7 +383,7 @@ defmodule CinderUI.Site.Marketing do
 
   defp marketing_example_card(assigns) do
     ~H"""
-    <Layout.panel class="marketing-surface glass-card h-full divide-y rounded-xl">
+    <Layout.panel class="marketing-surface glass-card h-full w-full max-w-[32rem] divide-y rounded-xl">
       <div class="p-4">
         <h4 class="font-medium">{@title}</h4>
         <p class="text-muted-foreground mt-1 text-sm">{@description}</p>
@@ -393,7 +393,9 @@ defmodule CinderUI.Site.Marketing do
         data-slot="preview"
         class="bg-background/50 flex min-h-[7rem] flex-1 items-center justify-center p-4"
       >
-        {rendered(@preview_html)}
+        <div class="flex w-full max-w-sm justify-center">
+          {rendered(@preview_html)}
+        </div>
       </div>
 
       <div data-slot="code" class="relative min-w-0">
