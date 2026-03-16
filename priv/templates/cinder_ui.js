@@ -1812,6 +1812,8 @@ const CuiSidebar = {
         if (this.toggleEvent) {
           this.pushEvent(this.toggleEvent, { open: nextState === "expanded" })
         }
+
+        this.sync(this.el.dataset.state === "collapsed" ? "collapsed" : "expanded")
         return
       }
 
@@ -1824,8 +1826,18 @@ const CuiSidebar = {
         this.toggle()
       }
 
+      const onKeydown = (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return
+        event.preventDefault()
+        this.toggle()
+      }
+
       trigger.addEventListener("click", onClick)
-      this.cleanups.push(() => trigger.removeEventListener("click", onClick))
+      trigger.addEventListener("keydown", onKeydown)
+      this.cleanups.push(() => {
+        trigger.removeEventListener("click", onClick)
+        trigger.removeEventListener("keydown", onKeydown)
+      })
     })
 
     this.removeCommandListener = registerCommandListener(this.el, {

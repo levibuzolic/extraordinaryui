@@ -397,8 +397,27 @@ test.describe("interactive previews", () => {
     await expect(labels.first()).toBeVisible()
   })
 
+  test("custom sidebar trigger is keyboard interactive", async ({ page }) => {
+    await page.goto("/docs/advanced-sidebar_trigger")
+
+    const sidebar = page.locator("#sidebar-trigger-custom-example")
+    const trigger = sidebar.locator("[data-sidebar-trigger]").first()
+
+    await sidebar.scrollIntoViewIfNeeded()
+    await expect(trigger).toHaveAttribute("role", "button")
+    await expect(trigger).toHaveAttribute("tabindex", "0")
+    await expect(sidebar).toHaveAttribute("data-state", "expanded")
+
+    await trigger.focus()
+    await page.keyboard.press("Enter")
+    await expect(sidebar).toHaveAttribute("data-state", "collapsed")
+
+    await page.keyboard.press("Space")
+    await expect(sidebar).toHaveAttribute("data-state", "expanded")
+  })
+
   test("controlled sidebar waits for server state instead of toggling locally", async ({ page }) => {
-    await page.goto("/docs/advanced-sidebar")
+    await page.goto("/docs/advanced-sidebar_layout")
 
     const sidebar = page.locator("#server-controlled-sidebar")
     const trigger = sidebar.locator("[data-sidebar-trigger]").first()
@@ -412,6 +431,46 @@ test.describe("interactive previews", () => {
 
     await expect(sidebar).toHaveAttribute("data-state", "collapsed")
     await expect(trigger).toHaveAttribute("aria-expanded", "false")
+  })
+
+  test("collapsible sidebar items toggle nested children", async ({ page }) => {
+    await page.goto("/docs/advanced-sidebar_layout")
+
+    const disclosure = page.locator("#workspace-shell-sidebar [data-slot='sidebar-item-disclosure']").first()
+    const trigger = disclosure.locator("summary")
+    const child = disclosure.getByText("History", { exact: true })
+
+    await disclosure.scrollIntoViewIfNeeded()
+    await expect(disclosure).toHaveAttribute("open", "")
+    await expect(child).toBeVisible()
+
+    await trigger.click()
+    await expect(disclosure).not.toHaveAttribute("open", "")
+    await expect(child).toBeHidden()
+
+    await trigger.click()
+    await expect(disclosure).toHaveAttribute("open", "")
+    await expect(child).toBeVisible()
+  })
+
+  test("sidebar profile menu opens from its footer trigger", async ({ page }) => {
+    await page.goto("/docs/")
+    await page.getByRole("link", { name: "sidebar_profile_menu", exact: true }).click()
+
+    const menu = page.locator("#sidebar-profile-menu-example")
+    const trigger = menu.locator("[data-dropdown-trigger]")
+    const content = menu.locator("[data-dropdown-content]")
+
+    await menu.scrollIntoViewIfNeeded()
+    expect(await hasClass(content, "hidden")).toBe(true)
+
+    await trigger.click()
+    expect(await hasClass(content, "hidden")).toBe(false)
+    await expect(content.getByText("Account")).toBeVisible()
+    await expect(content.getByText("Billing")).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    expect(await hasClass(content, "hidden")).toBe(true)
   })
 
   test("command palette opens from sidebar trigger", async ({ page }) => {

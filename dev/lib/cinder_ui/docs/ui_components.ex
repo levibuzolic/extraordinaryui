@@ -5,7 +5,7 @@ defmodule CinderUI.Docs.UIComponents do
 
   import CinderUI.Classes
 
-  alias CinderUI.Components.{Actions, Feedback, Forms, Layout, Overlay}
+  alias CinderUI.Components.{Actions, Advanced, Feedback, Forms, Layout, Navigation, Overlay}
   alias CinderUI.Docs.CodeHighlighter
   alias CinderUI.Icons
   alias Phoenix.HTML
@@ -105,31 +105,33 @@ defmodule CinderUI.Docs.UIComponents do
 
   def docs_layout(assigns) do
     ~H"""
-    <div
-      class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]"
+    <Advanced.sidebar_layout
+      data-docs-sidebar
+      collapsible={:none}
+      class="mx-auto max-w-[1900px]"
+      style="visibility: hidden;"
       {@rest}
     >
-      <aside
-        data-docs-sidebar
-        data-scroll-restored="false"
-        class="border-border/70 sticky top-0 h-screen overflow-y-auto border-r px-5 py-6"
-        style="visibility: hidden;"
-      >
-        <div class="mb-6">
-          <h1 class="text-xl font-semibold">
-            <%= if is_binary(@home_url) and @home_url != "" do %>
-              <a href={@home_url}>Cinder UI</a>
-            <% else %>
-              Cinder UI
-            <% end %>
-          </h1>
-          <p class="text-muted-foreground mt-1 text-sm">Static component docs</p>
+      <:header>
+        <Advanced.sidebar_header class="items-start px-4 py-5">
+          <div class="min-w-0 flex-1">
+            <h1 class="text-[1.75rem] leading-none font-semibold tracking-tight">
+              <%= if is_binary(@home_url) and @home_url != "" do %>
+                <a href={@home_url}>Cinder UI</a>
+              <% else %>
+                Cinder UI
+              <% end %>
+            </h1>
+            <p class="text-muted-foreground mt-2 text-xs uppercase tracking-[0.18em]">Component docs</p>
+          </div>
           <.docs_header_links github_url={@github_url} hex_package_url={@hex_package_url} />
-        </div>
+        </Advanced.sidebar_header>
+      </:header>
 
-        <.docs_theme_controls />
+      <:sidebar class="border-border/70" content_class="px-3 pb-4">
+        <.docs_theme_controls class="mb-4" />
 
-        <.docs_search_button />
+        <.docs_search_button class="mb-4" />
 
         <nav class="space-y-4" aria-label="Component sections">
           <.docs_sidebar
@@ -140,27 +142,30 @@ defmodule CinderUI.Docs.UIComponents do
             active_page={@active_page}
           />
         </nav>
-        <script>
-          (() => {
-            const sidebar = document.currentScript?.closest("[data-docs-sidebar]");
-            if (!sidebar) return;
+      </:sidebar>
 
-            try {
-              const key = "cui:docs:sidebar-scroll-top";
-              const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
-              if (Number.isFinite(saved) && saved >= 0) sidebar.scrollTop = saved;
-            } catch (_error) {}
+      <:main class="min-w-0 px-5 py-6 lg:px-8">
+        <div class="space-y-6">
+          <script>
+            (() => {
+              const root = document.currentScript?.closest("[data-docs-sidebar]");
+              const content = root?.querySelector("[data-slot='sidebar-content']");
+              if (!root || !content) return;
 
-            sidebar.dataset.scrollRestored = "true";
-            sidebar.style.removeProperty("visibility");
-          })();
-        </script>
-      </aside>
+              try {
+                const key = "cui:docs:sidebar-scroll-top";
+                const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
+                if (Number.isFinite(saved) && saved >= 0) content.scrollTop = saved;
+              } catch (_error) {}
 
-      <main class="min-w-0 px-5 py-6 lg:px-8">
-        {render_slot(@inner_block)}
-      </main>
-    </div>
+              root.style.removeProperty("visibility");
+            })();
+          </script>
+
+          {render_slot(@inner_block)}
+        </div>
+      </:main>
+    </Advanced.sidebar_layout>
     """
   end
 
@@ -175,7 +180,7 @@ defmodule CinderUI.Docs.UIComponents do
         (is_binary(@github_url) and @github_url != "") or
           (is_binary(@hex_package_url) and @hex_package_url != "")
       }
-      class="mt-3 flex flex-wrap gap-1 text-xs"
+      class="flex shrink-0 flex-col gap-2 text-xs"
       {@rest}
     >
       <.docs_external_link_button
@@ -183,6 +188,7 @@ defmodule CinderUI.Docs.UIComponents do
         href={@github_url}
         variant={:outline}
         size={:xs}
+        class="h-8 justify-center px-3"
       >
         GitHub
       </.docs_external_link_button>
@@ -191,8 +197,9 @@ defmodule CinderUI.Docs.UIComponents do
         href={@hex_package_url}
         variant={:outline}
         size={:xs}
+        class="h-8 justify-center px-3"
       >
-        Hex package
+        Hex
       </.docs_external_link_button>
     </div>
     """
@@ -208,46 +215,31 @@ defmodule CinderUI.Docs.UIComponents do
   def docs_sidebar(assigns) do
     ~H"""
     <div {@rest}>
-      <div>
-        <a
-          href={install_href(@mode, @root_prefix)}
-          class={sidebar_link_class(@active_page == :install)}
-          aria-current={if @active_page == :install, do: "page", else: nil}
-        >
-          Installation
-        </a>
-      </div>
-
-      <div>
-        <a
-          href={overview_href(@mode, @root_prefix)}
-          class={sidebar_link_class(@active_page == :overview)}
-          aria-current={if @active_page == :overview, do: "page", else: nil}
-        >
-          Overview
-        </a>
-      </div>
+      <Advanced.sidebar_item
+        href={install_href(@mode, @root_prefix)}
+        current={@active_page == :install}
+      >
+        Installation
+      </Advanced.sidebar_item>
+      <Advanced.sidebar_item
+        href={overview_href(@mode, @root_prefix)}
+        current={@active_page == :overview}
+      >
+        Overview
+      </Advanced.sidebar_item>
 
       <%= for section <- @sections do %>
-        <div class="mt-2 space-y-1">
-          <a
-            href={section_href(@mode, @root_prefix, section.id)}
-            class="sidebar-section-link text-sm font-semibold"
+        <Advanced.sidebar_group
+          label={section.title}
+        >
+          <Advanced.sidebar_item
+            :for={entry <- section.entries}
+            href={entry_href(@mode, @root_prefix, entry)}
+            current={entry.id == @active_entry_id}
           >
-            {section.title}
-          </a>
-          <ul class="mt-2 space-y-1">
-            <li :for={entry <- section.entries}>
-              <a
-                class={sidebar_link_class(entry.id == @active_entry_id)}
-                href={entry_href(@mode, @root_prefix, entry)}
-                aria-current={if entry.id == @active_entry_id, do: "page", else: nil}
-              >
-                {entry.title}
-              </a>
-            </li>
-          </ul>
-        </div>
+            {entry.title}
+          </Advanced.sidebar_item>
+        </Advanced.sidebar_group>
       <% end %>
     </div>
     """
@@ -262,22 +254,20 @@ defmodule CinderUI.Docs.UIComponents do
       |> assign(:radius_options, radius_options())
 
     ~H"""
-    <section class="mb-6 rounded-lg border p-3" {@rest}>
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <p class="text-xs font-medium text-muted-foreground">Theme mode</p>
-          <p class="mt-1 text-[11px] text-muted-foreground">Light, dark, or follow the system.</p>
-        </div>
+    <section class="mb-6 rounded-xl border p-3" {@rest}>
+      <div class="space-y-1">
+        <p class="text-xs font-medium text-muted-foreground">Theme</p>
+        <p class="text-sm font-medium">Appearance</p>
+      </div>
+
+      <div class="mt-3 flex justify-center">
         <.theme_mode_toggle />
       </div>
 
       <div class="mt-3">
-        <Forms.label for="theme-color" class="mb-1 block text-xs font-medium text-muted-foreground">
-          Base color
+        <Forms.label for="theme-color" class="mb-2 block text-xs font-medium text-muted-foreground">
+          Color
         </Forms.label>
-        <p class="mb-2 text-[11px] text-muted-foreground">
-          Matches shadcn <code>tailwind.baseColor</code>.
-        </p>
         <Forms.select
           name="theme-color"
           value="neutral"
@@ -314,10 +304,10 @@ defmodule CinderUI.Docs.UIComponents do
         type="button"
         variant={:outline}
         data-open-command-palette
-        class="w-full justify-between px-3 py-2 text-sm"
+        class="h-10 w-full justify-between px-3 text-sm"
       >
         <span>Search components</span>
-        <span class="text-muted-foreground text-xs">⌘K / Ctrl+K</span>
+        <span class="text-muted-foreground shrink-0 text-xs">⌘K</span>
       </Actions.button>
     </div>
     """
@@ -414,19 +404,27 @@ defmodule CinderUI.Docs.UIComponents do
       assigns
       |> assign(:docs_html, summary_markdown_html(assigns.entry.docs))
       |> assign(:back_section_id, section_id_for_entry(assigns.sections, assigns.entry.id))
+      |> assign(:section_title, section_title_for_entry(assigns.sections, assigns.entry.id))
       |> assign(:residual_docs, docs_residual(assigns.entry.docs_full, assigns.entry.docs))
 
     ~H"""
     <div {@rest}>
       <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <Actions.button
-          as="a"
-          href={back_to_index_href(@mode, @root_prefix, @back_section_id)}
-          variant={:outline}
-          size={:xs}
-        >
-          <Icons.icon name="arrow-left" class="size-3.5" /> Back to index
-        </Actions.button>
+        <Navigation.breadcrumb>
+          <Navigation.breadcrumb_list class="text-xs">
+            <Navigation.breadcrumb_item>
+              <Navigation.breadcrumb_link href={overview_href(@mode, @root_prefix)}>
+                Overview
+              </Navigation.breadcrumb_link>
+            </Navigation.breadcrumb_item>
+            <Navigation.breadcrumb_separator />
+            <Navigation.breadcrumb_item>
+              <Navigation.breadcrumb_link href={back_to_index_href(@mode, @root_prefix, @back_section_id)}>
+                {@section_title}
+              </Navigation.breadcrumb_link>
+            </Navigation.breadcrumb_item>
+          </Navigation.breadcrumb_list>
+        </Navigation.breadcrumb>
         <.docs_external_link_button
           href={@entry.shadcn_url}
           variant={:outline}
@@ -437,7 +435,6 @@ defmodule CinderUI.Docs.UIComponents do
       </div>
 
       <section class="mb-6">
-        <p class="text-muted-foreground text-xs">{@entry.module_name}</p>
         <div class="mt-1 flex flex-wrap items-center gap-3">
           <h2 class="text-2xl font-semibold tracking-tight">
             <code>{@entry.module_name}.{@entry.title}</code>
@@ -671,9 +668,6 @@ defmodule CinderUI.Docs.UIComponents do
   defp install_href(:static, root_prefix), do: "#{root_prefix}/install/"
   defp install_href(:live, _root_prefix), do: "/docs/install/"
 
-  defp section_href(:static, root_prefix, section_id), do: "#{root_prefix}/##{section_id}"
-  defp section_href(:live, _root_prefix, section_id), do: "/docs/##{section_id}"
-
   defp entry_href(:static, root_prefix, entry),
     do: "#{root_prefix}/#{pretty_docs_path(entry.docs_path)}"
 
@@ -817,6 +811,12 @@ defmodule CinderUI.Docs.UIComponents do
     end)
   end
 
+  defp section_title_for_entry(sections, entry_id) do
+    Enum.find_value(sections, "Actions", fn section ->
+      if Enum.any?(section.entries, &(&1.id == entry_id)), do: section.title
+    end)
+  end
+
   defp example_heading("Default", 1, 1), do: "Example"
   defp example_heading(title, _index, _total), do: title
 
@@ -841,16 +841,6 @@ defmodule CinderUI.Docs.UIComponents do
       pattern = ~r/(?:^|\n)##+\s+#{heading}\b[\s\S]*?(?=\n##+\s|\z)/mi
       String.replace(acc, pattern, "\n")
     end)
-  end
-
-  defp sidebar_link_class(active?) do
-    base = "sidebar-link block rounded-md px-2 py-1.5 text-sm transition-colors"
-
-    if active? do
-      "#{base} bg-accent text-accent-foreground font-medium"
-    else
-      "#{base} text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-    end
   end
 
   defp pretty_docs_path(path) do

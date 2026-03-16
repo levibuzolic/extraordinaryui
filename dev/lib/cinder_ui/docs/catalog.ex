@@ -71,7 +71,8 @@ defmodule CinderUI.Docs.Catalog do
     {Advanced, :carousel} => :progressive,
     {Advanced, :chart} => :scaffold,
     {Advanced, :combobox} => :progressive,
-    {Advanced, :sidebar} => :progressive
+    {Advanced, :sidebar} => :progressive,
+    {Advanced, :sidebar_layout} => :progressive
   }
 
   @doc """
@@ -448,6 +449,18 @@ defmodule CinderUI.Docs.Catalog do
   end
 
   defp hydrate_template_heex_for_preview(snippet, Advanced, :sidebar) do
+    replace_first_example_image(avatar_sample_data_uri(:ari), snippet)
+  end
+
+  defp hydrate_template_heex_for_preview(snippet, Advanced, :sidebar_layout) do
+    replace_first_example_image(avatar_sample_data_uri(:ari), snippet)
+  end
+
+  defp hydrate_template_heex_for_preview(snippet, Advanced, :sidebar_footer) do
+    replace_first_example_image(avatar_sample_data_uri(:levi), snippet)
+  end
+
+  defp hydrate_template_heex_for_preview(snippet, Advanced, :sidebar_profile_menu) do
     replace_first_example_image(avatar_sample_data_uri(:ari), snippet)
   end
 

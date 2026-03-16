@@ -42,18 +42,31 @@ defmodule CinderUI.Components.AdvancedTest do
     assert html =~ "Slide two"
   end
 
-  test "sidebar uses sidebar token classes" do
-    html =
-      render_component(&Advanced.sidebar/1, %{
-        rail: [%{inner_block: fn _, _ -> "Overview" end}],
-        inset: [%{inner_block: fn _, _ -> "Main content" end}]
+  test "sidebar layout renders panel and main regions with sidebar tokens" do
+    layout_html =
+      render_component(&Advanced.sidebar_layout/1, %{
+        id: "shell",
+        header: [%{inner_block: fn _, _ -> "Header" end}],
+        sidebar: [%{inner_block: fn _, _ -> "Overview" end}],
+        footer: [%{inner_block: fn _, _ -> "Footer" end}],
+        main: [
+          %{
+            class: "px-8",
+            inner_block: fn _, _ -> "Main content" end
+          }
+        ]
       })
 
-    assert html =~ "data-slot=\"sidebar\""
-    assert html =~ "data-slot=\"sidebar-rail\""
-    assert html =~ "bg-sidebar"
-    assert html =~ "text-sidebar-foreground"
-    assert html =~ "border-sidebar-border"
+    assert layout_html =~ "data-slot=\"sidebar-layout\""
+    assert layout_html =~ "data-slot=\"sidebar-panel\""
+    assert layout_html =~ "data-slot=\"sidebar-content\""
+    assert layout_html =~ "data-slot=\"sidebar-main\""
+    assert layout_html =~ "Header"
+    assert layout_html =~ "Footer"
+    assert layout_html =~ "bg-sidebar"
+    assert layout_html =~ "text-sidebar-foreground"
+    assert layout_html =~ "border-sidebar-border"
+    assert layout_html =~ "px-8"
   end
 
   test "combobox renders hook-backed input and items" do

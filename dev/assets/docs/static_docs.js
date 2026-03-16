@@ -243,9 +243,9 @@ const themePresets = {
   },
 }
 
-const withSidebarTokens = (tokens) => ({
+const withSidebarTokens = (mode, tokens) => ({
   ...tokens,
-  sidebar: tokens.card ?? tokens.background,
+  sidebar: tokens.sidebar ?? (mode === "dark" ? "oklch(0.205 0 0)" : "oklch(0.985 0 0)"),
   "sidebar-foreground": tokens.foreground,
   "sidebar-primary": tokens.primary,
   "sidebar-primary-foreground": tokens["primary-foreground"],
@@ -258,7 +258,7 @@ const withSidebarTokens = (tokens) => ({
 
 Object.values(themePresets).forEach((palette) => {
   Object.entries(palette).forEach(([mode, tokens]) => {
-    palette[mode] = withSidebarTokens(tokens)
+    palette[mode] = withSidebarTokens(mode, tokens)
   })
 })
 
@@ -282,7 +282,9 @@ const themedTokenKeys = Array.from(
 
 const media = window.matchMedia("(prefers-color-scheme: dark)")
 const root = document.documentElement
-const sidebar = document.querySelector("[data-docs-sidebar]")
+const docsSidebarRoot = document.querySelector("[data-docs-sidebar]")
+const sidebar =
+  docsSidebarRoot?.querySelector("[data-slot='sidebar-content']") || docsSidebarRoot
 const colorSelect = document.querySelector("#theme-color [data-slot='select-input']")
 const radiusSelect = document.querySelector("#theme-radius [data-slot='select-input']")
 const themeModeButtons = () => qs(document, ".theme-mode-btn[data-theme-mode]")
@@ -400,7 +402,7 @@ window.addEventListener("beforeunload", persistSidebarScroll)
 // ---------------------------------------------------------------------------
 
 const initCommandPalette = () => {
-  const navLinks = qs(document, "nav[aria-label='Component sections'] ul li a[href]")
+  const navLinks = qs(document, "nav[aria-label='Component sections'] [data-slot='sidebar-item-link'][href]")
   const items = []
   const seen = new Set()
 
@@ -412,8 +414,10 @@ const initCommandPalette = () => {
     if (seen.has(href)) return
     seen.add(href)
 
-    const sectionLink = link.closest("ul")?.previousElementSibling
-    const moduleName = (sectionLink?.textContent || "").trim()
+    const sectionLabel = link
+      .closest("[data-slot='sidebar-group']")
+      ?.querySelector("[data-slot='sidebar-group'] [data-sidebar-label]")
+    const moduleName = (sectionLabel?.textContent || "").trim()
     const title = (link.textContent || "").trim()
     const displayName = moduleName ? `${moduleName}.${title}` : title
 

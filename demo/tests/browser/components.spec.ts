@@ -24,7 +24,7 @@ test.describe("component catalog", () => {
     const sidebar = page.locator("nav[aria-label='Component sections']")
 
     await expect(sidebar).toBeVisible()
-    await expect(sidebar.getByRole("link", { name: "Actions" })).toBeVisible()
+    await expect(sidebar.getByText("Actions", { exact: true })).toBeVisible()
     await expect(sidebar.getByRole("link", { name: "button", exact: true })).toBeVisible()
   })
 

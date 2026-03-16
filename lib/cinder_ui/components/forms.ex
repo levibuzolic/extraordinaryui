@@ -22,6 +22,7 @@ defmodule CinderUI.Components.Forms do
   - `radio_group/1`
   - `slider/1`
   - `input_group/1`
+  - `input_group_addon/1`
   - `input_otp/1`
   """
 
@@ -1245,6 +1246,9 @@ defmodule CinderUI.Components.Forms do
   doc("""
   Wraps an input and sibling controls (buttons/icons) in a single inline group.
 
+  Use `input_group_addon/1` for static text, icons, status copy, or other
+  non-interactive content that should visually attach to the grouped controls.
+
   ## Examples
 
   ```heex title="Search with action" align="full"
@@ -1256,8 +1260,60 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Handle input" align="full"
   <.input_group>
-    <span class="text-muted-foreground inline-flex items-center px-3 text-sm">@</span>
+    <.input_group_addon>@</.input_group_addon>
     <.input placeholder="organization" />
+  </.input_group>
+  ```
+
+  ```heex title="URL builder" align="full"
+  <.input_group>
+    <.input_group_addon>https://</.input_group_addon>
+    <.input value="cinder-ui" />
+    <.input_group_addon>.com</.input_group_addon>
+  </.input_group>
+  ```
+
+  ```heex title="Command search" align="full"
+  <.input_group>
+    <.input_group_addon>
+      <.icon name="search" class="size-4" />
+    </.input_group_addon>
+    <.input placeholder="Search components" />
+    <.input_group_addon>
+      <.kbd>⌘K</.kbd>
+    </.input_group_addon>
+  </.input_group>
+  ```
+
+  ```heex title="Loading state" align="full"
+  <.input_group>
+    <.input placeholder="Generating invite link..." disabled />
+    <.input_group_addon>
+      <.spinner class="size-4" />
+      <span>Syncing</span>
+    </.input_group_addon>
+  </.input_group>
+  ```
+
+  ```heex title="Select + input" align="full"
+  <.input_group>
+    <.select id="team-role" value="admin" aria-label="Team role">
+      <:option value="admin" label="Admin" />
+      <:option value="editor" label="Editor" />
+      <:option value="viewer" label="Viewer" />
+    </.select>
+    <.input placeholder="email@example.com" type="email" />
+  </.input_group>
+  ```
+
+  ```heex title="Textarea with action" align="full"
+  <.input_group class="items-end">
+    <.textarea
+      rows={3}
+      placeholder="Add internal notes for the release handoff."
+      class="min-h-[5.5rem]"
+    />
+    <.button size={:sm} class="mb-2 mr-2">Send</.button>
   </.input_group>
   ```
 
@@ -1276,18 +1332,57 @@ defmodule CinderUI.Components.Forms do
   def input_group(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "dark:bg-input/30 relative flex h-9 w-full min-w-0 items-stretch rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow]",
+        "dark:bg-input/30 relative flex min-h-9 w-full min-w-0 items-stretch rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow]",
         "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:ring-[3px]",
-        "[&>*]:relative [&>*]:h-full [&>*]:focus-visible:z-10",
-        "[&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md",
+        "[&>*]:relative [&>*]:min-w-0 [&>*]:focus-visible:z-10",
+        "[&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:only-child]:rounded-md",
         "[&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-input",
+        "[&>[data-slot=input-group-addon]]:text-muted-foreground [&>[data-slot=input-group-addon]]:inline-flex [&>[data-slot=input-group-addon]]:shrink-0 [&>[data-slot=input-group-addon]]:items-center [&>[data-slot=input-group-addon]]:gap-2 [&>[data-slot=input-group-addon]]:px-3 [&>[data-slot=input-group-addon]]:text-sm",
         "[&>[data-slot=input]]:h-full [&>[data-slot=input]]:rounded-none [&>[data-slot=input]]:border-0 [&>[data-slot=input]]:bg-transparent [&>[data-slot=input]]:shadow-none [&>[data-slot=input]]:focus-visible:ring-0",
+        "[&>[data-slot=textarea]]:min-h-[5.5rem] [&>[data-slot=textarea]]:rounded-none [&>[data-slot=textarea]]:border-0 [&>[data-slot=textarea]]:bg-transparent [&>[data-slot=textarea]]:shadow-none [&>[data-slot=textarea]]:focus-visible:ring-0",
+        "[&>[data-slot=select]]:flex-1 [&>[data-slot=select]]:min-w-0 [&>[data-slot=select]_[data-slot=select-trigger]]:h-full [&>[data-slot=select]_[data-slot=select-trigger]]:rounded-none [&>[data-slot=select]_[data-slot=select-trigger]]:border-0 [&>[data-slot=select]_[data-slot=select-trigger]]:bg-transparent [&>[data-slot=select]_[data-slot=select-trigger]]:shadow-none [&>[data-slot=select]_[data-slot=select-trigger]]:focus-visible:ring-0",
         "[&>[data-slot=button]]:h-6 [&>[data-slot=button]]:self-center [&>[data-slot=button]]:rounded-[calc(var(--radius)-5px)] [&>[data-slot=button]]:border-0 [&>[data-slot=button]]:px-2 [&>[data-slot=button]]:text-sm [&>[data-slot=button]]:shadow-none [&>[data-slot=button]]:focus-visible:ring-0",
         assigns.class
       ])
 
     ~H"""
     <div data-slot="input-group" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  doc("""
+  Non-interactive text/icon/status segment used inside `input_group/1`.
+
+  This is useful for prefixes, suffixes, inline status, and small utility
+  content that should attach to the surrounding grouped field.
+
+  ## Example
+
+  ```heex title="Input group addon" align="full"
+  <.input_group>
+    <.input_group_addon>
+      <.icon name="mail" class="size-4" />
+    </.input_group_addon>
+    <.input type="email" placeholder="team@example.com" />
+  </.input_group>
+  ```
+  """)
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def input_group_addon(assigns) do
+    assigns =
+      assign(assigns, :classes, [
+        "inline-flex items-center gap-2 whitespace-nowrap bg-transparent",
+        assigns.class
+      ])
+
+    ~H"""
+    <div data-slot="input-group-addon" class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
