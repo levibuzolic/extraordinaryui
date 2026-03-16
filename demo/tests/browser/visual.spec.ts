@@ -44,6 +44,10 @@ test.describe("visual regression", () => {
           max-width: ${fixedPreviewWidthPx}px !important;
           overflow: hidden !important;
         }
+
+        [data-slot="docs-topbar"] {
+          display: none !important;
+        }
       `,
     })
   })

@@ -155,6 +155,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
   def docs_topbar(assigns) do
     ~H"""
     <header
+      data-slot="docs-topbar"
       class="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-30 w-full border-b border-border/80 backdrop-blur"
       {@rest}
     >
