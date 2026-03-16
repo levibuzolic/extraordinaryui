@@ -159,6 +159,7 @@ defmodule CinderUI.Components.Actions do
 
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def button_group(assigns) do
@@ -174,7 +175,7 @@ defmodule CinderUI.Components.Actions do
     assigns = assign(assigns, :classes, [orientation_classes, assigns.class])
 
     ~H"""
-    <div data-slot="button-group" data-orientation={@orientation} class={classes(@classes)}>
+    <div data-slot="button-group" data-orientation={@orientation} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
@@ -291,6 +292,7 @@ defmodule CinderUI.Components.Actions do
   attr :type, :atom, default: :single, values: [:single, :multiple]
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def toggle_group(assigns) do
@@ -309,6 +311,7 @@ defmodule CinderUI.Components.Actions do
       data-orientation={@orientation}
       role="group"
       class={classes(@classes)}
+      {@rest}
     >
       {render_slot(@inner_block)}
     </div>

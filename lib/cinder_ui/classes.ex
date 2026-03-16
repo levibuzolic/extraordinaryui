@@ -1,7 +1,7 @@
 defmodule CinderUI.TailwindConfig do
   @moduledoc false
 
-  # shadcn/ui design token colors that tailwind_merge needs to recognize
+  # shadcn/ui design token colors that TailwindCombine needs to recognize
   # so it can properly deduplicate e.g. `bg-primary` vs `bg-green-600`.
   @shadcn_colors [
     "background",
@@ -34,9 +34,11 @@ defmodule CinderUI.TailwindConfig do
   ]
 
   def config do
-    TailwindMerge.Config.new(
+    TailwindCombine.Config.new(
       class_groups:
-        TailwindMerge.Config.class_groups(colors: TailwindMerge.Config.colors() ++ @shadcn_colors)
+        TailwindCombine.Config.class_groups(
+          colors: TailwindCombine.Config.colors() ++ @shadcn_colors
+        )
     )
   end
 end
@@ -45,12 +47,12 @@ defmodule CinderUI.Classes do
   @moduledoc """
   Utilities for composing Tailwind class lists.
 
-  Uses `tailwind_merge` to intelligently resolve conflicting Tailwind utilities,
+  Uses `tailwind_combine` to intelligently resolve conflicting Tailwind utilities,
   so the last class in the list wins when there's a conflict (e.g. `bg-primary`
   vs `bg-green-600`).
   """
 
-  use TailwindMerge, config: CinderUI.TailwindConfig.config()
+  use TailwindCombine, config: CinderUI.TailwindConfig.config()
 
   @doc """
   Joins classes from strings/lists while removing nil/false/empty values,
