@@ -4,6 +4,8 @@ This project publishes Hex packages and HexDocs through GitHub Releases and GitH
 
 The release workflow lives in [`.github/workflows/publish-hex.yml`](./.github/workflows/publish-hex.yml) and runs when a GitHub Release is published.
 
+Stable releases publish both the Hex package and HexDocs. Beta/prerelease releases publish the Hex package only.
+
 ## One-time setup
 
 1. Generate a Hex API key that can publish packages:
@@ -62,18 +64,34 @@ The release workflow lives in [`.github/workflows/publish-hex.yml`](./.github/wo
 
    GitHub will create the tag for you when the release is published.
 
+### Beta releases
+
+To publish a beta/prerelease build:
+
+1. Set `mix.exs` to a SemVer prerelease such as:
+
+   ```elixir
+   @version "0.1.0-beta.1"
+   ```
+
+2. Create a GitHub Release with the matching tag, for example `v0.1.0-beta.1`.
+3. Mark the GitHub Release as a prerelease.
+
+This will publish the Hex package as a prerelease version. HexDocs publication is skipped for prereleases so the stable docs remain the public default.
+
 6. GitHub Actions will run `Publish Hex` automatically and:
 
    - verify `HEX_API_KEY` is available
    - verify the release tag matches the version in `mix.exs`
+   - verify GitHub prerelease metadata matches the SemVer version shape
    - run formatting, compile, and test checks
    - publish the Hex package from the production environment
-   - publish HexDocs from a dedicated docs environment
+   - publish HexDocs from a dedicated docs environment for stable releases only
 
 ## Notes
 
-- The workflow ignores GitHub prereleases.
 - The tag must match the version exactly. `v0.1.0` requires `@version "0.1.0"` in `mix.exs`.
+- Prerelease versions must also be marked as GitHub prereleases. For example, `v0.1.0-beta.1` requires `@version "0.1.0-beta.1"` and a GitHub prerelease.
 - Hex will reject publishing a version that already exists.
 - Site publishing is handled separately by [`.github/workflows/publish-site.yml`](./.github/workflows/publish-site.yml).
 - If you prefer, you can still create and push the tag manually before publishing the GitHub Release, but it is not required.
