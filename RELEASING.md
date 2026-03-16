@@ -41,6 +41,7 @@ Stable releases publish both the Hex package and HexDocs. Beta/prerelease releas
    ```bash
    mix quality
    MIX_ENV=test mix coveralls.cobertura --raise
+   mix docs.with_screenshots
    mix cinder_ui.docs.build
    cd demo && mix format --check-formatted && mix test
    cd demo && mix assets.build && npx playwright test
@@ -85,6 +86,7 @@ This will publish the Hex package as a prerelease version. HexDocs publication i
    - verify the release tag matches the version in `mix.exs`
    - verify GitHub prerelease metadata matches the SemVer version shape
    - run formatting, compile, and test checks
+   - export `doc/screenshots` from the demo app before packaging
    - publish the Hex package from the production environment
    - publish HexDocs from a dedicated docs environment for stable releases only
 

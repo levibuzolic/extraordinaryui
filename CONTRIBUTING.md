@@ -124,6 +124,7 @@ npx playwright test tests/browser/visual.spec.ts
 ```
 
 This suite also exports component screenshots to `doc/screenshots` for HexDocs module docs image references.
+Set `CINDER_UI_EXPORT_SCREENSHOTS=1` to export those images without running screenshot baseline assertions.
 
 Promoted example visual suite:
 

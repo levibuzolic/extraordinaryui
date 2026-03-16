@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test"
 
 test.describe("visual regression", () => {
   const fixedPreviewWidthPx = 550
+  const exportScreenshotsOnly = process.env.CINDER_UI_EXPORT_SCREENSHOTS === "1"
 
   test.use({
     viewport: { width: 1600, height: 1200 },
@@ -69,7 +70,11 @@ test.describe("visual regression", () => {
 
       await preview.scrollIntoViewIfNeeded()
       await expect(preview).toBeVisible()
-      await expect(preview).toHaveScreenshot(snapshotName, { scale: "device" })
+
+      if (!exportScreenshotsOnly) {
+        await expect(preview).toHaveScreenshot(snapshotName, { scale: "device" })
+      }
+
       await preview.screenshot({
         path: path.join(screenshotOutputDir, `${componentId}.png`),
         scale: "device",

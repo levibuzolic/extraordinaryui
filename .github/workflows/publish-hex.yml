@@ -35,6 +35,11 @@ jobs:
         with:
           cache-key-prefix: hex-publish
 
+      - name: Setup demo Mix
+        uses: ./.github/actions/setup-demo-mix
+        with:
+          cache-key-prefix: hex-publish
+
       - name: Verify Hex API key
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
@@ -99,8 +104,13 @@ jobs:
       - name: Verify formatting
         run: MIX_ENV=test mix format --check-formatted
 
-      - name: Install demo Node dependencies
-        run: cd demo && npm ci
+      - name: Build demo browser environment
+        uses: ./.github/actions/setup-demo-browser
+        with:
+          playwright-cache-key-prefix: hex-publish
+
+      - name: Export HexDocs screenshots
+        run: cd demo && CINDER_UI_EXPORT_SCREENSHOTS=1 npx playwright test tests/browser/visual.spec.ts
 
       - name: Run demo hook unit tests
         run: cd demo && npm run test:hooks

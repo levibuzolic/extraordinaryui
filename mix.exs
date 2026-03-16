@@ -69,7 +69,7 @@ defmodule CinderUI.MixProject do
     [
       "test.all": ["test"],
       "docs.with_screenshots": [
-        "cmd --cd demo npx playwright test tests/browser/visual.spec.ts",
+        "cmd --cd demo env CINDER_UI_EXPORT_SCREENSHOTS=1 npx playwright test tests/browser/visual.spec.ts",
         "docs"
       ],
       quality: [
@@ -93,7 +93,6 @@ defmodule CinderUI.MixProject do
       files: [
         "lib",
         "priv",
-        "assets",
         "doc/screenshots",
         "mix.exs",
         "README.md",
