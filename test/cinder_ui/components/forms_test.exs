@@ -4,6 +4,8 @@ defmodule CinderUI.Components.FormsTest do
   import Phoenix.LiveViewTest
 
   alias CinderUI.Components.Forms
+  alias CinderUI.TestHelpers
+  alias Phoenix.HTML
 
   test "input renders with data-slot and forwards min/max attributes" do
     html =
@@ -14,10 +16,9 @@ defmodule CinderUI.Components.FormsTest do
         max: "10"
       })
 
-    assert html =~ "data-slot=\"input\""
-    assert html =~ "type=\"number\""
-    assert html =~ "min=\"1\""
-    assert html =~ "max=\"10\""
+    assert TestHelpers.attr(html, "[data-slot='input']", "type") == "number"
+    assert TestHelpers.attr(html, "[data-slot='input']", "min") == "1"
+    assert TestHelpers.attr(html, "[data-slot='input']", "max") == "10"
   end
 
   test "number_field renders buttons and forwards numeric constraints" do
@@ -31,18 +32,22 @@ defmodule CinderUI.Components.FormsTest do
         step: 0.5
       })
 
-    assert html =~ "data-slot=\"number-field\""
-    assert html =~ "data-slot=\"number-field-decrement\""
-    assert html =~ "data-slot=\"number-field-input\""
-    assert html =~ "data-slot=\"number-field-increment\""
-    assert html =~ "type=\"number\""
-    assert html =~ "min=\"1\""
-    assert html =~ "max=\"10\""
-    assert html =~ "step=\"0.5\""
-    assert html =~ "Decrease value"
-    assert html =~ "Increase value"
-    assert html =~ "stepDown()"
-    assert html =~ "stepUp()"
+    assert TestHelpers.attr(html, "[data-slot='number-field']", "data-slot") == "number-field"
+    assert TestHelpers.attr(html, "[data-slot='number-field-input']", "type") == "number"
+    assert TestHelpers.attr(html, "[data-slot='number-field-input']", "min") == "1"
+    assert TestHelpers.attr(html, "[data-slot='number-field-input']", "max") == "10"
+    assert TestHelpers.attr(html, "[data-slot='number-field-input']", "step") == "0.5"
+
+    assert TestHelpers.attr(html, "[data-slot='number-field-decrement']", "aria-label") ==
+             "Decrease value"
+
+    assert TestHelpers.attr(html, "[data-slot='number-field-increment']", "aria-label") ==
+             "Increase value"
+
+    assert TestHelpers.attr(html, "[data-slot='number-field-decrement']", "onclick") =~
+             "stepDown()"
+
+    assert TestHelpers.attr(html, "[data-slot='number-field-increment']", "onclick") =~ "stepUp()"
   end
 
   test "select renders custom trigger, hidden input, and items" do
@@ -57,12 +62,12 @@ defmodule CinderUI.Components.FormsTest do
         ]
       })
 
-    assert html =~ "Admin"
-    assert html =~ "data-slot=\"select\""
-    assert html =~ "data-slot=\"select-trigger\""
-    assert html =~ "data-slot=\"select-input\""
-    assert html =~ "data-slot=\"select-item\""
-    assert html =~ "phx-hook=\"CuiSelect\""
+    assert TestHelpers.attr(html, "[data-slot='select']", "phx-hook") == "CuiSelect"
+    assert TestHelpers.attr(html, "[data-slot='select-trigger']", "type") == "button"
+    assert TestHelpers.attr(html, "[data-slot='select-input']", "name") == "role"
+    assert TestHelpers.attr(html, "[data-slot='select-input']", "value") == "admin"
+    assert TestHelpers.find_all(html, "[data-select-item]") |> length() == 2
+    assert TestHelpers.text(html, "[data-slot='select-value']") == "Admin"
   end
 
   test "select supports grouped options, clear button, and default empty state" do
@@ -85,11 +90,17 @@ defmodule CinderUI.Components.FormsTest do
         empty: []
       })
 
-    assert html =~ "data-slot=\"select-group\""
-    assert html =~ "data-slot=\"select-group-label\""
-    assert html =~ "data-slot=\"select-clear\""
-    assert html =~ "aria-activedescendant"
-    assert empty_html =~ "No options available."
+    assert TestHelpers.find_all(html, "[data-slot='select-group']") |> length() == 2
+
+    assert TestHelpers.find_all(html, "[data-slot='select-group-label']")
+           |> Enum.map(fn node -> node |> Floki.text() |> String.trim() end) == [
+             "Engineering",
+             "Design"
+           ]
+
+    assert TestHelpers.attr(html, "[data-slot='select-trigger']", "aria-activedescendant") == ""
+    assert TestHelpers.find_all(html, "[data-slot='select-clear']") |> length() == 1
+    assert TestHelpers.text(empty_html, "[data-slot='select-empty']") == "No options available."
   end
 
   test "native_select renders native wrapper and element" do
@@ -103,10 +114,14 @@ defmodule CinderUI.Components.FormsTest do
         ]
       })
 
-    assert html =~ "data-slot=\"native-select-wrapper\""
-    assert html =~ "data-slot=\"native-select\""
-    assert html =~ "pr-8"
-    assert html =~ "right-2.5"
+    assert TestHelpers.attr(html, "[data-slot='native-select-wrapper']", "data-slot") ==
+             "native-select-wrapper"
+
+    assert TestHelpers.attr(html, "[data-slot='native-select'] option[selected]", "value") ==
+             "admin"
+
+    assert TestHelpers.has_class?(html, "[data-slot='native-select']", "pr-8")
+    assert TestHelpers.has_class?(html, "svg", "right-2.5")
   end
 
   test "autocomplete renders visible and hidden inputs plus options" do
@@ -127,13 +142,11 @@ defmodule CinderUI.Components.FormsTest do
         empty: [%{inner_block: fn _, _ -> "No match" end}]
       })
 
-    assert html =~ "data-slot=\"autocomplete\""
-    assert html =~ "data-slot=\"autocomplete-input\""
-    assert html =~ "data-slot=\"autocomplete-value\""
-    assert html =~ "data-slot=\"autocomplete-item\""
-    assert html =~ "data-slot=\"autocomplete-empty\""
-    assert html =~ ~s(role="combobox")
-    assert html =~ "phx-hook=\"CuiAutocomplete\""
+    assert TestHelpers.attr(html, "[data-slot='autocomplete']", "phx-hook") == "CuiAutocomplete"
+    assert TestHelpers.attr(html, "[data-slot='autocomplete-input']", "role") == "combobox"
+    assert TestHelpers.attr(html, "[data-slot='autocomplete-value']", "value") == "levi"
+    assert TestHelpers.find_all(html, "[data-slot='autocomplete-item']") |> length() == 2
+    assert TestHelpers.text(html, "[data-slot='autocomplete-empty']") == "No match"
   end
 
   test "autocomplete renders loading text and server-search-friendly markup" do
@@ -147,10 +160,12 @@ defmodule CinderUI.Components.FormsTest do
         empty: [%{inner_block: fn _, _ -> "No repositories found" end}]
       })
 
-    assert html =~ "data-loading"
-    assert html =~ "data-slot=\"autocomplete-loading\""
-    assert html =~ "Searching repositories..."
-    assert html =~ "data-slot=\"autocomplete-empty\""
+    assert TestHelpers.attr(html, "[data-slot='autocomplete']", "data-loading") == "data-loading"
+
+    assert TestHelpers.text(html, "[data-slot='autocomplete-loading']") ==
+             "Searching repositories..."
+
+    assert TestHelpers.find_all(html, "[data-slot='autocomplete-empty']") |> length() == 1
   end
 
   test "autocomplete renders a default empty message when none is provided" do
@@ -160,8 +175,10 @@ defmodule CinderUI.Components.FormsTest do
         option: []
       })
 
-    assert html =~ "No results found."
-    assert html =~ "aria-activedescendant"
+    assert TestHelpers.text(html, "[data-slot='autocomplete-empty']") == "No results found."
+
+    assert TestHelpers.attr(html, "[data-slot='autocomplete-input']", "aria-activedescendant") ==
+             ""
   end
 
   test "field infers invalid state from error slot and renders subcomponents" do
@@ -171,16 +188,17 @@ defmodule CinderUI.Components.FormsTest do
         description: [%{inner_block: fn _, _ -> "Public handle" end}],
         message: [%{inner_block: fn _, _ -> "Saved automatically" end}],
         error: [%{inner_block: fn _, _ -> "Already taken" end}],
-        inner_block: [%{inner_block: fn _, _ -> "<input data-slot=\"input\" />" end}]
+        inner_block: [%{inner_block: fn _, _ -> HTML.raw("<input data-slot=\"input\" />") end}]
       })
 
-    assert html =~ "data-slot=\"field\""
-    assert html =~ "data-invalid"
-    assert html =~ "data-slot=\"field-label\""
-    assert html =~ "data-slot=\"field-control\""
-    assert html =~ "data-slot=\"field-description\""
-    assert html =~ "data-slot=\"field-message\""
-    assert html =~ "data-slot=\"field-error\""
+    assert TestHelpers.attr(html, "[data-slot='field']", "data-invalid") == "data-invalid"
+    assert TestHelpers.text(html, "[data-slot='field-label']") == "Username"
+    assert TestHelpers.text(html, "[data-slot='field-description']") == "Public handle"
+    assert TestHelpers.text(html, "[data-slot='field-message']") == "Saved automatically"
+    assert TestHelpers.text(html, "[data-slot='field-error']") == "Already taken"
+
+    assert TestHelpers.find_all(html, "[data-slot='field-control'] [data-slot='input']")
+           |> length() == 1
   end
 
   test "field_control carries invalid-state selectors for shared controls" do
@@ -189,15 +207,16 @@ defmodule CinderUI.Components.FormsTest do
         inner_block: [%{inner_block: fn _, _ -> "stub" end}]
       })
 
-    assert html =~ "data-slot=\"field-control\""
-    assert html =~ "data-slot=select-trigger"
-    assert html =~ "data-slot=number-field-input"
-    assert html =~ "data-slot=native-select"
-    assert html =~ "data-slot=autocomplete-input"
-    assert html =~ "data-slot=combobox-input"
-    assert html =~ "data-slot=switch"
-    assert html =~ "data-slot=checkbox"
-    assert html =~ "data-slot=radio-group-item"
+    assert TestHelpers.attr(html, "[data-slot='field-control']", "data-slot") == "field-control"
+    class_attr = TestHelpers.attr(html, "[data-slot='field-control']", "class")
+    assert class_attr =~ "data-slot=select-trigger"
+    assert class_attr =~ "data-slot=number-field-input"
+    assert class_attr =~ "data-slot=native-select"
+    assert class_attr =~ "data-slot=autocomplete-input"
+    assert class_attr =~ "data-slot=combobox-input"
+    assert class_attr =~ "data-slot=switch"
+    assert class_attr =~ "data-slot=checkbox"
+    assert class_attr =~ "data-slot=radio-group-item"
   end
 
   test "label and field helper components render structural classes" do
@@ -222,13 +241,18 @@ defmodule CinderUI.Components.FormsTest do
         inner_block: CinderUI.TestHelpers.slot("Saved")
       })
 
-    assert label_html =~ "data-slot=\"label\""
-    assert label_html =~ "for=\"email\""
-    assert field_label_html =~ "data-slot=\"field-label\""
-    assert description_html =~ "data-slot=\"field-description\""
-    assert description_html =~ "text-muted-foreground"
-    assert message_html =~ "data-slot=\"field-message\""
-    assert message_html =~ "text-foreground"
+    assert TestHelpers.attr(label_html, "[data-slot='label']", "for") == "email"
+    assert TestHelpers.text(field_label_html, "[data-slot='field-label']") == "Field label"
+
+    assert TestHelpers.has_class?(
+             description_html,
+             "[data-slot='field-description']",
+             "text-muted-foreground"
+           )
+
+    assert TestHelpers.text(description_html, "[data-slot='field-description']") == "Helpful text"
+    assert TestHelpers.has_class?(message_html, "[data-slot='field-message']", "text-foreground")
+    assert TestHelpers.text(message_html, "[data-slot='field-message']") == "Saved"
   end
 
   test "checkbox renders native input and label content" do
@@ -239,19 +263,23 @@ defmodule CinderUI.Components.FormsTest do
         inner_block: CinderUI.TestHelpers.slot("Accept terms")
       })
 
-    assert html =~ "data-slot=\"checkbox\""
-    assert html =~ "checked"
-    assert html =~ "Accept terms"
+    assert TestHelpers.attr(html, "[data-slot='checkbox']", "checked") == "checked"
+    assert TestHelpers.text(html, "label") == "Accept terms"
   end
 
   test "switch hides native checkbox glyph and renders thumb" do
     html = render_component(&Forms.switch/1, %{id: "marketing", checked: true})
 
-    assert html =~ "data-slot=\"switch\""
-    assert html =~ "data-slot=\"switch-thumb\""
-    assert html =~ "appearance-none"
-    assert html =~ "checked:bg-primary"
-    assert html =~ "peer-checked:translate-x-[calc(100%-2px)]"
+    assert TestHelpers.attr(html, "[data-slot='switch']", "data-slot") == "switch"
+    assert TestHelpers.find_all(html, "[data-slot='switch-thumb']") |> length() == 1
+    assert TestHelpers.has_class?(html, "[data-slot='switch']", "appearance-none")
+    assert TestHelpers.has_class?(html, "[data-slot='switch']", "checked:bg-primary")
+
+    assert TestHelpers.has_class?(
+             html,
+             "[data-slot='switch-thumb']",
+             "peer-checked:translate-x-[calc(100%-2px)]"
+           )
   end
 
   test "slider accepts fractional values" do
@@ -264,11 +292,10 @@ defmodule CinderUI.Components.FormsTest do
         step: 0.1
       })
 
-    assert html =~ "data-slot=\"slider\""
-    assert html =~ "value=\"0.5\""
-    assert html =~ "min=\"0.0\""
-    assert html =~ "max=\"1.0\""
-    assert html =~ "step=\"0.1\""
+    assert TestHelpers.attr(html, "[data-slot='slider']", "value") == "0.5"
+    assert TestHelpers.attr(html, "[data-slot='slider']", "min") == "0.0"
+    assert TestHelpers.attr(html, "[data-slot='slider']", "max") == "1.0"
+    assert TestHelpers.attr(html, "[data-slot='slider']", "step") == "0.1"
   end
 
   test "radio_group supports disabled options" do
@@ -282,11 +309,24 @@ defmodule CinderUI.Components.FormsTest do
         ]
       })
 
-    assert html =~ "data-slot=\"radio-group\""
-    assert html =~ "data-slot=\"radio-group-item\""
-    assert html =~ "value=\"eu\""
-    assert html =~ "disabled"
-    assert html =~ "opacity-50"
+    assert TestHelpers.attr(html, "[data-slot='radio-group']", "data-slot") == "radio-group"
+    assert TestHelpers.find_all(html, "[data-slot='radio-group-item']") |> length() == 2
+
+    assert TestHelpers.attr(html, "[data-slot='radio-group-item'][value='eu']", "disabled") ==
+             "disabled"
+
+    disabled_label =
+      html
+      |> TestHelpers.find_all("label")
+      |> Enum.find(fn node -> Floki.text(node) |> String.contains?("Europe") end)
+
+    assert disabled_label
+
+    assert disabled_label
+           |> Floki.attribute("class")
+           |> List.first()
+           |> String.split()
+           |> Enum.member?("opacity-50")
   end
 
   test "input_otp renders hook-enabled segmented inputs" do
@@ -297,14 +337,11 @@ defmodule CinderUI.Components.FormsTest do
         values: ["1", "", "3", ""]
       })
 
-    assert html =~ "data-slot=\"input-otp\""
-    assert html =~ "phx-hook=\"CuiInputOtp\""
-    assert html =~ "data-input-otp-input"
-    assert html =~ "data-input-otp-index=\"0\""
-    assert html =~ "data-input-otp-index=\"3\""
-    assert html =~ "value=\"1\""
-    assert html =~ "value=\"3\""
-    assert html =~ ~r/id="cinder-ui-input-otp-\d+"/
+    assert TestHelpers.attr(html, "[data-slot='input-otp']", "phx-hook") == "CuiInputOtp"
+    assert TestHelpers.find_all(html, "[data-input-otp-input]") |> length() == 4
+    assert TestHelpers.attr(html, "[data-input-otp-index='0']", "value") == "1"
+    assert TestHelpers.attr(html, "[data-input-otp-index='2']", "value") == "3"
+    assert TestHelpers.attr(html, "[data-slot='input-otp']", "id") =~ "cinder-ui-input-otp-"
   end
 
   test "input_otp supports grouped separators" do
@@ -315,8 +352,13 @@ defmodule CinderUI.Components.FormsTest do
         groups: [3, 3]
       })
 
-    assert html =~ "data-slot=\"input-otp-separator\""
-    assert html =~ "data-input-otp-separator-after=\"2\""
+    assert TestHelpers.find_all(html, "[data-slot='input-otp-separator']") |> length() == 1
+
+    assert TestHelpers.attr(
+             html,
+             "[data-slot='input-otp-separator']",
+             "data-input-otp-separator-after"
+           ) == "2"
   end
 
   test "input_group renders unified styles for inline and block-end layouts" do
@@ -346,22 +388,35 @@ defmodule CinderUI.Components.FormsTest do
         inner_block: CinderUI.TestHelpers.slot("Footer")
       })
 
-    assert html =~ "data-slot=\"input-group\""
-    assert html =~ "data-align=\"inline\""
-    assert html =~ "has-[:focus-visible]:ring-[3px]"
-    assert html =~ "[&amp;&gt;[data-slot=input-group-addon]]:inline-flex"
-    assert html =~ "[&amp;&gt;[data-slot=input]]:border-0"
-    assert html =~ "[&amp;&gt;[data-slot=textarea]]:border-0"
-    assert html =~ "[&amp;&gt;[data-slot=select]_[data-slot=select-trigger]]:border-0"
-    assert html =~ "[&amp;&gt;[data-slot=button]]:border-0"
-    assert block_end_html =~ "data-align=\"block-end\""
-    assert block_end_html =~ "flex-col"
+    assert TestHelpers.attr(html, "[data-slot='input-group']", "data-align") == "inline"
 
-    assert block_end_html =~
-             "[&amp;&gt;[data-slot=input-group-addon][data-align=block-end]]:border-t"
+    assert TestHelpers.has_class?(
+             html,
+             "[data-slot='input-group']",
+             "has-[:focus-visible]:ring-[3px]"
+           )
 
-    assert addon_html =~ "data-slot=\"input-group-addon\""
-    assert addon_html =~ "inline-flex"
-    assert block_end_addon_html =~ "data-align=\"block-end\""
+    inline_class = TestHelpers.attr(html, "[data-slot='input-group']", "class")
+    assert inline_class =~ "[data-slot=input-group-addon]]:inline-flex"
+    assert inline_class =~ "[data-slot=input]]:border-0"
+    assert inline_class =~ "[data-slot=textarea]]:border-0"
+    assert inline_class =~ "[data-slot=select]_[data-slot=select-trigger]]:border-0"
+    assert inline_class =~ "[data-slot=button]]:border-0"
+
+    assert TestHelpers.attr(block_end_html, "[data-slot='input-group']", "data-align") ==
+             "block-end"
+
+    assert TestHelpers.has_class?(block_end_html, "[data-slot='input-group']", "flex-col")
+
+    assert TestHelpers.attr(block_end_html, "[data-slot='input-group']", "class") =~
+             "[data-slot=input-group-addon][data-align=block-end]]:border-t"
+
+    assert TestHelpers.attr(addon_html, "[data-slot='input-group-addon']", "data-slot") ==
+             "input-group-addon"
+
+    assert TestHelpers.has_class?(addon_html, "[data-slot='input-group-addon']", "inline-flex")
+
+    assert TestHelpers.attr(block_end_addon_html, "[data-slot='input-group-addon']", "data-align") ==
+             "block-end"
   end
 end

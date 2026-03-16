@@ -4,6 +4,8 @@ defmodule CinderUI.Components.AdvancedTest do
   import Phoenix.LiveViewTest
 
   alias CinderUI.Components.Advanced
+  alias CinderUI.TestHelpers
+  alias Phoenix.HTML
 
   test "command renders groups" do
     html =
@@ -13,8 +15,9 @@ defmodule CinderUI.Components.AdvancedTest do
         ]
       })
 
-    assert html =~ "data-slot=\"command\""
-    assert html =~ "Main"
+    assert TestHelpers.attr(html, "[data-slot='command']", "data-slot") == "command"
+    assert TestHelpers.text(html, "[data-slot='command-group-heading']") == "Main"
+    assert TestHelpers.text(html, "[data-slot='command-group']") == "Main Items"
   end
 
   test "carousel renders aria semantics, controls, and indicators" do
@@ -29,17 +32,23 @@ defmodule CinderUI.Components.AdvancedTest do
         ]
       })
 
-    assert html =~ "data-slot=\"carousel\""
-    assert html =~ "data-autoplay=\"4000\""
-    assert html =~ ~s(aria-roledescription="carousel")
-    assert html =~ ~s(data-slot="carousel-item")
-    assert html =~ ~s(aria-roledescription="slide")
-    assert html =~ ~s(aria-label="Previous slide")
-    assert html =~ ~s(aria-label="Next slide")
-    assert html =~ ~s(data-slot="carousel-indicator")
-    assert html =~ ~s(aria-label="Go to slide 1")
-    assert html =~ "Slide one"
-    assert html =~ "Slide two"
+    assert TestHelpers.attr(html, "[data-slot='carousel']", "data-autoplay") == "4000"
+    assert TestHelpers.attr(html, "[data-slot='carousel']", "aria-roledescription") == "carousel"
+    assert TestHelpers.find_all(html, "[data-slot='carousel-item']") |> length() == 2
+
+    assert TestHelpers.attr(html, "[data-slot='carousel-item']", "aria-roledescription") ==
+             "slide"
+
+    assert TestHelpers.attr(html, "[data-slot='carousel-previous']", "aria-label") ==
+             "Previous slide"
+
+    assert TestHelpers.attr(html, "[data-slot='carousel-next']", "aria-label") == "Next slide"
+    assert TestHelpers.find_all(html, "[data-slot='carousel-indicator']") |> length() == 2
+
+    assert TestHelpers.attr(html, "[data-slot='carousel-indicator']", "aria-label") ==
+             "Go to slide 1"
+
+    assert TestHelpers.text(html, "[data-slot='carousel-content']") == "Slide one Slide two"
   end
 
   test "sidebar layout renders panel and main regions with sidebar tokens" do
@@ -57,16 +66,27 @@ defmodule CinderUI.Components.AdvancedTest do
         ]
       })
 
-    assert layout_html =~ "data-slot=\"sidebar-layout\""
-    assert layout_html =~ "data-slot=\"sidebar-panel\""
-    assert layout_html =~ "data-slot=\"sidebar-content\""
-    assert layout_html =~ "data-slot=\"sidebar-main\""
-    assert layout_html =~ "Header"
-    assert layout_html =~ "Footer"
-    assert layout_html =~ "bg-sidebar"
-    assert layout_html =~ "text-sidebar-foreground"
-    assert layout_html =~ "border-sidebar-border"
-    assert layout_html =~ "px-8"
+    assert TestHelpers.attr(layout_html, "[data-slot='sidebar-layout']", "id") == "shell"
+
+    assert TestHelpers.text(layout_html, "[data-slot='sidebar-panel']") ==
+             "Header Overview Footer"
+
+    assert TestHelpers.text(layout_html, "[data-slot='sidebar-main']") == "Main content"
+    assert TestHelpers.has_class?(layout_html, "[data-slot='sidebar-panel']", "bg-sidebar")
+
+    assert TestHelpers.has_class?(
+             layout_html,
+             "[data-slot='sidebar-panel']",
+             "text-sidebar-foreground"
+           )
+
+    assert TestHelpers.has_class?(
+             layout_html,
+             "[data-slot='sidebar-panel']",
+             "border-sidebar-border"
+           )
+
+    assert TestHelpers.has_class?(layout_html, "[data-slot='sidebar-main']", "px-8")
   end
 
   test "combobox renders hook-backed input and items" do
@@ -80,11 +100,10 @@ defmodule CinderUI.Components.AdvancedTest do
         ]
       })
 
-    assert html =~ "data-slot=\"combobox\""
-    assert html =~ "phx-hook=\"CuiCombobox\""
-    assert html =~ "data-slot=\"combobox-input\""
-    assert html =~ "data-slot=\"combobox-item\""
-    assert html =~ "data-slot=\"select-check\""
+    assert TestHelpers.attr(html, "[data-slot='combobox']", "phx-hook") == "CuiCombobox"
+    assert TestHelpers.attr(html, "[data-slot='combobox-input']", "value") == "Pro"
+    assert TestHelpers.find_all(html, "[data-slot='combobox-item']") |> length() == 2
+    assert TestHelpers.find_all(html, "[data-slot='select-check']") |> length() == 2
   end
 
   test "chart renders title, description, and content shell" do
@@ -92,12 +111,12 @@ defmodule CinderUI.Components.AdvancedTest do
       render_component(&Advanced.chart/1, %{
         title: [%{inner_block: fn _, _ -> "Traffic" end}],
         description: [%{inner_block: fn _, _ -> "Last 7 days" end}],
-        inner_block: [%{inner_block: fn _, _ -> "<div>Chart body</div>" end}]
+        inner_block: [%{inner_block: fn _, _ -> HTML.raw("<div>Chart body</div>") end}]
       })
 
-    assert html =~ "data-slot=\"chart\""
-    assert html =~ "data-slot=\"chart-content\""
-    assert html =~ "Traffic"
-    assert html =~ "Last 7 days"
+    assert TestHelpers.attr(html, "[data-slot='chart']", "data-slot") == "chart"
+    assert TestHelpers.text(html, "header h3") == "Traffic"
+    assert TestHelpers.text(html, "header p") == "Last 7 days"
+    assert TestHelpers.text(html, "[data-slot='chart-content']") == "Chart body"
   end
 end

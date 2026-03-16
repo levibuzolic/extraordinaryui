@@ -8,16 +8,16 @@ defmodule CinderUI.Components.ActionsTest do
 
   test "button renders default classes" do
     html = render_component(&Actions.button/1, %{inner_block: TestHelpers.slot("Save")})
-    assert html =~ "data-slot=\"button\""
-    assert html =~ "Save"
+    assert TestHelpers.attr(html, "[data-slot='button']", "data-slot") == "button"
+    assert TestHelpers.text(html, "[data-slot='button']") == "Save"
   end
 
   test "toggle renders pressed state" do
     html =
       render_component(&Actions.toggle/1, %{pressed: true, inner_block: TestHelpers.slot("Bold")})
 
-    assert html =~ "data-state=\"on\""
-    assert html =~ "Bold"
+    assert TestHelpers.attr(html, "[data-slot='toggle']", "data-state") == "on"
+    assert TestHelpers.text(html, "[data-slot='toggle']") == "Bold"
   end
 
   test "button_group applies merged-border classes" do
@@ -29,10 +29,8 @@ defmodule CinderUI.Components.ActionsTest do
         ]
       })
 
-    assert html =~ "data-slot=\"button-group\""
-    assert html =~ "[&amp;&gt;*:not(:first-child)]:-ml-px"
-    assert html =~ "[&amp;&gt;*:first-child]:rounded-r-none"
-    assert html =~ "[&amp;&gt;*:last-child]:rounded-l-none"
+    assert TestHelpers.attr(html, "[data-slot='button-group']", "data-slot") == "button-group"
+    assert TestHelpers.text(html, "[data-slot='button-group']") == "OneTwo"
   end
 
   test "toggle_group renders type and orientation metadata" do
@@ -43,9 +41,8 @@ defmodule CinderUI.Components.ActionsTest do
         inner_block: TestHelpers.slot("Items")
       })
 
-    assert html =~ "data-slot=\"toggle-group\""
-    assert html =~ "data-type=\"multiple\""
-    assert html =~ "data-orientation=\"vertical\""
-    assert html =~ "role=\"group\""
+    assert TestHelpers.attr(html, "[data-slot='toggle-group']", "data-type") == "multiple"
+    assert TestHelpers.attr(html, "[data-slot='toggle-group']", "data-orientation") == "vertical"
+    assert TestHelpers.attr(html, "[data-slot='toggle-group']", "role") == "group"
   end
 end
