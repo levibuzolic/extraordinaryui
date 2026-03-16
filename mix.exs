@@ -58,7 +58,7 @@ defmodule CinderUI.MixProject do
       {:earmark, "~> 1.4", runtime: false},
       {:lucide_icons, "~> 2.0", optional: true},
       {:jason, "~> 1.4", optional: true},
-      {:ex_doc, "~> 0.34", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.34", only: [:dev, :docs], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18", only: :test},
       {:floki, ">= 0.35.0", only: :test}

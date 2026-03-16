@@ -36,35 +36,56 @@ jobs:
         with:
           cache-key-prefix: hex-publish
 
-      - name: Setup demo Mix
-        uses: ./.github/actions/setup-demo-mix
-        with:
-          cache-key-prefix: hex-publish
-
-      - name: Setup demo browser
-        uses: ./.github/actions/setup-demo-browser
-        with:
-          playwright-cache-key-prefix: hex-publish
-
-      - name: Generate docs screenshots
-        working-directory: demo
-        run: npx playwright test tests/browser/visual.spec.ts --update-snapshots
-
       - name: Verify Hex API key
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
         run: |
           if [ -z "${HEX_API_KEY:-}" ]; then
-            echo "::error::Missing HEX_API_KEY secret. Configure repository or environment secret before publishing."
+            echo "::error::Missing HEX_API_KEY secret. Configure the hex-publish environment or repository secret before publishing."
             exit 1
           fi
+
+      - name: Ensure release tag matches package version
+        run: |
+          REF_NAME="${{ github.event.release.tag_name }}"
+          if [ -z "$REF_NAME" ]; then
+            REF_NAME="${GITHUB_REF_NAME}"
+          fi
+
+          TAG_VERSION="${REF_NAME#v}"
+          MIX_VERSION="$(sed -nE 's/^  @version \"([^\"]+)\"/\1/p' mix.exs)"
+
+          if [ -z "$MIX_VERSION" ]; then
+            echo "Could not read @version from mix.exs"
+            exit 1
+          fi
+
+          test "$TAG_VERSION" = "$MIX_VERSION" || {
+            echo "Release tag ($REF_NAME) does not match mix.exs version ($MIX_VERSION)"
+            exit 1
+          }
+
+      - name: Verify formatting
+        run: MIX_ENV=test mix format --check-formatted
+
+      - name: Compile with warnings as errors
+        run: MIX_ENV=test mix compile --warnings-as-errors
+
+      - name: Run test suite
+        run: MIX_ENV=test mix test
+
+      - name: Install production dependencies
+        run: MIX_ENV=prod mix deps.get
 
       - name: Publish package
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
-        run: mix hex.publish --yes
+        run: MIX_ENV=prod mix hex.publish package --yes
+
+      - name: Install docs dependencies
+        run: MIX_ENV=docs mix deps.get
 
       - name: Publish docs
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
-        run: mix hex.publish docs --yes
+        run: MIX_ENV=docs mix hex.publish docs --yes

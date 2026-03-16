@@ -184,31 +184,16 @@ Use concise, scoped commit messages. Existing style examples:
 
 ## Release Process
 
-1. Update version and changelog (`mix.exs`, `CHANGELOG.md`).
-2. Run all quality gates above.
-3. Confirm release secrets/environments are configured (one-time setup below).
-4. Site deploys automatically on every `main` push via `.github/workflows/publish-site.yml`.
-5. Publish GitHub release (triggers `.github/workflows/publish-hex.yml` and also runs `.github/workflows/publish-site.yml`).
-5. If needed, run `.github/workflows/publish-hex.yml` manually with `workflow_dispatch`.
+Follow [RELEASING.md](/Users/levi/src/levibuzolic/cinder_ui/RELEASING.md).
 
-### One-Time Hex Publish Automation Setup
+In short:
 
-1. Generate a Hex API key scoped for publishing:
+1. Update `mix.exs` and `CHANGELOG.md`.
+2. Run the quality gates above.
+3. Publish a GitHub Release with a `vX.Y.Z` tag that matches `mix.exs`.
+4. GitHub Actions publishes the Hex package and HexDocs through `.github/workflows/publish-hex.yml`.
 
-```bash
-mix hex.user key generate --key-name github-actions-publish --permission api:write
-```
-
-2. In GitHub repository settings, create secret `HEX_API_KEY`.
-3. (Recommended) Create environment `hex-publish` and attach `HEX_API_KEY` there.
-4. (Recommended) Add required reviewers to `hex-publish` environment for release gating.
-
-Manual fallback commands (if automation is unavailable):
-
-```bash
-mix hex.publish
-mix hex.publish docs
-```
+Site deploys separately through `.github/workflows/publish-site.yml`.
 
 ## Need Help?
 
