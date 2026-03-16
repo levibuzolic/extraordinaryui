@@ -67,9 +67,14 @@ defmodule CinderUI.Components.Forms do
   doc("""
   Field wrapper for label, control, description, and errors.
 
-  `field/1` remains the simplest composition helper. For more explicit form
-  structure, compose it with `field_label/1`, `field_control/1`,
-  `field_description/1`, `field_message/1`, and `field_error/1`.
+  `field/1` remains the simplest composition helper. It automatically wraps the
+  control passed to its inner block with `field_control/1`, so most usages
+  should pass the form control directly and use the `:label`, `:description`,
+  `:message`, and `:error` slots for supporting content.
+
+  Reach for `field_label/1`, `field_control/1`, `field_description/1`,
+  `field_message/1`, and `field_error/1` when you need the standalone helper or
+  want to compose the pieces outside `field/1`.
 
   ## Examples
 
@@ -90,18 +95,14 @@ defmodule CinderUI.Components.Forms do
   </.field>
   ```
 
-  ```heex title="Explicit field composition" align="full"
+  ```heex title="Field with slots" align="full"
   <.field invalid={true}>
     <:label>
       <.label for="workspace-slug">Workspace slug</.label>
     </:label>
-
-    <.field_control>
-      <.input id="workspace-slug" name="workspace[slug]" value="cinder-ui" />
-    </.field_control>
-
-    <.field_description>Used in your public workspace URL.</.field_description>
-    <.field_error>Slug has already been taken.</.field_error>
+    <.input id="workspace-slug" name="workspace[slug]" value="cinder-ui" />
+    <:description>Used in your public workspace URL.</:description>
+    <:error>Slug has already been taken.</:error>
   </.field>
   ```
 
@@ -112,21 +113,19 @@ defmodule CinderUI.Components.Forms do
         <.label for="owner">Owner</.label>
       </:label>
 
-      <.field_control>
-        <.autocomplete
-          id="owner"
-          name="owner"
-          value="levi"
-          aria-label="Owner"
-        >
-          <:option value="levi" label="Levi Buzolic" description="Engineering" />
-          <:option value="mira" label="Mira Chen" description="Design" />
-          <:empty>No matching teammates.</:empty>
-        </.autocomplete>
-      </.field_control>
+      <.autocomplete
+        id="owner"
+        name="owner"
+        value="levi"
+        aria-label="Owner"
+      >
+        <:option value="levi" label="Levi Buzolic" description="Engineering" />
+        <:option value="mira" label="Mira Chen" description="Design" />
+        <:empty>No matching teammates.</:empty>
+      </.autocomplete>
 
-      <.field_description>Choose the teammate responsible for this workspace.</.field_description>
-      <.field_error>Please choose a teammate.</.field_error>
+      <:description>Choose the teammate responsible for this workspace.</:description>
+      <:error>Please choose a teammate.</:error>
     </.field>
   </.form>
   ```
@@ -146,7 +145,7 @@ defmodule CinderUI.Components.Forms do
     assigns =
       assigns
       |> assign(:invalid, invalid)
-      |> assign(:classes, ["group grid gap-2", assigns.class])
+      |> assign(:classes, ["group grid gap-3", assigns.class])
 
     ~H"""
     <div data-slot="field" data-invalid={@invalid} class={classes(@classes)}>
@@ -161,7 +160,8 @@ defmodule CinderUI.Components.Forms do
 
   doc("""
   Wraps field labels so shared spacing and invalid-state styling remain
-  consistent across controls.
+  consistent across controls. Inside `field/1`, provide it via the `:label`
+  slot when you need richer label content than a single `label/1`.
 
   ## Example
 
@@ -170,6 +170,18 @@ defmodule CinderUI.Components.Forms do
     <.label for="workspace_name">Workspace name</.label>
     <span class="text-muted-foreground text-xs">Used across the dashboard.</span>
   </.field_label>
+  ```
+
+  ```heex title="Field label in context" align="full"
+  <.field>
+    <:label>
+      <.field_label>
+        <.label for="workspace_name">Workspace name</.label>
+        <span class="text-muted-foreground text-xs">Shown in team switchers.</span>
+      </.field_label>
+    </:label>
+    <.input id="workspace_name" name="workspace[name]" value="Cinder UI" />
+  </.field>
   ```
   """)
 
@@ -187,13 +199,24 @@ defmodule CinderUI.Components.Forms do
   doc("""
   Wraps the main interactive control inside a field.
 
+  `field/1` already applies this wrapper around its inner block, so you
+  generally do not need to call `field_control/1` inside a normal `field/1`
+  example. Use it directly when composing a field manually or when you need to
+  attach the invalid-state control styles outside `field/1`.
+
   ## Example
 
   ```heex title="Field control wrapper" align="full"
-  <.field invalid={true}>
-    <.field_control>
-      <.input id="workspace_slug" value="cinder-ui" />
-    </.field_control>
+  <.field_control>
+    <.input id="workspace_slug" value="cinder-ui" />
+  </.field_control>
+  ```
+
+  ```heex title="Field control with helper text" align="full"
+  <.field>
+    <:label><.label for="billing_email">Billing email</.label></:label>
+    <.input id="billing_email" name="billing[email]" type="email" placeholder="billing@team.com" />
+    <:description>Invoices and payment reminders go here.</:description>
   </.field>
   ```
   """)
@@ -216,10 +239,22 @@ defmodule CinderUI.Components.Forms do
   doc("""
   Helper text shown beneath a field control.
 
+  In most `field/1` usage, prefer the `:description` slot. Use
+  `field_description/1` directly for isolated helper rendering or custom field
+  composition.
+
   ## Example
 
   ```heex title="Field description" align="full"
   <.field_description>Used in your public workspace URL.</.field_description>
+  ```
+
+  ```heex title="Field description in context" align="full"
+  <.field>
+    <:label><.label for="workspace_slug">Workspace slug</.label></:label>
+    <.input id="workspace_slug" name="workspace[slug]" value="cinder-ui" />
+    <:description>Used in your public workspace URL.</:description>
+  </.field>
   ```
   """)
 
@@ -228,7 +263,7 @@ defmodule CinderUI.Components.Forms do
 
   def field_description(assigns) do
     assigns =
-      assign(assigns, :classes, ["text-muted-foreground text-sm", assigns.class])
+      assign(assigns, :classes, ["text-muted-foreground text-sm leading-normal", assigns.class])
 
     ~H"""
     <p data-slot="field-description" class={classes(@classes)}>{render_slot(@inner_block)}</p>
@@ -238,10 +273,21 @@ defmodule CinderUI.Components.Forms do
   doc("""
   Neutral status or informational message shown beneath a field control.
 
+  In most `field/1` usage, prefer the `:message` slot. Use `field_message/1`
+  directly for isolated helper rendering or custom field composition.
+
   ## Example
 
   ```heex title="Field message" align="full"
   <.field_message>Visible immediately after save.</.field_message>
+  ```
+
+  ```heex title="Field message in context" align="full"
+  <.field>
+    <:label><.label for="project_name">Project name</.label></:label>
+    <.input id="project_name" name="project[name]" value="Marketing site refresh" />
+    <:message>Saved automatically a few seconds ago.</:message>
+  </.field>
   ```
   """)
 
@@ -250,7 +296,7 @@ defmodule CinderUI.Components.Forms do
 
   def field_message(assigns) do
     assigns =
-      assign(assigns, :classes, ["text-foreground text-sm", assigns.class])
+      assign(assigns, :classes, ["text-foreground text-sm leading-normal", assigns.class])
 
     ~H"""
     <p data-slot="field-message" class={classes(@classes)}>{render_slot(@inner_block)}</p>
@@ -260,10 +306,21 @@ defmodule CinderUI.Components.Forms do
   doc("""
   Error or validation message shown beneath a field control.
 
+  In most `field/1` usage, prefer the `:error` slot. Use `field_error/1`
+  directly for isolated helper rendering or custom field composition.
+
   ## Example
 
   ```heex title="Field error" align="full"
   <.field_error>Please use your company domain.</.field_error>
+  ```
+
+  ```heex title="Field error in context" align="full"
+  <.field invalid={true}>
+    <:label><.label for="work_email">Work email</.label></:label>
+    <.input id="work_email" name="work_email" type="email" value="hello@gmail.com" />
+    <:error>Please use your company domain.</:error>
+  </.field>
   ```
   """)
 

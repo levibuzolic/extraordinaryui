@@ -402,7 +402,6 @@ defmodule CinderUI.Site.Marketing do
         <Docs.docs_code_block
           source={@snippet}
           language={:heex}
-          pre_class="m-0 min-w-0 max-w-full max-h-56 overflow-x-auto overflow-y-auto p-4 pr-12 text-xs leading-4"
         />
       </div>
     </Layout.panel>
@@ -449,7 +448,7 @@ defmodule CinderUI.Site.Marketing do
           <Docs.docs_code_block
             source={@deps_code}
             language={:elixir}
-            pre_class="install-code-block relative rounded-xl border bg-muted/30 px-4 py-3 text-sm"
+            standalone={true}
           />
         </div>
         <div class="space-y-2">
@@ -457,7 +456,7 @@ defmodule CinderUI.Site.Marketing do
           <Docs.docs_code_block
             source={@terminal_code}
             language={:bash}
-            pre_class="install-code-block relative rounded-xl border bg-muted/30 px-4 py-3 text-sm"
+            standalone={true}
           />
         </div>
       </div>

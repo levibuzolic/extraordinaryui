@@ -302,7 +302,7 @@ defmodule CinderUI.Docs.UIComponents do
   attr :id, :string, default: nil
   attr :source, :string, required: true
   attr :language, :atom, default: :auto
-  attr :pre_class, :any, default: nil
+  attr :standalone, :boolean, default: false
   attr :code_class, :any, default: nil
 
   def docs_code_block(assigns) do
@@ -310,16 +310,17 @@ defmodule CinderUI.Docs.UIComponents do
       assigns
       |> assign(:highlighted_html, highlighted_code_html(assigns.source, assigns.language))
       |> assign(
-        :pre_classes,
-        List.wrap(assigns.pre_class)
-      )
-      |> assign(
         :code_classes,
         ["code-highlight block min-w-max whitespace-pre" | List.wrap(assigns.code_class)]
       )
 
     ~H"""
-    <pre class={@pre_classes}>
+    <pre
+      class={[
+        "overflow-x-auto rounded-lg bg-muted/30 p-4 text-xs whitespace-normal",
+        @standalone && "install-code-block relative rounded-xl my-4 border text-sm"
+      ]}
+    >
       <code id={@id} class={@code_classes}><%= rendered(@highlighted_html) %></code>
     </pre>
     """
@@ -403,7 +404,7 @@ defmodule CinderUI.Docs.UIComponents do
         <h2 class="text-2xl font-semibold tracking-tight">
           <code>{@entry.module_name}.{@entry.title}</code>
         </h2>
-        <.docs_runtime_badge runtime={@entry.runtime} show_summary />
+        <.docs_runtime_badge runtime={@entry.runtime} />
       </div>
       <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
     </section>
@@ -679,7 +680,7 @@ defmodule CinderUI.Docs.UIComponents do
 
   defp docs_example_card(assigns) do
     ~H"""
-    <div class={["rounded-xl border", @class]}>
+    <div class={["rounded-xl border divide-y", @class]}>
       <div
         data-slot="preview"
         data-preview-align={@preview_align}
@@ -724,7 +725,7 @@ defmodule CinderUI.Docs.UIComponents do
         source={@template_heex}
         language={:heex}
         pre_class={[
-          "m-0 min-w-0 max-w-full overflow-x-auto overflow-y-auto p-4 text-xs leading-4",
+          "m-0 min-w-0 max-w-full overflow-x-auto leading-4",
           if(@compact, do: "max-h-56 pr-12", else: "max-h-96 bg-muted/30")
         ]}
       />
@@ -741,7 +742,6 @@ defmodule CinderUI.Docs.UIComponents do
   end
 
   attr :runtime, :map, required: true
-  attr :show_summary, :boolean, default: false
 
   defp docs_runtime_badge(assigns) do
     assigns =
@@ -750,14 +750,11 @@ defmodule CinderUI.Docs.UIComponents do
       |> assign(:badge_class, runtime_badge_class(assigns.runtime.kind))
 
     ~H"""
-    <div
-      data-component-runtime
-      data-runtime-kind={@runtime.kind}
-      class={["flex gap-2", @show_summary && "items-start", !@show_summary && "items-center"]}
-    >
       <Overlay.tooltip
         text={@runtime.summary}
         content_class="w-max max-w-56 whitespace-normal text-left text-pretty"
+      data-component-runtime
+      data-runtime-kind={@runtime.kind}
       >
         <span class="inline-flex shrink-0" tabindex="0">
           <Feedback.badge variant={:outline} class={@badge_class}>
@@ -766,10 +763,6 @@ defmodule CinderUI.Docs.UIComponents do
           </Feedback.badge>
         </span>
       </Overlay.tooltip>
-      <p :if={@show_summary} class="text-muted-foreground text-xs">
-        {@runtime.summary}
-      </p>
-    </div>
     """
   end
 

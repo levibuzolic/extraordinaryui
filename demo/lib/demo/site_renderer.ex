@@ -179,7 +179,7 @@ defmodule Demo.SiteRenderer do
         source="mix phx.new my_app
     cd my_app"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
 
       <h2 id="tailwind-css">1. Set up Tailwind CSS</h2>
@@ -193,13 +193,13 @@ defmodule Demo.SiteRenderer do
       <UIComponents.docs_code_block
         source={"defp deps do\n  [\n    {:tailwind, \"~> 0.3\", runtime: Mix.env() == :dev},\n    # ...\n  ]\nend"}
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Configure Tailwind in <code>config/config.exs</code>:</p>
       <UIComponents.docs_code_block
         source={"config :tailwind,\n  version: \"4.1.12\",\n  my_app: [\n    args: ~w(\n      --input=assets/css/app.css\n      --output=priv/static/assets/app.css\n    ),\n    cd: Path.expand(\"..\", __DIR__)\n  ]"}
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Add the Tailwind watcher in <code>config/dev.exs</code>:</p>
       <UIComponents.docs_code_block
@@ -208,26 +208,26 @@ defmodule Demo.SiteRenderer do
     tailwind: {Tailwind, :install_and_run, [:my_app, ~w(--watch)]}
     ]"
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Add Tailwind to the deployment alias in <code>mix.exs</code>:</p>
       <UIComponents.docs_code_block
         source={"defp aliases do\n  [\n    \"assets.deploy\": [\n      \"tailwind my_app --minify\",\n      \"esbuild my_app --minify\",\n      \"phx.digest\"\n    ]\n  ]\nend"}
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Install Tailwind and fetch dependencies:</p>
       <UIComponents.docs_code_block
         source="mix deps.get
     mix tailwind.install"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Set up <code>assets/css/app.css</code>:</p>
       <UIComponents.docs_code_block
         source={"@import \"tailwindcss\";"}
         language={:css}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>
         If your <code>assets/js/app.js</code> imports CSS
@@ -240,13 +240,13 @@ defmodule Demo.SiteRenderer do
       <UIComponents.docs_code_block
         source={"defp deps do\n  [\n    {:cinder_ui, \"~> 0.1.0\"},\n    # Optional but recommended — required for the <.icon /> component\n    {:lucide_icons, \"~> 2.0\"},\n    # ...\n  ]\nend"}
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Fetch dependencies:</p>
       <UIComponents.docs_code_block
         source="mix deps.get"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
 
       <h2 id="run-installer">3. Run the installer</h2>
@@ -257,7 +257,7 @@ defmodule Demo.SiteRenderer do
       <UIComponents.docs_code_block
         source="mix cinder_ui.install"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>This will:</p>
       <ul>
@@ -289,19 +289,19 @@ defmodule Demo.SiteRenderer do
       <UIComponents.docs_code_block
         source="mix cinder_ui.install --package-manager pnpm"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>To re-run without overwriting customized files:</p>
       <UIComponents.docs_code_block
         source="mix cinder_ui.install --skip-existing"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>To only copy generated Cinder UI assets and skip patching app entry files:</p>
       <UIComponents.docs_code_block
         source="mix cinder_ui.install --skip-patching"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
 
       <h2 id="configure-app">4. Configure your app</h2>
@@ -319,14 +319,14 @@ defmodule Demo.SiteRenderer do
     end
     end"
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Or selectively import only the modules you need:</p>
       <UIComponents.docs_code_block
         source="import CinderUI.Components.Actions
     import CinderUI.Components.Forms"
         language={:elixir}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
 
       <h2 id="verify">5. Start building</h2>
@@ -334,13 +334,13 @@ defmodule Demo.SiteRenderer do
       <UIComponents.docs_code_block
         source="mix phx.server"
         language={:bash}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
       <p>Try a component in any template:</p>
       <UIComponents.docs_code_block
         source="<.button>Click me</.button>"
         language={:heex}
-        pre_class="my-4 overflow-x-auto rounded-lg border bg-muted/30 p-4 text-sm"
+
       />
     </div>
     """
