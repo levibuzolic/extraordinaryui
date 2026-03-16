@@ -44,7 +44,7 @@ defmodule CinderUI.Components.Layout do
       <.card_action>
         <.button size={:sm} variant={:outline}>Skip</.button>
       </.card_action>
-      <.card_description>Invite teammates before your first deploy.</.card_description>
+      <.card_description>Invite teammates before launch.</.card_description>
     </.card_header>
     <.card_content class="space-y-3">
       <.field>
