@@ -325,6 +325,7 @@ defmodule CinderUI.Docs.UIComponents do
   attr :source, :string, required: true
   attr :language, :atom, default: :auto
   attr :standalone, :boolean, default: false
+  attr :pre_class, :any, default: nil
   attr :code_class, :any, default: nil
   attr :rest, :global
 
@@ -333,16 +334,21 @@ defmodule CinderUI.Docs.UIComponents do
       assigns
       |> assign(:highlighted_html, highlighted_code_html(assigns.source, assigns.language))
       |> assign(
+        :pre_classes,
+        [
+          "overflow-x-auto rounded-lg bg-muted/30 p-4 text-xs whitespace-normal",
+          assigns.standalone && "install-code-block relative rounded-xl my-4 border text-sm"
+          | List.wrap(assigns.pre_class)
+        ]
+      )
+      |> assign(
         :code_classes,
         ["code-highlight block min-w-max whitespace-pre" | List.wrap(assigns.code_class)]
       )
 
     ~H"""
     <pre
-      class={[
-        "overflow-x-auto rounded-lg bg-muted/30 p-4 text-xs whitespace-normal",
-        @standalone && "install-code-block relative rounded-xl my-4 border text-sm"
-      ]}
+      class={@pre_classes}
       {@rest}
     >
       <code id={@id} class={@code_classes}><%= rendered(@highlighted_html) %></code>
@@ -434,7 +440,7 @@ defmodule CinderUI.Docs.UIComponents do
           <h2 class="text-2xl font-semibold tracking-tight">
             <code>{@entry.module_name}.{@entry.title}</code>
           </h2>
-          <.docs_runtime_badge runtime={@entry.runtime} />
+          <.docs_runtime_badge runtime={@entry.runtime} show_summary />
         </div>
         <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
       </section>
@@ -773,6 +779,7 @@ defmodule CinderUI.Docs.UIComponents do
   end
 
   attr :runtime, :map, required: true
+  attr :show_summary, :boolean, default: false
 
   defp docs_runtime_badge(assigns) do
     assigns =
@@ -787,12 +794,17 @@ defmodule CinderUI.Docs.UIComponents do
       data-component-runtime
       data-runtime-kind={@runtime.kind}
     >
-      <span class="inline-flex shrink-0" tabindex="0">
-        <Feedback.badge variant={:outline} class={@badge_class}>
-          <span aria-hidden="true" class={@dot_class} />
-          {@runtime.label}
-        </Feedback.badge>
-      </span>
+      <div class="inline-flex min-w-0 flex-col gap-1">
+        <span class="inline-flex shrink-0" tabindex="0">
+          <Feedback.badge variant={:outline} class={@badge_class}>
+            <span aria-hidden="true" class={@dot_class} />
+            {@runtime.label}
+          </Feedback.badge>
+        </span>
+        <p :if={@show_summary} class="text-muted-foreground text-xs">
+          {@runtime.summary}
+        </p>
+      </div>
     </Overlay.tooltip>
     """
   end
