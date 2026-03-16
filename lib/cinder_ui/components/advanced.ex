@@ -706,23 +706,26 @@ defmodule CinderUI.Components.Advanced do
   ## Example
 
   ```heex title="Sidebar panel" align="full"
-  <.sidebar_layout id="sidebar-panel-example" full_screen={false}>
-    <:sidebar>
-      <.sidebar class="rounded-l-xl border-r">
-        <:header>
-          <.sidebar_header>
-            <span data-sidebar-label class="text-sm font-semibold">Workspace</span>
-          </.sidebar_header>
-        </:header>
+  <div class="h-64 overflow-hidden rounded-xl border">
+    <.sidebar class="h-full">
+      <:header>
+        <.sidebar_header>
+          <span data-sidebar-label class="text-sm font-semibold">Workspace</span>
+        </.sidebar_header>
+      </:header>
 
-        <.sidebar_group label="Navigation">
-          <.sidebar_item icon="home" current={true}>Home</.sidebar_item>
-          <.sidebar_item icon="folder">Projects</.sidebar_item>
-        </.sidebar_group>
-      </.sidebar>
-    </:sidebar>
-    <:main><.sidebar_main><div class="rounded border bg-card p-4 text-sm">Inset</div></.sidebar_main></:main>
-  </.sidebar_layout>
+      <.sidebar_group label="Navigation">
+        <.sidebar_item icon="home" current={true}>Home</.sidebar_item>
+        <.sidebar_item icon="folder">Projects</.sidebar_item>
+      </.sidebar_group>
+
+      <:footer>
+        <.sidebar_footer>
+          <span class="text-sidebar-foreground/70 text-xs">Low-level panel helper</span>
+        </.sidebar_footer>
+      </:footer>
+    </.sidebar>
+  </div>
   ```
   """)
 
@@ -774,21 +777,14 @@ defmodule CinderUI.Components.Advanced do
   ## Example
 
   ```heex title="Sidebar main" align="full"
-  <.sidebar_layout id="sidebar-main-example" full_screen={false}>
-    <:sidebar>
-      <.sidebar_group label="Navigation">
-        <.sidebar_item icon="home" current={true}>Home</.sidebar_item>
-      </.sidebar_group>
-    </:sidebar>
-    <:main>
-      <.sidebar_main class="space-y-4">
-        <div class="rounded border bg-card p-4 text-sm">Content area</div>
-        <div class="rounded border border-dashed p-4 text-sm text-muted-foreground">
-          Use the lower-level helper when you want manual control over the main region wrapper.
-        </div>
-      </.sidebar_main>
-    </:main>
-  </.sidebar_layout>
+  <div class="overflow-hidden rounded-xl border">
+    <.sidebar_main class="space-y-4">
+      <div class="rounded border bg-card p-4 text-sm">Content area</div>
+      <div class="rounded border border-dashed p-4 text-sm text-muted-foreground">
+        Use the lower-level helper when you want manual control over the main region wrapper.
+      </div>
+    </.sidebar_main>
+  </div>
   ```
   """)
 

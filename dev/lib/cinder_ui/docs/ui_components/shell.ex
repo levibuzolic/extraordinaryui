@@ -94,66 +94,91 @@ defmodule CinderUI.Docs.UIComponents.Shell do
 
   def docs_layout(assigns) do
     ~H"""
-    <Advanced.sidebar_layout
-      data-docs-sidebar
-      collapsible={:none}
-      class="mx-auto max-w-[1900px]"
-      style="visibility: hidden;"
+    <div class="w-full" {@rest}>
+      <.docs_topbar
+        home_url={@home_url}
+        github_url={@github_url}
+        hex_package_url={@hex_package_url}
+      />
+
+      <Advanced.sidebar_layout
+        data-docs-sidebar
+        collapsible={:none}
+        class="mx-auto max-w-[1900px]"
+        style="visibility: hidden;"
+      >
+        <:sidebar class="border-border/70 sticky top-0 h-screen self-start" content_class="px-3 pb-4">
+          <nav class="space-y-4" aria-label="Component sections">
+            <.docs_sidebar
+              sections={@sections}
+              mode={@mode}
+              root_prefix={@root_prefix}
+              active_entry_id={@active_entry_id}
+              active_page={@active_page}
+            />
+          </nav>
+        </:sidebar>
+
+        <:main class="min-w-0 p-0">
+          <div class="space-y-0">
+            <script>
+              (() => {
+                const root = document.currentScript?.closest("[data-docs-sidebar]");
+                const content = root?.querySelector("[data-slot='sidebar-content']");
+                if (!root || !content) return;
+
+                try {
+                  const key = "cui:docs:sidebar-scroll-top";
+                  const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
+                  if (Number.isFinite(saved) && saved >= 0) content.scrollTop = saved;
+                } catch (_error) {}
+
+                root.style.removeProperty("visibility");
+              })();
+            </script>
+
+            <div class="space-y-6 px-5 py-6 lg:px-8">
+              {render_slot(@inner_block)}
+            </div>
+          </div>
+        </:main>
+      </Advanced.sidebar_layout>
+    </div>
+    """
+  end
+
+  attr :home_url, :string, default: nil
+  attr :github_url, :string, default: nil
+  attr :hex_package_url, :string, default: nil
+  attr :rest, :global
+
+  def docs_topbar(assigns) do
+    ~H"""
+    <header
+      class="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-30 w-full border-b border-border/80 backdrop-blur"
       {@rest}
     >
-      <:header>
-        <Advanced.sidebar_header class="items-start px-4 py-5">
-          <div class="min-w-0 flex-1">
-            <h1 class="text-[1.75rem] leading-none font-semibold tracking-tight">
-              <%= if is_binary(@home_url) and @home_url != "" do %>
-                <a href={@home_url}>Cinder UI</a>
-              <% else %>
-                Cinder UI
-              <% end %>
-            </h1>
-            <p class="text-muted-foreground mt-2 text-xs uppercase tracking-[0.18em]">Component docs</p>
-          </div>
-          <.docs_header_links github_url={@github_url} hex_package_url={@hex_package_url} />
-        </Advanced.sidebar_header>
-      </:header>
-
-      <:sidebar class="border-border/70" content_class="px-3 pb-4">
-        <.docs_theme_controls />
-        <.docs_search_button class="mb-4" />
-
-        <nav class="space-y-4" aria-label="Component sections">
-          <.docs_sidebar
-            sections={@sections}
-            mode={@mode}
-            root_prefix={@root_prefix}
-            active_entry_id={@active_entry_id}
-            active_page={@active_page}
-          />
-        </nav>
-      </:sidebar>
-
-      <:main class="min-w-0 px-5 py-6 lg:px-8">
-        <div class="space-y-6">
-          <script>
-            (() => {
-              const root = document.currentScript?.closest("[data-docs-sidebar]");
-              const content = root?.querySelector("[data-slot='sidebar-content']");
-              if (!root || !content) return;
-
-              try {
-                const key = "cui:docs:sidebar-scroll-top";
-                const saved = Number.parseInt(sessionStorage.getItem(key) || "", 10);
-                if (Number.isFinite(saved) && saved >= 0) content.scrollTop = saved;
-              } catch (_error) {}
-
-              root.style.removeProperty("visibility");
-            })();
-          </script>
-
-          {render_slot(@inner_block)}
+      <div class="mx-auto flex max-w-[1900px] flex-col gap-3 px-5 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="bg-muted text-muted-foreground inline-flex h-6 items-center rounded-full px-2 text-[10px] font-semibold uppercase tracking-[0.18em]">
+            Docs
+          </span>
+          <h1 class="truncate text-base font-semibold tracking-tight">
+            <%= if is_binary(@home_url) and @home_url != "" do %>
+              <a href={@home_url} class="hover:text-foreground/80 transition-colors">Cinder UI</a>
+            <% else %>
+              Cinder UI
+            <% end %>
+          </h1>
         </div>
-      </:main>
-    </Advanced.sidebar_layout>
+
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-end lg:gap-5">
+          <.docs_search_button class="w-full lg:w-auto lg:min-w-[16rem]" />
+          <.docs_theme_controls class="w-full lg:w-auto" />
+          <.docs_header_links github_url={@github_url} hex_package_url={@hex_package_url} />
+        </div>
+      </div>
+    </header>
     """
   end
 
@@ -168,7 +193,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
         (is_binary(@github_url) and @github_url != "") or
           (is_binary(@hex_package_url) and @hex_package_url != "")
       }
-      class="flex shrink-0 flex-col gap-2 text-xs"
+      class="flex shrink-0 flex-wrap items-center gap-2 text-xs"
       {@rest}
     >
       <.docs_external_link_button
@@ -176,7 +201,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
         href={@github_url}
         variant={:outline}
         size={:xs}
-        class="h-8 justify-center px-3"
+        class="h-8 justify-center rounded-full px-3"
       >
         GitHub
       </.docs_external_link_button>
@@ -185,7 +210,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
         href={@hex_package_url}
         variant={:outline}
         size={:xs}
-        class="h-8 justify-center px-3"
+        class="h-8 justify-center rounded-full px-3"
       >
         Hex
       </.docs_external_link_button>
@@ -203,7 +228,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
   def docs_sidebar(assigns) do
     ~H"""
     <div {@rest}>
-      <Advanced.sidebar_group label="Docs" >
+      <Advanced.sidebar_group label="Cinder UI">
         <Advanced.sidebar_item
           href={install_href(@mode, @root_prefix)}
           current={@active_page == :install}
@@ -218,23 +243,30 @@ defmodule CinderUI.Docs.UIComponents.Shell do
         </Advanced.sidebar_item>
       </Advanced.sidebar_group>
 
-      <%= for section <- @sections do %>
-        <Advanced.sidebar_group
-          label={section.title}
-          class="mt-6"
+      <Advanced.sidebar_group label="Components" class="mt-6">
+        <Advanced.sidebar_item
+          :for={section <- @sections}
+          collapsible={true}
+          default_open={true}
         >
-          <Advanced.sidebar_item
-            :for={entry <- section.entries}
-            href={entry_href(@mode, @root_prefix, entry)}
-            current={entry.id == @active_entry_id}
-          >
-            {entry.title}
-          </Advanced.sidebar_item>
-        </Advanced.sidebar_group>
-      <% end %>
+          {section.title}
+          <:children>
+            <Advanced.sidebar_item
+              :for={entry <- section.entries}
+              href={entry_href(@mode, @root_prefix, entry)}
+              current={entry.id == @active_entry_id}
+            >
+              {entry.title}
+            </Advanced.sidebar_item>
+          </:children>
+        </Advanced.sidebar_item>
+      </Advanced.sidebar_group>
     </div>
     """
   end
+
+  attr :class, :string, default: nil
+  attr :rest, :global
 
   def docs_theme_controls(assigns) do
     assigns =
@@ -243,15 +275,15 @@ defmodule CinderUI.Docs.UIComponents.Shell do
       |> assign(:radius_options, radius_options())
 
     ~H"""
-    <section>
-      <div class="mt-3 flex justify-center">
-        <.theme_mode_toggle />
+    <section
+      class={classes(["flex flex-wrap items-center gap-2", @class])}
+      {@rest}
+    >
+      <div class="flex items-center gap-2">
+        <.theme_mode_toggle class="shadow-none" />
       </div>
 
-      <div class="mt-3">
-        <Forms.label for="theme-color" class="mb-2 block text-xs font-medium text-muted-foreground">
-          Color
-        </Forms.label>
+      <div class="min-w-[9rem] flex-1 lg:flex-none">
         <Forms.select
           name="theme-color"
           value="neutral"
@@ -262,10 +294,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
         </Forms.select>
       </div>
 
-      <div class="mt-3">
-        <Forms.label for="theme-radius" class="mb-2 block text-xs font-medium text-muted-foreground">
-          Radius
-        </Forms.label>
+      <div class="min-w-[11rem] flex-1 lg:flex-none">
         <Forms.select
           name="theme-radius"
           value="nova"
@@ -279,21 +308,24 @@ defmodule CinderUI.Docs.UIComponents.Shell do
     """
   end
 
+  attr :class, :string, default: nil
   attr :rest, :global
 
   def docs_search_button(assigns) do
     ~H"""
-    <div class="mb-5" {@rest}>
-      <Actions.button
-        type="button"
-        variant={:outline}
-        data-open-command-palette
-        class="h-10 w-full justify-between px-3 text-sm"
-      >
-        <span>Search components</span>
-        <span class="text-muted-foreground shrink-0 text-xs">⌘K</span>
-      </Actions.button>
-    </div>
+    <Actions.button
+      type="button"
+      variant={:outline}
+      data-open-command-palette
+      class={classes(["h-10 w-full justify-between rounded-xl px-3 text-sm sm:min-w-[16rem]", @class])}
+      {@rest}
+    >
+      <span class="flex items-center gap-2">
+        <Icons.icon name="search" class="text-muted-foreground size-4" />
+        <span>Search</span>
+      </span>
+      <span class="text-muted-foreground shrink-0 text-xs">⌘K</span>
+    </Actions.button>
     """
   end
 
