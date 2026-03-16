@@ -7,9 +7,4 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - First public beta release for Hex publishing and release-process validation.
-
-## [0.1.0] - 2026-02-22
-
-### Added
-
 - Initial release.
