@@ -168,6 +168,8 @@ Start your Phoenix server:
 
 ```bash
 mix phx.server
+# or from the repo root:
+./bin/demo --port 4001
 ```
 
 Try a component in any template:

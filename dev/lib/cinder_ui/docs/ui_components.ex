@@ -770,7 +770,7 @@ defmodule CinderUI.Docs.UIComponents do
         pre_class={
           classes([
             "m-0 min-w-0 max-w-full overflow-x-auto leading-4",
-            if(@compact, do: "max-h-56 pr-12", else: "max-h-96 bg-muted/30")
+            if(@compact, do: "pr-12", else: "bg-muted/30")
           ])
         }
       />

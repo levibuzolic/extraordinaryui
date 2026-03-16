@@ -331,6 +331,10 @@ test.describe("interactive previews", () => {
   test("theme controls apply mode, color, and radius", async ({ page }) => {
     await page.locator(".theme-mode-btn[data-theme-mode='dark']").first().click()
     await expect(page.locator("html")).toHaveClass(/dark/)
+    const sidebar = await page
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).getPropertyValue("--sidebar").trim())
+    expect(sidebar).toBe("oklch(0.205 0 0)")
 
     await page.locator("#theme-color [data-select-trigger]").click()
     await page.locator("#theme-color [data-select-item][data-value='slate']").click()

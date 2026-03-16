@@ -243,6 +243,25 @@ const themePresets = {
   },
 }
 
+const withSidebarTokens = (tokens) => ({
+  ...tokens,
+  sidebar: tokens.card ?? tokens.background,
+  "sidebar-foreground": tokens.foreground,
+  "sidebar-primary": tokens.primary,
+  "sidebar-primary-foreground": tokens["primary-foreground"],
+  "sidebar-accent": tokens.secondary ?? tokens.accent,
+  "sidebar-accent-foreground":
+    tokens["secondary-foreground"] ?? tokens["accent-foreground"],
+  "sidebar-border": tokens.border,
+  "sidebar-ring": tokens.ring,
+})
+
+Object.values(themePresets).forEach((palette) => {
+  Object.entries(palette).forEach(([mode, tokens]) => {
+    palette[mode] = withSidebarTokens(tokens)
+  })
+})
+
 const radiusPresets = {
   maia: "0.375rem",
   mira: "0.5rem",

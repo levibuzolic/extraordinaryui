@@ -68,7 +68,6 @@ defmodule CinderUI.Docs.Catalog do
     {Overlay, :menubar} => :progressive,
     {Overlay, :popover} => :progressive,
     {Overlay, :sheet} => :progressive,
-    {Advanced, :calendar} => :scaffold,
     {Advanced, :carousel} => :progressive,
     {Advanced, :chart} => :scaffold,
     {Advanced, :combobox} => :progressive,
@@ -446,6 +445,10 @@ defmodule CinderUI.Docs.Catalog do
     [:levi, :mira, :ari]
     |> Enum.map(&avatar_sample_data_uri/1)
     |> Enum.reduce(snippet, &replace_first_example_image/2)
+  end
+
+  defp hydrate_template_heex_for_preview(snippet, Advanced, :sidebar) do
+    replace_first_example_image(avatar_sample_data_uri(:ari), snippet)
   end
 
   defp hydrate_template_heex_for_preview(snippet, _module, _function), do: snippet

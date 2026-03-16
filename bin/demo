@@ -3,12 +3,40 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEMO_DIR="${ROOT_DIR}/demo"
+PORT_ARG=""
+PASSTHROUGH_ARGS=()
 
 if ! command -v mise >/dev/null 2>&1; then
   echo "error: required command 'mise' is not installed or not on PATH" >&2
   exit 1
 fi
 
+while (($#)); do
+  case "$1" in
+    --port)
+      if (($# < 2)); then
+        echo "error: --port requires a value" >&2
+        exit 1
+      fi
+
+      PORT_ARG="$2"
+      shift 2
+      ;;
+    --port=*)
+      PORT_ARG="${1#--port=}"
+      shift
+      ;;
+    *)
+      PASSTHROUGH_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
 cd "$DEMO_DIR"
 # exec mise exec -- mix deps.clean demo --build
-exec mise exec -- mix phx.server "$@"
+if [[ -n "$PORT_ARG" ]]; then
+  exec env PORT="$PORT_ARG" mise exec -- mix phx.server "${PASSTHROUGH_ARGS[@]}"
+else
+  exec mise exec -- mix phx.server "${PASSTHROUGH_ARGS[@]}"
+fi
