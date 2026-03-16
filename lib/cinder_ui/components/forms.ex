@@ -1254,7 +1254,7 @@ defmodule CinderUI.Components.Forms do
   ```heex title="Search with action" align="full"
   <.input_group>
     <.input placeholder="Search" />
-    <.button variant={:ghost} size={:xs}>Go</.button>
+    <.button variant={:secondary} size={:xs}>Go</.button>
   </.input_group>
   ```
 
@@ -1297,23 +1297,26 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Select + input" align="full"
   <.input_group>
-    <.select id="team-role" value="admin" aria-label="Team role">
+    <.native_select name="team-role" value="admin" class="w-32" aria-label="Team role">
       <:option value="admin" label="Admin" />
       <:option value="editor" label="Editor" />
       <:option value="viewer" label="Viewer" />
-    </.select>
-    <.input placeholder="email@example.com" type="email" />
+    </.native_select>
+    <.input placeholder="email@example.com" type="email" class="flex-1" />
   </.input_group>
   ```
 
-  ```heex title="Textarea with action" align="full"
-  <.input_group class="items-end">
+  ```heex title="Textarea with footer action" align="full"
+  <.input_group align={:block_end}>
     <.textarea
       rows={3}
-      placeholder="Add internal notes for the release handoff."
+      placeholder="Write a comment..."
       class="min-h-[5.5rem]"
     />
-    <.button size={:sm} class="mb-2 mr-2">Send</.button>
+    <.input_group_addon align={:block_end}>
+      <span>0/280</span>
+      <.button size={:sm}>Post</.button>
+    </.input_group_addon>
   </.input_group>
   ```
 
@@ -1325,28 +1328,40 @@ defmodule CinderUI.Components.Forms do
   ```
   """)
 
+  attr :align, :atom, default: :inline, values: [:inline, :block_end]
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def input_group(assigns) do
     assigns =
-      assign(assigns, :classes, [
-        "dark:bg-input/30 relative flex min-h-9 w-full min-w-0 items-stretch rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow]",
+      assigns
+      |> assign(:align_attr, if(assigns.align == :block_end, do: "block-end", else: "inline"))
+      |> assign(:classes, [
+        "dark:bg-input/30 relative flex w-full min-w-0 overflow-hidden rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow]",
+        assigns.align == :inline && "h-9 items-center",
+        assigns.align == :block_end && "min-h-9 flex-col items-stretch",
         "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:ring-[3px]",
         "[&>*]:relative [&>*]:min-w-0 [&>*]:focus-visible:z-10",
-        "[&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:only-child]:rounded-md",
-        "[&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-input",
-        "[&>[data-slot=input-group-addon]]:text-muted-foreground [&>[data-slot=input-group-addon]]:inline-flex [&>[data-slot=input-group-addon]]:shrink-0 [&>[data-slot=input-group-addon]]:items-center [&>[data-slot=input-group-addon]]:gap-2 [&>[data-slot=input-group-addon]]:px-3 [&>[data-slot=input-group-addon]]:text-sm",
-        "[&>[data-slot=input]]:h-full [&>[data-slot=input]]:rounded-none [&>[data-slot=input]]:border-0 [&>[data-slot=input]]:bg-transparent [&>[data-slot=input]]:shadow-none [&>[data-slot=input]]:focus-visible:ring-0",
-        "[&>[data-slot=textarea]]:min-h-[5.5rem] [&>[data-slot=textarea]]:rounded-none [&>[data-slot=textarea]]:border-0 [&>[data-slot=textarea]]:bg-transparent [&>[data-slot=textarea]]:shadow-none [&>[data-slot=textarea]]:focus-visible:ring-0",
-        "[&>[data-slot=select]]:flex-1 [&>[data-slot=select]]:min-w-0 [&>[data-slot=select]_[data-slot=select-trigger]]:h-full [&>[data-slot=select]_[data-slot=select-trigger]]:rounded-none [&>[data-slot=select]_[data-slot=select-trigger]]:border-0 [&>[data-slot=select]_[data-slot=select-trigger]]:bg-transparent [&>[data-slot=select]_[data-slot=select-trigger]]:shadow-none [&>[data-slot=select]_[data-slot=select-trigger]]:focus-visible:ring-0",
+        assigns.align == :inline &&
+          "[&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:only-child]:rounded-md",
+        assigns.align == :inline && "[&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-input",
+        "[&>[data-slot=input-group-addon]]:text-muted-foreground [&>[data-slot=input-group-addon]]:inline-flex [&>[data-slot=input-group-addon]]:shrink-0 [&>[data-slot=input-group-addon]]:items-center [&>[data-slot=input-group-addon]]:justify-center [&>[data-slot=input-group-addon]]:gap-2 [&>[data-slot=input-group-addon]]:text-sm",
+        assigns.align == :inline &&
+          "[&>[data-slot=input-group-addon]]:h-full [&>[data-slot=input-group-addon]]:px-3 [&>[data-slot=input-group-addon]]:leading-none",
+        assigns.align == :block_end &&
+          "[&>[data-slot=input-group-addon][data-align=block-end]]:w-full [&>[data-slot=input-group-addon][data-align=block-end]]:items-center [&>[data-slot=input-group-addon][data-align=block-end]]:justify-between [&>[data-slot=input-group-addon][data-align=block-end]]:border-t [&>[data-slot=input-group-addon][data-align=block-end]]:border-input [&>[data-slot=input-group-addon][data-align=block-end]]:bg-muted/20 [&>[data-slot=input-group-addon][data-align=block-end]]:px-3 [&>[data-slot=input-group-addon][data-align=block-end]]:py-2",
+        "[&>[data-slot=input]]:h-full [&>[data-slot=input]]:flex-1 [&>[data-slot=input]]:rounded-none [&>[data-slot=input]]:border-0 [&>[data-slot=input]]:bg-transparent [&>[data-slot=input]]:px-3 [&>[data-slot=input]]:py-1 [&>[data-slot=input]]:shadow-none [&>[data-slot=input]]:focus-visible:ring-0",
+        "[&>[data-slot=textarea]]:min-h-[5.5rem] [&>[data-slot=textarea]]:w-full [&>[data-slot=textarea]]:rounded-none [&>[data-slot=textarea]]:border-0 [&>[data-slot=textarea]]:bg-transparent [&>[data-slot=textarea]]:px-3 [&>[data-slot=textarea]]:py-3 [&>[data-slot=textarea]]:shadow-none [&>[data-slot=textarea]]:focus-visible:ring-0",
+        "[&>[data-slot=select]]:min-w-0 [&>[data-slot=select]]:shrink-0 [&>[data-slot=select]_[data-slot=select-trigger]]:h-full [&>[data-slot=select]_[data-slot=select-trigger]]:rounded-none [&>[data-slot=select]_[data-slot=select-trigger]]:border-0 [&>[data-slot=select]_[data-slot=select-trigger]]:bg-transparent [&>[data-slot=select]_[data-slot=select-trigger]]:px-3 [&>[data-slot=select]_[data-slot=select-trigger]]:py-2 [&>[data-slot=select]_[data-slot=select-trigger]]:shadow-none [&>[data-slot=select]_[data-slot=select-trigger]]:focus-visible:ring-0",
+        "[&>[data-slot=native-select-wrapper]]:min-w-0 [&>[data-slot=native-select-wrapper]]:shrink-0 [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:h-full [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:rounded-none [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:border-0 [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:bg-transparent [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:px-3 [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:py-2 [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:shadow-none [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:focus-visible:ring-0 [&>[data-slot=native-select-wrapper]_[data-slot=native-select]]:pr-8 [&>[data-slot=native-select-wrapper]_.lucide-chevron-down]:right-3",
         "[&>[data-slot=button]]:h-6 [&>[data-slot=button]]:self-center [&>[data-slot=button]]:rounded-[calc(var(--radius)-5px)] [&>[data-slot=button]]:border-0 [&>[data-slot=button]]:px-2 [&>[data-slot=button]]:text-sm [&>[data-slot=button]]:shadow-none [&>[data-slot=button]]:focus-visible:ring-0",
+        "[&>[data-slot=input-group-addon][data-align=block-end]_[data-slot=button]]:h-8 [&>[data-slot=input-group-addon][data-align=block-end]_[data-slot=button]]:self-auto [&>[data-slot=input-group-addon][data-align=block-end]_[data-slot=button]]:px-3",
         assigns.class
       ])
 
     ~H"""
-    <div data-slot="input-group" class={classes(@classes)} {@rest}>
+    <div data-slot="input-group" data-align={@align_attr} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
@@ -1370,19 +1385,23 @@ defmodule CinderUI.Components.Forms do
   ```
   """)
 
+  attr :align, :atom, default: :inline, values: [:inline, :block_end]
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def input_group_addon(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> assign(:align_attr, if(assigns.align == :block_end, do: "block-end", else: "inline"))
+      |> assign(:classes, [
         "inline-flex items-center gap-2 whitespace-nowrap bg-transparent",
+        assigns.align == :block_end && "whitespace-normal",
         assigns.class
       ])
 
     ~H"""
-    <div data-slot="input-group-addon" class={classes(@classes)} {@rest}>
+    <div data-slot="input-group-addon" data-align={@align_attr} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """

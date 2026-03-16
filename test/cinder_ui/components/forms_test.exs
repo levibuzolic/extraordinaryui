@@ -319,7 +319,7 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "data-input-otp-separator-after=\"2\""
   end
 
-  test "input_group renders a unified control shell" do
+  test "input_group renders unified styles for inline and block-end layouts" do
     html =
       render_component(&Forms.input_group/1, %{
         inner_block: [
@@ -327,9 +327,38 @@ defmodule CinderUI.Components.FormsTest do
         ]
       })
 
+    block_end_html =
+      render_component(&Forms.input_group/1, %{
+        align: :block_end,
+        inner_block: [
+          %{inner_block: fn _, _ -> "stub" end}
+        ]
+      })
+
+    addon_html =
+      render_component(&Forms.input_group_addon/1, %{
+        inner_block: CinderUI.TestHelpers.slot("@")
+      })
+
+    block_end_addon_html =
+      render_component(&Forms.input_group_addon/1, %{
+        align: :block_end,
+        inner_block: CinderUI.TestHelpers.slot("Footer")
+      })
+
     assert html =~ "data-slot=\"input-group\""
+    assert html =~ "data-align=\"inline\""
     assert html =~ "has-[:focus-visible]:ring-[3px]"
+    assert html =~ "[&amp;&gt;[data-slot=input-group-addon]]:inline-flex"
     assert html =~ "[&amp;&gt;[data-slot=input]]:border-0"
+    assert html =~ "[&amp;&gt;[data-slot=textarea]]:border-0"
+    assert html =~ "[&amp;&gt;[data-slot=select]_[data-slot=select-trigger]]:border-0"
     assert html =~ "[&amp;&gt;[data-slot=button]]:border-0"
+    assert block_end_html =~ "data-align=\"block-end\""
+    assert block_end_html =~ "flex-col"
+    assert block_end_html =~ "[&amp;&gt;[data-slot=input-group-addon][data-align=block-end]]:border-t"
+    assert addon_html =~ "data-slot=\"input-group-addon\""
+    assert addon_html =~ "inline-flex"
+    assert block_end_addon_html =~ "data-align=\"block-end\""
   end
 end

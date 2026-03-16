@@ -20,7 +20,8 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
   use Phoenix.Component
 
   alias CinderUI.Docs.Catalog
-  alias CinderUI.Docs.UIComponents
+  alias CinderUI.Docs.UIComponents.Catalog, as: DocsCatalogUI
+  alias CinderUI.Docs.UIComponents.Shell, as: DocsShellUI
   alias CinderUI.Site.Marketing
   alias Phoenix.HTML.Safe
 
@@ -144,7 +145,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
         <link rel="stylesheet" href={"#{@asset_prefix}/assets/site.css"} />
       </head>
       <body class="bg-background text-foreground">
-        <UIComponents.docs_layout
+        <DocsShellUI.docs_layout
           sections={@sections}
           mode={:static}
           root_prefix={@root_prefix}
@@ -155,7 +156,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
           hex_package_url={@hex_package_url}
         >
           {rendered(@body_content)}
-        </UIComponents.docs_layout>
+        </DocsShellUI.docs_layout>
 
         <script type="module" src={"#{@asset_prefix}/assets/static_docs.js"}>
         </script>
@@ -170,9 +171,9 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     assigns = %{sections: sections}
 
     ~H"""
-    <UIComponents.docs_overview_intro />
+    <DocsCatalogUI.docs_overview_intro />
 
-    <UIComponents.docs_overview_sections sections={@sections} mode={:static} root_prefix="." />
+    <DocsCatalogUI.docs_overview_sections sections={@sections} mode={:static} root_prefix="." />
     """
     |> to_html()
   end
@@ -181,7 +182,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     assigns = %{entry: entry, sections: sections}
 
     ~H"""
-    <UIComponents.docs_component_detail
+    <DocsCatalogUI.docs_component_detail
       entry={@entry}
       sections={@sections}
       mode={:static}
