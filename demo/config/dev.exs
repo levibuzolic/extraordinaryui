@@ -11,7 +11,9 @@ config :demo, DemoWeb.Endpoint,
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}],
   check_origin: false,
-  code_reloader: System.get_env("PHX_CODE_RELOADER") != "false",
+  # Keep code reloading deterministic in dev so Mix compile/runtime
+  # validation does not trip when PHX_CODE_RELOADER changes between runs.
+  code_reloader: true,
   reloadable_apps: [:demo, :cinder_ui],
   debug_errors: true,
   secret_key_base: "9GhjwYbcEyljv26wpHdrBYN3LAF8m8F8r/L9xJQKBRueDk67KNO+OG4R77CyjLuB",
