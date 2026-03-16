@@ -136,7 +136,9 @@ test.describe("interactive previews", () => {
 
     await select.locator("[data-select-trigger]").click()
     expect(await hasClass(select.locator("[data-select-content]"), "hidden")).toBe(false)
-    await select.locator("[data-select-item]").last().click()
+    const enterpriseOption = select.locator("[data-select-item][data-value='enterprise']")
+    await expect(enterpriseOption).toBeVisible()
+    await enterpriseOption.click()
     await expect(select.locator("[data-slot='select-input']")).not.toHaveValue("")
 
     await autocomplete.locator("[data-autocomplete-input]").fill("Mira")
@@ -359,6 +361,53 @@ test.describe("interactive previews", () => {
       "data-active",
       "true",
     )
+  })
+
+  test("sidebar collapses and expands from its trigger", async ({ page }) => {
+    const sidebar = page.locator("#workspace-shell-sidebar")
+    const trigger = sidebar.locator("[data-sidebar-trigger]").first()
+    const labels = sidebar.locator("[data-sidebar-label]")
+
+    await sidebar.scrollIntoViewIfNeeded()
+    await expect(sidebar).toHaveAttribute("data-state", "expanded")
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(labels.first()).toBeVisible()
+
+    await trigger.click()
+    await expect(sidebar).toHaveAttribute("data-state", "collapsed")
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
+    await expect(labels.first()).toBeHidden()
+
+    await page.evaluate(() => {
+      const target = document.querySelector("#workspace-shell-sidebar")
+      target?.dispatchEvent(
+        new CustomEvent("cinder-ui:command", {
+          bubbles: false,
+          detail: { command: "expand" },
+        }),
+      )
+    })
+
+    await expect(sidebar).toHaveAttribute("data-state", "expanded")
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(labels.first()).toBeVisible()
+  })
+
+  test("controlled sidebar waits for server state instead of toggling locally", async ({ page }) => {
+    await page.goto("/docs/advanced-sidebar")
+
+    const sidebar = page.locator("#server-controlled-sidebar")
+    const trigger = sidebar.locator("[data-sidebar-trigger]").first()
+
+    await sidebar.scrollIntoViewIfNeeded()
+    await expect(sidebar).toHaveAttribute("data-sidebar-controlled", "")
+    await expect(sidebar).toHaveAttribute("data-state", "collapsed")
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
+
+    await trigger.click()
+
+    await expect(sidebar).toHaveAttribute("data-state", "collapsed")
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
   })
 
   test("command palette opens from sidebar trigger", async ({ page }) => {

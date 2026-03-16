@@ -49,7 +49,9 @@ test.describe("component catalog", () => {
     const detailRuntime = page.locator("section").filter({ has: page.locator("[data-component-runtime][data-runtime-kind='progressive']") }).first()
     const detailRuntimeBadge = detailRuntime.locator("[data-component-runtime][data-runtime-kind='progressive']")
     await expect(detailRuntimeBadge).toBeVisible()
-    await expect(detailRuntimeBadge.locator("p.text-muted-foreground.text-xs")).toContainText(
+    const detailRuntimeBadgePill = detailRuntimeBadge.locator("[data-slot='badge']").first()
+    await detailRuntimeBadgePill.hover()
+    await expect(detailRuntimeBadge.locator("[role='tooltip']").first()).toContainText(
       "optional LiveView hooks for richer behavior",
     )
   })

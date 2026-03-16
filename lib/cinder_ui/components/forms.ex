@@ -850,10 +850,12 @@ defmodule CinderUI.Components.Forms do
             </span>
             <span
               data-slot="select-check"
-              class={[
-                "absolute right-2 flex size-3.5 items-center justify-center",
-                @value != option.value && "hidden"
-              ]}
+              class={
+                classes([
+                  "absolute right-2 flex size-3.5 items-center justify-center",
+                  @value != option.value && "hidden"
+                ])
+              }
             >
               <Icons.icon name="check" class="size-4" aria-hidden="true" />
             </span>
@@ -1104,10 +1106,12 @@ defmodule CinderUI.Components.Forms do
           </span>
           <span
             data-slot="select-check"
-            class={[
-              "absolute right-2 flex size-3.5 items-center justify-center",
-              @value != option.value && "hidden"
-            ]}
+            class={
+              classes([
+                "absolute right-2 flex size-3.5 items-center justify-center",
+                @value != option.value && "hidden"
+              ])
+            }
           >
             <Icons.icon name="check" class="size-4" aria-hidden="true" />
           </span>

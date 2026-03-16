@@ -72,7 +72,7 @@ defmodule CinderUI.Docs.Catalog do
     {Advanced, :carousel} => :progressive,
     {Advanced, :chart} => :scaffold,
     {Advanced, :combobox} => :progressive,
-    {Advanced, :sidebar} => :scaffold
+    {Advanced, :sidebar} => :progressive
   }
 
   @doc """

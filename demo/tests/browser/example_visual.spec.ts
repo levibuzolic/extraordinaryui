@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type APIRequestContext, type Page } from "@playwright/test"
 
 const fixedPreviewWidthPx = 550
 const screenshotCss = `
@@ -31,6 +31,12 @@ const gotoWithStableStyles = async (page: Page, path: string) => {
   await page.addStyleTag({ content: screenshotCss })
 }
 
+const pageContainsPromotedExamples = async (request: APIRequestContext, path: string) => {
+  const response = await request.get(path)
+  const html = await response.text()
+  return html.includes("data-promoted-visual")
+}
+
 test.describe("promoted example visual regression", () => {
   test.use({
     viewport: { width: 1600, height: 1200 },
@@ -45,7 +51,7 @@ test.describe("promoted example visual regression", () => {
     })
   })
 
-  test("captures docs examples marked with the vrt fence flag", async ({ page }) => {
+  test("captures docs examples marked with the vrt fence flag", async ({ page, request }) => {
     await gotoWithStableStyles(page, "/docs/")
 
     const componentPaths = await page.locator("nav[aria-label='Component sections'] a[href^='/docs/']").evaluateAll(
@@ -59,18 +65,11 @@ test.describe("promoted example visual regression", () => {
         ),
     )
 
-    // Pre-filter: only navigate to pages that contain promoted visual examples.
-    // Use parallel fetch() to check HTML content without full browser navigation.
-    const pagesWithPromoted = await page.evaluate(async (paths) => {
-      const results = await Promise.all(
-        paths.map(async (path) => {
-          const response = await fetch(path)
-          const html = await response.text()
-          return html.includes("data-promoted-visual") ? path : null
-        }),
+    const pagesWithPromoted = (
+      await Promise.all(
+        componentPaths.map(async (path) => ((await pageContainsPromotedExamples(request, path)) ? path : null)),
       )
-      return results.filter((path): path is string => path !== null)
-    }, componentPaths)
+    ).filter((path): path is string => path !== null)
 
     let promotedCount = 0
 

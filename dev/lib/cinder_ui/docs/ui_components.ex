@@ -3,6 +3,8 @@ defmodule CinderUI.Docs.UIComponents do
 
   use Phoenix.Component
 
+  import CinderUI.Classes
+
   alias CinderUI.Components.{Actions, Feedback, Forms, Layout, Overlay}
   alias CinderUI.Docs.CodeHighlighter
   alias CinderUI.Icons
@@ -56,13 +58,13 @@ defmodule CinderUI.Docs.UIComponents do
       )
 
     ~H"""
-    <div class={@root_classes} role="group" aria-label="Theme mode" {@rest}>
+    <div class={classes(@root_classes)} role="group" aria-label="Theme mode" {@rest}>
       <button
         type="button"
         data-theme-mode="light"
         aria-label="Use light theme"
         title="Light theme"
-        class={@item_classes}
+        class={classes(@item_classes)}
       >
         <Icons.icon name="sun" class="size-4" />
       </button>
@@ -71,7 +73,7 @@ defmodule CinderUI.Docs.UIComponents do
         data-theme-mode="dark"
         aria-label="Use dark theme"
         title="Dark theme"
-        class={@item_classes}
+        class={classes(@item_classes)}
       >
         <Icons.icon name="moon" class="size-4" />
       </button>
@@ -80,7 +82,7 @@ defmodule CinderUI.Docs.UIComponents do
         data-theme-mode="auto"
         aria-label="Use system theme"
         title="System theme"
-        class={@item_classes}
+        class={classes(@item_classes)}
       >
         <Icons.icon name="monitor" class="size-4" />
       </button>
@@ -227,7 +229,7 @@ defmodule CinderUI.Docs.UIComponents do
       </div>
 
       <%= for section <- @sections do %>
-        <div>
+        <div class="mt-2 space-y-1">
           <a
             href={section_href(@mode, @root_prefix, section.id)}
             class="sidebar-section-link text-sm font-semibold"
@@ -348,10 +350,10 @@ defmodule CinderUI.Docs.UIComponents do
 
     ~H"""
     <pre
-      class={@pre_classes}
+      class={classes(@pre_classes)}
       {@rest}
     >
-      <code id={@id} class={@code_classes}><%= rendered(@highlighted_html) %></code>
+      <code id={@id} class={classes(@code_classes)}><%= rendered(@highlighted_html) %></code>
     </pre>
     """
   end
@@ -440,7 +442,7 @@ defmodule CinderUI.Docs.UIComponents do
           <h2 class="text-2xl font-semibold tracking-tight">
             <code>{@entry.module_name}.{@entry.title}</code>
           </h2>
-          <.docs_runtime_badge runtime={@entry.runtime} show_summary />
+          <.docs_runtime_badge runtime={@entry.runtime} />
         </div>
         <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
       </section>
@@ -698,10 +700,12 @@ defmodule CinderUI.Docs.UIComponents do
     <div
       data-slot="preview"
       data-preview-align={@preview_align}
-      class={[
-        "bg-background min-h-[7rem] flex-1 p-4",
-        @preview_align == :center && "flex items-center justify-center"
-      ]}
+      class={
+        classes([
+          "bg-background min-h-[7rem] flex-1 p-4",
+          @preview_align == :center && "flex items-center justify-center"
+        ])
+      }
     >
       {rendered(@preview_html)}
     </div>
@@ -717,14 +721,16 @@ defmodule CinderUI.Docs.UIComponents do
 
   defp docs_example_card(assigns) do
     ~H"""
-    <div class={["rounded-xl border divide-y", @class]}>
+    <div class={classes(["rounded-xl border divide-y", @class])}>
       <div
         data-slot="preview"
         data-preview-align={@preview_align}
-        class={[
-          "p-4 sm:p-6",
-          @preview_align == :center && "flex items-center justify-center"
-        ]}
+        class={
+          classes([
+            "p-4 sm:p-6",
+            @preview_align == :center && "flex items-center justify-center"
+          ])
+        }
       >
         {rendered(@preview_html)}
       </div>
@@ -761,10 +767,12 @@ defmodule CinderUI.Docs.UIComponents do
         id={@code_id}
         source={@template_heex}
         language={:heex}
-        pre_class={[
-          "m-0 min-w-0 max-w-full overflow-x-auto leading-4",
-          if(@compact, do: "max-h-56 pr-12", else: "max-h-96 bg-muted/30")
-        ]}
+        pre_class={
+          classes([
+            "m-0 min-w-0 max-w-full overflow-x-auto leading-4",
+            if(@compact, do: "max-h-56 pr-12", else: "max-h-96 bg-muted/30")
+          ])
+        }
       />
     </div>
     """
@@ -774,12 +782,11 @@ defmodule CinderUI.Docs.UIComponents do
 
   defp required_badge(assigns) do
     ~H"""
-    <Feedback.badge variant={:destructive} class={"align-middle #{@class}"}>Required</Feedback.badge>
+    <Feedback.badge variant={:destructive} class={classes(["align-middle", @class])}>Required</Feedback.badge>
     """
   end
 
   attr :runtime, :map, required: true
-  attr :show_summary, :boolean, default: false
 
   defp docs_runtime_badge(assigns) do
     assigns =
@@ -794,17 +801,12 @@ defmodule CinderUI.Docs.UIComponents do
       data-component-runtime
       data-runtime-kind={@runtime.kind}
     >
-      <div class="inline-flex min-w-0 flex-col gap-1">
-        <span class="inline-flex shrink-0" tabindex="0">
-          <Feedback.badge variant={:outline} class={@badge_class}>
-            <span aria-hidden="true" class={@dot_class} />
-            {@runtime.label}
-          </Feedback.badge>
-        </span>
-        <p :if={@show_summary} class="text-muted-foreground text-xs">
-          {@runtime.summary}
-        </p>
-      </div>
+      <span class="inline-flex shrink-0" tabindex="0">
+        <Feedback.badge variant={:outline} class={@badge_class}>
+          <span aria-hidden="true" class={@dot_class} />
+          {@runtime.label}
+        </Feedback.badge>
+      </span>
     </Overlay.tooltip>
     """
   end
