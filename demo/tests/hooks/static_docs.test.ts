@@ -8,6 +8,7 @@ declare global {
 const loadStaticDocsModule = async () => {
   vi.resetModules()
   globalThis.__CUI_DISABLE_STATIC_DOCS_AUTO_INIT = true
+  // @ts-expect-error static_docs.js is plain JS without published types.
   return import("../../../dev/assets/docs/static_docs.js")
 }
 
