@@ -94,8 +94,7 @@ defmodule DemoWeb.CoreComponents do
 
   def button(%{rest: rest} = assigns) do
     variants = %{
-      "primary" =>
-        "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+      "primary" => "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
       nil =>
         "border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
     }

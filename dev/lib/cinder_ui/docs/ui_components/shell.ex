@@ -118,7 +118,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
       </:header>
 
       <:sidebar class="border-border/70" content_class="px-3 pb-4">
-        <.docs_theme_controls class="mb-4" />
+        <.docs_theme_controls />
         <.docs_search_button class="mb-4" />
 
         <nav class="space-y-4" aria-label="Component sections">
@@ -203,7 +203,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
   def docs_sidebar(assigns) do
     ~H"""
     <div {@rest}>
-      <Advanced.sidebar_group label="Docs" label_class="uppercase tracking-[0.14em] text-[11px] font-semibold">
+      <Advanced.sidebar_group label="Docs" >
         <Advanced.sidebar_item
           href={install_href(@mode, @root_prefix)}
           current={@active_page == :install}
@@ -221,7 +221,6 @@ defmodule CinderUI.Docs.UIComponents.Shell do
       <%= for section <- @sections do %>
         <Advanced.sidebar_group
           label={section.title}
-          label_class="uppercase tracking-[0.14em] text-[11px] font-semibold"
           class="mt-6"
         >
           <Advanced.sidebar_item
@@ -237,8 +236,6 @@ defmodule CinderUI.Docs.UIComponents.Shell do
     """
   end
 
-  attr :rest, :global
-
   def docs_theme_controls(assigns) do
     assigns =
       assigns
@@ -246,12 +243,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
       |> assign(:radius_options, radius_options())
 
     ~H"""
-    <section class="mb-6 rounded-xl border p-3" {@rest}>
-      <div class="space-y-1">
-        <p class="text-xs font-medium text-muted-foreground">Theme</p>
-        <p class="text-sm font-medium">Appearance</p>
-      </div>
-
+    <section>
       <div class="mt-3 flex justify-center">
         <.theme_mode_toggle />
       </div>
