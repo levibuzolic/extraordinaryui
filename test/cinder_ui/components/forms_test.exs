@@ -356,7 +356,10 @@ defmodule CinderUI.Components.FormsTest do
     assert html =~ "[&amp;&gt;[data-slot=button]]:border-0"
     assert block_end_html =~ "data-align=\"block-end\""
     assert block_end_html =~ "flex-col"
-    assert block_end_html =~ "[&amp;&gt;[data-slot=input-group-addon][data-align=block-end]]:border-t"
+
+    assert block_end_html =~
+             "[&amp;&gt;[data-slot=input-group-addon][data-align=block-end]]:border-t"
+
     assert addon_html =~ "data-slot=\"input-group-addon\""
     assert addon_html =~ "inline-flex"
     assert block_end_addon_html =~ "data-align=\"block-end\""

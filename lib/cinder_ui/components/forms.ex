@@ -1345,7 +1345,8 @@ defmodule CinderUI.Components.Forms do
         "[&>*]:relative [&>*]:min-w-0 [&>*]:focus-visible:z-10",
         assigns.align == :inline &&
           "[&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:only-child]:rounded-md",
-        assigns.align == :inline && "[&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-input",
+        assigns.align == :inline &&
+          "[&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-input",
         "[&>[data-slot=input-group-addon]]:text-muted-foreground [&>[data-slot=input-group-addon]]:inline-flex [&>[data-slot=input-group-addon]]:shrink-0 [&>[data-slot=input-group-addon]]:items-center [&>[data-slot=input-group-addon]]:justify-center [&>[data-slot=input-group-addon]]:gap-2 [&>[data-slot=input-group-addon]]:text-sm",
         assigns.align == :inline &&
           "[&>[data-slot=input-group-addon]]:h-full [&>[data-slot=input-group-addon]]:px-3 [&>[data-slot=input-group-addon]]:leading-none",

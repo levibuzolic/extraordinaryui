@@ -608,27 +608,12 @@ defmodule CinderUI.Components.Advanced do
   def sidebar_layout(assigns) do
     id = assigns.id || "cinder-ui-sidebar-#{System.unique_integer([:positive])}"
 
-    state =
-      cond do
-        is_boolean(assigns.open) and assigns.open -> "expanded"
-        is_boolean(assigns.open) -> "collapsed"
-        assigns.default_open -> "expanded"
-        true -> "collapsed"
-      end
-
     assigns =
       assigns
       |> assign(:id, id)
-      |> assign(:state, state)
+      |> assign(:state, sidebar_layout_state(assigns))
       |> assign(:controlled, is_boolean(assigns.open))
-      |> assign(:classes, [
-        "group/sidebar grid w-full grid-cols-1 transition-[grid-template-columns] duration-200 md:grid-cols-[var(--cui-sidebar-width)_minmax(0,1fr)]",
-        assigns.full_screen && "min-h-screen",
-        !assigns.full_screen && "h-full min-h-0",
-        assigns.collapsible == :icon &&
-          "data-[state=collapsed]:md:grid-cols-[var(--cui-sidebar-width-icon)_minmax(0,1fr)] data-[state=collapsed]:[&_[data-sidebar-label]]:hidden",
-        assigns.class
-      ])
+      |> assign(:classes, sidebar_layout_classes(assigns))
 
     ~H"""
     <div
@@ -697,6 +682,31 @@ defmodule CinderUI.Components.Advanced do
     </div>
     """
   end
+
+  defp sidebar_layout_state(%{open: open}) when is_boolean(open) do
+    if open, do: "expanded", else: "collapsed"
+  end
+
+  defp sidebar_layout_state(%{default_open: true}), do: "expanded"
+  defp sidebar_layout_state(_assigns), do: "collapsed"
+
+  defp sidebar_layout_classes(assigns) do
+    [
+      "group/sidebar grid w-full grid-cols-1 transition-[grid-template-columns] duration-200 md:grid-cols-[var(--cui-sidebar-width)_minmax(0,1fr)]",
+      sidebar_layout_height_class(assigns.full_screen),
+      sidebar_layout_collapsible_class(assigns.collapsible),
+      assigns.class
+    ]
+  end
+
+  defp sidebar_layout_height_class(true), do: "min-h-screen"
+  defp sidebar_layout_height_class(false), do: "h-full min-h-0"
+
+  defp sidebar_layout_collapsible_class(:icon) do
+    "data-[state=collapsed]:md:grid-cols-[var(--cui-sidebar-width-icon)_minmax(0,1fr)] data-[state=collapsed]:[&_[data-sidebar-label]]:hidden"
+  end
+
+  defp sidebar_layout_collapsible_class(_collapsible), do: nil
 
   doc("""
   Sidebar panel region.
@@ -1088,7 +1098,11 @@ defmodule CinderUI.Components.Advanced do
         ])
       }
     >
-      <Icons.icon :if={@item[:icon]} name={@item[:icon]} class="size-4 shrink-0 text-muted-foreground" />
+      <Icons.icon
+        :if={@item[:icon]}
+        name={@item[:icon]}
+        class="size-4 shrink-0 text-muted-foreground"
+      />
       <span class="truncate">{render_slot(@item)}</span>
     </a>
 
@@ -1100,7 +1114,11 @@ defmodule CinderUI.Components.Advanced do
       disabled={@item[:disabled]}
       class="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
     >
-      <Icons.icon :if={@item[:icon]} name={@item[:icon]} class="size-4 shrink-0 text-muted-foreground" />
+      <Icons.icon
+        :if={@item[:icon]}
+        name={@item[:icon]}
+        class="size-4 shrink-0 text-muted-foreground"
+      />
       <span class="truncate">{render_slot(@item)}</span>
     </button>
     """
@@ -1301,34 +1319,34 @@ defmodule CinderUI.Components.Advanced do
                 {render_slot(@inner_block)}
               </.sidebar_item_inner>
             </.link>
-        <% @href -> %>
-          <.link
-            href={@href}
-            aria-current={if(@current, do: "page", else: nil)}
-            aria-disabled={if(@disabled, do: "true", else: nil)}
-            data-slot="sidebar-item-link"
-            class={classes(@row_classes)}
-            {@rest}
-          >
-            <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
-              {render_slot(@inner_block)}
-            </.sidebar_item_inner>
-          </.link>
-        <% true -> %>
-          <.link
-            href={if(@disabled, do: nil, else: "#")}
-            aria-disabled={if(@disabled, do: "true", else: nil)}
-            data-slot="sidebar-item-link"
-            class={classes(@row_classes)}
-            {@rest}
-          >
-            <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
-              {render_slot(@inner_block)}
-            </.sidebar_item_inner>
-          </.link>
+          <% @href -> %>
+            <.link
+              href={@href}
+              aria-current={if(@current, do: "page", else: nil)}
+              aria-disabled={if(@disabled, do: "true", else: nil)}
+              data-slot="sidebar-item-link"
+              class={classes(@row_classes)}
+              {@rest}
+            >
+              <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
+                {render_slot(@inner_block)}
+              </.sidebar_item_inner>
+            </.link>
+          <% true -> %>
+            <.link
+              href={if(@disabled, do: nil, else: "#")}
+              aria-disabled={if(@disabled, do: "true", else: nil)}
+              data-slot="sidebar-item-link"
+              class={classes(@row_classes)}
+              {@rest}
+            >
+              <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
+                {render_slot(@inner_block)}
+              </.sidebar_item_inner>
+            </.link>
         <% end %>
       <% end %>
-      </div>
+    </div>
     """
   end
 
@@ -1423,7 +1441,7 @@ defmodule CinderUI.Components.Advanced do
     rest =
       cond do
         assigns.as == "button" and
-            not Map.has_key?(assigns.rest, :type) and
+          not Map.has_key?(assigns.rest, :type) and
             not Map.has_key?(assigns.rest, "type") ->
           Map.put(assigns.rest, :type, "button")
 
