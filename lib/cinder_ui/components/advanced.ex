@@ -13,10 +13,7 @@ defmodule CinderUI.Components.Advanced do
   - `sidebar_footer/1`
   - `sidebar_content/1`
   - `sidebar_group/1`
-  - `sidebar_group_label/1`
-  - `sidebar_group_content/1`
-  - `sidebar_menu/1`
-  - `sidebar_menu_item/1`
+  - `sidebar_item/1`
   - `sidebar_trigger/1`
   - `item/1`
 
@@ -370,11 +367,12 @@ defmodule CinderUI.Components.Advanced do
   end
 
   doc("""
-  Simplified interactive sidebar inspired by shadcn/ui.
+  Phoenix-first sidebar shell for app layouts.
 
-  The root sidebar manages expanded/collapsed state, while helper components
-  such as `sidebar_header/1`, `sidebar_group/1`, and `sidebar_menu_item/1`
-  compose the shell.
+  This component is designed for LiveView and server-rendered Phoenix apps,
+  rather than mirroring shadcn's React-only primitive structure. Compose the
+  shell with `sidebar_header/1`, `sidebar_content/1`, `sidebar_group/1`, and
+  `sidebar_item/1`.
 
   Use `default_open` for the default uncontrolled behavior. Pass `open` to let
   LiveView control the current state, and pair it with `toggle_event` if the
@@ -392,7 +390,7 @@ defmodule CinderUI.Components.Advanced do
       <.sidebar_header>
         <button
           type="button"
-          class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left transition-colors group-data-[state=collapsed]/sidebar:mx-auto group-data-[state=collapsed]/sidebar:size-8 group-data-[state=collapsed]/sidebar:justify-center group-data-[state=collapsed]/sidebar:p-0"
+          class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors"
         >
           <div class="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg">
             <.icon name="briefcase-business" class="size-4" />
@@ -410,47 +408,28 @@ defmodule CinderUI.Components.Advanced do
     </:header>
 
     <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_label>Platform</.sidebar_group_label>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="square-play" active={true}>
-              <span class="truncate">Playground</span>
-              <span data-sidebar-label class="ml-auto">
-                <.icon name="chevron-down" class="size-3.5" />
-              </span>
-            </.sidebar_menu_item>
-          </.sidebar_menu>
-
-          <div data-sidebar-label class="mt-1 ml-4 border-l border-sidebar-border pl-2">
-            <.sidebar_menu class="gap-0.5">
-              <.sidebar_menu_item class="h-7 text-sidebar-foreground/80">History</.sidebar_menu_item>
-              <.sidebar_menu_item class="h-7 text-sidebar-foreground/80">Starred</.sidebar_menu_item>
-              <.sidebar_menu_item class="h-7 text-sidebar-foreground/80">Settings</.sidebar_menu_item>
-            </.sidebar_menu>
-          </div>
-
-          <.sidebar_menu class="mt-1">
-            <.sidebar_menu_item icon="bot">
-              <span class="truncate">Models</span>
-              <span data-sidebar-label class="ml-auto">
-                <.icon name="chevron-right" class="size-3.5" />
-              </span>
-            </.sidebar_menu_item>
-            <.sidebar_menu_item icon="book-open">
-              <span class="truncate">Documentation</span>
-              <span data-sidebar-label class="ml-auto">
-                <.icon name="chevron-right" class="size-3.5" />
-              </span>
-            </.sidebar_menu_item>
-            <.sidebar_menu_item icon="settings-2">
-              <span class="truncate">Settings</span>
-              <span data-sidebar-label class="ml-auto">
-                <.icon name="chevron-right" class="size-3.5" />
-              </span>
-            </.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
+      <.sidebar_group label="Platform">
+        <.sidebar_item icon="square-play" current={true}>
+          Playground
+          <:trailing>
+            <.icon name="chevron-down" class="size-3.5" />
+          </:trailing>
+        </.sidebar_item>
+        <.sidebar_item inset={true}>History</.sidebar_item>
+        <.sidebar_item inset={true}>Starred</.sidebar_item>
+        <.sidebar_item inset={true}>Settings</.sidebar_item>
+        <.sidebar_item icon="bot">
+          Models
+          <:trailing><.icon name="chevron-right" class="size-3.5" /></:trailing>
+        </.sidebar_item>
+        <.sidebar_item icon="book-open">
+          Documentation
+          <:trailing><.icon name="chevron-right" class="size-3.5" /></:trailing>
+        </.sidebar_item>
+        <.sidebar_item icon="settings-2">
+          Settings
+          <:trailing><.icon name="chevron-right" class="size-3.5" /></:trailing>
+        </.sidebar_item>
       </.sidebar_group>
     </.sidebar_content>
 
@@ -458,13 +437,9 @@ defmodule CinderUI.Components.Advanced do
       <.sidebar_footer>
         <button
           type="button"
-          class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left transition-colors group-data-[state=collapsed]/sidebar:mx-auto group-data-[state=collapsed]/sidebar:size-8 group-data-[state=collapsed]/sidebar:justify-center group-data-[state=collapsed]/sidebar:p-0"
+          class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors"
         >
-          <img
-            src="example.png"
-            alt="shadcn avatar"
-            class="size-8 rounded-full object-cover"
-          />
+          <img src="example.png" alt="shadcn avatar" class="size-8 rounded-full object-cover" />
           <div data-sidebar-label class="min-w-0 flex-1">
             <p class="truncate text-sm font-medium">shadcn</p>
             <p class="text-sidebar-foreground/70 truncate text-xs">m@example.com</p>
@@ -490,14 +465,10 @@ defmodule CinderUI.Components.Advanced do
   ```heex title="Collapsed by default" align="full"
   <.sidebar id="collapsed-sidebar" default_open={false} full_screen={false}>
     <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="home" active={true}>Home</.sidebar_menu_item>
-            <.sidebar_menu_item icon="inbox">Inbox</.sidebar_menu_item>
-            <.sidebar_menu_item icon="settings">Settings</.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
+      <.sidebar_group label="Navigation">
+        <.sidebar_item icon="home" current={true}>Home</.sidebar_item>
+        <.sidebar_item icon="inbox">Inbox</.sidebar_item>
+        <.sidebar_item icon="settings">Settings</.sidebar_item>
       </.sidebar_group>
     </.sidebar_content>
 
@@ -527,13 +498,9 @@ defmodule CinderUI.Components.Advanced do
     </:header>
 
     <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="home" active={true}>Overview</.sidebar_menu_item>
-            <.sidebar_menu_item icon="settings">Settings</.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
+      <.sidebar_group label="Workspace">
+        <.sidebar_item icon="home" current={true}>Overview</.sidebar_item>
+        <.sidebar_item icon="settings">Settings</.sidebar_item>
       </.sidebar_group>
     </.sidebar_content>
 
@@ -662,7 +629,7 @@ defmodule CinderUI.Components.Advanced do
   def sidebar_header(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "bg-sidebar sticky top-0 z-10 flex min-h-12 items-center gap-2 px-1 py-1",
+        "bg-sidebar sticky top-0 z-10 flex min-h-12 items-center gap-2 px-2 py-2",
         assigns.class
       ])
 
@@ -702,7 +669,7 @@ defmodule CinderUI.Components.Advanced do
   def sidebar_footer(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "bg-sidebar sticky bottom-0 z-10 mt-auto flex min-h-12 items-center gap-2 px-1 py-1",
+        "bg-sidebar sticky bottom-0 z-10 mt-auto flex min-h-12 items-center gap-2 px-2 py-2",
         assigns.class
       ])
 
@@ -721,13 +688,9 @@ defmodule CinderUI.Components.Advanced do
   ```heex title="Sidebar content" align="full"
   <.sidebar id="sidebar-content-example" full_screen={false}>
     <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_label>Navigation</.sidebar_group_label>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="home" active={true}>Home</.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
+      <.sidebar_group label="Navigation">
+        <.sidebar_item icon="home" current={true}>Home</.sidebar_item>
+        <.sidebar_item icon="inbox">Inbox</.sidebar_item>
       </.sidebar_group>
     </.sidebar_content>
     <:inset><div class="rounded border bg-card p-4 text-sm">Inset</div></:inset>
@@ -742,7 +705,7 @@ defmodule CinderUI.Components.Advanced do
   def sidebar_content(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-1 pb-1",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2",
         assigns.class
       ])
 
@@ -757,38 +720,23 @@ defmodule CinderUI.Components.Advanced do
   Sidebar group wrapper.
 
   Groups are useful for labeled sections such as navigation, tools, or account
-  controls.
+  controls. Pass `label` for the section heading and render `sidebar_item/1`
+  children directly inside the group.
 
   ## Example
 
   ```heex title="Sidebar group" align="full"
   <.sidebar id="sidebar-group-example" full_screen={false}>
     <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_label>Workspace</.sidebar_group_label>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="folder-kanban" active={true}>
-              Projects
-            </.sidebar_menu_item>
-            <.sidebar_menu_item icon="ship-wheel" badge="2">
-              Deployments
-            </.sidebar_menu_item>
-            <.sidebar_menu_item icon="message-square">
-              Feedback
-            </.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
+      <.sidebar_group label="Workspace">
+        <.sidebar_item icon="folder-kanban" current={true}>Projects</.sidebar_item>
+        <.sidebar_item icon="ship-wheel" badge="2">Deployments</.sidebar_item>
+        <.sidebar_item icon="message-square">Feedback</.sidebar_item>
       </.sidebar_group>
 
-      <.sidebar_group>
-        <.sidebar_group_label>Insights</.sidebar_group_label>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="chart-column">Analytics</.sidebar_menu_item>
-            <.sidebar_menu_item icon="bell-ring" badge="4">Alerts</.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
+      <.sidebar_group label="Insights">
+        <.sidebar_item icon="chart-column">Analytics</.sidebar_item>
+        <.sidebar_item icon="bell-ring" badge="4">Alerts</.sidebar_item>
       </.sidebar_group>
     </.sidebar_content>
     <:inset>
@@ -801,220 +749,145 @@ defmodule CinderUI.Components.Advanced do
   ```
   """)
 
+  attr :label, :string, default: nil
   attr :class, :string, default: nil
+  attr :label_class, :string, default: nil
   attr :rest, :global
+  slot :action
   slot :inner_block, required: true
 
   def sidebar_group(assigns) do
-    assigns = assign(assigns, :classes, ["relative flex w-full min-w-0 flex-col p-1", assigns.class])
+    assigns =
+      assigns
+      |> assign(:classes, ["relative flex w-full min-w-0 flex-col gap-1", assigns.class])
+      |> assign(:label_classes, [
+        "text-sidebar-foreground/70 flex h-8 items-center px-2 text-xs font-medium",
+        "group-data-[state=collapsed]/sidebar:-mt-8 group-data-[state=collapsed]/sidebar:opacity-0",
+        assigns.label_class
+      ])
 
     ~H"""
     <section data-slot="sidebar-group" class={classes(@classes)} {@rest}>
-      {render_slot(@inner_block)}
+      <div :if={@label || @action != []} class="flex items-center gap-2">
+        <div data-sidebar-label class={classes(@label_classes)}>{@label}</div>
+        <div :if={@action != []} data-sidebar-label class="ml-auto pr-2">
+          {render_slot(@action)}
+        </div>
+      </div>
+      <div data-slot="sidebar-group-items" class="space-y-1">
+        {render_slot(@inner_block)}
+      </div>
     </section>
     """
   end
 
   doc("""
-  Muted heading for a sidebar group.
+  Sidebar navigation item.
 
-  This should usually be used inside `sidebar_group/1`.
-
-  ## Example
-
-  ```heex title="Sidebar group label" align="full"
-  <.sidebar id="sidebar-group-label-example" full_screen={false}>
-    <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_label>Navigation</.sidebar_group_label>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="home" active={true}>Overview</.sidebar_menu_item>
-            <.sidebar_menu_item icon="inbox">Inbox</.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
-      </.sidebar_group>
-    </.sidebar_content>
-    <:inset><div class="rounded border bg-card p-4 text-sm">Inset</div></:inset>
-  </.sidebar>
-  ```
-
-  ```heex title="Label only" align="full"
-  <.sidebar_group_label>Navigation</.sidebar_group_label>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def sidebar_group_label(assigns) do
-    assigns =
-      assign(assigns, :classes, [
-        "text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-none transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2",
-        "group-data-[state=collapsed]/sidebar:-mt-8 group-data-[state=collapsed]/sidebar:opacity-0",
-        assigns.class
-      ])
-
-    ~H"""
-    <div data-slot="sidebar-group-label" class={classes(@classes)} {@rest}>
-      {render_slot(@inner_block)}
-    </div>
-    """
-  end
-
-  doc("""
-  Inner content container for a sidebar group.
-
-  ## Example
-
-  ```heex title="Sidebar group content" align="full"
-  <.sidebar id="sidebar-group-content-example" full_screen={false}>
-    <.sidebar_content>
-      <.sidebar_group>
-        <.sidebar_group_label>Team spaces</.sidebar_group_label>
-        <.sidebar_group_content>
-          <.sidebar_menu>
-            <.sidebar_menu_item icon="users" active={true}>Design</.sidebar_menu_item>
-            <.sidebar_menu_item icon="folder-open">Product</.sidebar_menu_item>
-            <.sidebar_menu_item icon="shield-check" badge="1">Ops</.sidebar_menu_item>
-          </.sidebar_menu>
-        </.sidebar_group_content>
-      </.sidebar_group>
-    </.sidebar_content>
-    <:inset><div class="rounded border bg-card p-4 text-sm">Inset</div></:inset>
-  </.sidebar>
-  ```
-
-  ```heex title="Content only" align="full"
-  <.sidebar_group_content>
-    <.sidebar_menu>
-      <.sidebar_menu_item icon="activity">Activity</.sidebar_menu_item>
-    </.sidebar_menu>
-  </.sidebar_group_content>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def sidebar_group_content(assigns) do
-    assigns = assign(assigns, :classes, ["w-full text-sm", assigns.class])
-
-    ~H"""
-    <div data-slot="sidebar-group-content" class={classes(@classes)} {@rest}>
-      {render_slot(@inner_block)}
-    </div>
-    """
-  end
-
-  doc("""
-  Vertical menu list for sidebar items.
-
-  ## Example
-
-  ```heex title="Sidebar menu" align="full"
-  <.sidebar_menu>
-    <.sidebar_menu_item icon="home" active={true}>Home</.sidebar_menu_item>
-    <.sidebar_menu_item icon="inbox">Inbox</.sidebar_menu_item>
-  </.sidebar_menu>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def sidebar_menu(assigns) do
-    assigns = assign(assigns, :classes, ["flex w-full min-w-0 flex-col gap-1", assigns.class])
-
-    ~H"""
-    <nav data-slot="sidebar-menu-nav" class="w-full">
-      <ul data-slot="sidebar-menu" class={classes(@classes)} {@rest}>
-        {render_slot(@inner_block)}
-      </ul>
-    </nav>
-    """
-  end
-
-  doc("""
-  Interactive sidebar menu item.
-
-  Use this within `sidebar_menu/1` for primary navigation links.
+  Use this inside `sidebar_group/1` for app routes, navigation rows, and
+  nested secondary items.
 
   ## Examples
 
-  ```heex title="Sidebar menu item" align="full"
-  <.sidebar_menu>
-    <.sidebar_menu_item icon="home" active={true}>Overview</.sidebar_menu_item>
-    <.sidebar_menu_item icon="settings">Settings</.sidebar_menu_item>
-  </.sidebar_menu>
+  ```heex title="Sidebar item" align="full"
+  <.sidebar_group label="Navigation">
+    <.sidebar_item icon="home" current={true}>Overview</.sidebar_item>
+    <.sidebar_item icon="inbox">Inbox</.sidebar_item>
+  </.sidebar_group>
   ```
 
-  ```heex title="Menu item with badge" align="full"
-  <.sidebar_menu>
-    <.sidebar_menu_item icon="ship-wheel" badge="3">Deployments</.sidebar_menu_item>
-  </.sidebar_menu>
+  ```heex title="Route targets and trailing content" align="full"
+  <.sidebar_group label="Workspace">
+    <.sidebar_item icon="folder-kanban" navigate="/docs" current={true}>
+      Docs
+      <:trailing><.icon name="chevron-right" class="size-3.5" /></:trailing>
+    </.sidebar_item>
+    <.sidebar_item icon="ship-wheel" href="#deployments" badge="3">
+      Deployments
+    </.sidebar_item>
+    <.sidebar_item inset={true}>Recent activity</.sidebar_item>
+  </.sidebar_group>
   ```
   """)
 
+  attr :navigate, :string, default: nil
+  attr :patch, :string, default: nil
   attr :href, :string, default: nil
   attr :icon, :string, default: nil
   attr :badge, :string, default: nil
-  attr :active, :boolean, default: false
+  attr :current, :boolean, default: false
+  attr :inset, :boolean, default: false
   attr :disabled, :boolean, default: false
   attr :class, :string, default: nil
   attr :rest, :global
+  slot :trailing
   slot :inner_block, required: true
 
-  def sidebar_menu_item(assigns) do
+  def sidebar_item(assigns) do
     assigns =
       assign(assigns, :classes, [
-        "peer/menu-button ring-sidebar-ring flex h-8 w-full min-w-0 items-center gap-2 overflow-hidden rounded-md px-2 text-left text-sm text-sidebar-foreground outline-none transition-[width,height,padding]",
-        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground",
+        "ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex h-8 w-full min-w-0 items-center gap-2 rounded-md px-2 text-left text-sm text-sidebar-foreground outline-none transition-colors focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground",
         "group-data-[state=collapsed]/sidebar:mx-auto group-data-[state=collapsed]/sidebar:size-8 group-data-[state=collapsed]/sidebar:justify-center group-data-[state=collapsed]/sidebar:px-0",
-        assigns.active && "bg-sidebar-accent text-sidebar-accent-foreground font-medium",
+        assigns.current && "bg-sidebar-accent text-sidebar-accent-foreground font-medium",
+        assigns.inset &&
+          "h-7 pl-8 text-sidebar-foreground/80 group-data-[state=collapsed]/sidebar:hidden",
         assigns.disabled && "pointer-events-none opacity-50",
         assigns.class
       ])
 
     ~H"""
-    <li data-slot="sidebar-menu-item" class="group/menu-item relative">
-      <%= if @href do %>
-        <a
-          href={@href}
-          data-active={@active}
-          aria-disabled={if(@disabled, do: "true", else: nil)}
-          class={classes(@classes)}
-          {@rest}
-        >
-          <.sidebar_menu_item_inner icon={@icon} badge={@badge}>
-            {render_slot(@inner_block)}
-          </.sidebar_menu_item_inner>
-        </a>
-      <% else %>
-        <button
-          type="button"
-          data-active={@active}
-          disabled={@disabled}
-          class={classes(@classes)}
-          {@rest}
-        >
-          <.sidebar_menu_item_inner icon={@icon} badge={@badge}>
-            {render_slot(@inner_block)}
-          </.sidebar_menu_item_inner>
-        </button>
+    <div data-slot="sidebar-item">
+      <%= cond do %>
+        <% @navigate -> %>
+          <.link
+            navigate={@navigate}
+            aria-current={if(@current, do: "page", else: nil)}
+            class={classes(@classes)}
+            {@rest}
+          >
+            <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
+              {render_slot(@inner_block)}
+            </.sidebar_item_inner>
+          </.link>
+        <% @patch -> %>
+          <.link
+            patch={@patch}
+            aria-current={if(@current, do: "page", else: nil)}
+            class={classes(@classes)}
+            {@rest}
+          >
+            <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
+              {render_slot(@inner_block)}
+            </.sidebar_item_inner>
+          </.link>
+        <% @href -> %>
+          <.link
+            href={@href}
+            aria-current={if(@current, do: "page", else: nil)}
+            class={classes(@classes)}
+            {@rest}
+          >
+            <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
+              {render_slot(@inner_block)}
+            </.sidebar_item_inner>
+          </.link>
+        <% true -> %>
+          <button type="button" disabled={@disabled} class={classes(@classes)} {@rest}>
+            <.sidebar_item_inner icon={@icon} badge={@badge} trailing={@trailing}>
+              {render_slot(@inner_block)}
+            </.sidebar_item_inner>
+          </button>
       <% end %>
-    </li>
+    </div>
     """
   end
 
   attr :icon, :string, default: nil
   attr :badge, :string, default: nil
+  attr :trailing, :any, default: []
   slot :inner_block, required: true
 
-  defp sidebar_menu_item_inner(assigns) do
+  defp sidebar_item_inner(assigns) do
     ~H"""
     <%= if @icon do %>
       <Icons.icon name={@icon} class="size-4 shrink-0" aria-hidden="true" />
@@ -1028,6 +901,9 @@ defmodule CinderUI.Components.Advanced do
       class="bg-sidebar-primary/15 text-sidebar-primary ml-auto flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-[11px] font-medium tabular-nums"
     >
       {@badge}
+    </span>
+    <span :if={@trailing != []} data-sidebar-label class="text-sidebar-foreground/70 ml-auto shrink-0">
+      {render_slot(@trailing)}
     </span>
     """
   end
