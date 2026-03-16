@@ -421,9 +421,10 @@ const initCommandPalette = () => {
   }
 
   const groupNameForLink = (link) => {
-    const groupLabel = link
-      .closest("[data-slot='sidebar-group']")
-      ?.querySelector(":scope > [data-sidebar-label]")
+    const group = link.closest("[data-slot='sidebar-group']")
+    if (!group) return ""
+
+    const groupLabel = group.querySelector(":scope > div:first-child > [data-sidebar-label]")
 
     const label = (groupLabel?.textContent || "").trim()
     if (label === "Components") return "Component"

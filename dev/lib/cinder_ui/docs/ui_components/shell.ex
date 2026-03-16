@@ -228,18 +228,18 @@ defmodule CinderUI.Docs.UIComponents.Shell do
   def docs_sidebar(assigns) do
     ~H"""
     <div {@rest}>
-      <Advanced.sidebar_group label="Cinder UI">
-        <Advanced.sidebar_item
-          href={install_href(@mode, @root_prefix)}
-          current={@active_page == :install}
-        >
-          Installation
-        </Advanced.sidebar_item>
+      <Advanced.sidebar_group label="Cinder UI" class="mt-6">
         <Advanced.sidebar_item
           href={overview_href(@mode, @root_prefix)}
           current={@active_page == :overview}
         >
           Overview
+        </Advanced.sidebar_item>
+        <Advanced.sidebar_item
+          href={install_href(@mode, @root_prefix)}
+          current={@active_page == :install}
+        >
+          Installation
         </Advanced.sidebar_item>
       </Advanced.sidebar_group>
 
