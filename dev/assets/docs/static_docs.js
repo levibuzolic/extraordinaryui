@@ -1,3 +1,5 @@
+import { CinderUIHooks } from "./cinder_ui.js"
+
 /**
  * Static docs interactivity — vanilla JS replacements for CinderUI LiveView
  * hooks, used when the docs are exported as static HTML (GitHub Pages, mix
@@ -31,6 +33,53 @@ const toggleVisibility = (el, visible) => {
   el.classList.toggle("hidden", !visible)
   el.dataset.state = visible ? "open" : "closed"
 }
+
+export const shouldMountStaticHooks = () =>
+  !(window.liveSocket && typeof window.liveSocket.connect === "function")
+
+export const mountStaticHook = (el) => {
+  const hookName = el.getAttribute("phx-hook")
+  if (!hookName) return false
+
+  const definition = CinderUIHooks[hookName]
+  if (!definition) return false
+
+  const instance = Object.create(definition)
+  instance.el = el
+  instance.pushEvent = () => Promise.resolve()
+  instance.pushEventTo = () => Promise.resolve()
+  instance.handleEvent = () => {}
+  instance.removeHandleEvent = () => {}
+  instance.liveSocket = null
+  instance.__static = true
+  el.__cuiStaticHook = instance
+  instance.mounted?.()
+  return true
+}
+
+export const initializeStaticHooks = () => {
+  if (!shouldMountStaticHooks()) return
+
+  const hookElements = qs(document, "[phx-hook]")
+  const usedHooks = Array.from(new Set(hookElements.map((el) => el.getAttribute("phx-hook")).filter(Boolean)))
+  const availableHooks = Object.keys(CinderUIHooks)
+  const missingHooks = usedHooks.filter((name) => !availableHooks.includes(name))
+
+  window.CinderUIStaticHookNames = availableHooks
+  window.CinderUIStaticUsedHooks = usedHooks
+  window.CinderUIStaticMissingHooks = missingHooks
+
+  if (missingHooks.length > 0) {
+    console.warn(`Missing static hook implementations: ${missingHooks.join(", ")}`)
+  }
+
+  hookElements.forEach((el) => {
+    mountStaticHook(el)
+  })
+}
+
+const shouldAutoInitializeStaticDocs =
+  !globalThis.__CUI_DISABLE_STATIC_DOCS_AUTO_INIT
 
 // ---------------------------------------------------------------------------
 // Theme system — persists mode (light/dark/auto), color palette and border
@@ -627,265 +676,9 @@ qs(document, "[data-copy-template]").forEach((button) => {
   })
 })
 
-// ---------------------------------------------------------------------------
-// Inert management — when a modal overlay opens, sibling elements are marked
-// `inert` so screen readers and keyboard focus stay within the modal.
-// ---------------------------------------------------------------------------
-
-const applyInert = (overlayEl) => {
-  const inertedElements = []
-  let current = overlayEl
-
-  while (current && current !== document.body) {
-    const parent = current.parentElement
-    if (parent) {
-      for (const sibling of parent.children) {
-        if (sibling !== current && !sibling.inert) {
-          sibling.inert = true
-          inertedElements.push(sibling)
-        }
-      }
-    }
-    current = parent
-  }
-
-  return inertedElements
+if (shouldAutoInitializeStaticDocs) {
+  initializeStaticHooks()
 }
-
-const removeInert = (inertedElements) => {
-  if (!inertedElements) return
-  for (const el of inertedElements) {
-    el.inert = false
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Dialog previews (includes alert dialogs) — open/close via trigger/overlay
-// clicks and Escape key, with inert management for accessibility.
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='dialog']").forEach((root) => {
-  const overlay = root.querySelector("[data-dialog-overlay]")
-  const content = root.querySelector("[data-dialog-content]")
-  let inertedElements = null
-
-  const sync = (open) => {
-    const wasOpen = root.dataset.state === "open"
-    root.dataset.state = open ? "open" : "closed"
-    toggleVisibility(overlay, open)
-    toggleVisibility(content, open)
-    if (open && !wasOpen) {
-      inertedElements = applyInert(root)
-    }
-    if (!open && wasOpen) {
-      removeInert(inertedElements)
-      inertedElements = null
-    }
-  }
-
-  root.addEventListener("click", (event) => {
-    if (event.target.closest("[data-dialog-trigger]")) sync(true)
-    if (event.target.closest("[data-dialog-close]") || event.target.closest("[data-dialog-overlay]")) sync(false)
-  })
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && root.dataset.state === "open") {
-      sync(false)
-    }
-  })
-
-  sync(root.dataset.state === "open")
-})
-
-// ---------------------------------------------------------------------------
-// Drawer / sheet previews — same pattern as dialogs but with different
-// data attributes and no close button (dismissed via overlay click or Escape).
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='drawer']").forEach((root) => {
-  const overlay = root.querySelector("[data-drawer-overlay]")
-  const content = root.querySelector("[data-drawer-content]")
-  let inertedElements = null
-
-  const sync = (open) => {
-    const wasOpen = root.dataset.state === "open"
-    root.dataset.state = open ? "open" : "closed"
-    toggleVisibility(overlay, open)
-    toggleVisibility(content, open)
-    if (open && !wasOpen) {
-      inertedElements = applyInert(root)
-    }
-    if (!open && wasOpen) {
-      removeInert(inertedElements)
-      inertedElements = null
-    }
-  }
-
-  root.addEventListener("click", (event) => {
-    if (event.target.closest("[data-drawer-trigger]")) sync(true)
-    if (event.target.closest("[data-drawer-overlay]")) sync(false)
-  })
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && root.dataset.state === "open") {
-      sync(false)
-    }
-  })
-
-  sync(root.dataset.state === "open")
-})
-
-// ---------------------------------------------------------------------------
-// Popover previews — toggle on trigger click, dismiss on outside click.
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='popover']").forEach((root) => {
-  const trigger = root.querySelector("[data-popover-trigger]")
-  const content = root.querySelector("[data-popover-content]")
-  let open = false
-
-  trigger?.addEventListener("click", (event) => {
-    event.preventDefault()
-    open = !open
-    toggleVisibility(content, open)
-  })
-
-  document.addEventListener("click", (event) => {
-    if (!root.contains(event.target)) {
-      open = false
-      toggleVisibility(content, false)
-    }
-  })
-})
-
-// ---------------------------------------------------------------------------
-// Dropdown menu previews — toggle on trigger click, dismiss on outside click.
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='dropdown-menu']").forEach((root) => {
-  const trigger = root.querySelector("[data-dropdown-trigger]")
-  const content = root.querySelector("[data-dropdown-content]")
-  let open = false
-
-  trigger?.addEventListener("click", (event) => {
-    event.preventDefault()
-    open = !open
-    toggleVisibility(content, open)
-  })
-
-  document.addEventListener("click", (event) => {
-    if (!root.contains(event.target)) {
-      open = false
-      toggleVisibility(content, false)
-    }
-  })
-})
-
-// ---------------------------------------------------------------------------
-// Combobox previews — open on focus, filter on input, select on click,
-// dismiss on outside click.
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='combobox']").forEach((root) => {
-  const input = root.querySelector("[data-combobox-input]")
-  const content = root.querySelector("[data-combobox-content]")
-  const items = qs(root, "[data-slot='combobox-item']")
-
-  input?.addEventListener("focus", () => toggleVisibility(content, true))
-  input?.addEventListener("input", () => {
-    const value = (input.value || "").toLowerCase()
-    items.forEach((item) => {
-      const text = (item.textContent || "").toLowerCase()
-      item.classList.toggle("hidden", !text.includes(value))
-    })
-    toggleVisibility(content, true)
-  })
-
-  items.forEach((item) => {
-    item.addEventListener("click", () => {
-      input.value = item.getAttribute("data-value") || (item.textContent || "").trim()
-      toggleVisibility(content, false)
-    })
-  })
-
-  document.addEventListener("click", (event) => {
-    if (!root.contains(event.target)) {
-      toggleVisibility(content, false)
-    }
-  })
-})
-
-// ---------------------------------------------------------------------------
-// Autocomplete previews — like combobox but also manages a hidden value input,
-// shows an empty state, and restores the selected label on outside click.
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='autocomplete']").forEach((root) => {
-  const input = root.querySelector("[data-autocomplete-input]")
-  const content = root.querySelector("[data-autocomplete-content]")
-  const valueInput = root.querySelector("[data-slot='autocomplete-value']")
-  const items = qs(root, "[data-slot='autocomplete-item']")
-  const empty = root.querySelector("[data-slot='autocomplete-empty']")
-  let selectedLabel = root.getAttribute("data-selected-label") || ""
-
-  const sync = (open) => {
-    toggleVisibility(content, open)
-    input?.setAttribute("aria-expanded", open ? "true" : "false")
-    root.dataset.state = open ? "open" : "closed"
-  }
-
-  const syncEmpty = () => {
-    if (!empty) return
-    const hasVisibleItems = items.some((item) => !item.classList.contains("hidden"))
-    empty.classList.toggle("hidden", hasVisibleItems)
-  }
-
-  const filterItems = () => {
-    const value = (input?.value || "").toLowerCase()
-    items.forEach((item) => {
-      const text = (item.getAttribute("data-label") || item.textContent || "").toLowerCase()
-      item.classList.toggle("hidden", !text.includes(value))
-    })
-
-    if (valueInput && (input?.value || "") !== selectedLabel) {
-      valueInput.value = ""
-    }
-
-    syncEmpty()
-    sync(true)
-  }
-
-  input?.addEventListener("focus", () => sync(true))
-  input?.addEventListener("input", filterItems)
-
-  items.forEach((item) => {
-    item.addEventListener("click", () => {
-      if (item.getAttribute("data-disabled") === "true") return
-      selectedLabel = item.getAttribute("data-label") || item.textContent || ""
-      root.dataset.selectedLabel = selectedLabel
-      if (input) input.value = selectedLabel
-      if (valueInput) valueInput.value = item.getAttribute("data-value") || ""
-
-      items.forEach((entry) => {
-        const selected = entry === item
-        entry.dataset.selected = selected ? "true" : "false"
-        entry.setAttribute("aria-selected", selected ? "true" : "false")
-        const check = entry.querySelector("[data-slot='select-check']")
-        if (check) check.classList.toggle("hidden", !selected)
-      })
-
-      sync(false)
-    })
-  })
-
-  document.addEventListener("click", (event) => {
-    if (!root.contains(event.target)) {
-      if (input && valueInput?.value) input.value = selectedLabel
-      filterItems()
-      sync(false)
-    }
-  })
-})
 
 // ---------------------------------------------------------------------------
 // Tabs previews — switch active trigger/panel state in static docs examples.
@@ -930,34 +723,4 @@ document.addEventListener("click", (event) => {
   if (panels.length === 0) return
 
   syncTabsPreview(root, trigger)
-})
-
-// ---------------------------------------------------------------------------
-// Carousel previews — simple prev/next navigation with CSS transform sliding.
-// ---------------------------------------------------------------------------
-
-qs(document, "[data-slot='carousel']").forEach((root) => {
-  const track = root.querySelector("[data-carousel-track]")
-  const items = qs(root, "[data-slot='carousel-item']")
-  const prev = root.querySelector("[data-carousel-prev]")
-  const next = root.querySelector("[data-carousel-next]")
-  let index = 0
-
-  const sync = () => {
-    if (!track || items.length === 0) return
-    track.style.transform = `translateX(-${index * 100}%)`
-    track.style.transition = "transform 240ms ease"
-  }
-
-  prev?.addEventListener("click", () => {
-    index = index === 0 ? items.length - 1 : index - 1
-    sync()
-  })
-
-  next?.addEventListener("click", () => {
-    index = index === items.length - 1 ? 0 : index + 1
-    sync()
-  })
-
-  sync()
 })

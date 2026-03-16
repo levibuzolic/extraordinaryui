@@ -66,6 +66,7 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
     end)
 
     File.write!(Path.join(assets_dir, "static_docs.js"), site_js())
+    File.write!(Path.join(assets_dir, "cinder_ui.js"), cinder_ui_js())
     File.write!(Path.join(assets_dir, "site.css"), site_css())
 
     Marketing.write_marketing_index!(output_dir, %{
@@ -202,6 +203,11 @@ defmodule Mix.Tasks.CinderUi.Docs.Build do
 
   defp site_js do
     docs_asset!("static_docs.js") <> ";\n"
+  end
+
+  defp cinder_ui_js do
+    Path.join([File.cwd!(), "priv", "templates", "cinder_ui.js"])
+    |> File.read!()
   end
 
   defp site_css do

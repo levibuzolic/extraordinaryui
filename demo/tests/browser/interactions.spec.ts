@@ -770,6 +770,93 @@ test.describe("select highlight and keyboard behavior", () => {
   })
 })
 
+test.describe("static docs interactivity", () => {
+  test("static docs mount every used Cinder UI hook", async ({ page }) => {
+    await page.goto("/docs/?static=1")
+
+    const missingHooks = await page.evaluate(
+      () => (window as Window & { CinderUIStaticMissingHooks?: string[] }).CinderUIStaticMissingHooks || [],
+    )
+    expect(missingHooks).toEqual([])
+  })
+
+  test("static docs sidebar collapses and expands from its trigger", async ({ page }) => {
+    await page.goto("/docs/advanced-sidebar_layout?static=1")
+
+    const sidebar = page.locator("#workspace-shell-sidebar")
+    const trigger = sidebar.locator("[data-sidebar-trigger]").first()
+    const labels = sidebar.locator("[data-sidebar-label]")
+
+    await sidebar.scrollIntoViewIfNeeded()
+    await expect(sidebar).toHaveAttribute("data-state", "expanded")
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(labels.first()).toBeVisible()
+
+    await trigger.click()
+    await expect(sidebar).toHaveAttribute("data-state", "collapsed")
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
+    await expect(labels.first()).toBeHidden()
+
+    await trigger.click()
+    await expect(sidebar).toHaveAttribute("data-state", "expanded")
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(labels.first()).toBeVisible()
+  })
+
+  test("static docs sidebar profile menu opens from its footer trigger", async ({ page }) => {
+    await page.goto("/docs/advanced-sidebar_profile_menu?static=1")
+
+    const menu = page.locator("#sidebar-profile-menu-example")
+    const trigger = menu.locator("[data-dropdown-trigger]")
+    const content = menu.locator("[data-dropdown-content]")
+
+    await menu.scrollIntoViewIfNeeded()
+    expect(await hasClass(content, "hidden")).toBe(true)
+
+    await trigger.click()
+    expect(await hasClass(content, "hidden")).toBe(false)
+    await expect(content.getByText("Account")).toBeVisible()
+    await expect(content.getByText("Billing")).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    expect(await hasClass(content, "hidden")).toBe(true)
+  })
+
+  test("static docs select dropdown opens and updates value", async ({ page }) => {
+    await page.goto("/docs/?static=1")
+
+    const select = page.locator("#theme-color")
+    const trigger = select.locator("[data-select-trigger]")
+    const hiddenInput = select.locator("[data-slot='select-input']")
+    const content = select.locator("[data-select-content]")
+
+    await trigger.scrollIntoViewIfNeeded()
+    await trigger.click()
+    expect(await hasClass(content, "hidden")).toBe(false)
+
+    await select.locator("[data-select-item][data-value='slate']").click()
+    await expect(hiddenInput).toHaveValue("slate")
+    expect(await hasClass(content, "hidden")).toBe(true)
+  })
+
+  test("static docs resizable handles respond to keyboard resizing", async ({ page }) => {
+    await page.goto("/docs/layout-resizable?static=1")
+
+    const root = page.locator("#resizable-1")
+    const firstPanel = root.locator("[data-slot='resizable-panel']").first()
+    const handle = root.locator("[data-slot='resizable-handle']").first()
+
+    await root.scrollIntoViewIfNeeded()
+    const initialSize = Number.parseFloat((await firstPanel.getAttribute("data-size")) || "0")
+
+    await handle.focus()
+    await page.keyboard.press("ArrowRight")
+
+    const nextSize = Number.parseFloat((await firstPanel.getAttribute("data-size")) || "0")
+    expect(nextSize).toBeGreaterThan(initialSize)
+  })
+})
+
 test.describe("page integrity", () => {
   test("home/docs/component have no console errors or failed requests", async ({ page }) => {
     const consoleErrors: string[] = []

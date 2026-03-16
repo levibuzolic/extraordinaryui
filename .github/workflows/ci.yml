@@ -146,7 +146,7 @@ jobs:
         run: mix test
 
   demo_typecheck:
-    name: Demo TypeScript Check
+    name: Demo TypeScript + Hook Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -166,6 +166,9 @@ jobs:
 
       - name: TypeScript check
         run: npm run typecheck
+
+      - name: Run hook unit tests
+        run: npm run test:hooks
 
   demo_browser:
     name: Demo Browser Tests (Playwright)
