@@ -406,6 +406,30 @@ const initCommandPalette = () => {
   const items = []
   const seen = new Set()
 
+  const moduleNameForLink = (link) => {
+    const sectionItem = link
+      .closest("[data-slot='sidebar-item-children']")
+      ?.closest("[data-slot='sidebar-item']")
+
+    if (!sectionItem) return ""
+
+    const sectionButtonLabel = sectionItem.querySelector(
+      "[data-slot='sidebar-item-button'] [data-sidebar-label]",
+    )
+
+    return (sectionButtonLabel?.textContent || "").trim()
+  }
+
+  const groupNameForLink = (link) => {
+    const groupLabel = link
+      .closest("[data-slot='sidebar-group']")
+      ?.querySelector(":scope > [data-sidebar-label]")
+
+    const label = (groupLabel?.textContent || "").trim()
+    if (label === "Components") return "Component"
+    return label
+  }
+
   navLinks.forEach((link) => {
     const hrefAttr = link.getAttribute("href")
     if (!hrefAttr) return
@@ -414,18 +438,17 @@ const initCommandPalette = () => {
     if (seen.has(href)) return
     seen.add(href)
 
-    const sectionLabel = link
-      .closest("[data-slot='sidebar-group']")
-      ?.querySelector("[data-slot='sidebar-group'] [data-sidebar-label]")
-    const moduleName = (sectionLabel?.textContent || "").trim()
+    const moduleName = moduleNameForLink(link)
+    const groupName = groupNameForLink(link)
     const title = (link.textContent || "").trim()
     const displayName = moduleName ? `${moduleName}.${title}` : title
 
     items.push({
       title,
       moduleName,
+      groupName,
       displayName,
-      queryText: `${displayName} ${title} ${moduleName}`.toLowerCase(),
+      queryText: `${displayName} ${title} ${moduleName} ${groupName}`.toLowerCase(),
       href,
     })
   })
@@ -503,7 +526,7 @@ const initCommandPalette = () => {
       .map((item, index) => {
         const active = index === activeIndex ? "true" : "false"
         const label = escapeHtml(item.displayName)
-        const meta = item.moduleName ? escapeHtml(item.moduleName) : "Component"
+        const meta = item.groupName ? escapeHtml(item.groupName) : "Component"
         return `<li><button type="button" class="docs-k-item" data-index="${index}" data-active="${active}"><span class="docs-k-item-label">${label}</span><span class="docs-k-item-meta">${meta}</span></button></li>`
       })
       .join("")
