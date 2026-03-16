@@ -59,6 +59,7 @@ defmodule CinderUI.Components.Advanced do
 
   attr :class, :string, default: nil
   attr :placeholder, :string, default: "Type a command..."
+  attr :rest, :global
 
   slot :group do
     attr :heading, :string
@@ -72,7 +73,7 @@ defmodule CinderUI.Components.Advanced do
       ])
 
     ~H"""
-    <div data-slot="command" class={classes(@classes)}>
+    <div data-slot="command" class={classes(@classes)} {@rest}>
       <div data-slot="command-input-wrapper" class="flex items-center border-b px-3">
         <input
           data-slot="command-input"
@@ -171,6 +172,7 @@ defmodule CinderUI.Components.Advanced do
   attr :class, :string, default: nil
   attr :placeholder, :string, default: "Select an option"
   attr :value, :string, default: nil
+  attr :rest, :global
 
   slot :option, required: true do
     attr :value, :string, required: true
@@ -181,7 +183,7 @@ defmodule CinderUI.Components.Advanced do
     assigns = assign(assigns, :classes, ["relative w-full", assigns.class])
 
     ~H"""
-    <div id={@id} data-slot="combobox" class={classes(@classes)} phx-hook="CuiCombobox">
+    <div id={@id} data-slot="combobox" class={classes(@classes)} phx-hook="CuiCombobox" {@rest}>
       <input
         data-slot="combobox-input"
         data-combobox-input
@@ -244,13 +246,14 @@ defmodule CinderUI.Components.Advanced do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def calendar(assigns) do
     assigns = assign(assigns, :classes, ["rounded-md border p-3", assigns.class])
 
     ~H"""
-    <div data-slot="calendar" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="calendar" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -282,6 +285,7 @@ defmodule CinderUI.Components.Advanced do
   attr :autoplay, :integer, default: nil
   attr :indicators, :boolean, default: false
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :item, required: true
 
   def carousel(assigns) do
@@ -299,6 +303,7 @@ defmodule CinderUI.Components.Advanced do
       aria-roledescription="carousel"
       class={classes(@classes)}
       phx-hook="CuiCarousel"
+      {@rest}
     >
       <div data-slot="carousel-content" class="overflow-hidden">
         <div class="flex" data-carousel-track>
@@ -367,6 +372,7 @@ defmodule CinderUI.Components.Advanced do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :title
   slot :description
   slot :inner_block, required: true
@@ -375,7 +381,7 @@ defmodule CinderUI.Components.Advanced do
     assigns = assign(assigns, :classes, ["rounded-xl border bg-card p-4", assigns.class])
 
     ~H"""
-    <section data-slot="chart" class={classes(@classes)}>
+    <section data-slot="chart" class={classes(@classes)} {@rest}>
       <header :if={@title != [] or @description != []} class="mb-4">
         <h3 :if={@title != []} class="text-sm font-semibold">{render_slot(@title)}</h3>
         <p :if={@description != []} class="text-muted-foreground text-sm">
@@ -408,6 +414,7 @@ defmodule CinderUI.Components.Advanced do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :rail, required: true
   slot :inset, required: true
 
@@ -416,7 +423,7 @@ defmodule CinderUI.Components.Advanced do
       assign(assigns, :classes, ["grid min-h-screen md:grid-cols-[260px_1fr]", assigns.class])
 
     ~H"""
-    <div data-slot="sidebar" class={classes(@classes)}>
+    <div data-slot="sidebar" class={classes(@classes)} {@rest}>
       <aside
         data-slot="sidebar-rail"
         class="bg-sidebar text-sidebar-foreground border-r border-sidebar-border p-4"

@@ -69,6 +69,7 @@ defmodule CinderUI.Components.DataDisplay do
   attr :fallback, :string, default: nil
   attr :size, :atom, default: :default, values: [:sm, :default, :lg]
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :badge do
     attr :class, :string
@@ -108,7 +109,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <div data-slot="avatar" data-size={@size} class={classes(@classes)}>
+    <div data-slot="avatar" data-size={@size} class={classes(@classes)} {@rest}>
       <img
         :if={@src}
         data-slot="avatar-image"
@@ -173,6 +174,7 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def avatar_group(assigns) do
@@ -183,7 +185,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <div data-slot="avatar-group" class={classes(@classes)}>
+    <div data-slot="avatar-group" class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
@@ -205,6 +207,7 @@ defmodule CinderUI.Components.DataDisplay do
 
   attr :size, :atom, default: :default, values: [:sm, :default, :lg]
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def avatar_group_count(assigns) do
@@ -223,7 +226,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <div data-slot="avatar-group-count" data-size={@size} class={classes(@classes)}>
+    <div data-slot="avatar-group-count" data-size={@size} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
@@ -303,13 +306,14 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table(assigns) do
     assigns = assign(assigns, :classes, ["w-full caption-bottom text-sm", assigns.class])
 
     ~H"""
-    <div data-slot="table-container" class="relative w-full overflow-x-auto">
+    <div data-slot="table-container" class="relative w-full overflow-x-auto" {@rest}>
       <table data-slot="table" class={classes(@classes)}>
         {render_slot(@inner_block)}
       </table>
@@ -335,13 +339,16 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table_header(assigns) do
     assigns = assign(assigns, :classes, ["[&_tr]:border-b", assigns.class])
 
     ~H"""
-    <thead data-slot="table-header" class={classes(@classes)}>{render_slot(@inner_block)}</thead>
+    <thead data-slot="table-header" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </thead>
     """
   end
 
@@ -363,13 +370,16 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table_body(assigns) do
     assigns = assign(assigns, :classes, ["[&_tr:last-child]:border-0", assigns.class])
 
     ~H"""
-    <tbody data-slot="table-body" class={classes(@classes)}>{render_slot(@inner_block)}</tbody>
+    <tbody data-slot="table-body" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </tbody>
     """
   end
 
@@ -390,6 +400,7 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table_footer(assigns) do
@@ -400,7 +411,9 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <tfoot data-slot="table-footer" class={classes(@classes)}>{render_slot(@inner_block)}</tfoot>
+    <tfoot data-slot="table-footer" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </tfoot>
     """
   end
 
@@ -423,6 +436,7 @@ defmodule CinderUI.Components.DataDisplay do
 
   attr :class, :string, default: nil
   attr :state, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table_row(assigns) do
@@ -433,7 +447,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <tr data-slot="table-row" data-state={@state} class={classes(@classes)}>
+    <tr data-slot="table-row" data-state={@state} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </tr>
     """
@@ -456,6 +470,7 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table_head(assigns) do
@@ -466,7 +481,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <th data-slot="table-head" class={classes(@classes)}>{render_slot(@inner_block)}</th>
+    <th data-slot="table-head" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</th>
     """
   end
 
@@ -515,13 +530,16 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def table_caption(assigns) do
     assigns = assign(assigns, :classes, ["text-muted-foreground mt-4 text-sm", assigns.class])
 
     ~H"""
-    <caption data-slot="table-caption" class={classes(@classes)}>{render_slot(@inner_block)}</caption>
+    <caption data-slot="table-caption" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </caption>
     """
   end
 
@@ -559,6 +577,7 @@ defmodule CinderUI.Components.DataDisplay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :item, required: true do
     attr :title, :string, required: true
@@ -569,7 +588,7 @@ defmodule CinderUI.Components.DataDisplay do
     assigns = assign(assigns, :classes, ["w-full", assigns.class])
 
     ~H"""
-    <div data-slot="accordion" class={classes(@classes)}>
+    <div data-slot="accordion" class={classes(@classes)} {@rest}>
       <details
         :for={item <- @item}
         data-slot="accordion-item"
@@ -613,6 +632,7 @@ defmodule CinderUI.Components.DataDisplay do
 
   attr :open, :boolean, default: false
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :inner_block, required: true
 
@@ -620,7 +640,7 @@ defmodule CinderUI.Components.DataDisplay do
     assigns = assign(assigns, :classes, ["w-full rounded-md border px-4", assigns.class])
 
     ~H"""
-    <details data-slot="collapsible" open={@open} class={classes(["group" | @classes])}>
+    <details data-slot="collapsible" open={@open} class={classes(["group" | @classes])} {@rest}>
       <summary
         data-slot="collapsible-trigger"
         class="flex cursor-pointer list-none items-center justify-between py-3 text-sm font-medium"
@@ -652,6 +672,7 @@ defmodule CinderUI.Components.DataDisplay do
 
   attr :id, :string, default: nil
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def code_block(assigns) do
@@ -664,7 +685,7 @@ defmodule CinderUI.Components.DataDisplay do
       ])
 
     ~H"""
-    <div id={@id} data-slot="code-block" class={classes(@classes)} phx-hook="CuiCodeBlock">
+    <div id={@id} data-slot="code-block" class={classes(@classes)} phx-hook="CuiCodeBlock" {@rest}>
       <button
         type="button"
         data-slot="code-block-copy"

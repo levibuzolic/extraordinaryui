@@ -70,6 +70,7 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card(assigns) do
@@ -80,7 +81,7 @@ defmodule CinderUI.Components.Layout do
       ])
 
     ~H"""
-    <div data-slot="card" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -106,6 +107,7 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card_header(assigns) do
@@ -116,7 +118,7 @@ defmodule CinderUI.Components.Layout do
       ])
 
     ~H"""
-    <div data-slot="card-header" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card-header" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -147,13 +149,14 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card_title(assigns) do
     assigns = assign(assigns, :classes, ["leading-none font-semibold", assigns.class])
 
     ~H"""
-    <div data-slot="card-title" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card-title" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -184,13 +187,16 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card_description(assigns) do
     assigns = assign(assigns, :classes, ["text-muted-foreground text-sm", assigns.class])
 
     ~H"""
-    <div data-slot="card-description" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card-description" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </div>
     """
   end
 
@@ -213,6 +219,7 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card_action(assigns) do
@@ -223,7 +230,7 @@ defmodule CinderUI.Components.Layout do
       ])
 
     ~H"""
-    <div data-slot="card-action" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card-action" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -250,13 +257,14 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card_content(assigns) do
     assigns = assign(assigns, :classes, ["px-6", assigns.class])
 
     ~H"""
-    <div data-slot="card-content" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card-content" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -280,6 +288,7 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def card_footer(assigns) do
@@ -287,7 +296,7 @@ defmodule CinderUI.Components.Layout do
       assign(assigns, :classes, ["flex items-center px-6 [.border-t]:pt-6", assigns.class])
 
     ~H"""
-    <div data-slot="card-footer" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="card-footer" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -311,6 +320,7 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def panel(assigns) do
@@ -321,7 +331,7 @@ defmodule CinderUI.Components.Layout do
       ])
 
     ~H"""
-    <div data-slot="panel" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="panel" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -342,6 +352,7 @@ defmodule CinderUI.Components.Layout do
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :decorative, :boolean, default: true
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def separator(assigns) do
     orientation_classes =
@@ -364,6 +375,7 @@ defmodule CinderUI.Components.Layout do
       aria-orientation={@orientation}
       data-orientation={@orientation}
       class={classes(@classes)}
+      {@rest}
     />
     """
   end
@@ -403,12 +415,13 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def skeleton(assigns) do
     assigns = assign(assigns, :classes, ["bg-accent animate-pulse rounded-md", assigns.class])
 
     ~H"""
-    <div data-slot="skeleton" class={classes(@classes)} />
+    <div data-slot="skeleton" class={classes(@classes)} {@rest} />
     """
   end
 
@@ -424,13 +437,14 @@ defmodule CinderUI.Components.Layout do
 
   attr :ratio, :string, default: "16 / 9"
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def aspect_ratio(assigns) do
     assigns = assign(assigns, :classes, ["relative w-full overflow-hidden", assigns.class])
 
     ~H"""
-    <div data-slot="aspect-ratio" class={classes(@classes)} style={"aspect-ratio: #{@ratio};"}>
+    <div data-slot="aspect-ratio" class={classes(@classes)} style={"aspect-ratio: #{@ratio};"} {@rest}>
       <div class="absolute inset-0">{render_slot(@inner_block)}</div>
     </div>
     """
@@ -454,6 +468,7 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def kbd(assigns) do
@@ -464,7 +479,7 @@ defmodule CinderUI.Components.Layout do
       ])
 
     ~H"""
-    <kbd data-slot="kbd" class={classes(@classes)}>{render_slot(@inner_block)}</kbd>
+    <kbd data-slot="kbd" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</kbd>
     """
   end
 
@@ -483,13 +498,14 @@ defmodule CinderUI.Components.Layout do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def kbd_group(assigns) do
     assigns = assign(assigns, :classes, ["inline-flex items-center gap-1", assigns.class])
 
     ~H"""
-    <kbd data-slot="kbd-group" class={classes(@classes)}>{render_slot(@inner_block)}</kbd>
+    <kbd data-slot="kbd-group" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</kbd>
     """
   end
 
@@ -513,6 +529,7 @@ defmodule CinderUI.Components.Layout do
 
   attr :class, :string, default: nil
   attr :viewport_class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def scroll_area(assigns) do
@@ -525,7 +542,7 @@ defmodule CinderUI.Components.Layout do
       ])
 
     ~H"""
-    <div data-slot="scroll-area" class={classes(@classes)}>
+    <div data-slot="scroll-area" class={classes(@classes)} {@rest}>
       <div data-slot="scroll-area-viewport" class={classes(@viewport_classes)}>
         {render_slot(@inner_block)}
       </div>
@@ -587,6 +604,7 @@ defmodule CinderUI.Components.Layout do
   attr :storage_key, :string, default: nil
   attr :id, :string, default: nil
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :panel, required: true do
     attr :size, :integer
@@ -612,6 +630,7 @@ defmodule CinderUI.Components.Layout do
       data-storage-key={@storage_key}
       class={classes(@classes)}
       phx-hook="CuiResizable"
+      {@rest}
     >
       <.resizable_panel_pair
         :for={{panel, index} <- Enum.with_index(@panel)}

@@ -12,6 +12,7 @@ defmodule CinderUI.Docs.UIComponents do
   attr :variant, :atom, default: :outline
   attr :size, :atom, default: :sm
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :inner_block, required: true
 
@@ -25,6 +26,7 @@ defmodule CinderUI.Docs.UIComponents do
       variant={@variant}
       size={@size}
       class={@class}
+      {@rest}
     >
       {render_slot(@inner_block)}
     </Actions.button>
@@ -33,6 +35,7 @@ defmodule CinderUI.Docs.UIComponents do
 
   attr :class, :string, default: nil
   attr :button_class, :string, default: nil
+  attr :rest, :global
 
   def theme_mode_toggle(assigns) do
     assigns =
@@ -53,7 +56,7 @@ defmodule CinderUI.Docs.UIComponents do
       )
 
     ~H"""
-    <div class={@root_classes} role="group" aria-label="Theme mode">
+    <div class={@root_classes} role="group" aria-label="Theme mode" {@rest}>
       <button
         type="button"
         data-theme-mode="light"
@@ -94,12 +97,16 @@ defmodule CinderUI.Docs.UIComponents do
   attr :home_url, :string, default: nil
   attr :github_url, :string, default: nil
   attr :hex_package_url, :string, default: nil
+  attr :rest, :global
 
   slot :inner_block, required: true
 
   def docs_layout(assigns) do
     ~H"""
-    <div class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+    <div
+      class="mx-auto grid min-h-screen max-w-[1900px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]"
+      {@rest}
+    >
       <aside
         data-docs-sidebar
         data-scroll-restored="false"
@@ -157,6 +164,7 @@ defmodule CinderUI.Docs.UIComponents do
 
   attr :github_url, :string, default: nil
   attr :hex_package_url, :string, default: nil
+  attr :rest, :global
 
   def docs_header_links(assigns) do
     ~H"""
@@ -166,6 +174,7 @@ defmodule CinderUI.Docs.UIComponents do
           (is_binary(@hex_package_url) and @hex_package_url != "")
       }
       class="mt-3 flex flex-wrap gap-1 text-xs"
+      {@rest}
     >
       <.docs_external_link_button
         :if={is_binary(@github_url) and @github_url != ""}
@@ -187,51 +196,62 @@ defmodule CinderUI.Docs.UIComponents do
     """
   end
 
+  attr :sections, :list, default: []
+  attr :mode, :atom, default: :static
+  attr :root_prefix, :string, default: "."
+  attr :active_entry_id, :string, default: nil
+  attr :active_page, :atom, default: nil
+  attr :rest, :global
+
   def docs_sidebar(assigns) do
     ~H"""
-    <div>
-      <a
-        href={install_href(@mode, @root_prefix)}
-        class={sidebar_link_class(@active_page == :install)}
-        aria-current={if @active_page == :install, do: "page", else: nil}
-      >
-        Installation
-      </a>
-    </div>
-
-    <div>
-      <a
-        href={overview_href(@mode, @root_prefix)}
-        class={sidebar_link_class(@active_page == :overview)}
-        aria-current={if @active_page == :overview, do: "page", else: nil}
-      >
-        Overview
-      </a>
-    </div>
-
-    <%= for section <- @sections do %>
+    <div {@rest}>
       <div>
         <a
-          href={section_href(@mode, @root_prefix, section.id)}
-          class="sidebar-section-link text-sm font-semibold"
+          href={install_href(@mode, @root_prefix)}
+          class={sidebar_link_class(@active_page == :install)}
+          aria-current={if @active_page == :install, do: "page", else: nil}
         >
-          {section.title}
+          Installation
         </a>
-        <ul class="mt-2 space-y-1">
-          <li :for={entry <- section.entries}>
-            <a
-              class={sidebar_link_class(entry.id == @active_entry_id)}
-              href={entry_href(@mode, @root_prefix, entry)}
-              aria-current={if entry.id == @active_entry_id, do: "page", else: nil}
-            >
-              {entry.title}
-            </a>
-          </li>
-        </ul>
       </div>
-    <% end %>
+
+      <div>
+        <a
+          href={overview_href(@mode, @root_prefix)}
+          class={sidebar_link_class(@active_page == :overview)}
+          aria-current={if @active_page == :overview, do: "page", else: nil}
+        >
+          Overview
+        </a>
+      </div>
+
+      <%= for section <- @sections do %>
+        <div>
+          <a
+            href={section_href(@mode, @root_prefix, section.id)}
+            class="sidebar-section-link text-sm font-semibold"
+          >
+            {section.title}
+          </a>
+          <ul class="mt-2 space-y-1">
+            <li :for={entry <- section.entries}>
+              <a
+                class={sidebar_link_class(entry.id == @active_entry_id)}
+                href={entry_href(@mode, @root_prefix, entry)}
+                aria-current={if entry.id == @active_entry_id, do: "page", else: nil}
+              >
+                {entry.title}
+              </a>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+    </div>
     """
   end
+
+  attr :rest, :global
 
   def docs_theme_controls(assigns) do
     assigns =
@@ -240,7 +260,7 @@ defmodule CinderUI.Docs.UIComponents do
       |> assign(:radius_options, radius_options())
 
     ~H"""
-    <section class="mb-6 rounded-lg border p-3">
+    <section class="mb-6 rounded-lg border p-3" {@rest}>
       <div class="flex items-center justify-between gap-3">
         <div>
           <p class="text-xs font-medium text-muted-foreground">Theme mode</p>
@@ -283,9 +303,11 @@ defmodule CinderUI.Docs.UIComponents do
     """
   end
 
+  attr :rest, :global
+
   def docs_search_button(assigns) do
     ~H"""
-    <div class="mb-5">
+    <div class="mb-5" {@rest}>
       <Actions.button
         type="button"
         variant={:outline}
@@ -304,6 +326,7 @@ defmodule CinderUI.Docs.UIComponents do
   attr :language, :atom, default: :auto
   attr :standalone, :boolean, default: false
   attr :code_class, :any, default: nil
+  attr :rest, :global
 
   def docs_code_block(assigns) do
     assigns =
@@ -320,6 +343,7 @@ defmodule CinderUI.Docs.UIComponents do
         "overflow-x-auto rounded-lg bg-muted/30 p-4 text-xs whitespace-normal",
         @standalone && "install-code-block relative rounded-xl my-4 border text-sm"
       ]}
+      {@rest}
     >
       <code id={@id} class={@code_classes}><%= rendered(@highlighted_html) %></code>
     </pre>
@@ -328,10 +352,11 @@ defmodule CinderUI.Docs.UIComponents do
 
   attr :component_count, :integer, default: nil
   attr :show_count, :boolean, default: false
+  attr :rest, :global
 
   def docs_overview_intro(assigns) do
     ~H"""
-    <section class="mb-8">
+    <section class="mb-8" {@rest}>
       <h2 class="text-2xl font-semibold tracking-tight">Component Library</h2>
       <p class="text-muted-foreground mt-2 max-w-3xl text-sm">
         Static docs for Cinder UI components. Open any component for preview, HEEx usage,
@@ -348,22 +373,25 @@ defmodule CinderUI.Docs.UIComponents do
   attr :sections, :list, default: []
   attr :mode, :atom, default: :static
   attr :root_prefix, :string, default: "."
+  attr :rest, :global
 
   def docs_overview_sections(assigns) do
     ~H"""
-    <%= for section <- @sections do %>
-      <section id={section.id} class="mb-12">
-        <h3 class="mb-4 text-xl font-semibold">{section.title}</h3>
-        <div class="grid gap-4 md:grid-cols-2">
-          <.docs_overview_entry
-            :for={entry <- section.entries}
-            entry={entry}
-            mode={@mode}
-            root_prefix={@root_prefix}
-          />
-        </div>
-      </section>
-    <% end %>
+    <div {@rest}>
+      <%= for section <- @sections do %>
+        <section id={section.id} class="mb-12">
+          <h3 class="mb-4 text-xl font-semibold">{section.title}</h3>
+          <div class="grid gap-4 md:grid-cols-2">
+            <.docs_overview_entry
+              :for={entry <- section.entries}
+              entry={entry}
+              mode={@mode}
+              root_prefix={@root_prefix}
+            />
+          </div>
+        </section>
+      <% end %>
+    </div>
     """
   end
 
@@ -371,6 +399,7 @@ defmodule CinderUI.Docs.UIComponents do
   attr :sections, :list, required: true
   attr :mode, :atom, default: :static
   attr :root_prefix, :string, default: "."
+  attr :rest, :global
 
   def docs_component_detail(assigns) do
     assigns =
@@ -380,74 +409,76 @@ defmodule CinderUI.Docs.UIComponents do
       |> assign(:residual_docs, docs_residual(assigns.entry.docs_full, assigns.entry.docs))
 
     ~H"""
-    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-      <Actions.button
-        as="a"
-        href={back_to_index_href(@mode, @root_prefix, @back_section_id)}
-        variant={:outline}
-        size={:xs}
-      >
-        <Icons.icon name="arrow-left" class="size-3.5" /> Back to index
-      </Actions.button>
-      <.docs_external_link_button
-        href={@entry.shadcn_url}
-        variant={:outline}
-        size={:xs}
-      >
-        Original shadcn/ui docs ↗
-      </.docs_external_link_button>
-    </div>
-
-    <section class="mb-6">
-      <p class="text-muted-foreground text-xs">{@entry.module_name}</p>
-      <div class="mt-1 flex flex-wrap items-center gap-3">
-        <h2 class="text-2xl font-semibold tracking-tight">
-          <code>{@entry.module_name}.{@entry.title}</code>
-        </h2>
-        <.docs_runtime_badge runtime={@entry.runtime} />
-      </div>
-      <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
-    </section>
-
-    <section :if={@residual_docs != ""} class="mb-6">
-      <div class="space-y-3 text-sm docs-markdown">
-        {rendered(summary_markdown_html(@residual_docs))}
-      </div>
-    </section>
-
-    <section class="mb-8 space-y-4">
-      <%= for {example, index} <- Enum.with_index(@entry.examples, 1) do %>
-        <section
-          class="mb-10"
-          data-component-example
-          data-component-id={@entry.id}
-          data-example-id={example.id}
-          data-example-title={example.title}
-          data-promoted-visual={example.promoted_visual}
+    <div {@rest}>
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <Actions.button
+          as="a"
+          href={back_to_index_href(@mode, @root_prefix, @back_section_id)}
+          variant={:outline}
+          size={:xs}
         >
-          <header>
-            <h3 class="text-sm font-semibold">
-              {example_heading(example.title, index, length(@entry.examples))}
-            </h3>
-            <p
-              :if={is_binary(example.description) and example.description != ""}
-              class="text-muted-foreground mt-1 text-xs"
-            >
-              {example.description}
-            </p>
-          </header>
+          <Icons.icon name="arrow-left" class="size-3.5" /> Back to index
+        </Actions.button>
+        <.docs_external_link_button
+          href={@entry.shadcn_url}
+          variant={:outline}
+          size={:xs}
+        >
+          Original shadcn/ui docs ↗
+        </.docs_external_link_button>
+      </div>
 
-          <.docs_example_card
-            preview_html={example.preview_html}
-            template_heex={example.template_heex}
-            copy_id={"#{@entry.id}-#{example.id}"}
-            code_id={"code-#{@entry.id}-#{example.id}"}
-            preview_align={example.preview_align || :center}
-            class="mt-4"
-          />
-        </section>
-      <% end %>
-    </section>
+      <section class="mb-6">
+        <p class="text-muted-foreground text-xs">{@entry.module_name}</p>
+        <div class="mt-1 flex flex-wrap items-center gap-3">
+          <h2 class="text-2xl font-semibold tracking-tight">
+            <code>{@entry.module_name}.{@entry.title}</code>
+          </h2>
+          <.docs_runtime_badge runtime={@entry.runtime} />
+        </div>
+        <div class="docs-markdown mt-3 text-sm">{rendered(@docs_html)}</div>
+      </section>
+
+      <section :if={@residual_docs != ""} class="mb-6">
+        <div class="space-y-3 text-sm docs-markdown">
+          {rendered(summary_markdown_html(@residual_docs))}
+        </div>
+      </section>
+
+      <section class="mb-8 space-y-4">
+        <%= for {example, index} <- Enum.with_index(@entry.examples, 1) do %>
+          <section
+            class="mb-10"
+            data-component-example
+            data-component-id={@entry.id}
+            data-example-id={example.id}
+            data-example-title={example.title}
+            data-promoted-visual={example.promoted_visual}
+          >
+            <header>
+              <h3 class="text-sm font-semibold">
+                {example_heading(example.title, index, length(@entry.examples))}
+              </h3>
+              <p
+                :if={is_binary(example.description) and example.description != ""}
+                class="text-muted-foreground mt-1 text-xs"
+              >
+                {example.description}
+              </p>
+            </header>
+
+            <.docs_example_card
+              preview_html={example.preview_html}
+              template_heex={example.template_heex}
+              copy_id={"#{@entry.id}-#{example.id}"}
+              code_id={"code-#{@entry.id}-#{example.id}"}
+              preview_align={example.preview_align || :center}
+              class="mt-4"
+            />
+          </section>
+        <% end %>
+      </section>
+    </div>
 
     <section class="mb-6">
       <h3 class="mb-3 text-sm font-semibold">Attributes</h3>
@@ -750,19 +781,19 @@ defmodule CinderUI.Docs.UIComponents do
       |> assign(:badge_class, runtime_badge_class(assigns.runtime.kind))
 
     ~H"""
-      <Overlay.tooltip
-        text={@runtime.summary}
-        content_class="w-max max-w-56 whitespace-normal text-left text-pretty"
+    <Overlay.tooltip
+      text={@runtime.summary}
+      content_class="w-max max-w-56 whitespace-normal text-left text-pretty"
       data-component-runtime
       data-runtime-kind={@runtime.kind}
-      >
-        <span class="inline-flex shrink-0" tabindex="0">
-          <Feedback.badge variant={:outline} class={@badge_class}>
-            <span aria-hidden="true" class={@dot_class} />
-            {@runtime.label}
-          </Feedback.badge>
-        </span>
-      </Overlay.tooltip>
+    >
+      <span class="inline-flex shrink-0" tabindex="0">
+        <Feedback.badge variant={:outline} class={@badge_class}>
+          <span aria-hidden="true" class={@dot_class} />
+          {@runtime.label}
+        </Feedback.badge>
+      </span>
+    </Overlay.tooltip>
     """
   end
 

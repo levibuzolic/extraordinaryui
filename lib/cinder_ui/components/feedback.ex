@@ -67,6 +67,7 @@ defmodule CinderUI.Components.Feedback do
     values: [:default, :secondary, :destructive, :outline, :ghost, :link]
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def badge(assigns) do
@@ -78,7 +79,7 @@ defmodule CinderUI.Components.Feedback do
       ])
 
     ~H"""
-    <span data-slot="badge" data-variant={@variant} class={classes(@classes)}>
+    <span data-slot="badge" data-variant={@variant} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </span>
     """
@@ -165,6 +166,7 @@ defmodule CinderUI.Components.Feedback do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def alert_title(assigns) do
@@ -175,7 +177,7 @@ defmodule CinderUI.Components.Feedback do
       ])
 
     ~H"""
-    <div data-slot="alert-title" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="alert-title" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -196,6 +198,7 @@ defmodule CinderUI.Components.Feedback do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def alert_description(assigns) do
@@ -206,7 +209,7 @@ defmodule CinderUI.Components.Feedback do
       ])
 
     ~H"""
-    <div data-slot="alert-description" class={classes(@classes)}>
+    <div data-slot="alert-description" class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
@@ -339,10 +342,11 @@ defmodule CinderUI.Components.Feedback do
 
   attr :flash, :map, required: true, doc: "the map of flash messages"
   attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
+  attr :rest, :global
 
   def flash_group(assigns) do
     ~H"""
-    <div id={@id} aria-live="polite">
+    <div id={@id} aria-live="polite" {@rest}>
       <.flash kind={:info} flash={@flash} />
       <.flash kind={:error} flash={@flash} />
 
@@ -406,6 +410,7 @@ defmodule CinderUI.Components.Feedback do
   attr :value, :integer, default: 0
   attr :max, :integer, default: 100
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def progress(assigns) do
     max = if(assigns.max <= 0, do: 100, else: assigns.max)
@@ -429,6 +434,7 @@ defmodule CinderUI.Components.Feedback do
       aria-valuemin="0"
       aria-valuemax={@max}
       aria-valuenow={@value}
+      {@rest}
     >
       <div
         data-slot="progress-indicator"
@@ -482,6 +488,7 @@ defmodule CinderUI.Components.Feedback do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :icon
   slot :title
   slot :description
@@ -495,7 +502,7 @@ defmodule CinderUI.Components.Feedback do
       ])
 
     ~H"""
-    <div data-slot="empty" class={classes(@classes)}>
+    <div data-slot="empty" class={classes(@classes)} {@rest}>
       <div :if={@icon != []} class="text-muted-foreground mb-3">{render_slot(@icon)}</div>
       <h3 :if={@title != []} class="text-base font-semibold">{render_slot(@title)}</h3>
       <p :if={@description != []} class="text-muted-foreground mt-2 text-sm">

@@ -35,13 +35,14 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def breadcrumb(assigns) do
     assigns = assign(assigns, :classes, [assigns.class])
 
     ~H"""
-    <nav data-slot="breadcrumb" aria-label="breadcrumb" class={classes(@classes)}>
+    <nav data-slot="breadcrumb" aria-label="breadcrumb" class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </nav>
     """
@@ -62,6 +63,7 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def breadcrumb_list(assigns) do
@@ -72,7 +74,7 @@ defmodule CinderUI.Components.Navigation do
       ])
 
     ~H"""
-    <ol data-slot="breadcrumb-list" class={classes(@classes)}>{render_slot(@inner_block)}</ol>
+    <ol data-slot="breadcrumb-list" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</ol>
     """
   end
 
@@ -93,13 +95,14 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def breadcrumb_item(assigns) do
     assigns = assign(assigns, :classes, ["inline-flex items-center gap-1.5", assigns.class])
 
     ~H"""
-    <li data-slot="breadcrumb-item" class={classes(@classes)}>{render_slot(@inner_block)}</li>
+    <li data-slot="breadcrumb-item" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</li>
     """
   end
 
@@ -140,6 +143,7 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def breadcrumb_page(assigns) do
@@ -152,6 +156,7 @@ defmodule CinderUI.Components.Navigation do
       aria-disabled="true"
       aria-current="page"
       class={classes(@classes)}
+      {@rest}
     >
       {render_slot(@inner_block)}
     </span>
@@ -169,6 +174,7 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block
 
   def breadcrumb_separator(assigns) do
@@ -180,6 +186,7 @@ defmodule CinderUI.Components.Navigation do
       role="presentation"
       aria-hidden="true"
       class={classes(@classes)}
+      {@rest}
     >
       <%= if @inner_block == [] do %>
         /
@@ -201,6 +208,7 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def breadcrumb_ellipsis(assigns) do
     assigns =
@@ -212,6 +220,7 @@ defmodule CinderUI.Components.Navigation do
       role="presentation"
       aria-hidden="true"
       class={classes(@classes)}
+      {@rest}
     >
       …
     </span>
@@ -235,13 +244,20 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def pagination(assigns) do
     assigns = assign(assigns, :classes, ["mx-auto flex w-full justify-center", assigns.class])
 
     ~H"""
-    <nav data-slot="pagination" role="navigation" aria-label="pagination" class={classes(@classes)}>
+    <nav
+      data-slot="pagination"
+      role="navigation"
+      aria-label="pagination"
+      class={classes(@classes)}
+      {@rest}
+    >
       {render_slot(@inner_block)}
     </nav>
     """
@@ -261,13 +277,16 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def pagination_content(assigns) do
     assigns = assign(assigns, :classes, ["flex flex-row items-center gap-1", assigns.class])
 
     ~H"""
-    <ul data-slot="pagination-content" class={classes(@classes)}>{render_slot(@inner_block)}</ul>
+    <ul data-slot="pagination-content" class={classes(@classes)} {@rest}>
+      {render_slot(@inner_block)}
+    </ul>
     """
   end
 
@@ -284,13 +303,14 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def pagination_item(assigns) do
     assigns = assign(assigns, :classes, [assigns.class])
 
     ~H"""
-    <li data-slot="pagination-item" class={classes(@classes)}>{render_slot(@inner_block)}</li>
+    <li data-slot="pagination-item" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</li>
     """
   end
 
@@ -362,6 +382,7 @@ defmodule CinderUI.Components.Navigation do
 
   attr :href, :string, default: nil
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def pagination_previous(assigns) do
     assigns = assign(assigns, :classes, ["gap-1 px-2.5 sm:pl-2.5", assigns.class])
@@ -372,6 +393,7 @@ defmodule CinderUI.Components.Navigation do
       size={:default}
       class={classes(@classes)}
       aria-label="Go to previous page"
+      {@rest}
     >
       <Icons.icon name="chevron-left" class="size-4" aria-hidden="true" />
       <span class="hidden sm:block">Previous</span>
@@ -391,6 +413,7 @@ defmodule CinderUI.Components.Navigation do
 
   attr :href, :string, default: nil
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def pagination_next(assigns) do
     assigns = assign(assigns, :classes, ["gap-1 px-2.5 sm:pr-2.5", assigns.class])
@@ -401,6 +424,7 @@ defmodule CinderUI.Components.Navigation do
       size={:default}
       class={classes(@classes)}
       aria-label="Go to next page"
+      {@rest}
     >
       <span class="hidden sm:block">Next</span>
       <Icons.icon name="chevron-right" class="size-4" aria-hidden="true" />
@@ -419,13 +443,14 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def pagination_ellipsis(assigns) do
     assigns =
       assign(assigns, :classes, ["flex size-9 items-center justify-center", assigns.class])
 
     ~H"""
-    <span data-slot="pagination-ellipsis" aria-hidden="true" class={classes(@classes)}>
+    <span data-slot="pagination-ellipsis" aria-hidden="true" class={classes(@classes)} {@rest}>
       … <span class="sr-only">More pages</span>
     </span>
     """
@@ -491,6 +516,7 @@ defmodule CinderUI.Components.Navigation do
   attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
   attr :variant, :atom, default: :default, values: [:default, :line]
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :trigger, required: true do
     attr :value, :string, required: true
@@ -520,7 +546,13 @@ defmodule CinderUI.Components.Navigation do
       ])
 
     ~H"""
-    <div id={@id} data-slot="tabs" data-orientation={@orientation} class={classes(@root_classes)}>
+    <div
+      id={@id}
+      data-slot="tabs"
+      data-orientation={@orientation}
+      class={classes(@root_classes)}
+      {@rest}
+    >
       <div
         data-slot="tabs-list"
         data-variant={@variant}
@@ -597,6 +629,7 @@ defmodule CinderUI.Components.Navigation do
 
   attr :orientation, :atom, default: :vertical, values: [:vertical, :horizontal]
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :item, required: true do
     attr :href, :string
@@ -620,7 +653,7 @@ defmodule CinderUI.Components.Navigation do
       ])
 
     ~H"""
-    <nav data-slot="menu" data-orientation={@orientation} class={classes(@root_classes)}>
+    <nav data-slot="menu" data-orientation={@orientation} class={classes(@root_classes)} {@rest}>
       <ul class={classes(@list_classes)}>
         <li :for={item <- @item} class="contents">
           <a
@@ -662,6 +695,7 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :item, required: true do
     attr :href, :string
@@ -672,7 +706,7 @@ defmodule CinderUI.Components.Navigation do
     assigns = assign(assigns, :classes, ["flex items-center gap-1", assigns.class])
 
     ~H"""
-    <nav data-slot="navigation-menu" class={classes(@classes)}>
+    <nav data-slot="navigation-menu" class={classes(@classes)} {@rest}>
       <a
         :for={item <- @item}
         data-slot="navigation-menu-link"

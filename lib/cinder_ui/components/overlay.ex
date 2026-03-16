@@ -102,6 +102,7 @@ defmodule CinderUI.Components.Overlay do
   attr :open, :boolean, default: false
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :title
   slot :description
@@ -131,6 +132,7 @@ defmodule CinderUI.Components.Overlay do
       data-state={if(@open, do: "open", else: "closed")}
       class={classes(@root_classes)}
       phx-hook="CuiDialog"
+      {@rest}
     >
       <div data-slot="dialog-trigger" data-dialog-trigger>{render_slot(@trigger)}</div>
 
@@ -214,6 +216,7 @@ defmodule CinderUI.Components.Overlay do
   attr :id, :string, required: true
   attr :open, :boolean, default: false
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :title
   slot :description
@@ -230,6 +233,7 @@ defmodule CinderUI.Components.Overlay do
       open={@open}
       class={@class}
       content_class={@content_class}
+      {@rest}
     >
       <:trigger>{render_slot(@trigger)}</:trigger>
       <:title>{render_slot(@title)}</:title>
@@ -267,6 +271,7 @@ defmodule CinderUI.Components.Overlay do
   attr :open, :boolean, default: false
   attr :side, :atom, default: :bottom, values: [:top, :bottom]
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :title
   slot :description
@@ -303,6 +308,7 @@ defmodule CinderUI.Components.Overlay do
       data-state={if(@open, do: "open", else: "closed")}
       data-drawer-side={@side}
       phx-hook="CuiDrawer"
+      {@rest}
     >
       <div data-slot="drawer-trigger" data-drawer-trigger>{render_slot(@trigger)}</div>
 
@@ -373,6 +379,7 @@ defmodule CinderUI.Components.Overlay do
   attr :open, :boolean, default: false
   attr :side, :atom, default: :right, values: [:top, :right, :bottom, :left]
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :title
   slot :description
@@ -411,6 +418,7 @@ defmodule CinderUI.Components.Overlay do
       data-state={if(@open, do: "open", else: "closed")}
       data-sheet-side={@side}
       phx-hook="CuiSheet"
+      {@rest}
     >
       <div data-slot="sheet-trigger" data-sheet-trigger>{render_slot(@trigger)}</div>
 
@@ -485,6 +493,7 @@ defmodule CinderUI.Components.Overlay do
   attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :content, required: true
 
@@ -499,7 +508,7 @@ defmodule CinderUI.Components.Overlay do
       ])
 
     ~H"""
-    <div id={@id} data-slot="popover" class={classes(@classes)} phx-hook="CuiPopover">
+    <div id={@id} data-slot="popover" class={classes(@classes)} phx-hook="CuiPopover" {@rest}>
       <div data-slot="popover-trigger" data-popover-trigger>{render_slot(@trigger)}</div>
       <div data-slot="popover-content" data-popover-content class={classes(@popover_classes)}>
         {render_slot(@content)}
@@ -523,6 +532,7 @@ defmodule CinderUI.Components.Overlay do
   attr :text, :string, required: true
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def tooltip(assigns) do
@@ -536,7 +546,7 @@ defmodule CinderUI.Components.Overlay do
       ])
 
     ~H"""
-    <span data-slot="tooltip" class={classes(@classes)}>
+    <span data-slot="tooltip" class={classes(@classes)} {@rest}>
       <span data-slot="tooltip-trigger" aria-describedby={@content_id}>
         {render_slot(@inner_block)}
       </span>
@@ -571,6 +581,7 @@ defmodule CinderUI.Components.Overlay do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
   slot :content, required: true
 
@@ -578,7 +589,7 @@ defmodule CinderUI.Components.Overlay do
     assigns = assign(assigns, :classes, ["group relative inline-flex", assigns.class])
 
     ~H"""
-    <div data-slot="hover-card" class={classes(@classes)}>
+    <div data-slot="hover-card" class={classes(@classes)} {@rest}>
       <div data-slot="hover-card-trigger">{render_slot(@trigger)}</div>
       <div
         data-slot="hover-card-content"
@@ -612,6 +623,7 @@ defmodule CinderUI.Components.Overlay do
   attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
+  attr :rest, :global
   slot :trigger, required: true
 
   slot :item, required: true do
@@ -629,7 +641,13 @@ defmodule CinderUI.Components.Overlay do
       ])
 
     ~H"""
-    <div id={@id} data-slot="dropdown-menu" class={classes(@classes)} phx-hook="CuiDropdownMenu">
+    <div
+      id={@id}
+      data-slot="dropdown-menu"
+      class={classes(@classes)}
+      phx-hook="CuiDropdownMenu"
+      {@rest}
+    >
       <div data-slot="dropdown-menu-trigger" data-dropdown-trigger>{render_slot(@trigger)}</div>
       <div
         data-slot="dropdown-menu-content"
@@ -704,6 +722,7 @@ defmodule CinderUI.Components.Overlay do
 
   attr :id, :string, default: nil
   attr :class, :string, default: nil
+  attr :rest, :global
 
   slot :menu, required: true do
     attr :label, :string, required: true
@@ -725,6 +744,7 @@ defmodule CinderUI.Components.Overlay do
       role="menubar"
       class={classes(@classes)}
       phx-hook="CuiMenubar"
+      {@rest}
     >
       <div :for={{menu, index} <- Enum.with_index(@menu)} data-slot="menubar-menu" class="relative">
         <button

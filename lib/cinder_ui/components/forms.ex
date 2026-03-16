@@ -133,6 +133,7 @@ defmodule CinderUI.Components.Forms do
 
   attr :class, :string, default: nil
   attr :invalid, :boolean, default: false
+  attr :rest, :global
   slot :label
   slot :description
   slot :message
@@ -148,7 +149,7 @@ defmodule CinderUI.Components.Forms do
       |> assign(:classes, ["group grid gap-3", assigns.class])
 
     ~H"""
-    <div data-slot="field" data-invalid={@invalid} class={classes(@classes)}>
+    <div data-slot="field" data-invalid={@invalid} class={classes(@classes)} {@rest}>
       <.field_label :if={@label != []}>{render_slot(@label)}</.field_label>
       <.field_control>{render_slot(@inner_block)}</.field_control>
       <.field_description :if={@description != []}>{render_slot(@description)}</.field_description>
@@ -186,13 +187,14 @@ defmodule CinderUI.Components.Forms do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def field_label(assigns) do
     assigns = assign(assigns, :classes, ["flex flex-col gap-1", assigns.class])
 
     ~H"""
-    <div data-slot="field-label" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="field-label" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -222,6 +224,7 @@ defmodule CinderUI.Components.Forms do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def field_control(assigns) do
@@ -232,7 +235,7 @@ defmodule CinderUI.Components.Forms do
       ])
 
     ~H"""
-    <div data-slot="field-control" class={classes(@classes)}>{render_slot(@inner_block)}</div>
+    <div data-slot="field-control" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
     """
   end
 
@@ -259,6 +262,7 @@ defmodule CinderUI.Components.Forms do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def field_description(assigns) do
@@ -266,7 +270,7 @@ defmodule CinderUI.Components.Forms do
       assign(assigns, :classes, ["text-muted-foreground text-sm leading-normal", assigns.class])
 
     ~H"""
-    <p data-slot="field-description" class={classes(@classes)}>{render_slot(@inner_block)}</p>
+    <p data-slot="field-description" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</p>
     """
   end
 
@@ -292,6 +296,7 @@ defmodule CinderUI.Components.Forms do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def field_message(assigns) do
@@ -299,7 +304,7 @@ defmodule CinderUI.Components.Forms do
       assign(assigns, :classes, ["text-foreground text-sm leading-normal", assigns.class])
 
     ~H"""
-    <p data-slot="field-message" class={classes(@classes)}>{render_slot(@inner_block)}</p>
+    <p data-slot="field-message" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</p>
     """
   end
 
@@ -325,6 +330,7 @@ defmodule CinderUI.Components.Forms do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def field_error(assigns) do
@@ -332,7 +338,7 @@ defmodule CinderUI.Components.Forms do
       assign(assigns, :classes, ["text-destructive text-sm font-medium", assigns.class])
 
     ~H"""
-    <p data-slot="field-error" class={classes(@classes)}>{render_slot(@inner_block)}</p>
+    <p data-slot="field-error" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</p>
     """
   end
 
@@ -1260,6 +1266,7 @@ defmodule CinderUI.Components.Forms do
   """)
 
   attr :class, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def input_group(assigns) do
@@ -1276,7 +1283,7 @@ defmodule CinderUI.Components.Forms do
       ])
 
     ~H"""
-    <div data-slot="input-group" class={classes(@classes)}>
+    <div data-slot="input-group" class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
