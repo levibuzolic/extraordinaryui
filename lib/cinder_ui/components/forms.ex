@@ -1204,9 +1204,12 @@ defmodule CinderUI.Components.Forms do
   ```
   """)
 
-  attr :id, :string, required: true
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :placeholder, :string, default: "Search options..."
   attr :disabled, :boolean, default: false
   attr :loading, :boolean, default: false
@@ -1225,6 +1228,12 @@ defmodule CinderUI.Components.Forms do
   slot :empty
 
   def autocomplete(assigns) do
+    assigns =
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:id, assigns.id || "cinder-ui-autocomplete-#{System.unique_integer([:positive])}")
+
     selected_option = selected_option(assigns.option, assigns.value)
     selected_label = if selected_option, do: selected_option.label, else: ""
 
@@ -1242,6 +1251,70 @@ defmodule CinderUI.Components.Forms do
         assigns.content_class
       ])
 
+    ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <.autocomplete_control
+        id={@id}
+        name={@name}
+        value={@value}
+        selected_label={@selected_label}
+        placeholder={@placeholder}
+        disabled={@disabled}
+        loading={@loading}
+        loading_text={@loading_text}
+        option={@option}
+        empty={@empty}
+        root_classes={@root_classes}
+        input_classes={@input_classes}
+        content_classes={@content_classes}
+        rest={@rest}
+      />
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
+    <.autocomplete_control
+      :if={!@label && @errors == []}
+      id={@id}
+      name={@name}
+      value={@value}
+      selected_label={@selected_label}
+      placeholder={@placeholder}
+      disabled={@disabled}
+      loading={@loading}
+      loading_text={@loading_text}
+      option={@option}
+      empty={@empty}
+      root_classes={@root_classes}
+      input_classes={@input_classes}
+      content_classes={@content_classes}
+      rest={@rest}
+    />
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :name, :string, default: nil
+  attr :value, :string, default: nil
+  attr :selected_label, :string, required: true
+  attr :placeholder, :string, required: true
+  attr :disabled, :boolean, required: true
+  attr :loading, :boolean, required: true
+  attr :loading_text, :string, required: true
+  attr :root_classes, :list, required: true
+  attr :input_classes, :list, required: true
+  attr :content_classes, :list, required: true
+  attr :rest, :map, required: true
+
+  slot :option, required: true do
+    attr :value, :string, required: true
+    attr :label, :string, required: true
+    attr :description, :string
+    attr :disabled, :boolean
+  end
+
+  slot :empty
+
+  defp autocomplete_control(assigns) do
     ~H"""
     <div
       id={@id}

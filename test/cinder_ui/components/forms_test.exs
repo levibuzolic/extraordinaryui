@@ -263,6 +263,17 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.has_class?(html, "svg", "right-2.5")
   end
 
+  describe "autocomplete with FormField" do
+    test "extracts name and value from field" do
+      form = Phoenix.Component.to_form(%{"owner" => "levi"}, as: :project)
+      html = render_component(&Forms.autocomplete/1, %{
+        field: form[:owner],
+        option: [%{value: "levi", label: "Levi", inner_block: fn -> "" end}]
+      })
+      assert TestHelpers.attr(html, "[data-slot='autocomplete-value']", "name") == "project[owner]"
+    end
+  end
+
   test "autocomplete renders visible and hidden inputs plus options" do
     html =
       render_component(&Forms.autocomplete/1, %{
