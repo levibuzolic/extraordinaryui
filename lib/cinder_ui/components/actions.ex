@@ -90,12 +90,19 @@ defmodule CinderUI.Components.Actions do
 
   attr :loading, :boolean, default: false
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(type href target rel disabled name value form id aria-label)
+
+  attr :rest, :global,
+    include: ~w(type href target rel disabled name value form id aria-label navigate patch method download)
+
   slot :inner_block, required: true
 
   def button(assigns) do
+    is_link = assigns.rest[:navigate] || assigns.rest[:patch] || assigns.rest[:href]
+
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> assign(:is_link, is_link)
+      |> assign(:classes, [
         "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         variant(@button_variants, assigns.variant, @button_variants.default),
         variant(@button_sizes, assigns.size, @button_sizes.default),
@@ -103,7 +110,24 @@ defmodule CinderUI.Components.Actions do
       ])
 
     ~H"""
+    <.link
+      :if={@is_link}
+      data-slot="button"
+      data-variant={@variant}
+      data-size={@size}
+      class={classes(@classes)}
+      {@rest}
+    >
+      <CinderUI.Icons.icon
+        :if={@loading}
+        name="loader-circle"
+        class="size-4 animate-spin"
+        aria-hidden="true"
+      />
+      {render_slot(@inner_block)}
+    </.link>
     <.dynamic_tag
+      :if={!@is_link}
       data-slot="button"
       data-variant={@variant}
       data-size={@size}

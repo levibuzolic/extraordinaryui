@@ -164,9 +164,9 @@ end"
 
     <h3 id="existing-projects">Existing projects with CoreComponents</h3>
     <p>
-      Phoenix generates a <code>CoreComponents</code> module with functions like
-      <code>button/1</code>, <code>input/1</code>, <code>table/1</code>,
-      <code>flash/1</code>, <code>card/1</code>, and <code>label/1</code>
+      Phoenix generates a <code>CoreComponents</code>
+      module with functions like <code>button/1</code>, <code>input/1</code>, <code>table/1</code>, <code>flash/1</code>, <code>card/1</code>, and
+      <code>label/1</code>
       that overlap with Cinder UI components. Cinder UI provides replacements
       for all of these.
     </p>
@@ -174,16 +174,17 @@ end"
     <h4>Recommended: Remove conflicting CoreComponents</h4>
     <p>
       The cleanest approach is to delete the overlapping functions
-      (<code>button/1</code>, <code>card/1</code>, <code>flash/1</code>,
-      <code>flash_group/1</code>, <code>input/1</code>, <code>label/1</code>,
-      <code>table/1</code>, and <code>icon/1</code>) from your
-      <code>CoreComponents</code> module and let Cinder UI's versions take over.
+      (<code>button/1</code>, <code>card/1</code>, <code>flash/1</code>, <code>flash_group/1</code>, <code>input/1</code>, <code>label/1</code>, <code>table/1</code>, and <code>icon/1</code>) from your
+      <code>CoreComponents</code>
+      module and let Cinder UI's versions take over.
       This gives you a single, consistent component API with no namespace prefixes needed.
     </p>
     <p>
-      If your <code>CoreComponents</code> only contains the default Phoenix-generated
+      If your <code>CoreComponents</code>
+      only contains the default Phoenix-generated
       functions, you can remove the module entirely and replace
-      <code>import MyAppWeb.CoreComponents</code> with <code>use CinderUI</code>
+      <code>import MyAppWeb.CoreComponents</code>
+      with <code>use CinderUI</code>
       in your <code>html_helpers</code>.
     </p>
     <p>
@@ -193,8 +194,8 @@ end"
 
     <h4>Option A: Exclude conflicting components</h4>
     <p>
-      Use the <code>except</code> option to skip components that conflict with your
-      <code>CoreComponents</code>:
+      Use the <code>except</code>
+      option to skip components that conflict with your <code>CoreComponents</code>:
     </p>
     <Docs.docs_code_block
       source="use CinderUI, except: [:button, :card, :flash, :flash_group, :input, :label, :table]"
@@ -224,8 +225,7 @@ end"
     />
     <p>
       This can be combined with Option A — use <code>except</code> for the components
-      that conflict, and access excluded components via <code>UI.button</code>,
-      <code>UI.input</code>, etc.
+      that conflict, and access excluded components via <code>UI.button</code>, <code>UI.input</code>, etc.
     </p>
 
     <h4>Option C: Selectively import specific modules</h4>
