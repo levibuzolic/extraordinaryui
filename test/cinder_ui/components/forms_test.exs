@@ -81,6 +81,24 @@ defmodule CinderUI.Components.FormsTest do
     end
   end
 
+  describe "textarea with FormField" do
+    test "extracts id, name, value from field" do
+      form = Phoenix.Component.to_form(%{"notes" => "hello"}, as: :item)
+      html = render_component(&Forms.textarea/1, %{field: form[:notes]})
+      assert TestHelpers.attr(html, "[data-slot='textarea']", "id") == "item_notes"
+      assert TestHelpers.attr(html, "[data-slot='textarea']", "name") == "item[notes]"
+      assert html =~ "hello"
+    end
+
+    test "renders label and errors" do
+      html = render_component(&Forms.textarea/1, %{
+        id: "notes", name: "notes", label: "Notes", errors: ["too short"]
+      })
+      assert TestHelpers.text(html, "[data-slot='label']") == "Notes"
+      assert TestHelpers.text(html, "[data-slot='field-error']") == "too short"
+    end
+  end
+
   test "input renders with data-slot and forwards min/max attributes" do
     html =
       render_component(&Forms.input/1, %{

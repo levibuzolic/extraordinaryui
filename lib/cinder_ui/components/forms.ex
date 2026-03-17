@@ -530,6 +530,9 @@ defmodule CinderUI.Components.Forms do
   attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :placeholder, :string, default: nil
   attr :rows, :integer, default: 4
   attr :class, :string, default: nil
@@ -537,13 +540,30 @@ defmodule CinderUI.Components.Forms do
 
   def textarea(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:classes, [
         "border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         assigns.class
       ])
 
     ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <textarea
+        id={@id}
+        data-slot="textarea"
+        name={@name}
+        rows={@rows}
+        placeholder={@placeholder}
+        class={classes(@classes)}
+        {@rest}
+      ><%= @value %></textarea>
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
     <textarea
+      :if={!@label && @errors == []}
       id={@id}
       data-slot="textarea"
       name={@name}
