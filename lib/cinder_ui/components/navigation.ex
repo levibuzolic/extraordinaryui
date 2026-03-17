@@ -512,20 +512,32 @@ defmodule CinderUI.Components.Navigation do
   """)
 
   attr :id, :string, default: nil
-  attr :value, :string, required: true
-  attr :orientation, :atom, default: :horizontal, values: [:horizontal, :vertical]
-  attr :variant, :atom, default: :default, values: [:default, :line]
+
+  attr :value, :string,
+    required: true,
+    doc: "active tab value used to mark the selected trigger and panel"
+
+  attr :orientation, :atom,
+    default: :horizontal,
+    values: [:horizontal, :vertical],
+    doc: "layout direction for both the trigger list and content shell"
+
+  attr :variant, :atom,
+    default: :default,
+    values: [:default, :line],
+    doc: "visual treatment for the tab list and active trigger"
+
   attr :class, :string, default: nil
   attr :rest, :global
 
   slot :trigger, required: true do
-    attr :value, :string, required: true
+    attr :value, :string, required: true, doc: "value that activates the associated content panel"
     attr :class, :string
-    attr :data_theme_mode, :string
+    attr :data_theme_mode, :string, doc: "optional theme marker used by demo/docs previews"
   end
 
   slot :content do
-    attr :value, :string, required: true
+    attr :value, :string, required: true, doc: "value matched against the active tab"
   end
 
   def tabs(assigns) do

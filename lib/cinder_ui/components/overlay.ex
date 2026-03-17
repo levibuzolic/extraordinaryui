@@ -22,8 +22,8 @@ defmodule CinderUI.Components.Overlay do
 
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
-  import CinderUI.Helpers, only: [link?: 1]
 
+  alias CinderUI.Helpers
   alias CinderUI.Icons
 
   doc("""
@@ -623,18 +623,27 @@ defmodule CinderUI.Components.Overlay do
 
   attr :id, :string, required: true
   attr :class, :string, default: nil
-  attr :content_class, :string, default: nil
+
+  attr :content_class, :string,
+    default: nil,
+    doc: "additional classes for the floating menu panel"
+
   attr :rest, :global
   slot :trigger, required: true
 
   slot :item, required: true do
-    attr :href, :string
-    attr :navigate, :string
-    attr :patch, :string
-    attr :method, :string
-    attr :replace, :boolean
-    attr :csrf_token, :string
-    attr :disabled, :boolean
+    attr :href, :string, doc: "standard anchor destination for external or full-page navigation"
+    attr :navigate, :string, doc: "LiveView navigate target for a client-side redirect"
+    attr :patch, :string, doc: "LiveView patch target for in-place URL/state updates"
+
+    attr :method, :string,
+      doc: "HTTP method forwarded to `Phoenix.Component.link/1` for non-GET actions"
+
+    attr :replace, :boolean,
+      doc: "replaces the current history entry instead of pushing a new one"
+
+    attr :csrf_token, :string, doc: "explicit CSRF token for method-based links when needed"
+    attr :disabled, :boolean, doc: "renders the item in a disabled, non-interactive state"
   end
 
   def dropdown_menu(assigns) do
@@ -667,46 +676,16 @@ defmodule CinderUI.Components.Overlay do
     """
   end
 
-  attr :item, :map, required: true
-
   defp dropdown_menu_item(assigns) do
-    assigns = assign(assigns, :is_link, link?(assigns.item))
-
     ~H"""
-    <.link
-      :if={@is_link}
-      data-slot="dropdown-menu-item"
+    <Helpers.action_item
+      item={@item}
+      data_slot="dropdown-menu-item"
       role="menuitem"
-      href={@item[:href]}
-      navigate={@item[:navigate]}
-      patch={@item[:patch]}
-      method={@item[:method]}
-      replace={@item[:replace]}
-      csrf_token={@item[:csrf_token]}
-      class={
-        classes([
-          "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
-          @item[:disabled] && "pointer-events-none opacity-50"
-        ])
-      }
+      class="relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground"
     >
       {render_slot(@item)}
-    </.link>
-
-    <button
-      :if={!@is_link}
-      type="button"
-      data-slot="dropdown-menu-item"
-      role="menuitem"
-      disabled={@item[:disabled]}
-      class={
-        classes([
-          "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-        ])
-      }
-    >
-      {render_slot(@item)}
-    </button>
+    </Helpers.action_item>
     """
   end
 

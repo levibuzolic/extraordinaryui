@@ -119,4 +119,31 @@ defmodule CinderUI.Components.AdvancedTest do
     assert TestHelpers.text(html, "header p") == "Last 7 days"
     assert TestHelpers.text(html, "[data-slot='chart-content']") == "Chart body"
   end
+
+  test "sidebar_profile_menu renders LiveView links and disabled actions" do
+    html =
+      render_component(&Advanced.sidebar_profile_menu/1, %{
+        id: "account-menu",
+        name: "Levi Buzolic",
+        subtitle: "levi@example.com",
+        item: [
+          %{navigate: "/settings", icon: "settings", inner_block: fn _, _ -> "Settings" end},
+          %{disabled: true, icon: "log-out", inner_block: fn _, _ -> "Log out" end}
+        ]
+      })
+
+    assert TestHelpers.attr(html, "[data-slot='sidebar-profile-menu']", "phx-hook") ==
+             "CuiDropdownMenu"
+
+    assert TestHelpers.attr(html, "a[data-slot='dropdown-menu-item']", "href") == "/settings"
+
+    assert TestHelpers.attr(html, "a[data-slot='dropdown-menu-item']", "data-phx-link") ==
+             "redirect"
+
+    assert TestHelpers.attr(
+             html,
+             "button[data-slot='dropdown-menu-item'][disabled]",
+             "disabled"
+           ) == "disabled"
+  end
 end

@@ -27,9 +27,9 @@ defmodule CinderUI.Components.Advanced do
 
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
-  import CinderUI.Helpers, only: [link?: 1]
 
   alias CinderUI.Components.DataDisplay
+  alias CinderUI.Helpers
   alias CinderUI.Icons
 
   doc("""
@@ -994,25 +994,41 @@ defmodule CinderUI.Components.Advanced do
 
   attr :id, :string, required: true
   attr :name, :string, required: true
-  attr :subtitle, :string, default: nil
-  attr :avatar_src, :string, default: nil
-  attr :avatar_alt, :string, default: nil
-  attr :avatar_fallback, :string, default: nil
+  attr :subtitle, :string, default: nil, doc: "secondary line shown under the profile name"
+  attr :avatar_src, :string, default: nil, doc: "avatar image URL for the trigger and menu header"
+  attr :avatar_alt, :string, default: nil, doc: "accessible alt text for the avatar image"
+
+  attr :avatar_fallback, :string,
+    default: nil,
+    doc: "fallback initials or text when no avatar image is available"
+
   attr :class, :string, default: nil
-  attr :trigger_class, :string, default: nil
-  attr :content_class, :string, default: nil
+
+  attr :trigger_class, :string,
+    default: nil,
+    doc: "additional classes for the profile button trigger"
+
+  attr :content_class, :string,
+    default: nil,
+    doc: "additional classes for the dropdown content panel"
+
   attr :rest, :global
 
   slot :item, required: true do
-    attr :href, :string
-    attr :navigate, :string
-    attr :patch, :string
-    attr :method, :string
-    attr :replace, :boolean
-    attr :csrf_token, :string
-    attr :disabled, :boolean
-    attr :icon, :string
-    attr :separator_before, :boolean
+    attr :href, :string, doc: "standard anchor destination for external or full-page navigation"
+    attr :navigate, :string, doc: "LiveView navigate target for a client-side redirect"
+    attr :patch, :string, doc: "LiveView patch target for in-place URL/state updates"
+
+    attr :method, :string,
+      doc: "HTTP method forwarded to `Phoenix.Component.link/1` for non-GET actions"
+
+    attr :replace, :boolean,
+      doc: "replaces the current history entry instead of pushing a new one"
+
+    attr :csrf_token, :string, doc: "explicit CSRF token for method-based links when needed"
+    attr :disabled, :boolean, doc: "renders the item in a disabled, non-interactive state"
+    attr :icon, :string, doc: "optional leading icon name rendered with the menu label"
+    attr :separator_before, :boolean, doc: "inserts a divider before this item"
   end
 
   def sidebar_profile_menu(assigns) do
@@ -1088,28 +1104,13 @@ defmodule CinderUI.Components.Advanced do
     """
   end
 
-  attr :item, :map, required: true
-
   defp sidebar_profile_menu_item(assigns) do
-    assigns = assign(assigns, :is_link, link?(assigns.item))
-
     ~H"""
-    <.link
-      :if={@is_link}
-      href={@item[:href]}
-      navigate={@item[:navigate]}
-      patch={@item[:patch]}
-      method={@item[:method]}
-      replace={@item[:replace]}
-      csrf_token={@item[:csrf_token]}
+    <Helpers.action_item
+      item={@item}
       role="menuitem"
-      data-slot="dropdown-menu-item"
-      class={
-        classes([
-          "hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none",
-          @item[:disabled] && "pointer-events-none opacity-50"
-        ])
-      }
+      data_slot="dropdown-menu-item"
+      class="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none"
     >
       <Icons.icon
         :if={@item[:icon]}
@@ -1117,23 +1118,7 @@ defmodule CinderUI.Components.Advanced do
         class="size-4 shrink-0 text-muted-foreground"
       />
       <span class="truncate">{render_slot(@item)}</span>
-    </.link>
-
-    <button
-      :if={!@is_link}
-      type="button"
-      role="menuitem"
-      data-slot="dropdown-menu-item"
-      disabled={@item[:disabled]}
-      class="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
-    >
-      <Icons.icon
-        :if={@item[:icon]}
-        name={@item[:icon]}
-        class="size-4 shrink-0 text-muted-foreground"
-      />
-      <span class="truncate">{render_slot(@item)}</span>
-    </button>
+    </Helpers.action_item>
     """
   end
 
@@ -1244,18 +1229,44 @@ defmodule CinderUI.Components.Advanced do
   ```
   """)
 
-  attr :navigate, :string, default: nil
-  attr :patch, :string, default: nil
-  attr :href, :string, default: nil
-  attr :method, :string, default: nil
-  attr :replace, :boolean, default: false
-  attr :csrf_token, :string, default: nil
-  attr :icon, :string, default: nil
-  attr :badge, :string, default: nil
-  attr :current, :boolean, default: false
-  attr :collapsible, :boolean, default: false
-  attr :default_open, :boolean, default: false
-  attr :disabled, :boolean, default: false
+  attr :navigate, :string, default: nil, doc: "LiveView navigate target for the item"
+  attr :patch, :string, default: nil, doc: "LiveView patch target for the item"
+
+  attr :href, :string,
+    default: nil,
+    doc: "plain link destination when not using LiveView navigation"
+
+  attr :method, :string,
+    default: nil,
+    doc: "HTTP method used when the item renders through `Phoenix.Component.link/1`"
+
+  attr :replace, :boolean,
+    default: false,
+    doc: "replaces browser history instead of pushing a new entry"
+
+  attr :csrf_token, :string,
+    default: nil,
+    doc: "explicit CSRF token for method-based sidebar links"
+
+  attr :icon, :string, default: nil, doc: "leading icon rendered before the label"
+  attr :badge, :string, default: nil, doc: "compact badge shown at the end of the row"
+
+  attr :current, :boolean,
+    default: false,
+    doc: "marks the item as the current page for styling and `aria-current`"
+
+  attr :collapsible, :boolean,
+    default: false,
+    doc: "renders the item as a disclosure that shows nested children"
+
+  attr :default_open, :boolean,
+    default: false,
+    doc: "initial open state when `collapsible` is enabled"
+
+  attr :disabled, :boolean,
+    default: false,
+    doc: "renders the item in a disabled, non-interactive state"
+
   attr :class, :string, default: nil
   attr :rest, :global
   slot :trailing

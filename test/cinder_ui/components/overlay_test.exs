@@ -33,18 +33,29 @@ defmodule CinderUI.Components.OverlayTest do
         id: "demo-dropdown",
         trigger: [%{inner_block: fn _, _ -> "Open" end}],
         item: [
-          %{href: "/settings", disabled: false, inner_block: fn _, _ -> "Settings" end},
+          %{
+            patch: "/settings?tab=profile",
+            disabled: false,
+            inner_block: fn _, _ -> "Settings" end
+          },
           %{disabled: true, inner_block: fn _, _ -> "Archive" end}
         ]
       })
 
-    assert html =~ "data-slot=\"dropdown-menu\""
-    assert html =~ ~s(role="menu")
-    assert html =~ ~s(role="menuitem")
-    assert html =~ "Settings"
-    assert html =~ "Archive"
-    assert html =~ "disabled"
-    refute html =~ "pointer-events-none opacity-50"
+    assert TestHelpers.attr(html, "[data-slot='dropdown-menu']", "data-slot") == "dropdown-menu"
+    assert TestHelpers.attr(html, "[data-slot='dropdown-menu-content']", "role") == "menu"
+    assert TestHelpers.attr(html, "a[data-slot='dropdown-menu-item']", "data-phx-link") == "patch"
+
+    assert TestHelpers.attr(html, "a[data-slot='dropdown-menu-item']", "href") ==
+             "/settings?tab=profile"
+
+    assert TestHelpers.attr(
+             html,
+             "button[data-slot='dropdown-menu-item'][disabled]",
+             "disabled"
+           ) == "disabled"
+
+    assert TestHelpers.text(html, "[data-slot='dropdown-menu-content']") == "Settings Archive"
   end
 
   test "drawer and sheet render distinct slots" do

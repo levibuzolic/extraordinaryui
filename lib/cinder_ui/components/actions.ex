@@ -271,7 +271,8 @@ defmodule CinderUI.Components.Actions do
   attr :class, :string, default: nil
 
   attr :rest, :global,
-    include: ~w(type id name value disabled aria-label href target rel navigate patch method replace csrf_token)
+    include:
+      ~w(type id name value disabled aria-label href target rel navigate patch method replace csrf_token)
 
   slot :inner_block, required: true
 
