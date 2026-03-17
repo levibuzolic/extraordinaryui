@@ -19,6 +19,7 @@ defmodule CinderUI.Components.Actions do
 
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
+  import CinderUI.Helpers, only: [link?: 1]
 
   @button_variants %{
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -101,12 +102,12 @@ defmodule CinderUI.Components.Actions do
 
   attr :rest, :global,
     include:
-      ~w(type href target rel disabled name value form id aria-label navigate patch method download)
+      ~w(type href target rel disabled name value form id aria-label navigate patch method download replace csrf_token)
 
   slot :inner_block, required: true
 
   def button(assigns) do
-    is_link = assigns.rest[:navigate] || assigns.rest[:patch] || assigns.rest[:href]
+    is_link = link?(assigns.rest)
 
     assigns =
       assigns
@@ -270,12 +271,12 @@ defmodule CinderUI.Components.Actions do
   attr :class, :string, default: nil
 
   attr :rest, :global,
-    include: ~w(type id name value disabled aria-label href target rel navigate patch method)
+    include: ~w(type id name value disabled aria-label href target rel navigate patch method replace csrf_token)
 
   slot :inner_block, required: true
 
   def toggle(assigns) do
-    is_link = assigns.rest[:navigate] || assigns.rest[:patch] || assigns.rest[:href]
+    is_link = link?(assigns.rest)
     state = if(assigns.pressed, do: "on", else: "off")
 
     assigns =

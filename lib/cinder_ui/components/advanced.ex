@@ -27,6 +27,7 @@ defmodule CinderUI.Components.Advanced do
 
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
+  import CinderUI.Helpers, only: [link?: 1]
 
   alias CinderUI.Components.DataDisplay
   alias CinderUI.Icons
@@ -1004,6 +1005,11 @@ defmodule CinderUI.Components.Advanced do
 
   slot :item, required: true do
     attr :href, :string
+    attr :navigate, :string
+    attr :patch, :string
+    attr :method, :string
+    attr :replace, :boolean
+    attr :csrf_token, :string
     attr :disabled, :boolean
     attr :icon, :string
     attr :separator_before, :boolean
@@ -1085,10 +1091,17 @@ defmodule CinderUI.Components.Advanced do
   attr :item, :map, required: true
 
   defp sidebar_profile_menu_item(assigns) do
+    assigns = assign(assigns, :is_link, link?(assigns.item))
+
     ~H"""
-    <a
-      :if={@item[:href]}
+    <.link
+      :if={@is_link}
       href={@item[:href]}
+      navigate={@item[:navigate]}
+      patch={@item[:patch]}
+      method={@item[:method]}
+      replace={@item[:replace]}
+      csrf_token={@item[:csrf_token]}
       role="menuitem"
       data-slot="dropdown-menu-item"
       class={
@@ -1104,10 +1117,10 @@ defmodule CinderUI.Components.Advanced do
         class="size-4 shrink-0 text-muted-foreground"
       />
       <span class="truncate">{render_slot(@item)}</span>
-    </a>
+    </.link>
 
     <button
-      :if={!@item[:href]}
+      :if={!@is_link}
       type="button"
       role="menuitem"
       data-slot="dropdown-menu-item"
@@ -1234,6 +1247,9 @@ defmodule CinderUI.Components.Advanced do
   attr :navigate, :string, default: nil
   attr :patch, :string, default: nil
   attr :href, :string, default: nil
+  attr :method, :string, default: nil
+  attr :replace, :boolean, default: false
+  attr :csrf_token, :string, default: nil
   attr :icon, :string, default: nil
   attr :badge, :string, default: nil
   attr :current, :boolean, default: false

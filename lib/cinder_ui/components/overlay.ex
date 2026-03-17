@@ -22,6 +22,7 @@ defmodule CinderUI.Components.Overlay do
 
   import CinderUI.Classes
   import CinderUI.ComponentDocs, only: [doc: 1]
+  import CinderUI.Helpers, only: [link?: 1]
 
   alias CinderUI.Icons
 
@@ -628,6 +629,11 @@ defmodule CinderUI.Components.Overlay do
 
   slot :item, required: true do
     attr :href, :string
+    attr :navigate, :string
+    attr :patch, :string
+    attr :method, :string
+    attr :replace, :boolean
+    attr :csrf_token, :string
     attr :disabled, :boolean
   end
 
@@ -664,12 +670,19 @@ defmodule CinderUI.Components.Overlay do
   attr :item, :map, required: true
 
   defp dropdown_menu_item(assigns) do
+    assigns = assign(assigns, :is_link, link?(assigns.item))
+
     ~H"""
-    <a
-      :if={@item[:href]}
+    <.link
+      :if={@is_link}
       data-slot="dropdown-menu-item"
       role="menuitem"
       href={@item[:href]}
+      navigate={@item[:navigate]}
+      patch={@item[:patch]}
+      method={@item[:method]}
+      replace={@item[:replace]}
+      csrf_token={@item[:csrf_token]}
       class={
         classes([
           "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
@@ -678,10 +691,10 @@ defmodule CinderUI.Components.Overlay do
       }
     >
       {render_slot(@item)}
-    </a>
+    </.link>
 
     <button
-      :if={!@item[:href]}
+      :if={!@is_link}
       type="button"
       data-slot="dropdown-menu-item"
       role="menuitem"
