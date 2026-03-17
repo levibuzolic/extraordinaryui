@@ -349,11 +349,33 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.input id="email" type="email" placeholder="name@example.com" />
+  ```heex title="Text input" align="full"
+  <.input id="email" type="email" placeholder="name@example.com" />
+  ```
 
-      <.input id="username" name="username" value="levi" />
+  ```heex title="With value" align="full"
+  <.input id="username" name="username" value="levi" />
+  ```
 
-      <.input id="avatar" name="avatar" type="file" accept="image/*" />
+  ### With FormField
+
+      <.input field={@form[:email]} />
+
+  ### With label
+
+      <.input field={@form[:email]} label="Email" />
+
+  ### With explicit errors
+
+      <.input field={@form[:email]} label="Email" errors={["can't be blank"]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:email].id}>Email</.label></:label>
+        <.input field={@form[:email]} />
+        <:description>We'll send alerts here.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -425,20 +447,36 @@ defmodule CinderUI.Components.Forms do
   ```
 
   ```heex title="Fractional step" align="full"
-  <.number_field
-    id="discount"
-    name="discount"
-    value={1.5}
-    min={0}
-    max={5}
-    step={0.5}
-  />
+  <.number_field id="discount" name="discount" value={1.5} min={0} max={5} step={0.5} />
   ```
+
+  ### With FormField
+
+      <.number_field field={@form[:quantity]} />
+
+  ### With label
+
+      <.number_field field={@form[:quantity]} label="Quantity" />
+
+  ### With explicit errors
+
+      <.number_field field={@form[:quantity]} label="Quantity" errors={["must be positive"]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:quantity].id}>Quantity</.label></:label>
+        <.number_field field={@form[:quantity]} />
+        <:description>Enter a positive number.</:description>
+      </.field>
   """)
 
-  attr :id, :string, required: true
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :any, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :min, :any, default: nil
   attr :max, :any, default: nil
   attr :step, :any, default: 1
@@ -453,6 +491,9 @@ defmodule CinderUI.Components.Forms do
   def number_field(assigns) do
     assigns =
       assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:id, assigns.id || "cinder-ui-number-field-#{System.unique_integer([:positive])}")
       |> assign(:root_classes, [
         "flex items-center gap-0",
         assigns.class
@@ -468,6 +509,63 @@ defmodule CinderUI.Components.Forms do
         assigns.input_class
       ])
 
+    ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <.number_field_control
+        id={@id}
+        name={@name}
+        value={@value}
+        min={@min}
+        max={@max}
+        step={@step}
+        placeholder={@placeholder}
+        disabled={@disabled}
+        decrement_label={@decrement_label}
+        increment_label={@increment_label}
+        root_classes={@root_classes}
+        button_classes={@button_classes}
+        input_classes={@input_classes}
+        rest={@rest}
+      />
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
+    <.number_field_control
+      :if={!@label && @errors == []}
+      id={@id}
+      name={@name}
+      value={@value}
+      min={@min}
+      max={@max}
+      step={@step}
+      placeholder={@placeholder}
+      disabled={@disabled}
+      decrement_label={@decrement_label}
+      increment_label={@increment_label}
+      root_classes={@root_classes}
+      button_classes={@button_classes}
+      input_classes={@input_classes}
+      rest={@rest}
+    />
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :name, :string, default: nil
+  attr :value, :any, default: nil
+  attr :min, :any, default: nil
+  attr :max, :any, default: nil
+  attr :step, :any, default: 1
+  attr :placeholder, :string, default: nil
+  attr :disabled, :boolean, required: true
+  attr :decrement_label, :string, required: true
+  attr :increment_label, :string, required: true
+  attr :root_classes, :list, required: true
+  attr :button_classes, :list, required: true
+  attr :input_classes, :list, required: true
+  attr :rest, :map, required: true
+
+  defp number_field_control(assigns) do
     ~H"""
     <div data-slot="number-field" class={classes(@root_classes)}>
       <button
@@ -515,16 +613,33 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.textarea id="bio" name="bio" rows={4} />
+  ```heex title="Basic textarea" align="full"
+  <.textarea id="bio" name="bio" rows={4} />
+  ```
 
-      <.textarea
-        id="release_notes"
-        name="release_notes"
-        rows={8}
-        placeholder="Summarize what changed in this release..."
-      />
+  ```heex title="With placeholder" align="full"
+  <.textarea id="release_notes" name="release_notes" rows={8} placeholder="Summarize what changed in this release..." />
+  ```
 
-      <.textarea id="support_message" name="support_message" disabled value="Request submitted." />
+  ### With FormField
+
+      <.textarea field={@form[:bio]} />
+
+  ### With label
+
+      <.textarea field={@form[:bio]} label="Bio" />
+
+  ### With explicit errors
+
+      <.textarea field={@form[:bio]} label="Bio" errors={["too short"]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:bio].id}>Bio</.label></:label>
+        <.textarea field={@form[:bio]} />
+        <:description>Tell us about yourself.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -580,11 +695,38 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.checkbox id="terms" name="terms">Accept terms</.checkbox>
+  ```heex title="Basic checkbox" align="full"
+  <.checkbox id="terms" name="terms">Accept terms</.checkbox>
+  ```
 
-      <.checkbox id="product_updates" name="product_updates" checked={true}>
-        Notify me about product updates
+  ```heex title="Checked state" align="full"
+  <.checkbox id="updates" name="updates" checked={true}>Notify me about product updates</.checkbox>
+  ```
+
+  ### With FormField
+
+      <.checkbox field={@form[:active]} />
+
+  ### With label attr (inline)
+
+      <.checkbox field={@form[:active]} label="Active" />
+
+  ### With inner_block (takes precedence over label attr)
+
+      <.checkbox field={@form[:terms]}>
+        I agree to the <a href="/terms">Terms of Service</a>
       </.checkbox>
+
+  ### With explicit errors
+
+      <.checkbox field={@form[:terms]} errors={["must be accepted"]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:active].id}>Active</.label></:label>
+        <.checkbox field={@form[:active]} />
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -670,13 +812,38 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.switch id="marketing" checked={true}>Email updates</.switch>
+  ```heex title="Basic switch" align="full"
+  <.switch id="marketing" checked={true}>Email updates</.switch>
+  ```
 
-      <.switch id="2fa" name="two_factor" checked={true} size={:sm}>
-        Require two-factor authentication
+  ```heex title="Disabled" align="full"
+  <.switch id="notifications" disabled={true}>Push notifications</.switch>
+  ```
+
+  ### With FormField
+
+      <.switch field={@form[:notifications]} />
+
+  ### With label attr (inline)
+
+      <.switch field={@form[:notifications]} label="Enable notifications" />
+
+  ### With inner_block (takes precedence over label attr)
+
+      <.switch field={@form[:notifications]}>
+        Enable <strong>push</strong> notifications
       </.switch>
 
-      <.switch id="notifications" disabled={true}>Push notifications</.switch>
+  ### With explicit errors
+
+      <.switch field={@form[:notifications]} errors={["is required"]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:notifications].id}>Notifications</.label></:label>
+        <.switch field={@form[:notifications]} />
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -808,6 +975,36 @@ defmodule CinderUI.Components.Forms do
     <:option value="pro" label="Pro" />
   </.select>
   ```
+
+  ### With FormField
+
+      <.select field={@form[:role]}>
+        <:option value="admin" label="Admin" />
+        <:option value="member" label="Member" />
+      </.select>
+
+  ### With label
+
+      <.select field={@form[:role]} label="Role">
+        <:option value="admin" label="Admin" />
+        <:option value="member" label="Member" />
+      </.select>
+
+  ### With explicit errors
+
+      <.select field={@form[:role]} label="Role" errors={["is required"]}>
+        <:option value="admin" label="Admin" />
+      </.select>
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:role].id}>Role</.label></:label>
+        <.select field={@form[:role]}>
+          <:option value="admin" label="Admin" />
+        </.select>
+        <:description>Choose your access level.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -1062,16 +1259,47 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.native_select name="framework" value="phoenix">
-        <:option value="phoenix" label="Phoenix" />
-        <:option value="rails" label="Rails" />
-        <:option value="laravel" label="Laravel" />
+  ```heex title="Native select" align="full"
+  <.native_select name="framework" value="phoenix">
+    <:option value="phoenix" label="Phoenix" />
+    <:option value="rails" label="Rails" />
+    <:option value="laravel" label="Laravel" />
+  </.native_select>
+  ```
+
+  ```heex title="With placeholder" align="full"
+  <.native_select name="assignee" placeholder="Assign a teammate">
+    <:option value="levi" label="Levi" />
+    <:option value="juz" label="Justin" />
+  </.native_select>
+  ```
+
+  ### With FormField (using options attr)
+
+      <.native_select field={@form[:role]} options={[{"Admin", "admin"}, {"Member", "member"}]} />
+
+  ### With FormField (using option slots)
+
+      <.native_select field={@form[:role]}>
+        <:option value="admin" label="Admin" />
+        <:option value="member" label="Member" />
       </.native_select>
 
-      <.native_select name="assignee" placeholder="Assign a teammate">
-        <:option value="levi" label="Levi" />
-        <:option value="juz" label="Justin" />
-      </.native_select>
+  ### With label
+
+      <.native_select field={@form[:role]} label="Role" options={[{"Admin", "admin"}]} />
+
+  ### With explicit errors
+
+      <.native_select field={@form[:role]} label="Role" errors={["is required"]} options={[{"Admin", "admin"}]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:role].id}>Role</.label></:label>
+        <.native_select field={@form[:role]} options={[{"Admin", "admin"}]} />
+        <:description>Choose your access level.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -1202,6 +1430,35 @@ defmodule CinderUI.Components.Forms do
     </.autocomplete>
   </.form>
   ```
+
+  ### With FormField
+
+      <.autocomplete field={@form[:owner]}>
+        <:option value="levi" label="Levi Buzolic" />
+        <:option value="mira" label="Mira Chen" />
+      </.autocomplete>
+
+  ### With label
+
+      <.autocomplete field={@form[:owner]} label="Owner">
+        <:option value="levi" label="Levi Buzolic" />
+      </.autocomplete>
+
+  ### With explicit errors
+
+      <.autocomplete field={@form[:owner]} label="Owner" errors={["is required"]}>
+        <:option value="levi" label="Levi Buzolic" />
+      </.autocomplete>
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:owner].id}>Owner</.label></:label>
+        <.autocomplete field={@form[:owner]}>
+          <:option value="levi" label="Levi Buzolic" />
+        </.autocomplete>
+        <:description>Assign a teammate to this project.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -1435,24 +1692,58 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.radio_group name="plan" value="pro">
+  ```heex title="Basic radio group" align="full"
+  <.radio_group name="plan" value="pro">
+    <:option value="free" label="Free" />
+    <:option value="pro" label="Pro" />
+  </.radio_group>
+  ```
+
+  ```heex title="With disabled option" align="full"
+  <.radio_group name="region" value="us">
+    <:option value="us" label="United States" />
+    <:option value="eu" label="Europe" disabled={true} />
+  </.radio_group>
+  ```
+
+  ### With FormField
+
+      <.radio_group field={@form[:plan]}>
         <:option value="free" label="Free" />
         <:option value="pro" label="Pro" />
       </.radio_group>
 
-      <.radio_group name="billing_cycle" value="yearly">
-        <:option value="monthly" label="Monthly billing" />
-        <:option value="yearly" label="Yearly billing (save 20%)" />
+  ### With label (renders as fieldset/legend, not label/for)
+
+      <.radio_group field={@form[:plan]} label="Choose a plan">
+        <:option value="free" label="Free" />
+        <:option value="pro" label="Pro" />
       </.radio_group>
 
-      <.radio_group name="region" value="us">
-        <:option value="us" label="United States" />
-        <:option value="eu" label="Europe" disabled={true} />
+  ### With explicit errors
+
+      <.radio_group field={@form[:plan]} label="Choose a plan" errors={["is required"]}>
+        <:option value="free" label="Free" />
+        <:option value="pro" label="Pro" />
       </.radio_group>
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:plan].id}>Plan</.label></:label>
+        <.radio_group field={@form[:plan]}>
+          <:option value="free" label="Free" />
+          <:option value="pro" label="Pro" />
+        </.radio_group>
+      </.field>
   """)
 
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :class, :string, default: nil
   attr :rest, :global
 
@@ -1463,10 +1754,36 @@ defmodule CinderUI.Components.Forms do
   end
 
   def radio_group(assigns) do
-    assigns = assign(assigns, :classes, ["grid gap-3", assigns.class])
+    assigns =
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:classes, ["grid gap-3", assigns.class])
 
     ~H"""
-    <div data-slot="radio-group" role="radiogroup" class={classes(@classes)}>
+    <fieldset :if={@label || @errors != []}>
+      <legend :if={@label} class="text-sm font-medium leading-none mb-3">{@label}</legend>
+      <div data-slot="radio-group" role="radiogroup" class={classes(@classes)}>
+        <label
+          :for={option <- @option}
+          class={classes(["inline-flex items-center gap-2 text-sm", option[:disabled] && "opacity-50"])}
+        >
+          <input
+            data-slot="radio-group-item"
+            type="radio"
+            name={@name}
+            value={option.value}
+            checked={@value == option.value}
+            disabled={option[:disabled] || false}
+            class="border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
+            {@rest}
+          />
+          <span>{option.label}</span>
+        </label>
+      </div>
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </fieldset>
+    <div :if={!@label && @errors == []} data-slot="radio-group" role="radiogroup" class={classes(@classes)}>
       <label
         :for={option <- @option}
         class={classes(["inline-flex items-center gap-2 text-sm", option[:disabled] && "opacity-50"])}
@@ -1495,14 +1812,41 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.slider id="volume" name="volume" value={45} min={0} max={100} step={1} />
+  ```heex title="Basic slider" align="full"
+  <.slider id="volume" name="volume" value={45} min={0} max={100} step={1} />
+  ```
 
-      <.slider id="cpu_limit" name="cpu_limit" value={2} min={1} max={8} step={1} />
+  ```heex title="CPU limit slider" align="full"
+  <.slider id="cpu_limit" name="cpu_limit" value={2} min={1} max={8} step={1} />
+  ```
+
+  ### With FormField
+
+      <.slider field={@form[:volume]} />
+
+  ### With label
+
+      <.slider field={@form[:volume]} label="Volume" />
+
+  ### With explicit errors
+
+      <.slider field={@form[:volume]} label="Volume" errors={["is required"]} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:volume].id}>Volume</.label></:label>
+        <.slider field={@form[:volume]} />
+        <:description>Drag to adjust volume level.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :any, default: 0
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :min, :any, default: 0
   attr :max, :any, default: 100
   attr :step, :any, default: 1
@@ -1511,13 +1855,33 @@ defmodule CinderUI.Components.Forms do
 
   def slider(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:classes, [
         "accent-primary h-2 w-full cursor-pointer appearance-none rounded-full bg-primary/20",
         assigns.class
       ])
 
     ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <input
+        id={@id}
+        data-slot="slider"
+        type="range"
+        name={@name}
+        value={@value}
+        min={@min}
+        max={@max}
+        step={@step}
+        class={classes(@classes)}
+        {@rest}
+      />
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
     <input
+      :if={!@label && @errors == []}
       id={@id}
       data-slot="slider"
       type="range"
@@ -1706,20 +2070,33 @@ defmodule CinderUI.Components.Forms do
 
   ## Examples
 
-      <.input_otp name="verification_code[]" length={6} />
+  ```heex title="Basic OTP input" align="full"
+  <.input_otp name="verification_code[]" length={6} />
+  ```
 
-      <.input_otp
-        name="recovery_code[]"
-        length={8}
-        values={["1", "2", "3", "", "", "", "", ""]}
-      />
+  ```heex title="With grouped separators" align="full"
+  <.input_otp name="backup_code[]" length={6} groups={[3, 3]} values={["1", "2", "3", "4", "5", "6"]} />
+  ```
 
-      <.input_otp
-        name="backup_code[]"
-        length={6}
-        groups={[3, 3]}
-        values={["1", "2", "3", "4", "5", "6"]}
-      />
+  ### With FormField (string value is split into individual cells)
+
+      <.input_otp field={@form[:code]} length={6} />
+
+  ### With label
+
+      <.input_otp field={@form[:code]} label="Verification code" length={6} />
+
+  ### With explicit errors
+
+      <.input_otp field={@form[:code]} label="Verification code" errors={["is invalid"]} length={6} />
+
+  ### Inside field composition
+
+      <.field>
+        <:label><.label for={@form[:code].id}>Verification code</.label></:label>
+        <.input_otp field={@form[:code]} length={6} />
+        <:description>Enter the 6-digit code from your email.</:description>
+      </.field>
   """)
 
   attr :id, :string, default: nil
@@ -1727,6 +2104,9 @@ defmodule CinderUI.Components.Forms do
   attr :length, :integer, default: 6
   attr :values, :list, default: []
   attr :groups, :list, default: []
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :class, :string, default: nil
   attr :input_class, :string, default: nil
   attr :rest, :global
@@ -1734,6 +2114,15 @@ defmodule CinderUI.Components.Forms do
   def input_otp(assigns) do
     assigns =
       assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> then(fn a ->
+        if is_binary(a[:value]) && a[:values] == [] do
+          assign(a, :values, String.graphemes(a.value || ""))
+        else
+          a
+        end
+      end)
       |> assign(:id, assigns.id || "cinder-ui-input-otp-#{System.unique_integer([:positive])}")
       |> assign(:separator_indexes, input_otp_separator_indexes(assigns.groups, assigns.length))
       |> assign(:classes, [
@@ -1742,7 +2131,22 @@ defmodule CinderUI.Components.Forms do
       ])
 
     ~H"""
-    <div id={@id} data-slot="input-otp" class={classes(@classes)} phx-hook="CuiInputOtp">
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <div id={@id} data-slot="input-otp" class={classes(@classes)} phx-hook="CuiInputOtp">
+        <.input_otp_cell
+          :for={index <- Enum.to_list(0..(@length - 1))}
+          index={index}
+          name={@name}
+          value={Enum.at(@values, index, "")}
+          input_class={@input_class}
+          extra_attrs={@rest}
+          show_separator={index in @separator_indexes}
+        />
+      </div>
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
+    <div :if={!@label && @errors == []} id={@id} data-slot="input-otp" class={classes(@classes)} phx-hook="CuiInputOtp">
       <.input_otp_cell
         :for={index <- Enum.to_list(0..(@length - 1))}
         index={index}

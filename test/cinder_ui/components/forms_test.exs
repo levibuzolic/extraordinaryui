@@ -113,6 +113,24 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.attr(html, "[data-slot='input']", "max") == "10"
   end
 
+  describe "number_field with FormField" do
+    test "extracts id, name, value from field" do
+      form = Phoenix.Component.to_form(%{"quantity" => "5"}, as: :order)
+      html = render_component(&Forms.number_field/1, %{field: form[:quantity]})
+      assert TestHelpers.attr(html, "[data-slot='number-field-input']", "name") == "order[quantity]"
+      assert TestHelpers.attr(html, "[data-slot='number-field-input']", "value") == "5"
+    end
+
+    test "renders label and errors" do
+      form = Phoenix.Component.to_form(%{"qty" => ""}, as: :order)
+      html = render_component(&Forms.number_field/1, %{
+        field: form[:qty], label: "Quantity", errors: ["must be positive"]
+      })
+      assert TestHelpers.text(html, "[data-slot='label']") == "Quantity"
+      assert TestHelpers.text(html, "[data-slot='field-error']") == "must be positive"
+    end
+  end
+
   test "number_field renders buttons and forwards numeric constraints" do
     html =
       render_component(&Forms.number_field/1, %{
@@ -479,6 +497,14 @@ defmodule CinderUI.Components.FormsTest do
            )
   end
 
+  describe "slider with FormField" do
+    test "extracts name and value from field" do
+      form = Phoenix.Component.to_form(%{"volume" => "75"}, as: :settings)
+      html = render_component(&Forms.slider/1, %{id: "volume", field: form[:volume]})
+      assert TestHelpers.attr(html, "[data-slot='slider']", "name") == "settings[volume]"
+    end
+  end
+
   test "slider accepts fractional values" do
     html =
       render_component(&Forms.slider/1, %{
@@ -493,6 +519,32 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.attr(html, "[data-slot='slider']", "min") == "0.0"
     assert TestHelpers.attr(html, "[data-slot='slider']", "max") == "1.0"
     assert TestHelpers.attr(html, "[data-slot='slider']", "step") == "0.1"
+  end
+
+  describe "radio_group with FormField" do
+    test "extracts name and value from field" do
+      form = Phoenix.Component.to_form(%{"plan" => "pro"}, as: :account)
+      html = render_component(&Forms.radio_group/1, %{
+        field: form[:plan],
+        option: [
+          %{value: "free", label: "Free", inner_block: fn -> "" end},
+          %{value: "pro", label: "Pro", inner_block: fn -> "" end}
+        ]
+      })
+      inputs = TestHelpers.find_all(html, "input[type='radio']")
+      assert length(inputs) == 2
+    end
+
+    test "renders fieldset with legend for label" do
+      form = Phoenix.Component.to_form(%{"plan" => "free"}, as: :account)
+      html = render_component(&Forms.radio_group/1, %{
+        field: form[:plan], label: "Choose a plan",
+        option: [%{value: "free", label: "Free", inner_block: fn -> "" end}]
+      })
+      assert html =~ "<fieldset"
+      assert html =~ "<legend"
+      assert html =~ "Choose a plan"
+    end
   end
 
   test "radio_group supports disabled options" do
@@ -524,6 +576,16 @@ defmodule CinderUI.Components.FormsTest do
            |> List.first()
            |> String.split()
            |> Enum.member?("opacity-50")
+  end
+
+  describe "input_otp with FormField" do
+    test "extracts name from field and splits value into cells" do
+      form = Phoenix.Component.to_form(%{"code" => "1234"}, as: :verify)
+      html = render_component(&Forms.input_otp/1, %{field: form[:code], length: 4})
+      inputs = TestHelpers.find_all(html, "[data-input-otp-input]")
+      assert length(inputs) == 4
+      assert inputs |> List.first() |> Floki.attribute("value") |> List.first() == "1"
+    end
   end
 
   test "input_otp renders hook-enabled segmented inputs" do
