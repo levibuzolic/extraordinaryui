@@ -100,7 +100,8 @@ defmodule CinderUI.Components.Actions do
   attr :class, :string, default: nil
 
   attr :rest, :global,
-    include: ~w(type href target rel disabled name value form id aria-label navigate patch method download)
+    include:
+      ~w(type href target rel disabled name value form id aria-label navigate patch method download)
 
   slot :inner_block, required: true
 

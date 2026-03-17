@@ -31,11 +31,11 @@ defmodule CinderUI do
   @skip_functions [:__phoenix_component_verify__]
 
   # Built at compile time: %{button: CinderUI.Components.Actions, icon: CinderUI.Icons, ...}
-  @component_modules (for mod <- @all_modules,
-                          {func, 1} <- mod.__info__(:functions),
-                          func not in @skip_functions,
-                          into: %{},
-                          do: {func, mod})
+  @component_modules for mod <- @all_modules,
+                         {func, 1} <- mod.__info__(:functions),
+                         func not in @skip_functions,
+                         into: %{},
+                         do: {func, mod}
 
   defmacro __using__(opts) do
     excluded = Keyword.get(opts, :except, [])
@@ -46,7 +46,7 @@ defmodule CinderUI do
 
     if unknown != [] do
       raise ArgumentError,
-        "unknown component(s) in `use CinderUI, except:`: #{inspect(unknown)}"
+            "unknown component(s) in `use CinderUI, except:`: #{inspect(unknown)}"
     end
 
     # Group excluded functions by their source module

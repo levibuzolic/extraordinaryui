@@ -401,6 +401,14 @@ defmodule CinderUI.Docs.Catalog do
       use Phoenix.Component
       use CinderUI.Components
 
+      # Inline docs previews are rendered outside a Phoenix router context.
+      # Treat `~p` examples as path strings so docs snippets can compile.
+      defmacro sigil_p({:<<>>, _meta, segments}, _modifiers) do
+        quote do
+          IO.iodata_to_binary([unquote_splicing(segments)])
+        end
+      end
+
       def render(assigns) do
         ~H\"\"\"
     #{snippet_block}
