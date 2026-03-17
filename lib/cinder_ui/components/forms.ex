@@ -32,6 +32,7 @@ defmodule CinderUI.Components.Forms do
   import CinderUI.ComponentDocs, only: [doc: 1]
 
   alias CinderUI.Icons
+  alias Phoenix.HTML.Form
 
   doc("""
   Renders a form label.
@@ -359,6 +360,9 @@ defmodule CinderUI.Components.Forms do
   attr :type, :string, default: "text"
   attr :name, :string, default: nil
   attr :value, :string, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :placeholder, :string, default: nil
   attr :class, :string, default: nil
 
@@ -368,7 +372,10 @@ defmodule CinderUI.Components.Forms do
 
   def input(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:input_classes, [
         "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -376,14 +383,29 @@ defmodule CinderUI.Components.Forms do
       ])
 
     ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <input
+        id={@id}
+        type={@type}
+        data-slot="input"
+        name={@name}
+        value={@value}
+        placeholder={@placeholder}
+        class={classes(@input_classes)}
+        {@rest}
+      />
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
     <input
+      :if={!@label && @errors == []}
       id={@id}
       type={@type}
       data-slot="input"
       name={@name}
       value={@value}
       placeholder={@placeholder}
-      class={classes(@classes)}
+      class={classes(@input_classes)}
       {@rest}
     />
     """
@@ -1502,6 +1524,33 @@ defmodule CinderUI.Components.Forms do
       -
     </span>
     """
+  end
+
+  # -- FormField helpers -------------------------------------------------------
+
+  defp unwrap_field(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    raw_errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+    translated = Enum.map(raw_errors, &translate_error/1)
+
+    assigns
+    |> assign(:field, nil)
+    |> then(fn a -> if is_nil(a[:id]), do: assign(a, :id, field.id), else: a end)
+    |> then(fn a -> if is_nil(a[:name]), do: assign(a, :name, field.name), else: a end)
+    |> then(fn a -> if is_nil(a[:value]), do: assign(a, :value, field.value), else: a end)
+    |> maybe_put_errors(translated)
+  end
+
+  defp unwrap_field(assigns), do: assigns
+
+  defp maybe_put_errors(%{errors: errors} = assigns, _auto_errors) when not is_nil(errors),
+    do: assigns
+
+  defp maybe_put_errors(assigns, errors), do: assign(assigns, :errors, errors)
+
+  defp translate_error({msg, opts}) do
+    Enum.reduce(opts, msg, fn {key, value}, acc ->
+      String.replace(acc, "%{#{key}}", to_string(value))
+    end)
   end
 
   defp selected_option(options, value) when is_list(options) and is_binary(value) do
