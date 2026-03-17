@@ -810,9 +810,12 @@ defmodule CinderUI.Components.Forms do
   ```
   """)
 
-  attr :id, :string, required: true
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :placeholder, :string, default: "Choose an option"
   attr :disabled, :boolean, default: false
   attr :clearable, :boolean, default: false
@@ -831,6 +834,12 @@ defmodule CinderUI.Components.Forms do
   slot :empty
 
   def select(assigns) do
+    assigns =
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:id, assigns.id || "cinder-ui-select-#{System.unique_integer([:positive])}")
+
     selected_option = selected_option(assigns.option, assigns.value)
     selected_label = if selected_option, do: selected_option.label, else: assigns.placeholder
 
@@ -851,6 +860,71 @@ defmodule CinderUI.Components.Forms do
         assigns.content_class
       ])
 
+    ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <.select_control
+        id={@id}
+        name={@name}
+        value={@value}
+        selected_label={@selected_label}
+        selected_value={@selected_value}
+        placeholder={@placeholder}
+        disabled={@disabled}
+        clearable={@clearable}
+        option={@option}
+        empty={@empty}
+        root_classes={@root_classes}
+        trigger_classes={@trigger_classes}
+        content_classes={@content_classes}
+        rest={@rest}
+      />
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
+    <.select_control
+      :if={!@label && @errors == []}
+      id={@id}
+      name={@name}
+      value={@value}
+      selected_label={@selected_label}
+      selected_value={@selected_value}
+      placeholder={@placeholder}
+      disabled={@disabled}
+      clearable={@clearable}
+      option={@option}
+      empty={@empty}
+      root_classes={@root_classes}
+      trigger_classes={@trigger_classes}
+      content_classes={@content_classes}
+      rest={@rest}
+    />
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :name, :string, default: nil
+  attr :value, :string, default: nil
+  attr :selected_label, :string, required: true
+  attr :selected_value, :string, default: nil
+  attr :placeholder, :string, required: true
+  attr :disabled, :boolean, required: true
+  attr :clearable, :boolean, required: true
+  attr :root_classes, :list, required: true
+  attr :trigger_classes, :list, required: true
+  attr :content_classes, :list, required: true
+  attr :rest, :map, required: true
+
+  slot :option, required: true do
+    attr :value, :string, required: true
+    attr :label, :string, required: true
+    attr :description, :string
+    attr :disabled, :boolean
+    attr :group, :string
+  end
+
+  slot :empty
+
+  defp select_control(assigns) do
     ~H"""
     <div
       id={@id}

@@ -142,6 +142,21 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.attr(html, "[data-slot='number-field-increment']", "onclick") =~ "stepUp()"
   end
 
+  describe "select with FormField" do
+    test "extracts name and value from field" do
+      form = Phoenix.Component.to_form(%{"role" => "admin"}, as: :user)
+      html = render_component(&Forms.select/1, %{
+        field: form[:role],
+        option: [
+          %{value: "user", label: "User", inner_block: fn -> "" end},
+          %{value: "admin", label: "Admin", inner_block: fn -> "" end}
+        ]
+      })
+      assert TestHelpers.attr(html, "[data-slot='select-input']", "name") == "user[role]"
+      assert TestHelpers.attr(html, "[data-slot='select-input']", "value") == "admin"
+    end
+  end
+
   test "select renders custom trigger, hidden input, and items" do
     html =
       render_component(&Forms.select/1, %{
