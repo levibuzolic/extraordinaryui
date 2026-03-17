@@ -195,6 +195,38 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.text(empty_html, "[data-slot='select-empty']") == "No options available."
   end
 
+  describe "native_select with FormField" do
+    test "extracts id, name, value from field and renders options from options attr" do
+      form = Phoenix.Component.to_form(%{"role" => "admin"}, as: :user)
+      html = render_component(&Forms.native_select/1, %{
+        field: form[:role],
+        options: [{"User", "user"}, {"Admin", "admin"}]
+      })
+      assert TestHelpers.attr(html, "[data-slot='native-select']", "id") == "user_role"
+      assert TestHelpers.attr(html, "[data-slot='native-select']", "name") == "user[role]"
+      assert TestHelpers.find_all(html, "option") |> length() == 2
+    end
+
+    test "renders label and errors" do
+      html = render_component(&Forms.native_select/1, %{
+        id: "role", name: "role", label: "Role", errors: ["is invalid"],
+        options: [{"User", "user"}]
+      })
+      assert TestHelpers.text(html, "[data-slot='label']") == "Role"
+      assert TestHelpers.text(html, "[data-slot='field-error']") == "is invalid"
+    end
+
+    test "option slots take precedence over options attr" do
+      html = render_component(&Forms.native_select/1, %{
+        id: "role", name: "role", value: "admin",
+        options: [{"Ignored", "ignored"}],
+        option: [%{value: "admin", label: "Admin", inner_block: fn -> "" end}]
+      })
+      assert TestHelpers.find_all(html, "option") |> length() == 1
+      refute html =~ "Ignored"
+    end
+  end
+
   test "native_select renders native wrapper and element" do
     html =
       render_component(&Forms.native_select/1, %{

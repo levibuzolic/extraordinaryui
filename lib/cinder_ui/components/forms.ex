@@ -1000,34 +1000,71 @@ defmodule CinderUI.Components.Forms do
       </.native_select>
   """)
 
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
+  attr :options, :list, default: nil
   attr :placeholder, :string, default: "Choose an option"
   attr :class, :string, default: nil
   attr :rest, :global
 
-  slot :option, required: true do
+  slot :option do
     attr :value, :string, required: true
     attr :label, :string, required: true
   end
 
   def native_select(assigns) do
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> unwrap_field()
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:classes, [
         "border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-8 w-full min-w-0 appearance-none rounded-lg border bg-transparent py-1 pr-8 pl-2.5 text-sm transition-colors outline-none select-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed aria-invalid:ring-3 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] data-[size=sm]:py-0.5",
         assigns.class
       ])
 
     ~H"""
+    <div :if={@label || @errors != []} class="space-y-2">
+      <.label :if={@label} for={@id}>{@label}</.label>
+      <div
+        data-slot="native-select-wrapper"
+        class="group/native-select relative w-full has-[select:disabled]:opacity-50"
+      >
+        <select id={@id} data-slot="native-select" name={@name} class={classes(@classes)} {@rest}>
+          <option :if={is_nil(@value)} value="" disabled selected>{@placeholder}</option>
+          <%= if @option != [] do %>
+            <option :for={option <- @option} value={option.value} selected={@value == option.value}>
+              {option.label}
+            </option>
+          <% else %>
+            {Form.options_for_select(@options || [], @value)}
+          <% end %>
+        </select>
+        <CinderUI.Icons.icon
+          name="chevron-down"
+          class="text-muted-foreground pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 select-none"
+          aria-hidden="true"
+        />
+      </div>
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
     <div
+      :if={!@label && @errors == []}
       data-slot="native-select-wrapper"
       class="group/native-select relative w-full has-[select:disabled]:opacity-50"
     >
-      <select data-slot="native-select" name={@name} class={classes(@classes)} {@rest}>
+      <select id={@id} data-slot="native-select" name={@name} class={classes(@classes)} {@rest}>
         <option :if={is_nil(@value)} value="" disabled selected>{@placeholder}</option>
-        <option :for={option <- @option} value={option.value} selected={@value == option.value}>
-          {option.label}
-        </option>
+        <%= if @option != [] do %>
+          <option :for={option <- @option} value={option.value} selected={@value == option.value}>
+            {option.label}
+          </option>
+        <% else %>
+          {Form.options_for_select(@options || [], @value)}
+        <% end %>
       </select>
       <CinderUI.Icons.icon
         name="chevron-down"
