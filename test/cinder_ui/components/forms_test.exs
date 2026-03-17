@@ -391,6 +391,21 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.text(html, "label") == "Accept terms"
   end
 
+  describe "switch with FormField" do
+    test "extracts checked state from field" do
+      form = Phoenix.Component.to_form(%{"notifications" => true}, as: :prefs)
+      html = render_component(&Forms.switch/1, %{field: form[:notifications]})
+      assert TestHelpers.attr(html, "[data-slot='switch']", "data-state") == "checked"
+      assert TestHelpers.attr(html, "[data-slot='switch']", "name") == "prefs[notifications]"
+    end
+
+    test "renders label from label attr inline" do
+      form = Phoenix.Component.to_form(%{"notify" => false}, as: :prefs)
+      html = render_component(&Forms.switch/1, %{field: form[:notify], label: "Notifications"})
+      assert html =~ "Notifications"
+    end
+  end
+
   test "switch hides native checkbox glyph and renders thumb" do
     html = render_component(&Forms.switch/1, %{id: "marketing", checked: true})
 

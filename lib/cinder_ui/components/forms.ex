@@ -679,10 +679,13 @@ defmodule CinderUI.Components.Forms do
       <.switch id="notifications" disabled={true}>Push notifications</.switch>
   """)
 
-  attr :id, :string, required: true
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: "true"
   attr :checked, :boolean, default: false
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :disabled, :boolean, default: false
   attr :size, :atom, default: :default, values: [:sm, :default]
   attr :class, :string, default: nil
@@ -690,6 +693,20 @@ defmodule CinderUI.Components.Forms do
   slot :inner_block
 
   def switch(assigns) do
+    had_field = not is_nil(assigns[:field])
+
+    assigns =
+      assigns
+      |> unwrap_field()
+      |> then(fn a ->
+        if had_field do
+          assign(a, :checked, Form.normalize_value("checkbox", a[:value]))
+        else
+          a
+        end
+      end)
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+
     state = if(assigns.checked, do: "checked", else: "unchecked")
 
     root_size =
@@ -718,6 +735,7 @@ defmodule CinderUI.Components.Forms do
 
     ~H"""
     <label class="inline-flex items-center gap-2">
+      <input type="hidden" name={@name} value="false" />
       <span class="relative inline-flex items-center">
         <input
           id={@id}
@@ -746,6 +764,9 @@ defmodule CinderUI.Components.Forms do
       </span>
       <span :if={@inner_block != []} class="text-sm text-foreground">
         {render_slot(@inner_block)}
+      </span>
+      <span :if={@inner_block == [] && @label} class="text-sm text-foreground">
+        {@label}
       </span>
     </label>
     """
