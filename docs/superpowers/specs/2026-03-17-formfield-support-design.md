@@ -22,6 +22,7 @@ All form components:
 - `radio_group/1`
 - `slider/1`
 - `number_field/1`
+- `input_otp/1`
 
 ## New Attrs
 
@@ -40,12 +41,14 @@ Each component gains these attrs:
 When `field` is provided:
 
 1. Extract `id`, `name`, `value` from the struct (using `assign_new` so explicit attrs take precedence).
-2. If `errors` attr is empty, auto-extract errors from `field.errors` using `Phoenix.Component.used_input?/1` (errors only appear after user interaction).
+2. If the caller did not pass an explicit `errors` attr (detected via `assigns_direct`), auto-extract errors from `field.errors` using `Phoenix.Component.used_input?/1` (errors only appear after user interaction).
 3. Translate `{msg, opts}` error tuples using standard string interpolation (no Gettext dependency).
 
 ### Label Rendering
 
 When `label` is provided, render a `<.label>` element above the control with `for` pointing to the input's `id`.
+
+Exception: for `radio_group/1`, render a `<fieldset>` with `<legend>` instead of `<label for=...>`, since a label `for` does not work with a group of radio buttons.
 
 ### Error Rendering
 
@@ -54,6 +57,8 @@ When translated errors exist (either auto-extracted or explicitly passed), rende
 ### Wrapping
 
 When `label` or errors are present, the component wraps in a container `<div>`. When neither is present (raw mode), it renders just the bare control element.
+
+When used inside `<.field>` composition, the caller should omit `label` and `errors` attrs to avoid double-wrapping. The component renders the bare control and `<.field>` handles the surrounding structure.
 
 ### Precedence
 
@@ -77,7 +82,7 @@ Apps needing custom translation (e.g., Gettext) can pass pre-translated strings 
 
 ## Internal Implementation
 
-A shared helper function handles FormField unwrapping to avoid duplication across 10 components. Located in `CinderUI.Helpers` or as a private function within `CinderUI.Components.Forms`:
+A shared helper function handles FormField unwrapping to avoid duplication across 11 components. Located in `CinderUI.Helpers` or as a private function within `CinderUI.Components.Forms`:
 
 ```elixir
 defp unwrap_field(assigns) do
@@ -99,7 +104,7 @@ defp unwrap_field(assigns) do
 end
 ```
 
-Where `maybe_put_errors/2` only sets errors if the caller didn't pass explicit ones.
+`maybe_put_errors/2` uses `assigns_direct` (or equivalent) to detect whether the caller explicitly passed `errors`. If they did, those take precedence. If they did not (the attr is at its default `[]`), the auto-extracted errors are used.
 
 ## No Type Dispatch
 
@@ -125,12 +130,27 @@ For boolean fields (`checkbox/1`, `switch/1`):
 
 - Extract `checked` from `field.value` using `Phoenix.HTML.Form.normalize_value("checkbox", value)`.
 - Render a hidden input with `value="false"` before the checkbox (standard Phoenix pattern for unchecked submission).
-- The `name` attr gets `[]` suffix when `multiple` is true.
+- The `label` attr renders the label text inline next to the control (matching the existing `inner_block` pattern), not above it. When both `label` attr and `inner_block` are provided, `inner_block` takes precedence for the inline label text.
 
 ## Native Select Specifics
 
-- Currently uses `:option` slots. With `field`, also accept an `options` attr (list compatible with `Phoenix.HTML.Form.options_for_select/2`) as a convenience alongside the slot-based API.
+- Currently uses `:option` slots. With `field`, also accept an `options` attr as a convenience. Accepts the same formats as `Phoenix.HTML.Form.options_for_select/2`: a list of `{label, value}` tuples, a keyword list, or a list of strings.
+- When both `options` attr and `:option` slots are provided, `:option` slots take precedence and `options` is ignored.
 - `value` from the FormField determines which option is selected.
+- `native_select/1` must gain an `id` attr and render it on the `<select>` element so that `<.label for={id}>` works correctly.
+
+## Select / Autocomplete Specifics
+
+- `value` extracted from `field.value` is passed through to the existing value-matching logic. If `field.value` is `nil` or doesn't match any option, the component shows no selection (existing behaviour for unmatched values).
+
+## Radio Group Specifics
+
+- `radio_group/1` must gain an `id` attr for accessibility.
+- Label rendering uses `<fieldset>` with `<legend>` rather than `<label for=...>` since `for` does not apply to radio groups.
+
+## Slider / Number Field Specifics
+
+- No value coercion is performed. `field.value` is passed through as-is. Phoenix form params arrive as strings, but Ecto changesets typically cast to integers/floats before reaching the template. If a string value is passed, the browser's native `<input type="number">` / `<input type="range">` handles it correctly.
 
 ## Migration from CoreComponents
 
@@ -140,4 +160,5 @@ For boolean fields (`checkbox/1`, `switch/1`):
 | `<.input field={f[:notes]} type="textarea" label="Notes" />` | `<.textarea field={f[:notes]} label="Notes" />` |
 | `<.input field={f[:online]} type="checkbox" />` | `<.checkbox field={f[:online]} />` |
 | `<.input field={f[:role]} type="select" options={opts} />` | `<.native_select field={f[:role]} options={opts} />` |
+| `<.input field={f[:lat]} type="number" step="any" label="Lat" />` | `<.input field={f[:lat]} type="number" step="any" label="Lat" />` (same) |
 | `<.input type="hidden" name="id" value={@id} />` | `<input type="hidden" name="id" value={@id} />` (raw HTML) |
