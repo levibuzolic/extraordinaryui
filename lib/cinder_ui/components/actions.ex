@@ -76,6 +76,14 @@ defmodule CinderUI.Components.Actions do
   ```heex title="Loading destructive action"
   <.button variant={:destructive} loading={true}>Deleting...</.button>
   ```
+
+  ```heex title="LiveView navigation"
+  <.button navigate={~p"/settings"}>Settings</.button>
+  <.button patch={~p"/users?page=2"} variant={:outline} size={:sm}>Next page</.button>
+  ```
+
+  When `navigate`, `patch`, or `href` is provided, the button renders as a
+  `Phoenix.Component.link/1` instead of a plain HTML element.
   """)
 
   attr :as, :string, default: "button"
@@ -244,20 +252,34 @@ defmodule CinderUI.Components.Actions do
   ```heex title="Disabled toggle"
   <.toggle disabled>Disabled</.toggle>
   ```
+
+  ```heex title="LiveView navigation"
+  <.toggle patch={~p"/items?filter=active"} pressed={@filter == :active} size={:sm}>
+    Active
+  </.toggle>
+  ```
+
+  When `navigate`, `patch`, or `href` is provided, the toggle renders as a
+  `Phoenix.Component.link/1` instead of a plain HTML button.
   """)
 
   attr :pressed, :boolean, default: false
   attr :variant, :atom, default: :default, values: [:default, :outline]
   attr :size, :atom, default: :default, values: [:default, :sm, :lg]
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(type id name value disabled aria-label)
+
+  attr :rest, :global,
+    include: ~w(type id name value disabled aria-label href target rel navigate patch method)
+
   slot :inner_block, required: true
 
   def toggle(assigns) do
+    is_link = assigns.rest[:navigate] || assigns.rest[:patch] || assigns.rest[:href]
     state = if(assigns.pressed, do: "on", else: "off")
 
     assigns =
       assigns
+      |> assign(:is_link, is_link)
       |> assign(:state, state)
       |> assign(:classes, [
         "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none transition-[color,box-shadow] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap",
@@ -267,7 +289,18 @@ defmodule CinderUI.Components.Actions do
       ])
 
     ~H"""
+    <.link
+      :if={@is_link}
+      data-slot="toggle"
+      data-state={@state}
+      aria-pressed={@pressed}
+      class={classes(@classes)}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.link>
     <button
+      :if={!@is_link}
       type="button"
       data-slot="toggle"
       data-state={@state}
