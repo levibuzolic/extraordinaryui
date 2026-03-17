@@ -7,6 +7,80 @@ defmodule CinderUI.Components.FormsTest do
   alias CinderUI.TestHelpers
   alias Phoenix.HTML
 
+  describe "input with FormField" do
+    test "extracts id, name, value from field" do
+      form = Phoenix.Component.to_form(%{"name" => "Alice"}, as: :user)
+
+      html =
+        render_component(&Forms.input/1, %{
+          field: form[:name]
+        })
+
+      assert TestHelpers.attr(html, "[data-slot='input']", "id") == "user_name"
+      assert TestHelpers.attr(html, "[data-slot='input']", "name") == "user[name]"
+      assert TestHelpers.attr(html, "[data-slot='input']", "value") == "Alice"
+    end
+
+    test "renders label when label attr is provided" do
+      form = Phoenix.Component.to_form(%{"name" => ""}, as: :user)
+
+      html =
+        render_component(&Forms.input/1, %{
+          field: form[:name],
+          label: "Full Name"
+        })
+
+      assert TestHelpers.text(html, "[data-slot='label']") == "Full Name"
+      assert TestHelpers.attr(html, "[data-slot='label']", "for") == "user_name"
+    end
+
+    test "renders errors from explicit errors attr" do
+      html =
+        render_component(&Forms.input/1, %{
+          id: "name",
+          name: "name",
+          errors: ["can't be blank"]
+        })
+
+      assert TestHelpers.text(html, "[data-slot='field-error']") == "can't be blank"
+    end
+
+    test "explicit id overrides field id" do
+      form = Phoenix.Component.to_form(%{"name" => ""}, as: :user)
+
+      html =
+        render_component(&Forms.input/1, %{
+          field: form[:name],
+          id: "custom-id"
+        })
+
+      assert TestHelpers.attr(html, "[data-slot='input']", "id") == "custom-id"
+    end
+
+    test "renders bare input when no label or errors" do
+      form = Phoenix.Component.to_form(%{"name" => ""}, as: :user)
+
+      html =
+        render_component(&Forms.input/1, %{
+          field: form[:name]
+        })
+
+      refute html =~ "data-slot=\"label\""
+      refute html =~ "data-slot=\"field-error\""
+    end
+
+    test "translates error tuples from field errors" do
+      html =
+        render_component(&Forms.input/1, %{
+          id: "count",
+          name: "count",
+          errors: ["must be at least 3"]
+        })
+
+      assert TestHelpers.text(html, "[data-slot='field-error']") == "must be at least 3"
+    end
+  end
+
   test "input renders with data-slot and forwards min/max attributes" do
     html =
       render_component(&Forms.input/1, %{
