@@ -155,7 +155,49 @@ defp html_helpers do
 end
 ```
 
-Or selectively import only the modules you need:
+#### Existing projects with CoreComponents
+
+Phoenix generates a `CoreComponents` module with functions like `button/1`, `input/1`, `table/1`, `flash/1`, `card/1`, and `label/1` that overlap with Cinder UI components. Cinder UI provides replacements for all of these.
+
+**Recommended: Remove conflicting CoreComponents**
+
+The cleanest approach is to delete the overlapping functions (`button/1`, `card/1`, `flash/1`, `flash_group/1`, `input/1`, `label/1`, `table/1`, and `icon/1`) from your `CoreComponents` module and let Cinder UI's versions take over. This gives you a single, consistent component API with no namespace prefixes needed. If your `CoreComponents` only contains the default Phoenix-generated functions, you can remove the module entirely and replace `import MyAppWeb.CoreComponents` with `use CinderUI` in your `html_helpers`.
+
+If you'd prefer to keep your existing CoreComponents alongside Cinder UI, you have several options:
+
+**Option A: Exclude conflicting components**
+
+Use the `except` option to skip components that conflict with your `CoreComponents`:
+
+```elixir
+use CinderUI, except: [:button, :card, :flash, :flash_group, :input, :label, :table]
+```
+
+Excluded components are still available via the `CinderUI.UI` facade (see Option B) or
+their full module path (e.g., `<CinderUI.Components.Actions.button>`).
+
+**Option B: Use the `CinderUI.UI` facade**
+
+Alias the facade module for zero-conflict namespaced access to every component:
+
+```elixir
+alias CinderUI.UI
+```
+
+Then use components with the `UI.` prefix:
+
+```heex
+<UI.button>Click me</UI.button>
+<UI.autocomplete id="search" name="q" value="">
+  <:option value="foo" label="Foo" />
+</UI.autocomplete>
+<UI.icon name="chevron-down" class="size-4" />
+```
+
+This can be combined with Option A — use `except` for the components that conflict,
+and access excluded components via `UI.button`, `UI.input`, etc.
+
+**Option C: Selectively import specific modules**
 
 ```elixir
 import CinderUI.Components.Actions
