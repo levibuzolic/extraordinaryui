@@ -347,6 +347,38 @@ defmodule CinderUI.Components.FormsTest do
     assert TestHelpers.text(message_html, "[data-slot='field-message']") == "Saved"
   end
 
+  describe "checkbox with FormField" do
+    test "extracts checked state from field value" do
+      form = Phoenix.Component.to_form(%{"online" => true}, as: :store)
+      html = render_component(&Forms.checkbox/1, %{field: form[:online]})
+      assert TestHelpers.attr(html, "[data-slot='checkbox']", "id") == "store_online"
+      assert TestHelpers.attr(html, "[data-slot='checkbox']", "name") == "store[online]"
+      assert TestHelpers.attr(html, "[data-slot='checkbox']", "checked") == "checked"
+    end
+
+    test "renders hidden input for unchecked submission" do
+      form = Phoenix.Component.to_form(%{"active" => false}, as: :item)
+      html = render_component(&Forms.checkbox/1, %{field: form[:active]})
+      assert TestHelpers.attr(html, "input[type='hidden']", "name") == "item[active]"
+      assert TestHelpers.attr(html, "input[type='hidden']", "value") == "false"
+    end
+
+    test "renders label from label attr inline" do
+      form = Phoenix.Component.to_form(%{"online" => false}, as: :store)
+      html = render_component(&Forms.checkbox/1, %{field: form[:online], label: "Online"})
+      assert html =~ "Online"
+    end
+
+    test "inner_block takes precedence over label attr" do
+      html = render_component(&Forms.checkbox/1, %{
+        id: "terms", name: "terms", label: "Fallback",
+        inner_block: CinderUI.TestHelpers.slot("Accept Terms")
+      })
+      assert html =~ "Accept Terms"
+      refute html =~ "Fallback"
+    end
+  end
+
   test "checkbox renders native input and label content" do
     html =
       render_component(&Forms.checkbox/1, %{

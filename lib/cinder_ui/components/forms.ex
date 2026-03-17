@@ -587,24 +587,63 @@ defmodule CinderUI.Components.Forms do
       </.checkbox>
   """)
 
-  attr :id, :string, required: true
+  attr :id, :string, default: nil
   attr :name, :string, default: nil
   attr :value, :string, default: "true"
   attr :checked, :boolean, default: false
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: nil
   attr :disabled, :boolean, default: false
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block
 
   def checkbox(assigns) do
+    had_field = not is_nil(assigns[:field])
+
     assigns =
-      assign(assigns, :classes, [
+      assigns
+      |> unwrap_field()
+      |> then(fn a ->
+        if had_field do
+          assign(a, :checked, Form.normalize_value("checkbox", a[:value]))
+        else
+          a
+        end
+      end)
+      |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
+      |> assign(:classes, [
         "peer border-input dark:bg-input/30 checked:bg-primary checked:text-primary-foreground checked:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
         assigns.class
       ])
 
     ~H"""
-    <label class="inline-flex items-center gap-2">
+    <div :if={@errors != []} class="space-y-2">
+      <label class="inline-flex items-center gap-2">
+        <input type="hidden" name={@name} value="false" />
+        <input
+          id={@id}
+          data-slot="checkbox"
+          type="checkbox"
+          name={@name}
+          value={@value}
+          checked={@checked}
+          disabled={@disabled}
+          class={classes(@classes)}
+          {@rest}
+        />
+        <span :if={@inner_block != []} class="text-sm text-foreground">
+          {render_slot(@inner_block)}
+        </span>
+        <span :if={@inner_block == [] && @label} class="text-sm text-foreground">
+          {@label}
+        </span>
+      </label>
+      <.field_error :for={msg <- @errors}>{msg}</.field_error>
+    </div>
+    <label :if={@errors == []} class="inline-flex items-center gap-2">
+      <input type="hidden" name={@name} value="false" />
       <input
         id={@id}
         data-slot="checkbox"
@@ -618,6 +657,9 @@ defmodule CinderUI.Components.Forms do
       />
       <span :if={@inner_block != []} class="text-sm text-foreground">
         {render_slot(@inner_block)}
+      </span>
+      <span :if={@inner_block == [] && @label} class="text-sm text-foreground">
+        {@label}
       </span>
     </label>
     """
