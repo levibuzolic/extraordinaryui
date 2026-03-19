@@ -131,10 +131,10 @@ defmodule CinderUI.Components.Feedback do
 
   @alert_variants %{
     default: "bg-card text-card-foreground",
-    destructive:
-      "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
-    success: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 [&>svg]:text-current",
-    warning: "border-amber-500/30 bg-amber-500/10 text-amber-700 [&>svg]:text-current"
+    destructive: "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
+    success: "border-success/30 bg-success/10 text-success [&>svg]:text-current *:data-[slot=alert-description]:text-success/90",
+    warning: "border-warning/30 bg-warning/10 text-warning [&>svg]:text-current *:data-[slot=alert-description]:text-warning/90",
+    info: "border-info/30 bg-info/10 text-info [&>svg]:text-current *:data-[slot=alert-description]:text-info/90"
   }
 
   doc("""
@@ -163,10 +163,20 @@ defmodule CinderUI.Components.Feedback do
     </.alert_description>
   </.alert>
   ```
+
+  ```heex title="Info alert" align="full"
+  <.alert variant={:info}>
+    <CinderUI.Icons.icon name="info" />
+    <.alert_title>FYI</.alert_title>
+    <.alert_description>
+      Additional information to help you understand the current situation.
+    </.alert_description>
+  </.alert>
+  ```
   """)
 
   attr :id, :string, default: nil
-  attr :variant, :atom, default: :default, values: [:default, :destructive, :success, :warning]
+  attr :variant, :atom, default: :default, values: [:default, :destructive, :success, :warning, :info]
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
