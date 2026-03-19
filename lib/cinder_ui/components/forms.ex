@@ -1110,16 +1110,8 @@ defmodule CinderUI.Components.Forms do
   attr :trigger_classes, :list, required: true
   attr :content_classes, :list, required: true
   attr :rest, :map, required: true
-
-  slot :option, required: true do
-    attr :value, :string, required: true
-    attr :label, :string, required: true
-    attr :description, :string
-    attr :disabled, :boolean
-    attr :group, :string
-  end
-
-  slot :empty
+  attr :option, :list, required: true
+  attr :empty, :list, default: []
 
   defp select_control(assigns) do
     ~H"""
@@ -1561,15 +1553,8 @@ defmodule CinderUI.Components.Forms do
   attr :input_classes, :list, required: true
   attr :content_classes, :list, required: true
   attr :rest, :map, required: true
-
-  slot :option, required: true do
-    attr :value, :string, required: true
-    attr :label, :string, required: true
-    attr :description, :string
-    attr :disabled, :boolean
-  end
-
-  slot :empty
+  attr :option, :list, required: true
+  attr :empty, :list, default: []
 
   defp autocomplete_control(assigns) do
     ~H"""
