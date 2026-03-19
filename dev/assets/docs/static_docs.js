@@ -430,6 +430,15 @@ const applyPalette = (color, resolvedMode) => {
   Object.entries(tokens).forEach(([token, value]) => {
     root.style.setProperty(`--${token}`, value)
   })
+
+  // Apply sidebar tokens to the sidebar element so it uses the themed colors
+  if (sidebar) {
+    Object.entries(tokens).forEach(([token, value]) => {
+      if (token.startsWith('sidebar-')) {
+        sidebar.style.setProperty(`--${token}`, value)
+      }
+    })
+  }
 }
 
 /** Keep the theme picker controls in sync with the current settings. */
