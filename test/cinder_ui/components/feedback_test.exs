@@ -90,19 +90,27 @@ defmodule CinderUI.Components.FeedbackTest do
     success_html =
       render_component(&Feedback.alert/1, %{
         variant: :success,
-        inner_block: TestHelpers.slot("All good")
+        inner_block: TestHelpers.slot(""),
+        title: TestHelpers.slot("Success"),
+        description: TestHelpers.slot("All good")
       })
 
     warning_html =
       render_component(&Feedback.alert/1, %{
         variant: :warning,
-        inner_block: TestHelpers.slot("Heads up")
+        inner_block: TestHelpers.slot(""),
+        title: TestHelpers.slot("Warning"),
+        description: TestHelpers.slot("Heads up")
       })
 
     assert success_html =~ ~s(data-variant="success")
     assert success_html =~ "border-emerald-500/30"
+    assert success_html =~ "Success"
+    assert success_html =~ "All good"
     assert warning_html =~ ~s(data-variant="warning")
     assert warning_html =~ "border-amber-500/30"
+    assert warning_html =~ "Warning"
+    assert warning_html =~ "Heads up"
   end
 
   test "flash_group renders drop-in ids and wrappers" do
