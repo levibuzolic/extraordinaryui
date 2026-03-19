@@ -22,22 +22,51 @@ defmodule CinderUI.Components.Feedback do
   alias Phoenix.LiveView.JS
 
   @badge_variants %{
-    default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
-    secondary: "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-    destructive:
-      "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-    outline:
-      "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-    ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-    link: "text-primary underline-offset-4 [a&]:hover:underline"
+    solid: %{
+      primary: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+      secondary: "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+      destructive:
+        "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+      success: "bg-success text-success-foreground [a&]:hover:bg-success/90",
+      warning: "bg-warning text-warning-foreground [a&]:hover:bg-warning/90",
+      info: "bg-info text-info-foreground [a&]:hover:bg-info/90"
+    },
+    outline: %{
+      primary: "border-primary text-primary [a&]:hover:bg-primary [a&]:hover:text-primary-foreground",
+      secondary: "border-secondary text-secondary [a&]:hover:bg-secondary [a&]:hover:text-secondary-foreground",
+      destructive: "border-destructive text-destructive [a&]:hover:bg-destructive [a&]:hover:text-destructive-foreground",
+      success: "border-success text-success [a&]:hover:bg-success [a&]:hover:text-success-foreground",
+      warning: "border-warning text-warning [a&]:hover:bg-warning [a&]:hover:text-warning-foreground",
+      info: "border-info text-info [a&]:hover:bg-info [a&]:hover:text-info-foreground"
+    },
+    ghost: %{
+      primary: "[a&]:hover:bg-primary/10 [a&]:hover:text-primary",
+      secondary: "[a&]:hover:bg-secondary/10 [a&]:hover:text-secondary",
+      destructive: "[a&]:hover:bg-destructive/10 [a&]:hover:text-destructive",
+      success: "[a&]:hover:bg-success/10 [a&]:hover:text-success",
+      warning: "[a&]:hover:bg-warning/10 [a&]:hover:text-warning",
+      info: "[a&]:hover:bg-info/10 [a&]:hover:text-info"
+    },
+    link: %{
+      primary: "text-primary underline-offset-4 [a&]:hover:underline",
+      secondary: "text-secondary underline-offset-4 [a&]:hover:underline",
+      destructive: "text-destructive underline-offset-4 [a&]:hover:underline",
+      success: "text-success underline-offset-4 [a&]:hover:underline",
+      warning: "text-warning underline-offset-4 [a&]:hover:underline",
+      info: "text-info underline-offset-4 [a&]:hover:underline"
+    }
   }
 
   doc("""
   Renders a status badge.
 
+  ## Colors
+
+  `:primary`, `:secondary`, `:destructive`, `:success`, `:warning`, `:info`
+
   ## Variants
 
-  `:default`, `:secondary`, `:destructive`, `:outline`, `:ghost`, `:link`
+  `:solid`, `:outline`, `:ghost`, `:link`
 
   ## Examples
 
@@ -45,41 +74,56 @@ defmodule CinderUI.Components.Feedback do
   <.badge>New</.badge>
   ```
 
-  ```heex title="Variant set"
+  ```heex title="Color set"
   <div class="flex flex-wrap items-center gap-2">
-    <.badge>Default</.badge>
-    <.badge variant={:secondary}>Secondary</.badge>
-    <.badge variant={:destructive}>Destructive</.badge>
+    <.badge>Primary</.badge>
+    <.badge color={:secondary}>Secondary</.badge>
+    <.badge color={:destructive}>Destructive</.badge>
+    <.badge color={:success}>Success</.badge>
+  </div>
+  ```
+
+  ```heex title="Badge with variant"
+  <div class="flex flex-wrap items-center gap-2">
     <.badge variant={:outline}>Outline</.badge>
+    <.badge variant={:ghost}>Ghost</.badge>
+    <.badge variant={:link}>Link</.badge>
   </div>
   ```
 
   ```heex title="Badge with icon"
-  <.badge variant={:secondary}>
+  <.badge color={:secondary}>
     <CinderUI.Icons.icon name="check" />
     Verified
   </.badge>
   ```
   """)
 
+  attr :color, :atom,
+    default: :primary,
+    values: [:primary, :secondary, :destructive, :success, :warning, :info]
+
   attr :variant, :atom,
-    default: :default,
-    values: [:default, :secondary, :destructive, :outline, :ghost, :link]
+    default: :solid,
+    values: [:solid, :outline, :ghost, :link]
 
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def badge(assigns) do
+    variant_styles = variant(@badge_variants, assigns.variant, @badge_variants.solid)
+    color_styles = variant(variant_styles, assigns.color, variant_styles.primary)
+
     assigns =
       assign(assigns, :classes, [
         "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
-        variant(@badge_variants, assigns.variant, @badge_variants.default),
+        color_styles,
         assigns.class
       ])
 
     ~H"""
-    <span data-slot="badge" data-variant={@variant} class={classes(@classes)} {@rest}>
+    <span data-slot="badge" data-color={@color} data-variant={@variant} class={classes(@classes)} {@rest}>
       {render_slot(@inner_block)}
     </span>
     """
