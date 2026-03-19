@@ -320,18 +320,18 @@ defmodule CinderUI.Site.Marketing do
       to_html(~H"""
       <Feedback.alert>
         <Icons.icon name="circle-alert" class="size-4" />
-        <Feedback.alert_title>Release ready</Feedback.alert_title>
-        <Feedback.alert_description>
+        <:title>Release ready</:title>
+        <:description>
           All quality checks passed. Publish when ready.
-        </Feedback.alert_description>
+        </:description>
       </Feedback.alert>
       """)
 
     snippet = """
     <.alert>
       <.icon name="circle-alert" class="size-4" />
-      <.alert_title>Release ready</.alert_title>
-      <.alert_description>All quality checks passed.</.alert_description>
+      <:title>Release ready</:title>
+      <:description>All quality checks passed.</:description>
     </.alert>
     """
 

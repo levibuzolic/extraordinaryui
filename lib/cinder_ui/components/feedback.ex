@@ -6,8 +6,6 @@ defmodule CinderUI.Components.Feedback do
 
   - `badge/1`
   - `alert/1`
-  - `alert_title/1`
-  - `alert_description/1`
   - `flash/1`
   - `flash_group/1`
   - `progress/1`
@@ -202,7 +200,7 @@ defmodule CinderUI.Components.Feedback do
   doc("""
   Renders an alert container.
 
-  Compose with `alert_title/1` and `alert_description/1` for canonical structure.
+  Use named `:title` and `:description` slots for canonical structure.
 
   ## Examples
 
@@ -212,10 +210,10 @@ defmodule CinderUI.Components.Feedback do
       <h4 class="text-sm font-medium mb-2">Default</h4>
       <.alert>
         <CinderUI.Icons.icon name="circle-alert" />
-        <.alert_title>Heads up!</.alert_title>
-        <.alert_description>
+        <:title>Heads up!</:title>
+        <:description>
           You can add components to your app using the install task.
-        </.alert_description>
+        </:description>
       </.alert>
     </div>
 
@@ -223,10 +221,10 @@ defmodule CinderUI.Components.Feedback do
       <h4 class="text-sm font-medium mb-2">Destructive</h4>
       <.alert variant={:destructive}>
         <CinderUI.Icons.icon name="triangle-alert" />
-        <.alert_title>Unable to deploy</.alert_title>
-        <.alert_description>
+        <:title>Unable to deploy</:title>
+        <:description>
           Your build failed. Check logs and try again.
-        </.alert_description>
+        </:description>
       </.alert>
     </div>
 
@@ -234,10 +232,10 @@ defmodule CinderUI.Components.Feedback do
       <h4 class="text-sm font-medium mb-2">Success</h4>
       <.alert variant={:success}>
         <CinderUI.Icons.icon name="circle-check-big" />
-        <.alert_title>Changes saved</.alert_title>
-        <.alert_description>
+        <:title>Changes saved</:title>
+        <:description>
           Your updates have been successfully saved to the server.
-        </.alert_description>
+        </:description>
       </.alert>
     </div>
 
@@ -245,10 +243,10 @@ defmodule CinderUI.Components.Feedback do
       <h4 class="text-sm font-medium mb-2">Warning</h4>
       <.alert variant={:warning}>
         <CinderUI.Icons.icon name="triangle-alert" />
-        <.alert_title>Deprecated API</.alert_title>
-        <.alert_description>
+        <:title>Deprecated API</:title>
+        <:description>
           This endpoint will be removed in the next major version.
-        </.alert_description>
+        </:description>
       </.alert>
     </div>
 
@@ -256,10 +254,10 @@ defmodule CinderUI.Components.Feedback do
       <h4 class="text-sm font-medium mb-2">Info</h4>
       <.alert variant={:info}>
         <CinderUI.Icons.icon name="info" />
-        <.alert_title>FYI</.alert_title>
-        <.alert_description>
+        <:title>FYI</:title>
+        <:description>
           Additional information to help you understand the current situation.
-        </.alert_description>
+        </:description>
       </.alert>
     </div>
   </div>
@@ -275,6 +273,8 @@ defmodule CinderUI.Components.Feedback do
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
+  slot :title
+  slot :description
 
   def alert(assigns) do
     assigns =
@@ -294,75 +294,17 @@ defmodule CinderUI.Components.Feedback do
       {@rest}
     >
       {render_slot(@inner_block)}
+      <div :if={@title != []} data-slot="alert-title" class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight">
+        {render_slot(@title)}
+      </div>
+      <div :if={@description != []} data-slot="alert-description" class="col-start-2 text-sm opacity-90">
+        {render_slot(@description)}
+      </div>
     </div>
     """
   end
 
-  doc("""
-  Alert title element.
 
-  ## Example
-
-  ```heex title="Title within alert" align="full"
-  <.alert>
-    <CinderUI.Icons.icon name="circle-alert" />
-    <.alert_title>Heads up!</.alert_title>
-    <.alert_description>
-      This action requires admin access.
-    </.alert_description>
-  </.alert>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def alert_title(assigns) do
-    assigns =
-      assign(assigns, :classes, [
-        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
-        assigns.class
-      ])
-
-    ~H"""
-    <div data-slot="alert-title" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
-    """
-  end
-
-  doc("""
-  Alert description element.
-
-  ## Example
-
-  ```heex title="Description within alert" align="full"
-  <.alert variant={:destructive}>
-    <CinderUI.Icons.icon name="triangle-alert" />
-    <.alert_title>Build failed</.alert_title>
-    <.alert_description>
-      Your tests failed during CI. Review the logs and re-run.
-    </.alert_description>
-  </.alert>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def alert_description(assigns) do
-    assigns =
-      assign(assigns, :classes, [
-        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed",
-        assigns.class
-      ])
-
-    ~H"""
-    <div data-slot="alert-description" class={classes(@classes)} {@rest}>
-      {render_slot(@inner_block)}
-    </div>
-    """
-  end
 
   doc("""
   Renders a flash notice.
@@ -431,8 +373,8 @@ defmodule CinderUI.Components.Feedback do
       {@rest}
     >
       <CinderUI.Icons.icon name={@icon_name} class="size-4 shrink-0" />
-      <.alert_title>{@title || msg}</.alert_title>
-      <.alert_description :if={@title}>{msg}</.alert_description>
+      <:title>{@title || msg}</:title>
+      <:description :if={@title}>{msg}</:description>
       <button
         type="button"
         class="absolute top-3 right-3 rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"
