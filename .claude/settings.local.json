@@ -4,7 +4,8 @@
       "Bash(mix compile:*)",
       "Bash(mix test:*)",
       "WebSearch",
-      "WebFetch(domain:hexdocs.pm)"
+      "WebFetch(domain:hexdocs.pm)",
+      "Bash(./bin/update-snapshots)"
     ]
   }
 }

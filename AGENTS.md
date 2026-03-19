@@ -31,6 +31,7 @@ Run from the repository root unless noted.
 - `mix cinder_ui.docs.build`
 - `cd demo && mix format --check-formatted && mix test`
 - `cd demo && npm ci && mix assets.build && npx playwright test`
+- `./bin/update-snapshots` — Update Playwright visual regression test snapshots after intentional visual changes
 
 ## Release
 
