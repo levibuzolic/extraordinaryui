@@ -79,20 +79,67 @@ defmodule CinderUI.Components.Feedback do
   <.badge>New</.badge>
   ```
 
-  ```heex title="Color set"
-  <div class="flex flex-wrap items-center gap-2">
-    <.badge>Primary</.badge>
-    <.badge color={:secondary}>Secondary</.badge>
-    <.badge color={:destructive}>Destructive</.badge>
-    <.badge color={:success}>Success</.badge>
-  </div>
-  ```
+  ```heex title="All colors and variants" align="full"
+  <div class="space-y-6">
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Primary</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:primary} variant={:solid}>Solid</.badge>
+        <.badge color={:primary} variant={:outline}>Outline</.badge>
+        <.badge color={:primary} variant={:ghost}>Ghost</.badge>
+        <.badge color={:primary} variant={:link}>Link</.badge>
+      </div>
+    </div>
 
-  ```heex title="Badge with variant"
-  <div class="flex flex-wrap items-center gap-2">
-    <.badge variant={:outline}>Outline</.badge>
-    <.badge variant={:ghost}>Ghost</.badge>
-    <.badge variant={:link}>Link</.badge>
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Secondary</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:secondary} variant={:solid}>Solid</.badge>
+        <.badge color={:secondary} variant={:outline}>Outline</.badge>
+        <.badge color={:secondary} variant={:ghost}>Ghost</.badge>
+        <.badge color={:secondary} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Destructive</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:destructive} variant={:solid}>Solid</.badge>
+        <.badge color={:destructive} variant={:outline}>Outline</.badge>
+        <.badge color={:destructive} variant={:ghost}>Ghost</.badge>
+        <.badge color={:destructive} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Success</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:success} variant={:solid}>Solid</.badge>
+        <.badge color={:success} variant={:outline}>Outline</.badge>
+        <.badge color={:success} variant={:ghost}>Ghost</.badge>
+        <.badge color={:success} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Warning</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:warning} variant={:solid}>Solid</.badge>
+        <.badge color={:warning} variant={:outline}>Outline</.badge>
+        <.badge color={:warning} variant={:ghost}>Ghost</.badge>
+        <.badge color={:warning} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Info</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:info} variant={:solid}>Solid</.badge>
+        <.badge color={:info} variant={:outline}>Outline</.badge>
+        <.badge color={:info} variant={:ghost}>Ghost</.badge>
+        <.badge color={:info} variant={:link}>Link</.badge>
+      </div>
+    </div>
   </div>
   ```
 
@@ -159,34 +206,63 @@ defmodule CinderUI.Components.Feedback do
 
   ## Examples
 
-  ```heex title="Default alert" align="full"
-  <.alert>
-    <CinderUI.Icons.icon name="circle-alert" />
-    <.alert_title>Heads up!</.alert_title>
-    <.alert_description>
-      You can add components to your app using the install task.
-    </.alert_description>
-  </.alert>
-  ```
+  ```heex title="All alert variants" align="full"
+  <div class="space-y-4">
+    <div>
+      <h4 class="text-sm font-medium mb-2">Default</h4>
+      <.alert>
+        <CinderUI.Icons.icon name="circle-alert" />
+        <.alert_title>Heads up!</.alert_title>
+        <.alert_description>
+          You can add components to your app using the install task.
+        </.alert_description>
+      </.alert>
+    </div>
 
-  ```heex title="Destructive alert" align="full" vrt
-  <.alert variant={:destructive}>
-    <CinderUI.Icons.icon name="triangle-alert" />
-    <.alert_title>Unable to deploy</.alert_title>
-    <.alert_description>
-      Your build failed. Check logs and try again.
-    </.alert_description>
-  </.alert>
-  ```
+    <div>
+      <h4 class="text-sm font-medium mb-2">Destructive</h4>
+      <.alert variant={:destructive}>
+        <CinderUI.Icons.icon name="triangle-alert" />
+        <.alert_title>Unable to deploy</.alert_title>
+        <.alert_description>
+          Your build failed. Check logs and try again.
+        </.alert_description>
+      </.alert>
+    </div>
 
-  ```heex title="Info alert" align="full"
-  <.alert variant={:info}>
-    <CinderUI.Icons.icon name="info" />
-    <.alert_title>FYI</.alert_title>
-    <.alert_description>
-      Additional information to help you understand the current situation.
-    </.alert_description>
-  </.alert>
+    <div>
+      <h4 class="text-sm font-medium mb-2">Success</h4>
+      <.alert variant={:success}>
+        <CinderUI.Icons.icon name="circle-check-big" />
+        <.alert_title>Changes saved</.alert_title>
+        <.alert_description>
+          Your updates have been successfully saved to the server.
+        </.alert_description>
+      </.alert>
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium mb-2">Warning</h4>
+      <.alert variant={:warning}>
+        <CinderUI.Icons.icon name="triangle-alert" />
+        <.alert_title>Deprecated API</.alert_title>
+        <.alert_description>
+          This endpoint will be removed in the next major version.
+        </.alert_description>
+      </.alert>
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium mb-2">Info</h4>
+      <.alert variant={:info}>
+        <CinderUI.Icons.icon name="info" />
+        <.alert_title>FYI</.alert_title>
+        <.alert_description>
+          Additional information to help you understand the current situation.
+        </.alert_description>
+      </.alert>
+    </div>
+  </div>
   ```
   """)
 
