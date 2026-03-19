@@ -32,11 +32,16 @@ defmodule CinderUI.Components.Feedback do
       info: "bg-info text-info-foreground [a&]:hover:bg-info/90"
     },
     outline: %{
-      primary: "border-primary text-primary [a&]:hover:bg-primary [a&]:hover:text-primary-foreground",
-      secondary: "border-secondary text-secondary [a&]:hover:bg-secondary [a&]:hover:text-secondary-foreground",
-      destructive: "border-destructive text-destructive [a&]:hover:bg-destructive [a&]:hover:text-destructive-foreground",
-      success: "border-success text-success [a&]:hover:bg-success [a&]:hover:text-success-foreground",
-      warning: "border-warning text-warning [a&]:hover:bg-warning [a&]:hover:text-warning-foreground",
+      primary:
+        "border-primary text-primary [a&]:hover:bg-primary [a&]:hover:text-primary-foreground",
+      secondary:
+        "border-secondary text-secondary [a&]:hover:bg-secondary [a&]:hover:text-secondary-foreground",
+      destructive:
+        "border-destructive text-destructive [a&]:hover:bg-destructive [a&]:hover:text-destructive-foreground",
+      success:
+        "border-success text-success [a&]:hover:bg-success [a&]:hover:text-success-foreground",
+      warning:
+        "border-warning text-warning [a&]:hover:bg-warning [a&]:hover:text-warning-foreground",
       info: "border-info text-info [a&]:hover:bg-info [a&]:hover:text-info-foreground"
     },
     ghost: %{
@@ -123,7 +128,13 @@ defmodule CinderUI.Components.Feedback do
       ])
 
     ~H"""
-    <span data-slot="badge" data-color={@color} data-variant={@variant} class={classes(@classes)} {@rest}>
+    <span
+      data-slot="badge"
+      data-color={@color}
+      data-variant={@variant}
+      class={classes(@classes)}
+      {@rest}
+    >
       {render_slot(@inner_block)}
     </span>
     """
@@ -131,10 +142,14 @@ defmodule CinderUI.Components.Feedback do
 
   @alert_variants %{
     default: "bg-card text-card-foreground",
-    destructive: "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
-    success: "border-success/30 bg-success/10 text-success [&>svg]:text-current *:data-[slot=alert-description]:text-success/90",
-    warning: "border-warning/30 bg-warning/10 text-warning [&>svg]:text-current *:data-[slot=alert-description]:text-warning/90",
-    info: "border-info/30 bg-info/10 text-info [&>svg]:text-current *:data-[slot=alert-description]:text-info/90"
+    destructive:
+      "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
+    success:
+      "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 [&>svg]:text-current *:data-[slot=alert-description]:text-emerald-700/90",
+    warning:
+      "border-amber-500/30 bg-amber-500/10 text-amber-700 [&>svg]:text-current *:data-[slot=alert-description]:text-amber-700/90",
+    info:
+      "border-info/30 bg-info/10 text-info [&>svg]:text-current *:data-[slot=alert-description]:text-info/90"
   }
 
   doc("""
@@ -176,7 +191,11 @@ defmodule CinderUI.Components.Feedback do
   """)
 
   attr :id, :string, default: nil
-  attr :variant, :atom, default: :default, values: [:default, :destructive, :success, :warning, :info]
+
+  attr :variant, :atom,
+    default: :default,
+    values: [:default, :destructive, :success, :warning, :info]
+
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
