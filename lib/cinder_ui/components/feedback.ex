@@ -294,17 +294,23 @@ defmodule CinderUI.Components.Feedback do
       {@rest}
     >
       {render_slot(@inner_block)}
-      <div :if={@title != []} data-slot="alert-title" class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight">
+      <div
+        :if={@title != []}
+        data-slot="alert-title"
+        class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+      >
         {render_slot(@title)}
       </div>
-      <div :if={@description != []} data-slot="alert-description" class="col-start-2 text-sm opacity-90">
+      <div
+        :if={@description != []}
+        data-slot="alert-description"
+        class="col-start-2 text-sm opacity-90"
+      >
         {render_slot(@description)}
       </div>
     </div>
     """
   end
-
-
 
   doc("""
   Renders a flash notice.
