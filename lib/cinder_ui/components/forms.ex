@@ -1751,7 +1751,9 @@ defmodule CinderUI.Components.Forms do
       <div data-slot="radio-group" role="radiogroup" class={classes(@classes)}>
         <label
           :for={option <- @option}
-          class={classes(["inline-flex items-center gap-2 text-sm", option[:disabled] && "opacity-50"])}
+          class={
+            classes(["inline-flex items-center gap-2 text-sm", option[:disabled] && "opacity-50"])
+          }
         >
           <input
             data-slot="radio-group-item"
@@ -1768,7 +1770,12 @@ defmodule CinderUI.Components.Forms do
       </div>
       <.field_error :for={msg <- @errors}>{msg}</.field_error>
     </fieldset>
-    <div :if={!@label && @errors == []} data-slot="radio-group" role="radiogroup" class={classes(@classes)}>
+    <div
+      :if={!@label && @errors == []}
+      data-slot="radio-group"
+      role="radiogroup"
+      class={classes(@classes)}
+    >
       <label
         :for={option <- @option}
         class={classes(["inline-flex items-center gap-2 text-sm", option[:disabled] && "opacity-50"])}
@@ -2131,7 +2138,13 @@ defmodule CinderUI.Components.Forms do
       </div>
       <.field_error :for={msg <- @errors}>{msg}</.field_error>
     </div>
-    <div :if={!@label && @errors == []} id={@id} data-slot="input-otp" class={classes(@classes)} phx-hook="CuiInputOtp">
+    <div
+      :if={!@label && @errors == []}
+      id={@id}
+      data-slot="input-otp"
+      class={classes(@classes)}
+      phx-hook="CuiInputOtp"
+    >
       <.input_otp_cell
         :for={index <- Enum.to_list(0..(@length - 1))}
         index={index}

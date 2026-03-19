@@ -91,9 +91,14 @@ defmodule CinderUI.Components.FormsTest do
     end
 
     test "renders label and errors" do
-      html = render_component(&Forms.textarea/1, %{
-        id: "notes", name: "notes", label: "Notes", errors: ["too short"]
-      })
+      html =
+        render_component(&Forms.textarea/1, %{
+          id: "notes",
+          name: "notes",
+          label: "Notes",
+          errors: ["too short"]
+        })
+
       assert TestHelpers.text(html, "[data-slot='label']") == "Notes"
       assert TestHelpers.text(html, "[data-slot='field-error']") == "too short"
     end
@@ -117,15 +122,23 @@ defmodule CinderUI.Components.FormsTest do
     test "extracts id, name, value from field" do
       form = Phoenix.Component.to_form(%{"quantity" => "5"}, as: :order)
       html = render_component(&Forms.number_field/1, %{field: form[:quantity]})
-      assert TestHelpers.attr(html, "[data-slot='number-field-input']", "name") == "order[quantity]"
+
+      assert TestHelpers.attr(html, "[data-slot='number-field-input']", "name") ==
+               "order[quantity]"
+
       assert TestHelpers.attr(html, "[data-slot='number-field-input']", "value") == "5"
     end
 
     test "renders label and errors" do
       form = Phoenix.Component.to_form(%{"qty" => ""}, as: :order)
-      html = render_component(&Forms.number_field/1, %{
-        field: form[:qty], label: "Quantity", errors: ["must be positive"]
-      })
+
+      html =
+        render_component(&Forms.number_field/1, %{
+          field: form[:qty],
+          label: "Quantity",
+          errors: ["must be positive"]
+        })
+
       assert TestHelpers.text(html, "[data-slot='label']") == "Quantity"
       assert TestHelpers.text(html, "[data-slot='field-error']") == "must be positive"
     end
@@ -163,13 +176,16 @@ defmodule CinderUI.Components.FormsTest do
   describe "select with FormField" do
     test "extracts name and value from field" do
       form = Phoenix.Component.to_form(%{"role" => "admin"}, as: :user)
-      html = render_component(&Forms.select/1, %{
-        field: form[:role],
-        option: [
-          %{value: "user", label: "User", inner_block: fn -> "" end},
-          %{value: "admin", label: "Admin", inner_block: fn -> "" end}
-        ]
-      })
+
+      html =
+        render_component(&Forms.select/1, %{
+          field: form[:role],
+          option: [
+            %{value: "user", label: "User", inner_block: fn -> "" end},
+            %{value: "admin", label: "Admin", inner_block: fn -> "" end}
+          ]
+        })
+
       assert TestHelpers.attr(html, "[data-slot='select-input']", "name") == "user[role]"
       assert TestHelpers.attr(html, "[data-slot='select-input']", "value") == "admin"
     end
@@ -231,30 +247,42 @@ defmodule CinderUI.Components.FormsTest do
   describe "native_select with FormField" do
     test "extracts id, name, value from field and renders options from options attr" do
       form = Phoenix.Component.to_form(%{"role" => "admin"}, as: :user)
-      html = render_component(&Forms.native_select/1, %{
-        field: form[:role],
-        options: [{"User", "user"}, {"Admin", "admin"}]
-      })
+
+      html =
+        render_component(&Forms.native_select/1, %{
+          field: form[:role],
+          options: [{"User", "user"}, {"Admin", "admin"}]
+        })
+
       assert TestHelpers.attr(html, "[data-slot='native-select']", "id") == "user_role"
       assert TestHelpers.attr(html, "[data-slot='native-select']", "name") == "user[role]"
       assert TestHelpers.find_all(html, "option") |> length() == 2
     end
 
     test "renders label and errors" do
-      html = render_component(&Forms.native_select/1, %{
-        id: "role", name: "role", label: "Role", errors: ["is invalid"],
-        options: [{"User", "user"}]
-      })
+      html =
+        render_component(&Forms.native_select/1, %{
+          id: "role",
+          name: "role",
+          label: "Role",
+          errors: ["is invalid"],
+          options: [{"User", "user"}]
+        })
+
       assert TestHelpers.text(html, "[data-slot='label']") == "Role"
       assert TestHelpers.text(html, "[data-slot='field-error']") == "is invalid"
     end
 
     test "option slots take precedence over options attr" do
-      html = render_component(&Forms.native_select/1, %{
-        id: "role", name: "role", value: "admin",
-        options: [{"Ignored", "ignored"}],
-        option: [%{value: "admin", label: "Admin", inner_block: fn -> "" end}]
-      })
+      html =
+        render_component(&Forms.native_select/1, %{
+          id: "role",
+          name: "role",
+          value: "admin",
+          options: [{"Ignored", "ignored"}],
+          option: [%{value: "admin", label: "Admin", inner_block: fn -> "" end}]
+        })
+
       assert TestHelpers.find_all(html, "option") |> length() == 1
       refute html =~ "Ignored"
     end
@@ -284,11 +312,15 @@ defmodule CinderUI.Components.FormsTest do
   describe "autocomplete with FormField" do
     test "extracts name and value from field" do
       form = Phoenix.Component.to_form(%{"owner" => "levi"}, as: :project)
-      html = render_component(&Forms.autocomplete/1, %{
-        field: form[:owner],
-        option: [%{value: "levi", label: "Levi", inner_block: fn -> "" end}]
-      })
-      assert TestHelpers.attr(html, "[data-slot='autocomplete-value']", "name") == "project[owner]"
+
+      html =
+        render_component(&Forms.autocomplete/1, %{
+          field: form[:owner],
+          option: [%{value: "levi", label: "Levi", inner_block: fn -> "" end}]
+        })
+
+      assert TestHelpers.attr(html, "[data-slot='autocomplete-value']", "name") ==
+               "project[owner]"
     end
   end
 
@@ -446,10 +478,14 @@ defmodule CinderUI.Components.FormsTest do
     end
 
     test "inner_block takes precedence over label attr" do
-      html = render_component(&Forms.checkbox/1, %{
-        id: "terms", name: "terms", label: "Fallback",
-        inner_block: CinderUI.TestHelpers.slot("Accept Terms")
-      })
+      html =
+        render_component(&Forms.checkbox/1, %{
+          id: "terms",
+          name: "terms",
+          label: "Fallback",
+          inner_block: CinderUI.TestHelpers.slot("Accept Terms")
+        })
+
       assert html =~ "Accept Terms"
       refute html =~ "Fallback"
     end
@@ -524,23 +560,30 @@ defmodule CinderUI.Components.FormsTest do
   describe "radio_group with FormField" do
     test "extracts name and value from field" do
       form = Phoenix.Component.to_form(%{"plan" => "pro"}, as: :account)
-      html = render_component(&Forms.radio_group/1, %{
-        field: form[:plan],
-        option: [
-          %{value: "free", label: "Free", inner_block: fn -> "" end},
-          %{value: "pro", label: "Pro", inner_block: fn -> "" end}
-        ]
-      })
+
+      html =
+        render_component(&Forms.radio_group/1, %{
+          field: form[:plan],
+          option: [
+            %{value: "free", label: "Free", inner_block: fn -> "" end},
+            %{value: "pro", label: "Pro", inner_block: fn -> "" end}
+          ]
+        })
+
       inputs = TestHelpers.find_all(html, "input[type='radio']")
       assert length(inputs) == 2
     end
 
     test "renders fieldset with legend for label" do
       form = Phoenix.Component.to_form(%{"plan" => "free"}, as: :account)
-      html = render_component(&Forms.radio_group/1, %{
-        field: form[:plan], label: "Choose a plan",
-        option: [%{value: "free", label: "Free", inner_block: fn -> "" end}]
-      })
+
+      html =
+        render_component(&Forms.radio_group/1, %{
+          field: form[:plan],
+          label: "Choose a plan",
+          option: [%{value: "free", label: "Free", inner_block: fn -> "" end}]
+        })
+
       assert html =~ "<fieldset"
       assert html =~ "<legend"
       assert html =~ "Choose a plan"
