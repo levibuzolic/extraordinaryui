@@ -388,7 +388,7 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
 
   defp required_badge(assigns) do
     ~H"""
-    <Feedback.badge variant={:destructive} class={classes(["align-middle", @class])}>Required</Feedback.badge>
+    <Feedback.badge color={:destructive} class={classes(["align-middle", @class])}>Required</Feedback.badge>
     """
   end
 

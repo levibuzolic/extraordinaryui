@@ -6,14 +6,17 @@ defmodule CinderUI.Components.FeedbackTest do
   alias CinderUI.Components.Feedback
   alias CinderUI.TestHelpers
 
-  test "badge renders variant" do
+  test "badge renders color and variant" do
     html =
       render_component(&Feedback.badge/1, %{
-        variant: :secondary,
+        color: :secondary,
+        variant: :solid,
         inner_block: TestHelpers.slot("New")
       })
 
     assert html =~ "data-slot=\"badge\""
+    assert html =~ ~s(data-color="secondary")
+    assert html =~ ~s(data-variant="solid")
     assert html =~ "New"
   end
 

@@ -6,8 +6,6 @@ defmodule CinderUI.Components.Feedback do
 
   - `badge/1`
   - `alert/1`
-  - `alert_title/1`
-  - `alert_description/1`
   - `flash/1`
   - `flash_group/1`
   - `progress/1`
@@ -22,22 +20,70 @@ defmodule CinderUI.Components.Feedback do
   alias Phoenix.LiveView.JS
 
   @badge_variants %{
-    default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
-    secondary: "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-    destructive:
-      "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-    outline:
-      "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-    ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-    link: "text-primary underline-offset-4 [a&]:hover:underline"
+    solid: %{
+      primary: "border-primary/90 bg-primary text-primary-foreground shadow-xs",
+      secondary: "border-border/70 bg-secondary text-secondary-foreground shadow-xs",
+      destructive:
+        "border-[color:color-mix(in_oklab,var(--destructive)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_72%,var(--foreground))]",
+      success:
+        "border-[color:color-mix(in_oklab,var(--success)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_72%,var(--foreground))]",
+      warning:
+        "border-[color:color-mix(in_oklab,var(--warning)_28%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_22%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_78%,var(--foreground))]",
+      info:
+        "border-[color:color-mix(in_oklab,var(--info)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_74%,var(--foreground))]"
+    },
+    outline: %{
+      primary:
+        "border-primary/25 bg-primary/5 text-primary dark:border-primary/30 dark:bg-primary/10",
+      secondary:
+        "border-border bg-background text-foreground dark:bg-secondary/10 dark:text-secondary-foreground",
+      destructive:
+        "border-[color:color-mix(in_oklab,var(--destructive)_32%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_10%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_78%,var(--foreground))]",
+      success:
+        "border-[color:color-mix(in_oklab,var(--success)_32%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_10%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_78%,var(--foreground))]",
+      warning:
+        "border-[color:color-mix(in_oklab,var(--warning)_36%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_82%,var(--foreground))]",
+      info:
+        "border-[color:color-mix(in_oklab,var(--info)_32%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_10%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_80%,var(--foreground))]"
+    },
+    ghost: %{
+      primary: "bg-primary/8 text-primary dark:bg-primary/12",
+      secondary: "bg-secondary/70 text-secondary-foreground dark:bg-secondary/20",
+      destructive:
+        "bg-[color:color-mix(in_oklab,var(--destructive)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_76%,var(--foreground))]",
+      success:
+        "bg-[color:color-mix(in_oklab,var(--success)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_76%,var(--foreground))]",
+      warning:
+        "bg-[color:color-mix(in_oklab,var(--warning)_14%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_80%,var(--foreground))]",
+      info:
+        "bg-[color:color-mix(in_oklab,var(--info)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_78%,var(--foreground))]"
+    },
+    link: %{
+      primary:
+        "border-transparent px-0 text-primary underline-offset-4 decoration-primary/35 hover:underline",
+      secondary:
+        "border-transparent px-0 text-muted-foreground underline-offset-4 decoration-border hover:text-foreground hover:underline",
+      destructive:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--destructive)_84%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--destructive)_45%,transparent)] hover:underline",
+      success:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--success)_84%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--success)_45%,transparent)] hover:underline",
+      warning:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--warning)_88%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--warning)_45%,transparent)] hover:underline",
+      info:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--info)_86%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--info)_45%,transparent)] hover:underline"
+    }
   }
 
   doc("""
   Renders a status badge.
 
+  ## Colors
+
+  `:primary`, `:secondary`, `:destructive`, `:success`, `:warning`, `:info`
+
   ## Variants
 
-  `:default`, `:secondary`, `:destructive`, `:outline`, `:ghost`, `:link`
+  `:solid`, `:outline`, `:ghost`, `:link`
 
   ## Examples
 
@@ -45,41 +91,109 @@ defmodule CinderUI.Components.Feedback do
   <.badge>New</.badge>
   ```
 
-  ```heex title="Variant set"
-  <div class="flex flex-wrap items-center gap-2">
-    <.badge>Default</.badge>
-    <.badge variant={:secondary}>Secondary</.badge>
-    <.badge variant={:destructive}>Destructive</.badge>
-    <.badge variant={:outline}>Outline</.badge>
+  ```heex title="All colors and variants" align="full"
+  <div class="space-y-6">
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Primary</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:primary} variant={:solid}>Solid</.badge>
+        <.badge color={:primary} variant={:outline}>Outline</.badge>
+        <.badge color={:primary} variant={:ghost}>Ghost</.badge>
+        <.badge color={:primary} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Secondary</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:secondary} variant={:solid}>Solid</.badge>
+        <.badge color={:secondary} variant={:outline}>Outline</.badge>
+        <.badge color={:secondary} variant={:ghost}>Ghost</.badge>
+        <.badge color={:secondary} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Destructive</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:destructive} variant={:solid}>Solid</.badge>
+        <.badge color={:destructive} variant={:outline}>Outline</.badge>
+        <.badge color={:destructive} variant={:ghost}>Ghost</.badge>
+        <.badge color={:destructive} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Success</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:success} variant={:solid}>Solid</.badge>
+        <.badge color={:success} variant={:outline}>Outline</.badge>
+        <.badge color={:success} variant={:ghost}>Ghost</.badge>
+        <.badge color={:success} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Warning</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:warning} variant={:solid}>Solid</.badge>
+        <.badge color={:warning} variant={:outline}>Outline</.badge>
+        <.badge color={:warning} variant={:ghost}>Ghost</.badge>
+        <.badge color={:warning} variant={:link}>Link</.badge>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-sm font-medium text-muted-foreground">Info</h4>
+      <div class="flex gap-2 flex-wrap">
+        <.badge color={:info} variant={:solid}>Solid</.badge>
+        <.badge color={:info} variant={:outline}>Outline</.badge>
+        <.badge color={:info} variant={:ghost}>Ghost</.badge>
+        <.badge color={:info} variant={:link}>Link</.badge>
+      </div>
+    </div>
   </div>
   ```
 
   ```heex title="Badge with icon"
-  <.badge variant={:secondary}>
+  <.badge color={:secondary}>
     <CinderUI.Icons.icon name="check" />
     Verified
   </.badge>
   ```
   """)
 
+  attr :color, :atom,
+    default: :primary,
+    values: [:primary, :secondary, :destructive, :success, :warning, :info]
+
   attr :variant, :atom,
-    default: :default,
-    values: [:default, :secondary, :destructive, :outline, :ghost, :link]
+    default: :solid,
+    values: [:solid, :outline, :ghost, :link]
 
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def badge(assigns) do
+    variant_styles = variant(@badge_variants, assigns.variant, @badge_variants.solid)
+    color_styles = variant(variant_styles, assigns.color, variant_styles.primary)
+
     assigns =
       assign(assigns, :classes, [
-        "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
-        variant(@badge_variants, assigns.variant, @badge_variants.default),
+        "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,background-color,border-color,box-shadow] overflow-hidden",
+        color_styles,
         assigns.class
       ])
 
     ~H"""
-    <span data-slot="badge" data-variant={@variant} class={classes(@classes)} {@rest}>
+    <span
+      data-slot="badge"
+      data-color={@color}
+      data-variant={@variant}
+      class={classes(@classes)}
+      {@rest}
+    >
       {render_slot(@inner_block)}
     </span>
     """
@@ -88,44 +202,93 @@ defmodule CinderUI.Components.Feedback do
   @alert_variants %{
     default: "bg-card text-card-foreground",
     destructive:
-      "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
-    success: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 [&>svg]:text-current",
-    warning: "border-amber-500/30 bg-amber-500/10 text-amber-700 [&>svg]:text-current"
+      "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
+    success:
+      "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 [&>svg]:text-current *:data-[slot=alert-description]:text-emerald-700/90",
+    warning:
+      "border-amber-500/30 bg-amber-500/10 text-amber-700 [&>svg]:text-current *:data-[slot=alert-description]:text-amber-700/90",
+    info:
+      "border-info/30 bg-info/10 text-info [&>svg]:text-current *:data-[slot=alert-description]:text-info/90"
   }
 
   doc("""
   Renders an alert container.
 
-  Compose with `alert_title/1` and `alert_description/1` for canonical structure.
+  Use named `:title` and `:description` slots for canonical structure.
 
   ## Examples
 
-  ```heex title="Default alert" align="full"
-  <.alert>
-    <CinderUI.Icons.icon name="circle-alert" />
-    <.alert_title>Heads up!</.alert_title>
-    <.alert_description>
-      You can add components to your app using the install task.
-    </.alert_description>
-  </.alert>
-  ```
+  ```heex title="All alert variants" align="full"
+  <div class="space-y-4">
+    <div>
+      <h4 class="text-sm font-medium mb-2">Default</h4>
+      <.alert>
+        <CinderUI.Icons.icon name="circle-alert" />
+        <:title>Heads up!</:title>
+        <:description>
+          You can add components to your app using the install task.
+        </:description>
+      </.alert>
+    </div>
 
-  ```heex title="Destructive alert" align="full" vrt
-  <.alert variant={:destructive}>
-    <CinderUI.Icons.icon name="triangle-alert" />
-    <.alert_title>Unable to deploy</.alert_title>
-    <.alert_description>
-      Your build failed. Check logs and try again.
-    </.alert_description>
-  </.alert>
+    <div>
+      <h4 class="text-sm font-medium mb-2">Destructive</h4>
+      <.alert variant={:destructive}>
+        <CinderUI.Icons.icon name="triangle-alert" />
+        <:title>Unable to deploy</:title>
+        <:description>
+          Your build failed. Check logs and try again.
+        </:description>
+      </.alert>
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium mb-2">Success</h4>
+      <.alert variant={:success}>
+        <CinderUI.Icons.icon name="circle-check-big" />
+        <:title>Changes saved</:title>
+        <:description>
+          Your updates have been successfully saved to the server.
+        </:description>
+      </.alert>
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium mb-2">Warning</h4>
+      <.alert variant={:warning}>
+        <CinderUI.Icons.icon name="triangle-alert" />
+        <:title>Deprecated API</:title>
+        <:description>
+          This endpoint will be removed in the next major version.
+        </:description>
+      </.alert>
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium mb-2">Info</h4>
+      <.alert variant={:info}>
+        <CinderUI.Icons.icon name="info" />
+        <:title>FYI</:title>
+        <:description>
+          Additional information to help you understand the current situation.
+        </:description>
+      </.alert>
+    </div>
+  </div>
   ```
   """)
 
   attr :id, :string, default: nil
-  attr :variant, :atom, default: :default, values: [:default, :destructive, :success, :warning]
+
+  attr :variant, :atom,
+    default: :default,
+    values: [:default, :destructive, :success, :warning, :info]
+
   attr :class, :string, default: nil
   attr :rest, :global
   slot :inner_block, required: true
+  slot :title
+  slot :description
 
   def alert(assigns) do
     assigns =
@@ -145,72 +308,20 @@ defmodule CinderUI.Components.Feedback do
       {@rest}
     >
       {render_slot(@inner_block)}
-    </div>
-    """
-  end
-
-  doc("""
-  Alert title element.
-
-  ## Example
-
-  ```heex title="Title within alert" align="full"
-  <.alert>
-    <CinderUI.Icons.icon name="circle-alert" />
-    <.alert_title>Heads up!</.alert_title>
-    <.alert_description>
-      This action requires admin access.
-    </.alert_description>
-  </.alert>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def alert_title(assigns) do
-    assigns =
-      assign(assigns, :classes, [
-        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
-        assigns.class
-      ])
-
-    ~H"""
-    <div data-slot="alert-title" class={classes(@classes)} {@rest}>{render_slot(@inner_block)}</div>
-    """
-  end
-
-  doc("""
-  Alert description element.
-
-  ## Example
-
-  ```heex title="Description within alert" align="full"
-  <.alert variant={:destructive}>
-    <CinderUI.Icons.icon name="triangle-alert" />
-    <.alert_title>Build failed</.alert_title>
-    <.alert_description>
-      Your tests failed during CI. Review the logs and re-run.
-    </.alert_description>
-  </.alert>
-  ```
-  """)
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def alert_description(assigns) do
-    assigns =
-      assign(assigns, :classes, [
-        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed",
-        assigns.class
-      ])
-
-    ~H"""
-    <div data-slot="alert-description" class={classes(@classes)} {@rest}>
-      {render_slot(@inner_block)}
+      <div
+        :if={@title != []}
+        data-slot="alert-title"
+        class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+      >
+        {render_slot(@title)}
+      </div>
+      <div
+        :if={@description != []}
+        data-slot="alert-description"
+        class="col-start-2 text-sm opacity-90"
+      >
+        {render_slot(@description)}
+      </div>
     </div>
     """
   end
@@ -282,8 +393,8 @@ defmodule CinderUI.Components.Feedback do
       {@rest}
     >
       <CinderUI.Icons.icon name={@icon_name} class="size-4 shrink-0" />
-      <.alert_title>{@title || msg}</.alert_title>
-      <.alert_description :if={@title}>{msg}</.alert_description>
+      <:title>{@title || msg}</:title>
+      <:description :if={@title}>{msg}</:description>
       <button
         type="button"
         class="absolute top-3 right-3 rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10"

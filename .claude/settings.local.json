@@ -5,7 +5,11 @@
       "Bash(mix test:*)",
       "WebSearch",
       "WebFetch(domain:hexdocs.pm)",
-      "Bash(./bin/update-snapshots)"
+      "Bash(./bin/update-snapshots)",
+      "Bash(npm run:*)",
+      "Bash(mix help:*)",
+      "Bash(mix assets.build)",
+      "Bash(mix quality:*)"
     ]
   }
 }
