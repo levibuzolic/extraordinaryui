@@ -372,7 +372,7 @@ const themePresets = {
 
 const withSidebarTokens = (mode, tokens) => ({
   ...tokens,
-  sidebar: tokens.sidebar ?? (mode === "dark" ? "oklch(0.205 0 0)" : "oklch(0.985 0 0)"),
+  sidebar: tokens.background ?? (mode === "dark" ? "oklch(0.145 0 0)" : "oklch(1 0 0)"),
   "sidebar-foreground": tokens.foreground,
   "sidebar-primary": tokens.primary,
   "sidebar-primary-foreground": tokens["primary-foreground"],
