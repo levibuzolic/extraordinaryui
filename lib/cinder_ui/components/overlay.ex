@@ -542,7 +542,7 @@ defmodule CinderUI.Components.Overlay do
       |> assign(:content_id, "cinder-ui-tooltip-#{System.unique_integer([:positive])}")
       |> assign(:classes, ["group relative inline-flex", assigns.class])
       |> assign(:content_classes, [
-        "pointer-events-none absolute -top-10 left-1/2 z-50 hidden -translate-x-1/2 rounded-md bg-foreground px-3 py-1.5 text-xs text-white dark:bg-secondary dark:text-white group-hover:block group-focus-within:block",
+        "pointer-events-none absolute -top-10 left-1/2 z-50 hidden -translate-x-1/2 rounded-md bg-foreground dark:bg-secondary px-3 py-1.5 text-xs group-hover:block group-focus-within:block",
         assigns.content_class
       ])
 
