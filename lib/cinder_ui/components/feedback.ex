@@ -55,18 +55,17 @@ defmodule CinderUI.Components.Feedback do
         "bg-[color:color-mix(in_oklab,var(--info)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_78%,var(--foreground))]"
     },
     link: %{
-      primary:
-        "border-transparent px-0 text-primary underline-offset-4 decoration-primary/35 hover:underline",
+      primary: "border-transparent px-0 text-primary hover:opacity-75",
       secondary:
-        "border-transparent px-0 text-muted-foreground underline-offset-4 decoration-border hover:text-foreground hover:underline",
+        "border-transparent px-0 text-muted-foreground hover:text-foreground",
       destructive:
-        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--destructive)_84%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--destructive)_45%,transparent)] hover:underline",
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--destructive)_84%,var(--foreground))] hover:opacity-75",
       success:
-        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--success)_84%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--success)_45%,transparent)] hover:underline",
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--success)_84%,var(--foreground))] hover:opacity-75",
       warning:
-        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--warning)_88%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--warning)_45%,transparent)] hover:underline",
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--warning)_88%,var(--foreground))] hover:opacity-75",
       info:
-        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--info)_86%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--info)_45%,transparent)] hover:underline"
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--info)_86%,var(--foreground))] hover:opacity-75"
     }
   }
 
