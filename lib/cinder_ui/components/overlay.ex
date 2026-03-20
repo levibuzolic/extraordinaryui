@@ -540,6 +540,7 @@ defmodule CinderUI.Components.Overlay do
     assigns =
       assigns
       |> assign(:content_id, "cinder-ui-tooltip-#{System.unique_integer([:positive])}")
+      |> assign(:anchor_name, "--tooltip-#{System.unique_integer([:positive])}")
       |> assign(:classes, ["group relative inline-flex", assigns.class])
       |> assign(:content_classes, [
         "pointer-events-none z-50 hidden rounded-md bg-foreground dark:bg-secondary text-secondary px-3 py-1.5 text-xs w-max max-w-[200px] whitespace-normal group-hover:block group-focus-within:block",
@@ -548,7 +549,7 @@ defmodule CinderUI.Components.Overlay do
 
     ~H"""
     <span data-slot="tooltip" class={classes(@classes)} {@rest}>
-      <span data-slot="tooltip-trigger" aria-describedby={@content_id} style="anchor-name: --tooltip-trigger;">
+      <span data-slot="tooltip-trigger" aria-describedby={@content_id} style={"anchor-name: #{@anchor_name};"}>
         {render_slot(@inner_block)}
       </span>
       <span
@@ -556,7 +557,7 @@ defmodule CinderUI.Components.Overlay do
         data-slot="tooltip-content"
         role="tooltip"
         class={classes(@content_classes)}
-        style="position: fixed; top: anchor(--tooltip-trigger bottom); left: anchor(--tooltip-trigger center); translate: -50% 0.5rem; position-try: flip-block;"
+        style={"position: fixed; top: anchor(#{@anchor_name} bottom); left: anchor(#{@anchor_name} center); translate: -50% 0.5rem; position-try: flip-block;"}
       >
         {@text}
       </span>
