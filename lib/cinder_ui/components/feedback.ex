@@ -24,13 +24,13 @@ defmodule CinderUI.Components.Feedback do
       primary: "border-primary/90 bg-primary text-primary-foreground shadow-xs",
       secondary: "border-border/70 bg-secondary text-secondary-foreground shadow-xs",
       destructive:
-        "border-[color:color-mix(in_oklab,var(--destructive)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_72%,var(--foreground))]",
+        "border-[color:color-mix(in_oklab,var(--destructive)_60%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_58%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_98%,white)]",
       success:
-        "border-[color:color-mix(in_oklab,var(--success)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_72%,var(--foreground))]",
+        "border-[color:color-mix(in_oklab,var(--success)_60%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_58%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_98%,white)]",
       warning:
-        "border-[color:color-mix(in_oklab,var(--warning)_28%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_22%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_78%,var(--foreground))]",
+        "border-[color:color-mix(in_oklab,var(--warning)_64%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_62%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_98%,white)]",
       info:
-        "border-[color:color-mix(in_oklab,var(--info)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_74%,var(--foreground))]"
+        "border-[color:color-mix(in_oklab,var(--info)_60%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_58%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_98%,white)]"
     },
     outline: %{
       primary:
