@@ -21,16 +21,12 @@ defmodule CinderUI.Components.Feedback do
 
   @badge_variants %{
     solid: %{
-      primary: "bg-primary text-primary-foreground shadow-xs",
-      secondary: "bg-secondary text-secondary-foreground shadow-xs",
-      destructive:
-        "bg-[color:color-mix(in_oklab,var(--destructive)_58%,var(--background))] text-white shadow-xs",
-      success:
-        "bg-[color:color-mix(in_oklab,var(--success)_58%,var(--background))] text-white shadow-xs",
-      warning:
-        "bg-[color:color-mix(in_oklab,var(--warning)_62%,var(--background))] text-white shadow-xs",
-      info:
-        "bg-[color:color-mix(in_oklab,var(--info)_58%,var(--background))] text-white shadow-xs"
+      primary: "bg-primary text-primary-foreground dark:shadow-xs",
+      secondary: "bg-secondary text-secondary-foreground dark:shadow-xs",
+      destructive: "bg-destructive text-white dark:shadow-xs",
+      success: "bg-success text-white dark:shadow-xs",
+      warning: "bg-warning text-white dark:shadow-xs",
+      info: "bg-info text-white dark:shadow-xs"
     },
     outline: %{
       primary:
