@@ -199,9 +199,9 @@ defmodule CinderUI.Components.Feedback do
     destructive:
       "border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
     success:
-      "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 [&>svg]:text-current *:data-[slot=alert-description]:text-emerald-700/90",
+      "border-success/30 bg-success/10 text-success [&>svg]:text-current *:data-[slot=alert-description]:text-success/90",
     warning:
-      "border-amber-500/30 bg-amber-500/10 text-amber-700 [&>svg]:text-current *:data-[slot=alert-description]:text-amber-700/90",
+      "border-warning/30 bg-warning/10 text-warning [&>svg]:text-current *:data-[slot=alert-description]:text-warning/90",
     info:
       "border-info/30 bg-info/10 text-info [&>svg]:text-current *:data-[slot=alert-description]:text-info/90"
   }
@@ -412,7 +412,7 @@ defmodule CinderUI.Components.Feedback do
   defp flash_config(:success) do
     %{
       variant: :success,
-      style_classes: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700",
+      style_classes: "border-success/30 bg-success/10 text-success",
       icon_name: "circle-check-big"
     }
   end
@@ -420,7 +420,7 @@ defmodule CinderUI.Components.Feedback do
   defp flash_config(:warning) do
     %{
       variant: :warning,
-      style_classes: "border-amber-500/30 bg-amber-500/10 text-amber-700",
+      style_classes: "border-warning/30 bg-warning/10 text-warning",
       icon_name: "triangle-alert"
     }
   end

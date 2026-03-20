@@ -81,9 +81,9 @@ defmodule CinderUI.Components.FeedbackTest do
       })
 
     assert success_html =~ "circle-check-big"
-    assert success_html =~ "border-emerald-500/30"
+    assert success_html =~ "border-success/30"
     assert warning_html =~ "triangle-alert"
-    assert warning_html =~ "border-amber-500/30"
+    assert warning_html =~ "border-warning/30"
   end
 
   test "alert supports success and warning variants" do
@@ -104,11 +104,11 @@ defmodule CinderUI.Components.FeedbackTest do
       })
 
     assert success_html =~ ~s(data-variant="success")
-    assert success_html =~ "border-emerald-500/30"
+    assert success_html =~ "border-success/30"
     assert success_html =~ "Success"
     assert success_html =~ "All good"
     assert warning_html =~ ~s(data-variant="warning")
-    assert warning_html =~ "border-amber-500/30"
+    assert warning_html =~ "border-warning/30"
     assert warning_html =~ "Warning"
     assert warning_html =~ "Heads up"
   end

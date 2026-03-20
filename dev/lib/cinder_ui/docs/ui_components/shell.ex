@@ -331,7 +331,7 @@ defmodule CinderUI.Docs.UIComponents.Shell do
   end
 
   defp color_options do
-    Enum.map(["gray", "neutral", "slate", "stone", "zinc"], fn option ->
+    Enum.map(["neutral", "stone", "zinc", "mauve", "olive", "mist", "taupe"], fn option ->
       %{value: option, label: option |> String.replace("_", " ") |> String.capitalize()}
     end)
   end
