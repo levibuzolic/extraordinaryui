@@ -556,6 +556,7 @@ defmodule CinderUI.Components.Overlay do
         data-slot="tooltip-content"
         role="tooltip"
         class={classes(@content_classes)}
+        style="color: white !important;"
       >
         {@text}
       </span>
