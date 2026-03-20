@@ -21,16 +21,16 @@ defmodule CinderUI.Components.Feedback do
 
   @badge_variants %{
     solid: %{
-      primary: "border-primary/90 bg-primary text-primary-foreground shadow-xs",
-      secondary: "border-border/70 bg-secondary text-secondary-foreground shadow-xs",
+      primary: "bg-primary text-primary-foreground shadow-xs",
+      secondary: "bg-secondary text-secondary-foreground shadow-xs",
       destructive:
-        "border-[color:color-mix(in_oklab,var(--destructive)_60%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_58%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_98%,white)]",
+        "bg-[color:color-mix(in_oklab,var(--destructive)_58%,var(--background))] text-white shadow-xs",
       success:
-        "border-[color:color-mix(in_oklab,var(--success)_60%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_58%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_98%,white)]",
+        "bg-[color:color-mix(in_oklab,var(--success)_58%,var(--background))] text-white shadow-xs",
       warning:
-        "border-[color:color-mix(in_oklab,var(--warning)_64%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_62%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_98%,white)]",
+        "bg-[color:color-mix(in_oklab,var(--warning)_62%,var(--background))] text-white shadow-xs",
       info:
-        "border-[color:color-mix(in_oklab,var(--info)_60%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_58%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_98%,white)]"
+        "bg-[color:color-mix(in_oklab,var(--info)_58%,var(--background))] text-white shadow-xs"
     },
     outline: %{
       primary:
