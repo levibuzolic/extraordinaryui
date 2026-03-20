@@ -21,42 +21,56 @@ defmodule CinderUI.Components.Feedback do
 
   @badge_variants %{
     solid: %{
-      primary: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
-      secondary: "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+      primary: "border-primary/90 bg-primary text-primary-foreground shadow-xs",
+      secondary: "border-border/70 bg-secondary text-secondary-foreground shadow-xs",
       destructive:
-        "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-      success: "bg-success text-success-foreground [a&]:hover:bg-success/90",
-      warning: "bg-warning text-warning-foreground [a&]:hover:bg-warning/90",
-      info: "bg-info text-info-foreground [a&]:hover:bg-info/90"
+        "border-[color:color-mix(in_oklab,var(--destructive)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_72%,var(--foreground))]",
+      success:
+        "border-[color:color-mix(in_oklab,var(--success)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_72%,var(--foreground))]",
+      warning:
+        "border-[color:color-mix(in_oklab,var(--warning)_28%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_22%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_78%,var(--foreground))]",
+      info:
+        "border-[color:color-mix(in_oklab,var(--info)_24%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_18%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_74%,var(--foreground))]"
     },
     outline: %{
       primary:
-        "border-primary text-primary [a&]:hover:bg-primary [a&]:hover:text-primary-foreground",
+        "border-primary/25 bg-primary/5 text-primary dark:border-primary/30 dark:bg-primary/10",
       secondary:
-        "border-secondary text-secondary [a&]:hover:bg-secondary [a&]:hover:text-secondary-foreground",
+        "border-border bg-background text-foreground dark:bg-secondary/10 dark:text-secondary-foreground",
       destructive:
-        "border-destructive text-destructive [a&]:hover:bg-destructive [a&]:hover:text-destructive-foreground",
+        "border-[color:color-mix(in_oklab,var(--destructive)_32%,var(--border))] bg-[color:color-mix(in_oklab,var(--destructive)_10%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_78%,var(--foreground))]",
       success:
-        "border-success text-success [a&]:hover:bg-success [a&]:hover:text-success-foreground",
+        "border-[color:color-mix(in_oklab,var(--success)_32%,var(--border))] bg-[color:color-mix(in_oklab,var(--success)_10%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_78%,var(--foreground))]",
       warning:
-        "border-warning text-warning [a&]:hover:bg-warning [a&]:hover:text-warning-foreground",
-      info: "border-info text-info [a&]:hover:bg-info [a&]:hover:text-info-foreground"
+        "border-[color:color-mix(in_oklab,var(--warning)_36%,var(--border))] bg-[color:color-mix(in_oklab,var(--warning)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_82%,var(--foreground))]",
+      info:
+        "border-[color:color-mix(in_oklab,var(--info)_32%,var(--border))] bg-[color:color-mix(in_oklab,var(--info)_10%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_80%,var(--foreground))]"
     },
     ghost: %{
-      primary: "[a&]:hover:bg-primary/10 [a&]:hover:text-primary",
-      secondary: "[a&]:hover:bg-secondary/10 [a&]:hover:text-secondary",
-      destructive: "[a&]:hover:bg-destructive/10 [a&]:hover:text-destructive",
-      success: "[a&]:hover:bg-success/10 [a&]:hover:text-success",
-      warning: "[a&]:hover:bg-warning/10 [a&]:hover:text-warning",
-      info: "[a&]:hover:bg-info/10 [a&]:hover:text-info"
+      primary: "bg-primary/8 text-primary dark:bg-primary/12",
+      secondary: "bg-secondary/70 text-secondary-foreground dark:bg-secondary/20",
+      destructive:
+        "bg-[color:color-mix(in_oklab,var(--destructive)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--destructive)_76%,var(--foreground))]",
+      success:
+        "bg-[color:color-mix(in_oklab,var(--success)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--success)_76%,var(--foreground))]",
+      warning:
+        "bg-[color:color-mix(in_oklab,var(--warning)_14%,var(--background))] text-[color:color-mix(in_oklab,var(--warning)_80%,var(--foreground))]",
+      info:
+        "bg-[color:color-mix(in_oklab,var(--info)_12%,var(--background))] text-[color:color-mix(in_oklab,var(--info)_78%,var(--foreground))]"
     },
     link: %{
-      primary: "text-primary underline-offset-4 [a&]:hover:underline",
-      secondary: "text-secondary underline-offset-4 [a&]:hover:underline",
-      destructive: "text-destructive underline-offset-4 [a&]:hover:underline",
-      success: "text-success underline-offset-4 [a&]:hover:underline",
-      warning: "text-warning underline-offset-4 [a&]:hover:underline",
-      info: "text-info underline-offset-4 [a&]:hover:underline"
+      primary:
+        "border-transparent px-0 text-primary underline-offset-4 decoration-primary/35 hover:underline",
+      secondary:
+        "border-transparent px-0 text-muted-foreground underline-offset-4 decoration-border hover:text-foreground hover:underline",
+      destructive:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--destructive)_84%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--destructive)_45%,transparent)] hover:underline",
+      success:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--success)_84%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--success)_45%,transparent)] hover:underline",
+      warning:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--warning)_88%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--warning)_45%,transparent)] hover:underline",
+      info:
+        "border-transparent px-0 text-[color:color-mix(in_oklab,var(--info)_86%,var(--foreground))] underline-offset-4 decoration-[color:color-mix(in_oklab,var(--info)_45%,transparent)] hover:underline"
     }
   }
 
@@ -167,7 +181,7 @@ defmodule CinderUI.Components.Feedback do
 
     assigns =
       assign(assigns, :classes, [
-        "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+        "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,background-color,border-color,box-shadow] overflow-hidden",
         color_styles,
         assigns.class
       ])
