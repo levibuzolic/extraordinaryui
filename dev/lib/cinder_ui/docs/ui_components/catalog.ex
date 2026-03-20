@@ -81,7 +81,9 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
             </Navigation.breadcrumb_item>
             <Navigation.breadcrumb_separator />
             <Navigation.breadcrumb_item>
-              <Navigation.breadcrumb_link href={back_to_index_href(@mode, @root_prefix, @back_section_id)}>
+              <Navigation.breadcrumb_link href={
+                back_to_index_href(@mode, @root_prefix, @back_section_id)
+              }>
                 {@section_title}
               </Navigation.breadcrumb_link>
             </Navigation.breadcrumb_item>
@@ -183,7 +185,9 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
                     —
                   <% else %>
                     <%= for {value, idx} <- Enum.with_index(attr.values) do %>
-                      <%= if idx > 0 do %>,<% end %>
+                      <%= if idx > 0 do %>
+                        ,
+                      <% end %>
                       <code>{inspect(value)}</code>
                     <% end %>
                   <% end %>
@@ -193,7 +197,9 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
                     —
                   <% else %>
                     <%= for {include, idx} <- Enum.with_index(attr.includes) do %>
-                      <%= if idx > 0 do %>,<% end %>
+                      <%= if idx > 0 do %>
+                        ,
+                      <% end %>
                       <code>{include}</code>
                     <% end %>
                   <% end %>
@@ -254,7 +260,10 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
       assigns
       |> assign(:docs_html, summary_markdown_html(assigns.entry.docs))
       |> assign(:preview_align, assigns.entry.preview_align || :center)
-      |> assign(:entry_href, overview_entry_href(assigns.mode, assigns.root_prefix, assigns.entry))
+      |> assign(
+        :entry_href,
+        overview_entry_href(assigns.mode, assigns.root_prefix, assigns.entry)
+      )
 
     ~H"""
     <article
@@ -388,7 +397,9 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
 
   defp required_badge(assigns) do
     ~H"""
-    <Feedback.badge color={:destructive} class={classes(["align-middle", @class])}>Required</Feedback.badge>
+    <Feedback.badge color={:destructive} class={classes(["align-middle", @class])}>
+      Required
+    </Feedback.badge>
     """
   end
 
@@ -403,16 +414,12 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
     ~H"""
     <Overlay.tooltip
       text={@runtime.summary}
-      content_class="w-max max-w-56 whitespace-normal text-left text-pretty"
       data-component-runtime
       data-runtime-kind={@runtime.kind}
     >
-      <span class="inline-flex shrink-0" tabindex="0">
-        <Feedback.badge variant={:outline} class={@badge_class}>
-          <span aria-hidden="true" class={@dot_class} />
-          {@runtime.label}
-        </Feedback.badge>
-      </span>
+      <Feedback.badge variant={:outline} class={@badge_class}>
+        {@runtime.label}
+      </Feedback.badge>
     </Overlay.tooltip>
     """
   end
