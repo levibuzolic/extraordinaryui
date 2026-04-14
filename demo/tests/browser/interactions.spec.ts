@@ -334,7 +334,7 @@ test.describe("interactive previews", () => {
     const sidebar = await page
       .locator("html")
       .evaluate((el) => getComputedStyle(el).getPropertyValue("--sidebar").trim())
-    expect(sidebar).toBe("oklch(0.205 0 0)")
+    expect(sidebar).toBe("oklch(0.145 0 0)")
 
     await page.locator("#theme-color [data-select-trigger]").click()
     await page.locator("#theme-color [data-select-item][data-value='zinc']").click()
@@ -834,8 +834,8 @@ test.describe("static docs interactivity", () => {
     await trigger.click()
     expect(await hasClass(content, "hidden")).toBe(false)
 
-    await select.locator("[data-select-item][data-value='slate']").click()
-    await expect(hiddenInput).toHaveValue("slate")
+    await select.locator("[data-select-item][data-value='zinc']").click()
+    await expect(hiddenInput).toHaveValue("zinc")
     expect(await hasClass(content, "hidden")).toBe(true)
   })
 
