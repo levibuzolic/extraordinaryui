@@ -549,7 +549,11 @@ defmodule CinderUI.Components.Overlay do
 
     ~H"""
     <span data-slot="tooltip" class={classes(@classes)} {@rest}>
-      <span data-slot="tooltip-trigger" aria-describedby={@content_id} style={"anchor-name: #{@anchor_name};"}>
+      <span
+        data-slot="tooltip-trigger"
+        aria-describedby={@content_id}
+        style={"anchor-name: #{@anchor_name};"}
+      >
         {render_slot(@inner_block)}
       </span>
       <span

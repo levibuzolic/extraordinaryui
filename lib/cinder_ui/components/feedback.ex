@@ -56,8 +56,7 @@ defmodule CinderUI.Components.Feedback do
     },
     link: %{
       primary: "border-transparent px-0 text-primary hover:opacity-75",
-      secondary:
-        "border-transparent px-0 text-muted-foreground hover:text-foreground",
+      secondary: "border-transparent px-0 text-muted-foreground hover:text-foreground",
       destructive:
         "border-transparent px-0 text-[color:color-mix(in_oklab,var(--destructive)_84%,var(--foreground))] hover:opacity-75",
       success:
