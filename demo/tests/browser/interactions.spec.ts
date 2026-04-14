@@ -337,11 +337,11 @@ test.describe("interactive previews", () => {
     expect(sidebar).toBe("oklch(0.205 0 0)")
 
     await page.locator("#theme-color [data-select-trigger]").click()
-    await page.locator("#theme-color [data-select-item][data-value='slate']").click()
+    await page.locator("#theme-color [data-select-item][data-value='zinc']").click()
     const primary = await page
       .locator("html")
       .evaluate((el) => getComputedStyle(el).getPropertyValue("--primary").trim())
-    expect(primary).toBe("oklch(0.929 0.013 255.508)")
+    expect(primary).toBe("oklch(0.92 0.004 286.32)")
 
     await page.locator("#theme-radius [data-select-trigger]").click()
     await page.locator("#theme-radius [data-select-item][data-value='vega']").click()
