@@ -1,6 +1,7 @@
 # Cinder UI
 
 [![CI](https://github.com/levibuzolic/cinder_ui/actions/workflows/ci.yml/badge.svg)](https://github.com/levibuzolic/cinder_ui/actions/workflows/ci.yml)
+[![Hex.pm](https://img.shields.io/hexpm/v/cinder_ui.svg)](https://hex.pm/packages/cinder_ui)
 
 [shadcn/ui](https://ui.shadcn.com/docs) components for Phoenix + LiveView.
 
