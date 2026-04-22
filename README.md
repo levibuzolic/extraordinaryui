@@ -229,7 +229,7 @@ Basic field usage:
 
 ```heex
 <.field>
-  <:label><.label for="project-name">Project name</.label></:label>
+  <:label for="project-name">Project name</:label>
   <.input id="project-name" name="project[name]" />
   <:description>Visible to your team in dashboards and alerts.</:description>
 </.field>
@@ -240,9 +240,7 @@ Explicit composition with validation messaging:
 ```heex
 <.form for={@form} phx-change="validate" phx-submit="save" class="space-y-6">
   <.field invalid={@form[:owner].errors != []}>
-    <:label>
-      <.label for={@form[:owner].id}>Owner</.label>
-    </:label>
+    <:label for={@form[:owner].id}>Owner</:label>
 
     <.field_control>
       <.autocomplete

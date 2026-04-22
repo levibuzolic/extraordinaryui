@@ -48,7 +48,7 @@ defmodule CinderUI.Components.Layout do
     </.card_header>
     <.card_content class="space-y-3">
       <.field>
-        <:label><.label for="invite_email">Email</.label></:label>
+        <:label for="invite_email">Email</:label>
         <.input id="invite_email" type="email" placeholder="dev@company.com" />
       </.field>
     </.card_content>

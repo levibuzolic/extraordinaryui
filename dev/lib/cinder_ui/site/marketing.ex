@@ -285,9 +285,7 @@ defmodule CinderUI.Site.Marketing do
     preview =
       to_html(~H"""
       <Forms.field>
-        <:label>
-          <Forms.label for="site-email">Team email</Forms.label>
-        </:label>
+        <:label for="site-email">Team email</:label>
         <Forms.input id="site-email" placeholder="team@example.com" />
         <:description>Used for release announcements.</:description>
         <div class="pt-2">
@@ -298,7 +296,7 @@ defmodule CinderUI.Site.Marketing do
 
     snippet = """
     <.field>
-      <:label><.label for="site-email">Team email</.label></:label>
+      <:label for="site-email">Team email</:label>
       <.input id="site-email" placeholder="team@example.com" />
       <:description>Used for release announcements.</:description>
     </.field>

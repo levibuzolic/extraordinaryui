@@ -57,11 +57,11 @@ defmodule CinderUI.Components.Overlay do
 
     <div class="grid gap-4">
       <.field>
-        <:label><.label for="invite_email">Email</.label></:label>
+        <:label for="invite_email">Email</:label>
         <.input id="invite_email" type="email" placeholder="dev@company.com" />
       </.field>
       <.field>
-        <:label><.label for="invite_role">Role</.label></:label>
+        <:label for="invite_role">Role</:label>
         <.select id="invite_role" name="invite_role" value="member">
           <:option value="member" label="Member" />
           <:option value="admin" label="Admin" />

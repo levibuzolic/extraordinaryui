@@ -82,7 +82,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Profile field" align="full"
   <.field>
-    <:label><.label for="name">Name</.label></:label>
+    <:label for="name">Name</:label>
     <.input id="name" name="name" />
     <:description>Shown in your profile.</:description>
   </.field>
@@ -90,7 +90,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Validation state" align="full" vrt
   <.field>
-    <:label><.label for="email">Work email</.label></:label>
+    <:label for="email">Work email</:label>
     <.input id="email" name="email" type="email" />
     <:description>We'll send deployment alerts here.</:description>
     <:error>Please use your company domain.</:error>
@@ -99,9 +99,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Field with slots" align="full"
   <.field invalid={true}>
-    <:label>
-      <.label for="workspace-slug">Workspace slug</.label>
-    </:label>
+    <:label for="workspace-slug">Workspace slug</:label>
     <.input id="workspace-slug" name="workspace[slug]" value="cinder-ui" />
     <:description>Used in your public workspace URL.</:description>
     <:error>Slug has already been taken.</:error>
@@ -111,9 +109,7 @@ defmodule CinderUI.Components.Forms do
   ```heex title="Phoenix validation flow" align="full" vrt
   <.form for={%{}} phx-change="validate" phx-submit="save" class="space-y-6">
     <.field invalid={true}>
-      <:label>
-        <.label for="owner">Owner</.label>
-      </:label>
+      <:label for="owner">Owner</:label>
 
       <.autocomplete
         id="owner"
@@ -136,7 +132,12 @@ defmodule CinderUI.Components.Forms do
   attr :class, :string, default: nil
   attr :invalid, :boolean, default: false
   attr :rest, :global
-  slot :label
+
+  slot :label do
+    attr :for, :string
+    attr :class, :string
+  end
+
   slot :description
   slot :message
   slot :error
@@ -152,7 +153,9 @@ defmodule CinderUI.Components.Forms do
 
     ~H"""
     <div data-slot="field" data-invalid={@invalid} class={classes(@classes)} {@rest}>
-      <.field_label :if={@label != []}>{render_slot(@label)}</.field_label>
+      <.field_label :if={@label != []}>
+        <.field_label_slot :for={label <- @label} slot={label} />
+      </.field_label>
       <.field_control>{render_slot(@inner_block)}</.field_control>
       <.field_description :if={@description != []}>{render_slot(@description)}</.field_description>
       <.field_message :if={@message != []}>{render_slot(@message)}</.field_message>
@@ -200,6 +203,28 @@ defmodule CinderUI.Components.Forms do
     """
   end
 
+  attr :slot, :map, required: true
+
+  defp field_label_slot(assigns) do
+    slot = assigns.slot
+
+    assigns =
+      assigns
+      |> assign(:slot_entry, slot)
+      |> assign(:auto_label, direct_label_slot?(slot))
+      |> assign(:for, slot[:for])
+      |> assign(:class, slot[:class])
+
+    ~H"""
+    <.label :if={@auto_label} for={@for} class={@class}>
+      {render_slot(@slot_entry)}
+    </.label>
+    <%= if !@auto_label do %>
+      {render_slot(@slot_entry)}
+    <% end %>
+    """
+  end
+
   doc("""
   Wraps the main interactive control inside a field.
 
@@ -218,7 +243,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Field control with helper text" align="full"
   <.field>
-    <:label><.label for="billing_email">Billing email</.label></:label>
+    <:label for="billing_email">Billing email</:label>
     <.input id="billing_email" name="billing[email]" type="email" placeholder="billing@team.com" />
     <:description>Invoices and payment reminders go here.</:description>
   </.field>
@@ -256,7 +281,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Field description in context" align="full"
   <.field>
-    <:label><.label for="workspace_slug">Workspace slug</.label></:label>
+    <:label for="workspace_slug">Workspace slug</:label>
     <.input id="workspace_slug" name="workspace[slug]" value="cinder-ui" />
     <:description>Used in your public workspace URL.</:description>
   </.field>
@@ -290,7 +315,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Field message in context" align="full"
   <.field>
-    <:label><.label for="project_name">Project name</.label></:label>
+    <:label for="project_name">Project name</:label>
     <.input id="project_name" name="project[name]" value="Marketing site refresh" />
     <:message>Saved automatically a few seconds ago.</:message>
   </.field>
@@ -324,7 +349,7 @@ defmodule CinderUI.Components.Forms do
 
   ```heex title="Field error in context" align="full"
   <.field invalid={true}>
-    <:label><.label for="work_email">Work email</.label></:label>
+    <:label for="work_email">Work email</:label>
     <.input id="work_email" name="work_email" type="email" value="hello@gmail.com" />
     <:error>Please use your company domain.</:error>
   </.field>
@@ -372,7 +397,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:email].id}>Email</.label></:label>
+        <:label for={@form[:email].id}>Email</:label>
         <.input field={@form[:email]} />
         <:description>We'll send alerts here.</:description>
       </.field>
@@ -465,7 +490,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:quantity].id}>Quantity</.label></:label>
+        <:label for={@form[:quantity].id}>Quantity</:label>
         <.number_field field={@form[:quantity]} />
         <:description>Enter a positive number.</:description>
       </.field>
@@ -636,7 +661,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:bio].id}>Bio</.label></:label>
+        <:label for={@form[:bio].id}>Bio</:label>
         <.textarea field={@form[:bio]} />
         <:description>Tell us about yourself.</:description>
       </.field>
@@ -724,7 +749,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:active].id}>Active</.label></:label>
+        <:label for={@form[:active].id}>Active</:label>
         <.checkbox field={@form[:active]} />
       </.field>
   """)
@@ -841,7 +866,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:notifications].id}>Notifications</.label></:label>
+        <:label for={@form[:notifications].id}>Notifications</:label>
         <.switch field={@form[:notifications]} />
       </.field>
   """)
@@ -999,7 +1024,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:role].id}>Role</.label></:label>
+        <:label for={@form[:role].id}>Role</:label>
         <.select field={@form[:role]}>
           <:option value="admin" label="Admin" />
         </.select>
@@ -1288,7 +1313,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:role].id}>Role</.label></:label>
+        <:label for={@form[:role].id}>Role</:label>
         <.native_select field={@form[:role]} options={[{"Admin", "admin"}]} />
         <:description>Choose your access level.</:description>
       </.field>
@@ -1445,7 +1470,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:owner].id}>Owner</.label></:label>
+        <:label for={@form[:owner].id}>Owner</:label>
         <.autocomplete field={@form[:owner]}>
           <:option value="levi" label="Levi Buzolic" />
         </.autocomplete>
@@ -1715,7 +1740,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:plan].id}>Plan</.label></:label>
+        <:label for={@form[:plan].id}>Plan</:label>
         <.radio_group field={@form[:plan]}>
           <:option value="free" label="Free" />
           <:option value="pro" label="Pro" />
@@ -1827,7 +1852,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:volume].id}>Volume</.label></:label>
+        <:label for={@form[:volume].id}>Volume</:label>
         <.slider field={@form[:volume]} />
         <:description>Drag to adjust volume level.</:description>
       </.field>
@@ -2085,7 +2110,7 @@ defmodule CinderUI.Components.Forms do
   ### Inside field composition
 
       <.field>
-        <:label><.label for={@form[:code].id}>Verification code</.label></:label>
+        <:label for={@form[:code].id}>Verification code</:label>
         <.input_otp field={@form[:code]} length={6} />
         <:description>Enter the 6-digit code from your email.</:description>
       </.field>
@@ -2215,6 +2240,10 @@ defmodule CinderUI.Components.Forms do
     do: assigns
 
   defp maybe_put_errors(assigns, errors), do: assign(assigns, :errors, errors)
+
+  defp direct_label_slot?(slot) do
+    not is_nil(slot[:for]) or not is_nil(slot[:class])
+  end
 
   defp translate_error({msg, opts}) do
     Enum.reduce(opts, msg, fn {key, value}, acc ->
