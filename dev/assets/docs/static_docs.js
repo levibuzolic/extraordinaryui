@@ -462,6 +462,8 @@ const applyTheme = () => {
   const radius = readSetting(themeStorage.radius, "nova")
   const resolvedMode = resolveMode(mode)
   root.classList.toggle("dark", resolvedMode === "dark")
+  root.dataset.theme = resolvedMode
+  root.dataset.themeMode = mode
   applyPalette(color, resolvedMode)
   root.style.setProperty("--radius", radiusPresets[radius] || radiusPresets.nova)
   syncThemeControls(mode, color, radius)

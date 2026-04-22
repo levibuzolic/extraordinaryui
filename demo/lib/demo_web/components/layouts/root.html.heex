@@ -42,6 +42,8 @@
           const resolvedMode = mode === "auto" ? (media.matches ? "dark" : "light") : mode;
 
           root.classList.toggle("dark", resolvedMode === "dark");
+          root.dataset.theme = resolvedMode;
+          root.dataset.themeMode = mode;
         };
 
         const applyStoredMode = () => {

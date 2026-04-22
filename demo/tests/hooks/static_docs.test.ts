@@ -55,6 +55,31 @@ afterEach(() => {
 })
 
 describe("static docs hook adapter", () => {
+  it("applies the resolved theme to root data attributes on first load", async () => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation(() => ({
+        matches: true,
+        media: "(prefers-color-scheme: dark)",
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+
+    window.localStorage.setItem("cui:theme:mode", "auto")
+
+    await loadStaticDocsModule()
+
+    expect(document.documentElement.classList.contains("dark")).toBe(true)
+    expect(document.documentElement.dataset.theme).toBe("dark")
+    expect(document.documentElement.dataset.themeMode).toBe("auto")
+    expect(document.documentElement.style.getPropertyValue("--background")).toBe("oklch(0.145 0 0)")
+  })
+
   it("records missing hook names used in static markup", async () => {
     document.body.innerHTML = `
       <div phx-hook="CuiSelect"></div>

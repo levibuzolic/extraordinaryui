@@ -6,6 +6,39 @@ const hasClass = async (
 ) => locator.evaluate((el: Element, cls: string) => el.classList.contains(cls), className)
 
 test.describe("interactive previews", () => {
+  test("docs and homepage follow the system dark theme without JavaScript", async ({ browser }) => {
+    const context = await browser.newContext({
+      colorScheme: "dark",
+      javaScriptEnabled: false,
+    })
+
+    const page = await context.newPage()
+
+    await page.goto("/docs/")
+    const docsBackground = await page
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).getPropertyValue("--background").trim())
+    const docsColorScheme = await page
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).colorScheme)
+
+    expect(docsBackground).toBe("oklch(0.145 0 0)")
+    expect(docsColorScheme).toBe("dark")
+
+    await page.goto("/")
+    const homeBackground = await page
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).getPropertyValue("--background").trim())
+    const heroBeforeContent = await page
+      .locator(".hero-section")
+      .evaluate((el) => getComputedStyle(el, "::before").content)
+
+    expect(homeBackground).toBe("oklch(0.145 0 0)")
+    expect(heroBeforeContent).toBe("none")
+
+    await context.close()
+  })
+
   test.beforeEach(async ({ page }) => {
     await page.goto("/docs/")
   })
