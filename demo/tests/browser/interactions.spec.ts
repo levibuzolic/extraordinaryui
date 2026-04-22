@@ -384,6 +384,25 @@ test.describe("interactive previews", () => {
     expect(radius).toBe("1rem")
   })
 
+  test("stored theme settings restore the visible docs control state", async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("cui:theme:mode", "dark")
+      localStorage.setItem("cui:theme:color", "zinc")
+      localStorage.setItem("cui:theme:radius", "vega")
+    })
+
+    await page.goto("/docs/advanced-sidebar_main")
+
+    await expect(page.locator(".theme-mode-btn[data-theme-mode='dark']").first()).toHaveAttribute(
+      "data-active",
+      "true",
+    )
+    await expect(page.locator("#theme-color [data-slot='select-value']")).toHaveText("Zinc")
+    await expect(page.locator("#theme-radius [data-slot='select-value']")).toHaveText("XL (16px / 1rem)")
+    await expect(page.locator("#theme-color [data-slot='select-input']")).toHaveValue("zinc")
+    await expect(page.locator("#theme-radius [data-slot='select-input']")).toHaveValue("vega")
+  })
+
   test("homepage and docs share the same theme mode controls", async ({ page }) => {
     await page.goto("/")
 

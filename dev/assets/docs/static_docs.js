@@ -412,13 +412,18 @@ const root = document.documentElement
 const docsSidebarRoot = document.querySelector("[data-docs-sidebar]")
 const sidebar =
   docsSidebarRoot?.querySelector("[data-slot='sidebar-content']") || docsSidebarRoot
-const colorSelect = document.querySelector("#theme-color [data-slot='select-input']")
-const radiusSelect = document.querySelector("#theme-radius [data-slot='select-input']")
+const colorSelectRoot = document.querySelector("#theme-color[data-slot='select']")
+const radiusSelectRoot = document.querySelector("#theme-radius[data-slot='select']")
+const colorSelect = colorSelectRoot?.querySelector("[data-slot='select-input']")
+const radiusSelect = radiusSelectRoot?.querySelector("[data-slot='select-input']")
 const themeModeButtons = () => qs(document, ".theme-mode-btn[data-theme-mode]")
 
 const readSetting = (key, fallback) => localStorage.getItem(key) || fallback
 const writeSetting = (key, value) => localStorage.setItem(key, value)
 const resolveMode = (mode) => (mode === "auto" ? (media.matches ? "dark" : "light") : mode)
+const normalizeMode = (mode) => (["light", "dark", "auto"].includes(mode) ? mode : "auto")
+const normalizeColor = (color) => (themePresets[color] ? color : "neutral")
+const normalizeRadius = (radius) => (radiusPresets[radius] ? radius : "nova")
 
 /** Write the palette's CSS custom properties onto :root. */
 const applyPalette = (color, resolvedMode) => {
@@ -441,6 +446,33 @@ const applyPalette = (color, resolvedMode) => {
   }
 }
 
+/** Keep the custom select UI in sync with the hidden input value. */
+const syncSelectControl = (selectRoot, value) => {
+  if (!selectRoot) return
+
+  const input = selectRoot.querySelector("[data-slot='select-input']")
+  const valueEl = selectRoot.querySelector("[data-slot='select-value']")
+  const items = qs(selectRoot, "[data-select-item]")
+  const selectedItem = items.find((item) => item.dataset.value === value) || null
+  const placeholder = selectRoot.dataset.placeholder || ""
+
+  if (input) input.value = selectedItem?.dataset.value || ""
+  if (valueEl) valueEl.textContent = selectedItem?.dataset.label || selectedItem?.textContent?.trim() || placeholder
+
+  const trigger = selectRoot.querySelector("[data-select-trigger]")
+  if (trigger) {
+    trigger.classList.toggle("text-muted-foreground", !selectedItem)
+  }
+
+  items.forEach((item) => {
+    const selected = item === selectedItem
+    item.dataset.selected = selected ? "true" : "false"
+    item.setAttribute("aria-selected", selected ? "true" : "false")
+    const check = item.querySelector("[data-slot='select-check']")
+    if (check) check.classList.toggle("hidden", !selected)
+  })
+}
+
 /** Keep the theme picker controls in sync with the current settings. */
 const syncThemeControls = (mode, color, radius) => {
   themeModeButtons().forEach((button) => {
@@ -451,15 +483,15 @@ const syncThemeControls = (mode, color, radius) => {
     button.setAttribute("aria-selected", active ? "true" : "false")
   })
 
-  if (colorSelect) colorSelect.value = color
-  if (radiusSelect) radiusSelect.value = radius
+  syncSelectControl(colorSelectRoot, color)
+  syncSelectControl(radiusSelectRoot, radius)
 }
 
 /** Read settings from localStorage and apply them to the document. */
 const applyTheme = () => {
-  const mode = readSetting(themeStorage.mode, "auto")
-  const color = readSetting(themeStorage.color, "neutral")
-  const radius = readSetting(themeStorage.radius, "nova")
+  const mode = normalizeMode(readSetting(themeStorage.mode, "auto"))
+  const color = normalizeColor(readSetting(themeStorage.color, "neutral"))
+  const radius = normalizeRadius(readSetting(themeStorage.radius, "nova"))
   const resolvedMode = resolveMode(mode)
   root.classList.toggle("dark", resolvedMode === "dark")
   root.dataset.theme = resolvedMode
