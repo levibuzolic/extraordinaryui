@@ -403,6 +403,47 @@ defmodule CinderUI.Components.FormsTest do
            |> length() == 1
   end
 
+  test "field auto-renders label when label slot attrs are provided" do
+    html =
+      render_component(&Forms.field/1, %{
+        label: TestHelpers.slot("Username", %{for: "account_username", class: "tracking-tight"}),
+        inner_block: [%{inner_block: fn _, _ -> HTML.raw("<input data-slot=\"input\" />") end}]
+      })
+
+    assert TestHelpers.text(html, "[data-slot='field-label'] [data-slot='label']") == "Username"
+
+    assert TestHelpers.attr(html, "[data-slot='field-label'] [data-slot='label']", "for") ==
+             "account_username"
+
+    assert TestHelpers.has_class?(
+             html,
+             "[data-slot='field-label'] [data-slot='label']",
+             "tracking-tight"
+           )
+  end
+
+  test "field preserves custom label markup without wrapping it again" do
+    html =
+      render_component(&Forms.field/1, %{
+        label: [
+          %{
+            inner_block: fn _, _ ->
+              HTML.raw("""
+              <label data-slot="label" for="account_username">Username</label>
+              <span data-slot="label-note">Shown publicly</span>
+              """)
+            end
+          }
+        ],
+        inner_block: [%{inner_block: fn _, _ -> HTML.raw("<input data-slot=\"input\" />") end}]
+      })
+
+    assert TestHelpers.text(html, "[data-slot='field-label']") == "Username Shown publicly"
+
+    assert TestHelpers.find_all(html, "[data-slot='field-label'] [data-slot='label']")
+           |> length() == 1
+  end
+
   test "field_control carries invalid-state selectors for shared controls" do
     html =
       render_component(&Forms.field_control/1, %{

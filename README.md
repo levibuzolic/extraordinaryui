@@ -226,11 +226,14 @@ Try a component in any template:
 `CinderUI.Components.Forms` supports both simple field wrappers and more explicit
 field composition for validated LiveView forms.
 
+Prefer the shorthand `:label` slot for standard labels. Use raw `:label`
+content only when you need custom label markup.
+
 Basic field usage:
 
 ```heex
 <.field>
-  <:label><.label for="project-name">Project name</.label></:label>
+  <:label for="project-name">Project name</:label>
   <.input id="project-name" name="project[name]" />
   <:description>Visible to your team in dashboards and alerts.</:description>
 </.field>
@@ -241,9 +244,7 @@ Explicit composition with validation messaging:
 ```heex
 <.form for={@form} phx-change="validate" phx-submit="save" class="space-y-6">
   <.field invalid={@form[:owner].errors != []}>
-    <:label>
-      <.label for={@form[:owner].id}>Owner</.label>
-    </:label>
+    <:label for={@form[:owner].id}>Owner</:label>
 
     <.field_control>
       <.autocomplete
@@ -264,6 +265,20 @@ Explicit composition with validation messaging:
 
   <.button type="submit">Save</.button>
 </.form>
+```
+
+Custom label markup remains available when you need richer label content:
+
+```heex
+<.field>
+  <:label>
+    <.field_label>
+      <.label for="workspace-name">Workspace name</.label>
+      <span class="text-muted-foreground text-xs">Shown in team switchers.</span>
+    </.field_label>
+  </:label>
+  <.input id="workspace-name" name="workspace[name]" />
+</.field>
 ```
 
 Available field helpers:
