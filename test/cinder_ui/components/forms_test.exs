@@ -306,7 +306,9 @@ defmodule CinderUI.Components.FormsTest do
              "admin"
 
     assert TestHelpers.has_class?(html, "[data-slot='native-select']", "pr-8")
-    assert TestHelpers.has_class?(html, "svg", "right-2.5")
+    assert TestHelpers.has_class?(html, "[data-slot='native-select']", "h-9")
+    assert TestHelpers.has_class?(html, "[data-slot='native-select']", "rounded-md")
+    assert TestHelpers.has_class?(html, "svg", "right-3")
   end
 
   describe "autocomplete with FormField" do
