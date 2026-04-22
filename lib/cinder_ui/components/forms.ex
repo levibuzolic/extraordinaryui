@@ -398,9 +398,8 @@ defmodule CinderUI.Components.Forms do
       |> unwrap_field()
       |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
       |> assign(:input_classes, [
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        text_input_base_classes(),
+        "file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
         assigns.class
       ])
 
@@ -502,9 +501,9 @@ defmodule CinderUI.Components.Forms do
         "border-input bg-background text-muted-foreground hover:text-foreground inline-flex h-9 w-9 shrink-0 items-center justify-center border shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
       ])
       |> assign(:input_classes, [
-        "border-input dark:bg-input/30 h-9 w-full min-w-0 rounded-none border-y border-x-0 bg-transparent px-3 py-1 text-center text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        form_control_base_classes(),
+        form_control_state_classes(),
+        "dark:bg-input/30 h-9 w-full min-w-0 rounded-none border-y border-x-0 bg-transparent px-3 py-1 text-center text-base md:text-sm",
         "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
         assigns.input_class
       ])
@@ -659,7 +658,9 @@ defmodule CinderUI.Components.Forms do
       |> unwrap_field()
       |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
       |> assign(:classes, [
-        "border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        form_control_base_classes(),
+        form_control_state_classes(),
+        "placeholder:text-muted-foreground dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md bg-transparent px-3 py-2 text-base md:text-sm",
         assigns.class
       ])
 
@@ -1316,9 +1317,8 @@ defmodule CinderUI.Components.Forms do
       |> unwrap_field()
       |> then(fn a -> if is_nil(a[:errors]), do: assign(a, :errors, []), else: a end)
       |> assign(:classes, [
-        "border-input text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 h-9 w-full min-w-0 appearance-none rounded-md border bg-transparent px-3 py-1 pr-8 text-base shadow-xs transition-[color,box-shadow] outline-none select-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        text_input_base_classes(),
+        "appearance-none pr-8 select-none",
         assigns.class
       ])
 
@@ -2195,6 +2195,25 @@ defmodule CinderUI.Components.Forms do
       -
     </span>
     """
+  end
+
+  defp text_input_base_classes do
+    [
+      form_control_base_classes(),
+      form_control_state_classes(),
+      "text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 h-9 w-full min-w-0 rounded-md bg-transparent px-3 py-1 text-base md:text-sm"
+    ]
+  end
+
+  defp form_control_base_classes do
+    "border-input border shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+  end
+
+  defp form_control_state_classes do
+    [
+      "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+      "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+    ]
   end
 
   # -- FormField helpers -------------------------------------------------------
