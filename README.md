@@ -225,6 +225,9 @@ Try a component in any template:
 `CinderUI.Components.Forms` supports both simple field wrappers and more explicit
 field composition for validated LiveView forms.
 
+Prefer the shorthand `:label` slot for standard labels. Use raw `:label`
+content only when you need custom label markup.
+
 Basic field usage:
 
 ```heex
@@ -261,6 +264,20 @@ Explicit composition with validation messaging:
 
   <.button type="submit">Save</.button>
 </.form>
+```
+
+Custom label markup remains available when you need richer label content:
+
+```heex
+<.field>
+  <:label>
+    <.field_label>
+      <.label for="workspace-name">Workspace name</.label>
+      <span class="text-muted-foreground text-xs">Shown in team switchers.</span>
+    </.field_label>
+  </:label>
+  <.input id="workspace-name" name="workspace[name]" />
+</.field>
 ```
 
 Available field helpers:

@@ -74,9 +74,10 @@ defmodule CinderUI.Components.Forms do
   should pass the form control directly and use the `:label`, `:description`,
   `:message`, and `:error` slots for supporting content.
 
-  Reach for `field_label/1`, `field_control/1`, `field_description/1`,
-  `field_message/1`, and `field_error/1` when you need the standalone helper or
-  want to compose the pieces outside `field/1`.
+  Prefer the shorthand `:label` slot with `for` for ordinary field labels.
+  Reach for raw `:label` slot content, `field_label/1`, `field_control/1`,
+  `field_description/1`, `field_message/1`, and `field_error/1` when you need
+  richer markup or want to compose the pieces outside `field/1`.
 
   ## Examples
 
@@ -97,11 +98,15 @@ defmodule CinderUI.Components.Forms do
   </.field>
   ```
 
-  ```heex title="Field with slots" align="full"
+  ```heex title="Custom Label Markup" align="full"
   <.field invalid={true}>
-    <:label for="workspace-slug">Workspace slug</:label>
+    <:label>
+      <.field_label>
+        <.label for="workspace-slug">Workspace slug</.label>
+        <span class="text-muted-foreground text-xs">Used in your public workspace URL.</span>
+      </.field_label>
+    </:label>
     <.input id="workspace-slug" name="workspace[slug]" value="cinder-ui" />
-    <:description>Used in your public workspace URL.</:description>
     <:error>Slug has already been taken.</:error>
   </.field>
   ```
