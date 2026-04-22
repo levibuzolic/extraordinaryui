@@ -435,15 +435,6 @@ const applyPalette = (color, resolvedMode) => {
   Object.entries(tokens).forEach(([token, value]) => {
     root.style.setProperty(`--${token}`, value)
   })
-
-  // Apply sidebar tokens to the sidebar element so it uses the themed colors
-  if (sidebar) {
-    Object.entries(tokens).forEach(([token, value]) => {
-      if (token.startsWith('sidebar-')) {
-        sidebar.style.setProperty(`--${token}`, value)
-      }
-    })
-  }
 }
 
 /** Keep the custom select UI in sync with the hidden input value. */
@@ -496,6 +487,8 @@ const applyTheme = () => {
   root.classList.toggle("dark", resolvedMode === "dark")
   root.dataset.theme = resolvedMode
   root.dataset.themeMode = mode
+  root.dataset.themeColor = color
+  root.dataset.themeRadius = radius
   applyPalette(color, resolvedMode)
   root.style.setProperty("--radius", radiusPresets[radius] || radiusPresets.nova)
   syncThemeControls(mode, color, radius)

@@ -957,6 +957,46 @@ html.dark .install-code-block,
   border-color: var(--border);
 }
 
+html[data-theme-mode="light"] .theme-mode-btn[data-theme-mode="light"],
+html[data-theme-mode="dark"] .theme-mode-btn[data-theme-mode="dark"],
+html[data-theme-mode="auto"] .theme-mode-btn[data-theme-mode="auto"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border);
+}
+
+html[data-theme="light"][data-theme-color] {
+  --sidebar: oklch(1 0 0);
+}
+
+html[data-theme="dark"][data-theme-color="neutral"] {
+  --sidebar: oklch(0.145 0 0);
+}
+
+html[data-theme="dark"][data-theme-color="stone"] {
+  --sidebar: oklch(0.147 0.004 49.25);
+}
+
+html[data-theme="dark"][data-theme-color="zinc"] {
+  --sidebar: oklch(0.141 0.005 285.823);
+}
+
+html[data-theme="dark"][data-theme-color="mauve"] {
+  --sidebar: oklch(0.129 0.042 264.695);
+}
+
+html[data-theme="dark"][data-theme-color="olive"] {
+  --sidebar: oklch(0.144 0.013 101.487);
+}
+
+html[data-theme="dark"][data-theme-color="mist"] {
+  --sidebar: oklch(0.138 0.039 265.975);
+}
+
+html[data-theme="dark"][data-theme-color="taupe"] {
+  --sidebar: oklch(0.146 0.01 49.25);
+}
+
 .sidebar-section-link {
   color: var(--foreground);
 }
