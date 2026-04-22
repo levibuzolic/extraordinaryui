@@ -116,6 +116,35 @@ defmodule CinderUI.Docs.CatalogTest do
     assert length(find_entry(entries, CinderUI.Components.DataDisplay, :table).examples) >= 2
   end
 
+  test "form field examples with @form shims render as generated previews" do
+    input_entry =
+      Catalog.sections()
+      |> Enum.flat_map(& &1.entries)
+      |> Enum.find(fn entry ->
+        entry.module == CinderUI.Components.Forms and entry.function == :input
+      end)
+
+    assert input_entry
+    assert length(input_entry.examples) >= 6
+
+    titles = Enum.map(input_entry.examples, & &1.title)
+
+    assert "With FormField" in titles
+    assert "With label" in titles
+    assert "With explicit errors" in titles
+    assert "Inside field composition" in titles
+
+    form_field_example = Enum.find(input_entry.examples, &(&1.title == "With FormField"))
+    composed_example = Enum.find(input_entry.examples, &(&1.title == "Inside field composition"))
+
+    assert form_field_example.phoenix_shim
+    assert composed_example.phoenix_shim
+    assert form_field_example.preview_html =~ ~s(data-slot="input")
+    assert form_field_example.preview_html =~ ~s(name="example[email]")
+    assert composed_example.preview_html =~ ~s(data-slot="field")
+    assert composed_example.preview_html =~ ~s(for="example_email")
+  end
+
   test "composite components can expose doc-derived generated examples" do
     card_entry =
       Catalog.sections()

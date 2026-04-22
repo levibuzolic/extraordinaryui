@@ -74,6 +74,9 @@ defmodule CinderUI.Docs.Catalog do
     {Advanced, :sidebar} => :progressive,
     {Advanced, :sidebar_layout} => :progressive
   }
+  @example_section_headings MapSet.new(
+                              ~w(example examples usage variant variants screenshot screenshots)
+                            )
 
   @doc """
   Returns catalog sections and pre-rendered component entries.
@@ -330,7 +333,8 @@ defmodule CinderUI.Docs.Catalog do
         preview_html: render_heex_example(module, function, template_heex),
         template_heex: display_template_heex,
         preview_align: example.preview_align || :center,
-        promoted_visual: Map.get(example, :promoted_visual, false)
+        promoted_visual: Map.get(example, :promoted_visual, false),
+        phoenix_shim: Map.get(example, :phoenix_shim, false)
       }
     end)
   end
@@ -442,8 +446,30 @@ defmodule CinderUI.Docs.Catalog do
     Regex.scan(~r/@([a-zA-Z_]\w*)/, snippet, capture: :all_but_first)
     |> List.flatten()
     |> Enum.uniq()
-    |> Map.new(fn key -> {String.to_atom(key), nil} end)
+    |> Map.new(fn key -> {String.to_atom(key), default_snippet_assign_value(key)} end)
     |> Map.put(:__changed__, %{})
+  end
+
+  defp default_snippet_assign_value("form"), do: example_form_assign()
+  defp default_snippet_assign_value(_key), do: nil
+
+  defp example_form_assign do
+    Phoenix.Component.to_form(
+      %{
+        "email" => "levi@example.com",
+        "quantity" => "3",
+        "bio" => "Docs preview copy",
+        "active" => "true",
+        "terms" => "true",
+        "notifications" => "true",
+        "role" => "member",
+        "owner" => "mira",
+        "plan" => "pro",
+        "volume" => "42",
+        "code" => "482951"
+      },
+      as: "example"
+    )
   end
 
   defp hydrate_template_heex_for_preview(snippet, DataDisplay, :avatar) do
@@ -484,39 +510,7 @@ defmodule CinderUI.Docs.Catalog do
   end
 
   defp inline_doc_examples(doc) do
-    fenced_examples =
-      doc
-      |> String.trim()
-      |> then(&Regex.scan(~r/```([^\n]*)\n(.*?)```/s, &1, capture: :all_but_first))
-      |> Enum.map(fn [info, code] ->
-        {lang, title, preview_align, promoted_visual} = parse_fence_info(info)
-        {lang, title, preview_align, promoted_visual, String.trim(code)}
-      end)
-      |> Enum.filter(fn {lang, _title, _preview_align, _promoted_visual, code} ->
-        code != "" and (lang in ["", "heex", "html", "elixir"] and String.contains?(code, "<."))
-      end)
-
-    indented_examples =
-      if fenced_examples == [] do
-        doc
-        |> String.split("\n")
-        |> Enum.chunk_by(&String.starts_with?(&1, "    "))
-        |> Enum.filter(fn
-          [line | _] -> String.starts_with?(line, "    ")
-          _ -> false
-        end)
-        |> Enum.map(fn chunk ->
-          chunk
-          |> Enum.map_join("\n", &String.trim_leading(&1, "    "))
-          |> String.trim()
-        end)
-        |> Enum.filter(&String.contains?(&1, "<."))
-        |> Enum.map(&{"", nil, :center, false, &1})
-      else
-        []
-      end
-
-    (fenced_examples ++ indented_examples)
+    (fenced_doc_examples(doc) ++ indented_doc_examples(doc))
     |> Enum.uniq()
     |> Enum.with_index(1)
     |> Enum.map(fn {{lang, title, preview_align, promoted_visual, code}, index} ->
@@ -525,8 +519,167 @@ defmodule CinderUI.Docs.Catalog do
         title: inline_doc_example_title(title, lang, index),
         template_heex: code,
         preview_align: preview_align,
-        promoted_visual: promoted_visual
+        promoted_visual: promoted_visual,
+        phoenix_shim: phoenix_shim_example?(code)
       }
+    end)
+  end
+
+  defp fenced_doc_examples(doc) do
+    doc
+    |> String.trim()
+    |> then(&Regex.scan(~r/```([^\n]*)\n(.*?)```/s, &1, capture: :all_but_first))
+    |> Enum.map(fn [info, code] ->
+      {lang, title, preview_align, promoted_visual} = parse_fence_info(info)
+      {lang, title, preview_align, promoted_visual, String.trim(code)}
+    end)
+    |> Enum.filter(fn {lang, _title, _preview_align, _promoted_visual, code} ->
+      code != "" and (lang in ["", "heex", "html", "elixir"] and String.contains?(code, "<."))
+    end)
+  end
+
+  defp indented_doc_examples(doc) do
+    {_index, examples, _inside_fence, _section_level, _inside_examples_section, _heading_title} =
+      doc
+      |> String.trim()
+      |> String.split("\n")
+      |> collect_indented_examples({0, [], false, nil, false, nil})
+
+    Enum.reverse(examples)
+  end
+
+  defp collect_indented_examples(lines, state)
+
+  defp collect_indented_examples(
+         lines,
+         {index, examples, inside_fence, section_level, inside_examples_section, heading_title}
+       ) do
+    case Enum.fetch(lines, index) do
+      :error ->
+        {index, examples, inside_fence, section_level, inside_examples_section, heading_title}
+
+      {:ok, line} ->
+        trimmed = String.trim_leading(line)
+
+        cond do
+          String.starts_with?(trimmed, "```") ->
+            collect_indented_examples(
+              lines,
+              {index + 1, examples, !inside_fence, section_level, inside_examples_section,
+               heading_title}
+            )
+
+          inside_fence ->
+            collect_indented_examples(
+              lines,
+              {index + 1, examples, inside_fence, section_level, inside_examples_section,
+               heading_title}
+            )
+
+          true ->
+            case heading_metadata(trimmed) do
+              {:heading, level, title} ->
+                {next_section_level, next_inside_examples_section, next_heading_title} =
+                  update_heading_context(
+                    level,
+                    title,
+                    section_level,
+                    inside_examples_section,
+                    heading_title
+                  )
+
+                collect_indented_examples(
+                  lines,
+                  {
+                    index + 1,
+                    examples,
+                    inside_fence,
+                    next_section_level,
+                    next_inside_examples_section,
+                    next_heading_title
+                  }
+                )
+
+              :not_heading ->
+                if inside_examples_section and String.starts_with?(line, "    ") do
+                  {next_index, code} = take_indented_block(lines, index)
+                  normalized_code = String.trim(code)
+
+                  next_examples =
+                    if normalized_code != "" and String.contains?(normalized_code, "<.") do
+                      [{"", heading_title, :center, false, normalized_code} | examples]
+                    else
+                      examples
+                    end
+
+                  collect_indented_examples(
+                    lines,
+                    {
+                      next_index,
+                      next_examples,
+                      inside_fence,
+                      section_level,
+                      inside_examples_section,
+                      heading_title
+                    }
+                  )
+                else
+                  collect_indented_examples(
+                    lines,
+                    {index + 1, examples, inside_fence, section_level, inside_examples_section,
+                     heading_title}
+                  )
+                end
+            end
+        end
+    end
+  end
+
+  defp heading_metadata(line) do
+    case Regex.run(~r/^(#+)\s+(.+?)\s*$/, line, capture: :all_but_first) do
+      [hashes, title] -> {:heading, String.length(hashes), String.trim(title)}
+      _ -> :not_heading
+    end
+  end
+
+  defp update_heading_context(
+         level,
+         title,
+         section_level,
+         inside_examples_section,
+         _heading_title
+       ) do
+    normalized_title = normalize_heading_title(title)
+
+    cond do
+      MapSet.member?(@example_section_headings, normalized_title) ->
+        {level, true, nil}
+
+      inside_examples_section and is_integer(section_level) and level > section_level ->
+        {section_level, true, title}
+
+      true ->
+        {nil, false, nil}
+    end
+  end
+
+  defp normalize_heading_title(title) do
+    title
+    |> String.downcase()
+    |> String.replace(~r/[^a-z0-9]+/u, " ")
+    |> String.trim()
+  end
+
+  defp take_indented_block(lines, start_index) do
+    lines
+    |> Enum.drop(start_index)
+    |> Enum.split_while(&String.starts_with?(&1, "    "))
+    |> then(fn {chunk, _rest} ->
+      code =
+        chunk
+        |> Enum.map_join("\n", &String.trim_leading(&1, "    "))
+
+      {start_index + length(chunk), code}
     end)
   end
 
@@ -596,6 +749,8 @@ defmodule CinderUI.Docs.Catalog do
   defp inline_doc_example_title(nil, "", index), do: "Inline docs example #{index}"
   defp inline_doc_example_title(nil, lang, index), do: "Inline docs example #{index} (#{lang})"
   defp inline_doc_example_title(title, _lang, _index), do: title
+
+  defp phoenix_shim_example?(code) when is_binary(code), do: String.contains?(code, "@form[")
 
   defp avatar_sample_data_uri(:levi), do: @avatar_levi
   defp avatar_sample_data_uri(:ari), do: @avatar_shadcn

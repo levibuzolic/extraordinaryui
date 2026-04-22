@@ -125,9 +125,19 @@ defmodule CinderUI.Docs.UIComponents.Catalog do
             data-promoted-visual={example.promoted_visual}
           >
             <header>
-              <h3 class="text-sm font-semibold">
-                {example_heading(example.title, index, length(@entry.examples))}
-              </h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-sm font-semibold">
+                  {example_heading(example.title, index, length(@entry.examples))}
+                </h3>
+                <Feedback.badge
+                  :if={Map.get(example, :phoenix_shim, false)}
+                  color={:info}
+                  variant={:outline}
+                  class="text-[10px] uppercase tracking-[0.08em]"
+                >
+                  Phoenix shim
+                </Feedback.badge>
+              </div>
               <p
                 :if={is_binary(example.description) and example.description != ""}
                 class="text-muted-foreground mt-1 text-xs"
