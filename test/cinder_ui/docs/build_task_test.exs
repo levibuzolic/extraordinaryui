@@ -34,12 +34,16 @@ defmodule CinderUI.Docs.BuildTaskTest do
     assert marketing_index =~ "Components that shine"
     assert marketing_index =~ ~s(class="code-highlight block min-w-max whitespace-pre")
     assert marketing_index =~ ~s(<span class="tok-keyword">mix</span>)
+    assert marketing_index =~ "cui:theme:color"
+    assert marketing_index =~ "cui:theme:radius"
 
     assert docs_index =~ "Component Library"
     assert docs_index =~ "Actions.button"
     assert docs_index =~ "Open docs"
     assert docs_index =~ "./actions-button/"
     assert docs_index =~ ~s(href="../")
+    assert docs_index =~ "cui:theme:color"
+    assert docs_index =~ "cui:theme:radius"
 
     assert component_page =~ "Original shadcn/ui docs"
     assert component_page =~ "Attributes"

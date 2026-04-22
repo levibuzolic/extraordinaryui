@@ -77,7 +77,24 @@ describe("static docs hook adapter", () => {
     expect(document.documentElement.classList.contains("dark")).toBe(true)
     expect(document.documentElement.dataset.theme).toBe("dark")
     expect(document.documentElement.dataset.themeMode).toBe("auto")
+    expect(document.documentElement.dataset.themeColor).toBe("neutral")
+    expect(document.documentElement.dataset.themeRadius).toBe("nova")
     expect(document.documentElement.style.getPropertyValue("--background")).toBe("oklch(0.145 0 0)")
+  })
+
+  it("restores stored palette and radius tokens onto the root element", async () => {
+    window.localStorage.setItem("cui:theme:mode", "dark")
+    window.localStorage.setItem("cui:theme:color", "zinc")
+    window.localStorage.setItem("cui:theme:radius", "vega")
+
+    await loadStaticDocsModule()
+
+    expect(document.documentElement.dataset.theme).toBe("dark")
+    expect(document.documentElement.dataset.themeMode).toBe("dark")
+    expect(document.documentElement.dataset.themeColor).toBe("zinc")
+    expect(document.documentElement.dataset.themeRadius).toBe("vega")
+    expect(document.documentElement.style.getPropertyValue("--sidebar")).toBe("oklch(0.141 0.005 285.823)")
+    expect(document.documentElement.style.getPropertyValue("--radius")).toBe("1rem")
   })
 
   it("records missing hook names used in static markup", async () => {
