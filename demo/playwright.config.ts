@@ -2,6 +2,7 @@ import { defineConfig, type PlaywrightTestConfig } from "@playwright/test"
 
 const config = {
   testDir: "./tests/browser",
+  globalSetup: "./tests/browser/global_setup.ts",
   snapshotPathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}{ext}",
   timeout: 60_000,
   expect: {
@@ -28,7 +29,7 @@ const config = {
     url: "http://127.0.0.1:4000",
     cwd: __dirname,
     reuseExistingServer: true,
-    timeout: 20_000,
+    timeout: 60_000,
     env: { ...process.env, PHX_CODE_RELOADER: "false" },
   },
 } satisfies PlaywrightTestConfig

@@ -1200,6 +1200,7 @@ const CuiSelect = {
 const CuiAutocomplete = {
   mounted() {
     this.selectedLabel = this.el.dataset.selectedLabel || ""
+    this.selectedValue = ""
     this.open = false
     this.skipFocusOpen = false
     this.refreshElements = () => {
@@ -1217,6 +1218,26 @@ const CuiAutocomplete = {
 
     this._hl = createItemHighlighter(() => this.items, () => this.sync())
     this.highlightItem = this._hl.highlight
+
+    /**
+     * Highlight the selected visible item or first visible item.
+     * @param {{ preferSelection?: boolean }} [options]
+     * @returns {HTMLElement | null}
+     */
+    this.highlightVisibleDefault = ({ preferSelection = false } = {}) => {
+      const visibleItems = this.visibleItems()
+      if (!visibleItems.length) {
+        this.highlightItem(null)
+        return null
+      }
+
+      const target = preferSelection
+        ? visibleItems.find((item) => item.dataset.selected === "true") || visibleItems[0]
+        : visibleItems[0]
+
+      this.highlightItem(target)
+      return target
+    }
 
     /** Synchronize DOM state (visibility, ARIA attributes) with `this.open`. */
     this.sync = () => {
@@ -1247,6 +1268,7 @@ const CuiAutocomplete = {
       const label = item.dataset.label || item.textContent.trim()
 
       this.selectedLabel = label
+      this.selectedValue = value
       this.el.dataset.selectedLabel = label
       if (this.input) this.input.value = label
       if (this.valueInput) this.valueInput.value = value
@@ -1268,8 +1290,11 @@ const CuiAutocomplete = {
       }
     }
 
-    /** Filter the option list by the current input value. */
-    this.filterItems = () => {
+    /**
+     * Filter the option list by the current input value.
+     * @param {{ preferSelection?: boolean }} [options]
+     */
+    this.filterItems = ({ preferSelection = false } = {}) => {
       const query = (this.input?.value || "").toLowerCase()
 
       this.items.forEach((item) => {
@@ -1282,7 +1307,17 @@ const CuiAutocomplete = {
       }
 
       this.syncEmpty()
+      this.highlightVisibleDefault({ preferSelection })
       this.open = true
+      this.sync()
+    }
+
+    /** Restore the last committed selection and close the list. */
+    this.restoreSelection = () => {
+      if (this.input) this.input.value = this.selectedLabel
+      if (this.valueInput) this.valueInput.value = this.selectedValue
+      this.filterItems({ preferSelection: true })
+      this.open = false
       this.sync()
     }
 
@@ -1321,6 +1356,7 @@ const CuiAutocomplete = {
         return
       }
       this.open = true
+      this.highlightVisibleDefault({ preferSelection: true })
       this.sync()
     }
 
@@ -1362,20 +1398,13 @@ const CuiAutocomplete = {
         const firstVisible = this.visibleItems()[0]
         if (!this.open || !firstVisible) return
         event.preventDefault()
-        this.applySelection(document.activeElement?.dataset?.autocompleteItem !== undefined ? document.activeElement : firstVisible)
+        const highlighted = this.visibleItems().find((item) => item.dataset.highlighted === "true")
+        this.applySelection(document.activeElement?.dataset?.autocompleteItem !== undefined ? document.activeElement : highlighted || firstVisible)
       }
 
       if (event.key === "Escape") {
         event.preventDefault()
-        this.open = false
-        this.sync()
-        if (this.input && this.selectedLabel && !this.valueInput?.value) {
-          this.input.value = this.selectedLabel
-          if (this.valueInput) this.valueInput.value = this.items.find((item) => item.dataset.label === this.selectedLabel)?.dataset.value || ""
-        }
-        this.filterItems()
-        this.open = false
-        this.sync()
+        this.restoreSelection()
       }
     }
 
@@ -1428,14 +1457,7 @@ const CuiAutocomplete = {
 
     this.onDocumentClick = (event) => {
       if (this.el.contains(event.target)) return
-      this.open = false
-      this.sync()
-      if (this.input && this.valueInput?.value) {
-        this.input.value = this.selectedLabel
-      }
-      this.filterItems()
-      this.open = false
-      this.sync()
+      this.restoreSelection()
     }
 
     // -- Lifecycle ------------------------------------------------------------
@@ -1461,6 +1483,7 @@ const CuiAutocomplete = {
     }
 
     this.refreshElements()
+    this.selectedValue = this.valueInput?.value || ""
     this.bindEvents()
     this.removeCommandListener = registerCommandListener(this.el, {
       open: () => {
@@ -1480,6 +1503,7 @@ const CuiAutocomplete = {
         if (this.input) this.input.value = ""
         if (this.valueInput) this.valueInput.value = ""
         this.selectedLabel = ""
+        this.selectedValue = ""
         this.el.dataset.selectedLabel = ""
         this.filterItems()
       },
@@ -1492,6 +1516,7 @@ const CuiAutocomplete = {
     this.unbindEvents()
     this.refreshElements()
     this.selectedLabel = this.el.dataset.selectedLabel || this.selectedLabel
+    this.selectedValue = this.valueInput?.value || this.selectedValue
     this.bindEvents()
     this.syncEmpty()
     this.sync()
@@ -1684,8 +1709,8 @@ const CuiCodeBlock = {
  * Phoenix LiveView hook for the `combobox` component.
  *
  * A lightweight text-input + dropdown that filters items by their text content.
- * Unlike {@link CuiAutocomplete}, this does not manage a hidden value input or
- * support keyboard item navigation — it is a simpler filter-and-pick control.
+ * Unlike {@link CuiAutocomplete}, this does not manage a hidden value input,
+ * but it does keep an active item so Enter can accept the top suggestion.
  *
  * **Data attributes:** `data-combobox-input`, `data-combobox-content`,
  * `data-slot="combobox-item"`.
@@ -1699,50 +1724,257 @@ const CuiCombobox = {
     this.input = this.el.querySelector("[data-combobox-input]")
     this.content = this.el.querySelector("[data-combobox-content]")
     this.items = Array.from(this.el.querySelectorAll("[data-slot='combobox-item']"))
+    this.committedValue = this.input?.value || ""
+    this.open = false
 
-    this.onInput = () => {
+    /** @returns {HTMLElement[]} Visible combobox items. */
+    this.visibleItems = () => this.items.filter((item) => !item.classList.contains("hidden"))
+
+    this._hl = createItemHighlighter(() => this.items, () => this.sync())
+    this.highlightItem = this._hl.highlight
+
+    /** Synchronize visibility and active descendant state. */
+    this.sync = () => {
+      if (this.input) {
+        this.input.setAttribute("aria-expanded", this.open ? "true" : "false")
+        const activeItem = this.items.find((item) => item.dataset.highlighted === "true")
+        this.input.setAttribute("aria-activedescendant", this.open && activeItem?.id ? activeItem.id : "")
+      }
+      toggleVisibility(this.content, this.open)
+    }
+
+    /**
+     * Highlight the first visible item.
+     * @returns {HTMLElement | null}
+     */
+    this.highlightFirstVisible = () => {
+      const firstVisible = this.visibleItems()[0] || null
+      this.highlightItem(firstVisible)
+      return firstVisible
+    }
+
+    /** Filter options using the current input text and highlight the top match. */
+    this.filterItems = () => {
       const value = (this.input.value || "").toLowerCase()
       this.items.forEach((item) => {
         const text = item.textContent.toLowerCase()
         const visible = text.includes(value)
         item.classList.toggle("hidden", !visible)
       })
-      toggleVisibility(this.content, true)
+      this.highlightFirstVisible()
+      this.open = true
+      this.sync()
     }
 
-    this._hl = createItemHighlighter(() => this.items)
+    /**
+     * Focus a visible item by index.
+     * @param {number} index
+     */
+    this.focusVisibleItem = (index) => {
+      const visibleItems = this.visibleItems()
+      if (!visibleItems.length) return
+
+      const nextIndex = clamp(index, 0, visibleItems.length - 1)
+      this.highlightItem(visibleItems[nextIndex])
+      visibleItems[nextIndex].focus()
+    }
+
+    /**
+     * Move focus within the visible item list.
+     * @param {number} delta
+     */
+    this.move = (delta) => {
+      const visibleItems = this.visibleItems()
+      if (!visibleItems.length) return
+
+      const currentIndex = visibleItems.findIndex((item) => item === document.activeElement)
+      const highlightedIndex = visibleItems.findIndex((item) => item.dataset.highlighted === "true")
+
+      if (currentIndex === -1) {
+        const fallbackIndex = highlightedIndex === -1 ? 0 : highlightedIndex
+        this.focusVisibleItem(fallbackIndex)
+        return
+      }
+
+      const nextIndex = (currentIndex + delta + visibleItems.length) % visibleItems.length
+      this.focusVisibleItem(nextIndex)
+    }
+
+    /**
+     * Commit a combobox item.
+     * @param {HTMLElement} item
+     */
+    this.applySelection = (item) => {
+      this.committedValue = item.dataset.value || item.textContent.trim()
+      if (this.input) this.input.value = this.committedValue
+      this.items.forEach((entry) => {
+        const selected = entry === item
+        entry.dataset.selected = selected ? "true" : "false"
+        entry.setAttribute("aria-selected", selected ? "true" : "false")
+        const check = entry.querySelector("[data-slot='select-check']")
+        if (check) check.classList.toggle("hidden", !selected)
+      })
+      this.open = false
+      this.highlightItem(null)
+      this.sync()
+    }
+
+    /** Restore the last committed value without selecting the current highlight. */
+    this.restoreSelection = () => {
+      if (this.input) this.input.value = this.committedValue
+      this.filterItems()
+      this.open = false
+      this.sync()
+    }
 
     this.onItemClick = (event) => {
       const item = event.currentTarget
-      this.input.value = item.dataset.value || item.textContent.trim()
-      toggleVisibility(this.content, false)
+      this.applySelection(item)
+      this.input?.focus()
     }
 
     this.onDocumentClick = (event) => {
       if (!this.el.contains(event.target)) {
-        toggleVisibility(this.content, false)
+        this.restoreSelection()
       }
     }
 
-    this.input && this.input.addEventListener("focus", () => toggleVisibility(this.content, true))
+    /** @param {KeyboardEvent} event */
+    this.onKeyDown = (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault()
+        this.open = true
+        this.sync()
+        this.move(1)
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault()
+        this.open = true
+        this.sync()
+        this.move(-1)
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault()
+        this.open = true
+        this.sync()
+        this.focusVisibleItem(0)
+      }
+
+      if (event.key === "End") {
+        event.preventDefault()
+        this.open = true
+        this.sync()
+        this.focusVisibleItem(this.visibleItems().length - 1)
+      }
+
+      if (event.key === "Enter") {
+        const highlighted = this.visibleItems().find((item) => item.dataset.highlighted === "true")
+        if (!this.open || !highlighted) return
+        event.preventDefault()
+        this.applySelection(highlighted)
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault()
+        this.restoreSelection()
+      }
+    }
+
+    /** @param {KeyboardEvent} event */
+    this.onContentKeyDown = (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault()
+        this.move(1)
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault()
+        this.move(-1)
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault()
+        this.focusVisibleItem(0)
+      }
+
+      if (event.key === "End") {
+        event.preventDefault()
+        this.focusVisibleItem(this.visibleItems().length - 1)
+      }
+
+      if (event.key === "Enter" || event.key === " ") {
+        const item = event.target.closest("[data-slot='combobox-item']")
+        if (!item) return
+        event.preventDefault()
+        this.applySelection(item)
+        this.input?.focus()
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault()
+        this.restoreSelection()
+        this.input?.focus()
+      }
+    }
+
+    this.onFocus = () => {
+      this.filterItems()
+    }
+
+    this.onInput = () => {
+      this.filterItems()
+    }
+
+    this.input && this.input.addEventListener("focus", this.onFocus)
     this.input && this.input.addEventListener("input", this.onInput)
+    this.input && this.input.addEventListener("keydown", this.onKeyDown)
+    this.content && this.content.addEventListener("keydown", this.onContentKeyDown)
     this.items.forEach((item) => item.addEventListener("click", this.onItemClick))
     this._hl.bind(this.items)
     document.addEventListener("click", this.onDocumentClick)
     this.removeCommandListener = registerCommandListener(this.el, {
-      open: () => toggleVisibility(this.content, true),
-      close: () => toggleVisibility(this.content, false),
-      toggle: () => toggleVisibility(this.content, this.content?.classList.contains("hidden")),
+      open: () => {
+        this.open = true
+        this.highlightFirstVisible()
+        this.sync()
+      },
+      close: () => {
+        this.open = false
+        this.highlightItem(null)
+        this.sync()
+      },
+      toggle: () => {
+        this.open = !this.open
+        if (this.open) {
+          this.highlightFirstVisible()
+        } else {
+          this.highlightItem(null)
+        }
+        this.sync()
+      },
       focus: () => this.input?.focus(),
       clear: () => {
+        this.committedValue = ""
         if (this.input) this.input.value = ""
-        this.onInput()
+        this.items.forEach((entry) => {
+          entry.dataset.selected = "false"
+          entry.setAttribute("aria-selected", "false")
+          const check = entry.querySelector("[data-slot='select-check']")
+          if (check) check.classList.add("hidden")
+        })
+        this.filterItems()
       },
     })
+    this.sync()
   },
 
   destroyed() {
+    this.input && this.input.removeEventListener("focus", this.onFocus)
     this.input && this.input.removeEventListener("input", this.onInput)
+    this.input && this.input.removeEventListener("keydown", this.onKeyDown)
+    this.content && this.content.removeEventListener("keydown", this.onContentKeyDown)
     this.items.forEach((item) => item.removeEventListener("click", this.onItemClick))
     this._hl.unbind(this.items)
     document.removeEventListener("click", this.onDocumentClick)

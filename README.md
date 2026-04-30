@@ -267,6 +267,10 @@ Explicit composition with validation messaging:
 </.form>
 ```
 
+`autocomplete/1` keeps the last committed selection until the user confirms a
+new option. Typing implicitly highlights the first visible match so `Enter`
+accepts it, while `Escape` or clicking away restores the prior selection.
+
 Custom label markup remains available when you need richer label content:
 
 ```heex

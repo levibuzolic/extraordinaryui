@@ -243,12 +243,14 @@ test.describe("interactive previews", () => {
     const combo = page.locator("[data-slot='combobox']").first()
     const input = combo.locator("[data-combobox-input]")
     const content = combo.locator("[data-combobox-content]")
+    const freeItem = combo.locator("[data-slot='combobox-item'][data-value='Free']")
 
     await combo.scrollIntoViewIfNeeded()
     await input.click()
     expect(await hasClass(content, "hidden")).toBe(false)
 
     await input.fill("Fr")
+    await expect(freeItem).toHaveAttribute("data-highlighted", "true")
     const itemStates = await combo.locator("[data-slot='combobox-item']").evaluateAll((els) =>
       els.map((el) => ({
         text: (el.textContent || "").trim(),
@@ -262,11 +264,32 @@ test.describe("interactive previews", () => {
     expect(free?.hidden).toBe(false)
     expect(pro?.hidden).toBe(true)
 
-    await combo.locator("[data-slot='combobox-item'][data-value='Free']").click()
+    await page.keyboard.press("Enter")
     await expect(input).toHaveValue("Free")
+    expect(await hasClass(content, "hidden")).toBe(true)
   })
 
-  test("autocomplete filters and updates the hidden value", async ({ page }) => {
+  test("combobox escape and outside click restore the committed value", async ({ page }) => {
+    const combo = page.locator("[data-slot='combobox']").first()
+    const input = combo.locator("[data-combobox-input]")
+
+    await combo.scrollIntoViewIfNeeded()
+    await expect(input).toHaveValue("Pro")
+
+    await input.click()
+    await input.fill("Fr")
+    await expect(combo.locator("[data-slot='combobox-item'][data-value='Free']")).toHaveAttribute("data-highlighted", "true")
+
+    await page.keyboard.press("Escape")
+    await expect(input).toHaveValue("Pro")
+
+    await input.click()
+    await input.fill("Fr")
+    await page.mouse.click(5, 5)
+    await expect(input).toHaveValue("Pro")
+  })
+
+  test("autocomplete filters, implicitly highlights, and updates the hidden value", async ({ page }) => {
     const autocomplete = page.locator("#team-owner")
     const input = autocomplete.locator("[data-autocomplete-input]")
     const content = autocomplete.locator("[data-autocomplete-content]")
@@ -277,7 +300,6 @@ test.describe("interactive previews", () => {
     expect(await hasClass(content, "hidden")).toBe(false)
 
     await input.fill("Mira")
-    await page.keyboard.press("ArrowDown")
     const highlightedAutocompleteItem = autocomplete.locator("[data-slot='autocomplete-item'][data-highlighted='true']").first()
     await expect(highlightedAutocompleteItem).toBeVisible()
     await expect(input).toHaveAttribute("aria-activedescendant", (await highlightedAutocompleteItem.getAttribute("id"))!)
@@ -294,9 +316,31 @@ test.describe("interactive previews", () => {
     expect(levi?.hidden).toBe(true)
     expect(mira?.hidden).toBe(false)
 
-    await autocomplete.locator("[data-slot='autocomplete-item'][data-value='mira']").click()
+    await page.keyboard.press("Enter")
     await expect(input).toHaveValue("Mira Chen")
     await expect(hiddenInput).toHaveValue("mira")
+  })
+
+  test("autocomplete escape and outside click restore the committed selection", async ({ page }) => {
+    const autocomplete = page.locator("#team-owner")
+    const input = autocomplete.locator("[data-autocomplete-input]")
+    const hiddenInput = autocomplete.locator("[data-slot='autocomplete-value']")
+
+    await autocomplete.scrollIntoViewIfNeeded()
+    await expect(input).toHaveValue("Levi Buzolic")
+    await expect(hiddenInput).toHaveValue("levi")
+
+    await input.click()
+    await input.fill("Mira")
+    await page.keyboard.press("Escape")
+    await expect(input).toHaveValue("Levi Buzolic")
+    await expect(hiddenInput).toHaveValue("levi")
+
+    await input.click()
+    await input.fill("Mira")
+    await page.mouse.click(5, 5)
+    await expect(input).toHaveValue("Levi Buzolic")
+    await expect(hiddenInput).toHaveValue("levi")
   })
 
   test("tabs switch active panel content", async ({ page }) => {
