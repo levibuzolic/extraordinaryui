@@ -161,7 +161,11 @@ defmodule CinderUI.Components.Advanced do
   ## When to use it
 
   Use `combobox/1` when you want a lightweight client-side filter input that
-  simply writes the selected label back into the visible text field.
+  writes the selected label back into the visible text field.
+
+  Typing narrows the list and implicitly highlights the first visible match, so
+  `Enter` can accept it without extra arrow-key navigation. `Escape` and
+  clicking away restore the last committed value.
 
   Prefer `autocomplete/1` when the selected value needs to submit through a
   hidden input, when labels and values differ, or when the control participates
@@ -198,18 +202,31 @@ defmodule CinderUI.Components.Advanced do
         data-combobox-input
         value={@value}
         placeholder={@placeholder}
+        autocomplete="off"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-controls={"#{@id}-content"}
+        aria-expanded="false"
+        aria-activedescendant=""
         class="file:text-foreground placeholder:text-muted-foreground border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
       />
       <div
+        id={"#{@id}-content"}
         data-slot="combobox-content"
         data-combobox-content
+        role="listbox"
+        tabindex="-1"
         class="bg-popover text-popover-foreground absolute z-50 mt-2 hidden w-full rounded-md border p-1 shadow-md"
       >
         <button
-          :for={option <- @option}
+          :for={{option, index} <- Enum.with_index(@option)}
+          id={"#{@id}-combobox-option-#{index}"}
           type="button"
+          role="option"
           data-slot="combobox-item"
           data-value={option.value}
+          data-selected={@value == option.value}
+          aria-selected={@value == option.value}
           class={
             classes([
               "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground"

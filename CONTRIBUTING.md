@@ -64,6 +64,8 @@ Default hooks:
 2. Update docs/examples if API or behavior changed.
 3. Update static docs catalog sample(s) in `dev/lib/cinder_ui/docs/catalog.ex`.
 4. Add or adjust unit/browser tests.
+   Interaction changes should cover both confirm and cancel paths such as
+   `Enter`, `Escape`, and outside-click behavior where applicable.
 5. If the change relates to strategic component coverage or interaction quality, update `docs/competitive-audit-roadmap.md`.
 6. Run quality gates.
 
